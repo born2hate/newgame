@@ -101,7 +101,11 @@ func add_story_section() -> void:
 	pb.max_value = goal
 	pb.value = mini(goal, Game.story_progress())
 	info.add_child(pb)
-	info.add_child(hud._label("%d/%d · %s" % [mini(goal, Game.story_progress()), goal, hud._reward_text_full(st.reward)], 15, Color(0.75, 0.85, 0.95)))
+	var srow := HBoxContainer.new()
+	srow.add_theme_constant_override("separation", 10)
+	srow.add_child(hud._label("%d/%d" % [mini(goal, Game.story_progress()), goal], 15, Color(0.75, 0.85, 0.95)))
+	srow.add_child(hud._reward_chips(st.reward, 26, 15))
+	info.add_child(srow)
 	row.add_child(info)
 	var b: Button = hud._button(tr("Claim"), func():
 		Game.claim_story()
@@ -133,9 +137,10 @@ func add_weekly_section() -> void:
 	tiers.add_theme_constant_override("separation", 8)
 	for i in ev.tiers.size():
 		var claimed: bool = i in Game.weekly_claimed
-		var b: Button = hud._button(("✓ " if claimed else "") + "%d: %s" % [ev.tiers[i], hud._reward_text(Defs.WEEKLY_REWARDS[i])], func():
+		var b: Button = hud._button("", func():
 			Game.claim_weekly(i)
 			hud._open_tasks(), 56)
+		hud._reward_button(b, Defs.WEEKLY_REWARDS[i], ("✓ " if claimed else "") + "%d → " % ev.tiers[i])
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		b.add_theme_font_size_override("font_size", 15)
 		b.disabled = claimed or Game.weekly_progress < ev.tiers[i]
@@ -190,23 +195,47 @@ func open_trader() -> void:
 		var o: Dictionary = Game.trader.offers[i]
 		var bought: bool = i in Game.trader.bought
 		var row: HBoxContainer = hud._card(Color(0.05, 0.18, 0.12, 0.92), Color(0.5, 1.0, 0.6, 0.6))
-		var give_k: String = o.give.keys()[0]
-		var get_v = o.get.values()[0]
-		var args := [o.give[give_k]]
-		if o.text.count("%d") == 2:
-			args.append(get_v if typeof(get_v) == TYPE_INT or typeof(get_v) == TYPE_FLOAT else 0)
-		if o.text.begins_with("Buy %d science"):
-			args = [o.get.science, o.give[give_k]]
-		var l: Label = hud._label(tr(o.text) % args, 20)
-		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row.add_child(l)
+		# «отдаёшь → получаешь» картинками
+		var deal := HBoxContainer.new()
+		deal.add_theme_constant_override("separation", 10)
+		deal.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		deal.add_child(_offer_chip(o.give, 44))
+		deal.add_child(hud._label("→", 30, Color(0.7, 1.0, 0.75)))
+		deal.add_child(_offer_chip(o.get, 52))
+		row.add_child(deal)
 		var b: Button = hud._button(tr("Done") if bought else tr("Deal"), func():
 			Game.trade(i)
 			open_trader(), 60)
 		b.disabled = bought
 		b.custom_minimum_size.x = 130
 		row.add_child(b)
+
+func _offer_chip(d: Dictionary, size: int) -> HBoxContainer:
+	var hb := HBoxContainer.new()
+	hb.add_theme_constant_override("separation", 6)
+	var key: String = d.keys()[0]
+	var val = d[key]
+	var icon_key := key
+	var txt := ""
+	match key:
+		"crates":
+			icon_key = "crate_" + val.keys()[0]
+			txt = tr(Defs.CRATES[val.keys()[0]].name)
+		"item":
+			icon_key = "item_" + ("explorer_suit" if val == "legendary" else "diving_armor")
+			txt = tr(Defs.ITEM_RARITY[val].name)
+		_:
+			txt = str(val)
+	var tex := Art.marker_icon(icon_key)
+	if tex:
+		var t := TextureRect.new()
+		t.texture = tex
+		t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		t.custom_minimum_size = Vector2(size, size)
+		hb.add_child(t)
+	hb.add_child(hud._label(txt, 22))
+	return hb
 
 # ---------------------------------------------------------------- снаряжение в карточке колониста
 

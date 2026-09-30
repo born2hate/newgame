@@ -421,3 +421,8 @@
 420|Wybierz wyzwanie
 421|Zmienić można tylko, zaczynając od nowa.
 422|Polecany
+423|Kupiec
+424|Brak wolnego miejsca
+425|Zbuduj windę w dół, aby otworzyć nowe piętra.
+426|Najpierw buduj pomieszczenia obok windy.
+427|Brakuje jeszcze %d pereł.

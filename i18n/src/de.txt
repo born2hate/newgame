@@ -421,3 +421,8 @@
 420|Wähle deine Herausforderung
 421|Ändern geht nur durch einen Neustart.
 422|Empfohlen
+423|Händler
+424|Kein freier Platz
+425|Baue einen Aufzug nach unten, um neue Etagen zu öffnen.
+426|Baue zuerst Räume neben dem Aufzug.
+427|Dir fehlen noch %d Perlen.

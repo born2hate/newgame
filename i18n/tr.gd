@@ -427,6 +427,11 @@ const T := {
 	"Choose your challenge": "Zorluğunu seç",
 	"You can only change it by starting over.": "Yalnızca baştan başlayarak değiştirebilirsin.",
 	"Recommended": "Önerilen",
+	"Trader": "Tüccar",
+	"No free space": "Boş yer yok",
+	"Build an Elevator below to open new floors.": "Yeni katlar açmak için aşağı doğru asansör inşa et.",
+	"Build rooms next to the elevator first.": "Önce asansörün yanına oda inşa et.",
+	"You need %d more pearls.": "%d inci daha gerekli.",
 }
 
 static func make() -> Translation:

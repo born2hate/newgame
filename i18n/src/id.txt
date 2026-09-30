@@ -421,3 +421,8 @@
 420|Pilih tantanganmu
 421|Hanya bisa diubah dengan memulai ulang.
 422|Disarankan
+423|Pedagang
+424|Tidak ada tempat kosong
+425|Bangun lift ke bawah untuk membuka lantai baru.
+426|Bangun ruangan di sebelah lift terlebih dahulu.
+427|Butuh %d mutiara lagi.

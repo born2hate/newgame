@@ -427,6 +427,11 @@ const T := {
 	"Choose your challenge": "Scegli la tua sfida",
 	"You can only change it by starting over.": "Puoi cambiarla solo ricominciando.",
 	"Recommended": "Consigliata",
+	"Trader": "Mercante",
+	"No free space": "Nessuno spazio libero",
+	"Build an Elevator below to open new floors.": "Costruisci un ascensore verso il basso per aprire nuovi piani.",
+	"Build rooms next to the elevator first.": "Prima costruisci stanze accanto all'ascensore.",
+	"You need %d more pearls.": "Ti servono altre %d perle.",
 }
 
 static func make() -> Translation:

@@ -421,3 +421,8 @@
 420|Escolha seu desafio
 421|Só é possível mudar recomeçando.
 422|Recomendado
+423|Mercador
+424|Sem espaço livre
+425|Construa um elevador para baixo para abrir novos andares.
+426|Primeiro construa salas ao lado do elevador.
+427|Faltam %d pérolas.

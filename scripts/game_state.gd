@@ -24,7 +24,8 @@ var rng := RandomNumberGenerator.new()
 
 # премиум-экономика
 signal rewards_granted(title: String, lines: Array)
-signal event(name: String)               # игровое событие — для звука
+signal event(name: String)
+signal banner(icon: String, title: String, text: String)   # яркое уведомление с картинкой
 const FREE_CRATE_COOLDOWN := 4.0 * 3600.0
 const BOOST_DURATION := 30.0 * 60.0
 var crystals := 0
@@ -241,6 +242,15 @@ func can_build_at(type: String, col: int, row: int) -> bool:
 				return true
 	return false
 
+## Все клетки, куда можно поставить отсек, ближние к верху — первыми.
+func build_spots(type: String) -> Array:
+	var out := []
+	for row in Defs.MAX_DEPTH:
+		for col in Defs.GRID_COLS:
+			if can_build_at(type, col, row):
+				out.append(Vector2i(col, row))
+	return out
+
 ## Эффективность комнаты: сумма нужной характеристики рабочих с учётом здоровья.
 func room_power(room: Dictionary) -> float:
 	var def: Dictionary = Defs.ROOMS[room.type]
@@ -363,7 +373,7 @@ func simulate(delta: float, offline: bool) -> void:
 				c["rarity"] = "rare"
 			colonists.append(c)
 			if not offline:
-				message.emit(tr("New colonist arrived: %s") % c.name)
+				banner.emit("suit_%d" % c.suit, tr("New colonist arrived: %s") % "", c.name)
 				event.emit("arrive")
 			changed.emit()
 	for k in resources:
@@ -382,7 +392,7 @@ func _level_up(c: Dictionary) -> void:
 		stat = ["str", "tech", "bio"].pick_random()
 	c[stat] = mini(10, c[stat] + 1)
 	pearls += 15
-	message.emit(tr("%s reached level %d! %s +1") % [c.name, c.level, Defs.STATS[stat]])
+	banner.emit("suit_%d" % c.suit, tr("Level %d") % c.level, tr("%s reached level %d! %s +1") % [c.name, c.level, tr(Defs.STATS[stat])])
 	changed.emit()
 
 func seconds_until_arrival() -> float:
@@ -405,7 +415,7 @@ func build(type: String, col: int, row: int) -> bool:
 	r = _try_merge(r)
 	track("build")
 	track("build_" + type)
-	floating_text.emit(r.id, "-%d P" % cost, Defs.RESOURCES.pearls.color)
+	floating_text.emit(r.id, "[pearls]-%d" % cost, Defs.RESOURCES.pearls.color)
 	changed.emit()
 	return true
 
@@ -421,6 +431,7 @@ func _try_merge(r: Dictionary) -> Dictionary:
 		n.size += 1
 		n.col = mini(n.col, r.col)
 		message.emit(tr("Rooms merged: %s %d×") % [tr(Defs.ROOMS[n.type].name), n.size])
+		_fix_orphans()
 		return n
 	return r
 
@@ -461,11 +472,11 @@ func collect(room: Dictionary, silent := false) -> void:
 		var cr := rng.randi_range(1, 3)
 		crystals += cr
 		if not silent:
-			floating_text.emit(room.id, "+%d ◆" % cr, Defs.RESOURCES.crystals.color)
+			floating_text.emit(room.id, "[crystals]+%d" % cr, Defs.RESOURCES.crystals.color)
 	if silent:
 		stats["collect"] = stats.get("collect", 0) + 1
 		return
-	floating_text.emit(room.id, "+%d %s" % [int(amount), Defs.RESOURCES[res].short], Defs.RESOURCES[res].color)
+	floating_text.emit(room.id, "[%s]+%d" % [res, int(amount)], Defs.RESOURCES[res].color)
 	track("collect_" + res, int(amount))
 	track("collect")
 	changed.emit()
@@ -492,7 +503,7 @@ func rush(room: Dictionary) -> void:
 		room.progress = 1.0
 		room.ready = true
 		pearls += 10
-		floating_text.emit(room.id, tr("Success! +10 P"), Color(0.6, 1.0, 0.7))
+		floating_text.emit(room.id, "[pearls]+10", Color(0.6, 1.0, 0.7))
 	else:
 		room.progress = 0.0
 		var res: String = Defs.ROOMS[room.type].produces
@@ -588,21 +599,21 @@ func grant(reward: Dictionary, title: String) -> void:
 	_pending_lines = []
 	if reward.has("pearls"):
 		pearls += int(reward.pearls)
-		lines.append(tr("+%d pearls") % int(reward.pearls))
+		lines.append("[pearls]" + tr("+%d pearls") % int(reward.pearls))
 	if reward.has("crystals"):
 		crystals += int(reward.crystals)
-		lines.append(tr("+%d crystals") % int(reward.crystals))
+		lines.append("[crystals]" + tr("+%d crystals") % int(reward.crystals))
 	for k in reward.get("crates", {}):
 		crates[k] += int(reward.crates[k])
-		lines.append("+%d %s" % [int(reward.crates[k]), tr(Defs.CRATES[k].name)])
+		lines.append("[crate_%s]+%d %s" % [k, int(reward.crates[k]), tr(Defs.CRATES[k].name)])
 	if reward.has("colonist"):
-		lines.append(_grant_colonist(reward.colonist))
+		lines.append("[colonist]" + _grant_colonist(reward.colonist))
 	if reward.has("item"):
 		var it := add_item(reward.item)
-		lines.append(tr("New gear: %s") % item_name(it))
+		lines.append("[item_%s]" % it.base + tr("New gear: %s") % item_name(it))
 	if reward.has("pet"):
 		pet = reward.pet
-		lines.append(tr("Nemo the clownfish joined you! +10% to all collections"))
+		lines.append("[pet]" + tr("Nemo the clownfish joined you! +10% to all collections"))
 	if reward.get("no_ads", false):
 		no_ads = true
 		lines.append(tr("Ads removed. Rewards are now instant!"))
@@ -612,7 +623,7 @@ func grant(reward: Dictionary, title: String) -> void:
 	if reward.get("premium", false):
 		premium = true
 		lines.append(tr("Premium unlocked!"))
-		lines.append(_grant_captain())
+		lines.append("[captain]" + _grant_captain())
 	changed.emit()
 	rewards_granted.emit(title, lines)
 
@@ -674,11 +685,11 @@ func open_crate(type: String) -> void:
 				var amt := rng.randi_range(e[2], e[3])
 				for r in resources:
 					resources[r] = minf(storage_cap(), resources[r] + amt)
-				extra.append(tr("+%d energy, oxygen and food") % amt)
+				extra.append("[food]" + tr("+%d energy, oxygen and food") % amt)
 			"colonist_rare":
-				extra.append(_grant_colonist("rare"))
+				extra.append("[colonist]" + _grant_colonist("rare"))
 			"colonist_legendary":
-				extra.append(_grant_colonist("legendary"))
+				extra.append("[colonist]" + _grant_colonist("legendary"))
 	if reward.pearls == 0:
 		reward.erase("pearls")
 	if reward.crystals == 0:
@@ -686,17 +697,18 @@ func open_crate(type: String) -> void:
 	var lines := []
 	if reward.has("pearls"):
 		pearls += reward.pearls
-		lines.append(tr("+%d pearls") % reward.pearls)
+		lines.append("[pearls]" + tr("+%d pearls") % reward.pearls)
 	if reward.has("crystals"):
 		crystals += reward.crystals
-		lines.append(tr("+%d crystals") % reward.crystals)
+		lines.append("[crystals]" + tr("+%d crystals") % reward.crystals)
 	if type != "common" or rng.randf() < 0.3:
 		var rar := "common"
 		if type == "gold":
 			rar = "legendary" if rng.randf() < 0.25 else "rare"
 		elif type == "silver":
 			rar = "rare" if rng.randf() < 0.5 else "common"
-		lines.append(tr("New gear: %s") % item_name(add_item(rar)))
+		var gi := add_item(rar)
+		lines.append("[item_%s]" % gi.base + tr("New gear: %s") % item_name(gi))
 	lines.append_array(extra)
 	changed.emit()
 	rewards_granted.emit(tr(def.name), lines)
@@ -879,7 +891,7 @@ func claim_expedition(e: Dictionary) -> void:
 	if loot.get("resources", 0) > 0:
 		for r in resources:
 			resources[r] = minf(storage_cap(), resources[r] + loot.resources)
-		lines.append(tr("+%d energy, oxygen and food") % loot.resources)
+		lines.append("[food]" + tr("+%d energy, oxygen and food") % loot.resources)
 	for id in e.crew:
 		var c := get_colonist(id)
 		if c.is_empty():
@@ -1034,7 +1046,7 @@ func _resolve_hazard(r: Dictionary, offline: bool) -> void:
 	pearls += reward
 	for c in crew:
 		c.xp += 20.0
-	floating_text.emit(r.id, tr("+%d pearls for handling it") % reward, Color(0.6, 1.0, 0.7))
+	floating_text.emit(r.id, "[pearls]+%d" % reward, Color(0.6, 1.0, 0.7))
 	message.emit(tr("%s is under control!") % tr(Defs.ROOMS[r.type].name))
 	track("incident_resolved")
 	changed.emit()
@@ -1265,11 +1277,11 @@ func pop_bubble(rich: bool) -> Dictionary:
 		var cr := rng.randi_range(2, 5)
 		crystals += cr
 		changed.emit()
-		return {"text": "+%d ◆" % cr, "color": Defs.RESOURCES.crystals.color}
+		return {"text": "[crystals]+%d" % cr, "color": Defs.RESOURCES.crystals.color}
 	var p := rng.randi_range(15, 45) + max_row() * 3
 	pearls += p
 	changed.emit()
-	return {"text": "+%d" % p, "color": Defs.RESOURCES.pearls.color}
+	return {"text": "[pearls]+%d" % p, "color": Defs.RESOURCES.pearls.color}
 
 func _spawn_trader() -> void:
 	var offers := []
@@ -1285,7 +1297,7 @@ func _spawn_trader() -> void:
 	for i in 3:
 		offers.append(pool[i])
 	trader = {"until": now() + 300.0, "offers": offers, "bought": []}
-	message.emit(tr("A wandering trader has arrived at the airlock!"))
+	banner.emit("trader", tr("Wandering Trader"), tr("A wandering trader has arrived at the airlock!"))
 	event.emit("arrive")
 	changed.emit()
 
@@ -1312,7 +1324,8 @@ func trade(idx: int) -> bool:
 		science += g.science
 		g.erase("science")
 		if g.is_empty():
-			message.emit(tr("Deal!"))
+			banner.emit("science", tr("Deal!"), "+%d %s" % [o.get.science, tr("Science")])
+			event.emit("collect_energy")
 			changed.emit()
 			return true
 	grant(g, tr("Deal!"))
@@ -1406,7 +1419,8 @@ func track(ev: String, amount := 1) -> void:
 		if q.event == ev and not q.claimed and q.progress < q.target:
 			q.progress = mini(q.target, q.progress + amount)
 			if q.progress >= q.target:
-				message.emit(tr("Task complete: %s") % (tr(q.text) % q.target))
+				banner.emit("tasks", tr("Task complete!"), tr(q.text) % q.target)
+				event.emit("upgrade")
 
 func quests_ready() -> int:
 	return quests.filter(func(q): return q.progress >= q.target and not q.claimed).size()
@@ -1553,6 +1567,7 @@ func load_game() -> bool:
 		c["armor_item"] = c.get("armor_item", -1)
 		for k in ["id", "str", "tech", "bio", "level", "room", "suit", "help", "suit_item", "tool_item", "armor_item"]:
 			c[k] = int(c[k])
+	_fix_orphans()
 	_apply_offline(Time.get_unix_time_from_system() - float(data.time))
 	return true
 
@@ -1601,6 +1616,14 @@ func _check_deaths() -> void:
 			message.emit(tr("%s has died. The colony mourns.") % c.name)
 			event.emit("breach")
 			changed.emit()
+
+## Колонисты, чей отсек исчез, возвращаются в шлюз.
+func _fix_orphans() -> void:
+	for c in colonists:
+		if c.room >= 0 and get_room(c.room).is_empty():
+			c.room = -1
+		if c.get("help", -1) >= 0 and get_room(c.help).is_empty():
+			c.help = -1
 
 func reset() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))

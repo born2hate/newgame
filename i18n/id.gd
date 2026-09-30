@@ -427,6 +427,11 @@ const T := {
 	"Choose your challenge": "Pilih tantanganmu",
 	"You can only change it by starting over.": "Hanya bisa diubah dengan memulai ulang.",
 	"Recommended": "Disarankan",
+	"Trader": "Pedagang",
+	"No free space": "Tidak ada tempat kosong",
+	"Build an Elevator below to open new floors.": "Bangun lift ke bawah untuk membuka lantai baru.",
+	"Build rooms next to the elevator first.": "Bangun ruangan di sebelah lift terlebih dahulu.",
+	"You need %d more pearls.": "Butuh %d mutiara lagi.",
 }
 
 static func make() -> Translation:

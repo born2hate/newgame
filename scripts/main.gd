@@ -64,15 +64,77 @@ func _dev_screenshot() -> void:
 		hud._close_sheet()
 	match scene:
 		"build": hud._open_build()
-		"buildmode": hud._start_build("living")
+		"buildmode":
+			camera.position = Vector2(400, 900)
+			hud._start_build("living")
+			await get_tree().create_timer(0.6).timeout
 		"room": view.room_selected.emit(Game.find_room_of_type("reactor").id)
 		"colonists": hud._open_colonists()
 		"shop": hud._open_shop()
 		"tasks": hud._open_tasks()
+		"tasks_ru":
+			Audio.set_language("ru")
+			hud._open_tasks()
+		"tasks_ru2":
+			Audio.set_language("ru")
+			hud._open_tasks()
+			await get_tree().process_frame
+			(hud.sheet.get_child(0) as ScrollContainer).scroll_vertical = 900
+		"tasks_ru3":
+			Audio.set_language("ru")
+			hud._open_tasks()
+			await get_tree().process_frame
+			(hud.sheet.get_child(0) as ScrollContainer).scroll_vertical = 2000
+		"research_ru":
+			Audio.set_language("ru")
+			hud.more.open_research()
+		"planner_ru":
+			Audio.set_language("ru")
+			var dk := Game._add_room("dock", 3, 1)
+			hud._open_planner(dk.id, 1)
+		"shop_ru":
+			Audio.set_language("ru")
+			hud._open_shop()
+		"colonist_ru":
+			Audio.set_language("ru")
+			hud._open_colonist(Game.colonists[0].id)
+		"room_ru":
+			Audio.set_language("ru")
+			view.room_selected.emit(Game.find_room_of_type("reactor").id)
+		"banner":
+			Game.track(Game.quests[0].event, 999)
+			await get_tree().create_timer(0.7).timeout
+		"scrolltest":
+			hud._open_build()
+			await get_tree().create_timer(0.5).timeout
+			var sc := hud.sheet.get_child(0) as ScrollContainer
+			var before := sc.scroll_vertical
+			var start := Vector2(360, 1000)
+			var ev := InputEventScreenTouch.new()
+			ev.index = 0
+			ev.position = start
+			ev.pressed = true
+			Input.parse_input_event(ev)
+			for i in 20:
+				await get_tree().process_frame
+				var d := InputEventScreenDrag.new()
+				d.index = 0
+				d.position = start - Vector2(0, (i + 1) * 20)
+				d.relative = Vector2(0, -20)
+				Input.parse_input_event(d)
+			var up := InputEventScreenTouch.new()
+			up.index = 0
+			up.position = start - Vector2(0, 400)
+			up.pressed = false
+			Input.parse_input_event(up)
+			await get_tree().create_timer(0.5).timeout
+			print("SCROLL before=%d after=%d build_type=%s" % [before, sc.scroll_vertical, view.build_type])
 		"mode":
 			hud._close_sheet()
 			hud.open_mode_picker()
 		"tut1": pass
+		"tut_reactor":
+			hud.tutorial._show(1)
 		"tut2":
 			await get_tree().create_timer(4.0).timeout
 			Game.collect(Game.find_room_of_type("reactor"))
@@ -92,6 +154,15 @@ func _dev_screenshot() -> void:
 			hud._close_sheet()
 			await get_tree().create_timer(0.5).timeout
 			hud.more.open_trader()
+		"trader_ru":
+			Audio.set_language("ru")
+			Game._spawn_trader()
+			await get_tree().create_timer(0.3).timeout
+			hud.more.open_trader()
+		"trader_btn":
+			Audio.set_language("ru")
+			Game._spawn_trader()
+			await get_tree().create_timer(0.8).timeout
 		"gear":
 			Game.add_item("rare", "torch")
 			Game.add_item("legendary", "explorer_suit")
@@ -154,6 +225,9 @@ func _dev_screenshot() -> void:
 			hud._close_sheet()
 			Store.purchase("starter_pack")
 			hud.popup_bg.visible = false
+		"zoom3d":
+			camera.zoom = Vector2(2.0, 2.0)
+			camera.position = Vector2(560, 150)
 		"lab":
 			Game.pearls = 5000
 			Game.build("elevator", 5, 2)

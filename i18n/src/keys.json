@@ -421,5 +421,10 @@
 "%s has died. The colony mourns.",
 "Choose your challenge",
 "You can only change it by starting over.",
-"Recommended"
+"Recommended",
+"Trader",
+"No free space",
+"Build an Elevator below to open new floors.",
+"Build rooms next to the elevator first.",
+"You need %d more pearls."
 ]

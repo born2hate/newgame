@@ -421,3 +421,8 @@
 420|Choisis ton défi
 421|Tu ne peux le changer qu'en recommençant.
 422|Recommandé
+423|Marchand
+424|Pas de place libre
+425|Construis un ascenseur vers le bas pour ouvrir de nouveaux étages.
+426|Construis d'abord des salles à côté de l'ascenseur.
+427|Il te manque %d perles.

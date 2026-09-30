@@ -85,13 +85,16 @@ func screen_to_world(p: Vector2) -> Vector2:
 
 func colonist_world_pos(c: Dictionary) -> Vector2:
 	var rid: int = c.help if c.get("help", -1) != -1 else c.room
-	var room: Dictionary = Game.get_room(rid) if rid != -1 else Game.find_room_of_type("airlock")
+	var room: Dictionary = Game.get_room(rid) if rid >= 0 else Game.find_room_of_type("airlock")
+	if room.is_empty():
+		room = Game.find_room_of_type("airlock")
 	if room.is_empty():
 		return Vector2.ZERO
 	var rect := room_rect(room)
 	var w: Dictionary = walkers.get(c.id, {})
 	var x: float = w.get("x", 0.5)
-	return Vector2(rect.position.x + 22 + x * (rect.size.x - 44), rect.end.y - WALL - 2)
+	# стоят на середине пола диорамы, а не на переднем краю
+	return Vector2(rect.position.x + 22 + x * (rect.size.x - 44), rect.end.y - WALL - 2 - CELL_H * DEPTH * 0.45)
 
 func _update_walkers(delta: float) -> void:
 	var alive := {}
@@ -129,7 +132,8 @@ func _on_floating_text(room_id: int, text: String, color: Color) -> void:
 	if r.is_empty():
 		return
 	var rect := room_rect(r)
-	floaters.append({"pos": rect.get_center() - Vector2(0, 30), "text": text, "color": color, "life": 1.6})
+	var m := Art.split_marker(text)
+	floaters.append({"pos": rect.get_center() - Vector2(0, 30), "text": m[1], "icon": m[0], "color": color, "life": 1.6})
 
 # ---------------------------------------------------------------- отрисовка
 
@@ -193,7 +197,7 @@ func _draw_seabed_procedural() -> void:
 func _draw_rest(depth_rows: int) -> void:
 	_draw_depth_zones(depth_rows)
 	if build_type != "":
-		_draw_build_slots(depth_rows)
+		_draw_build_slots(Defs.MAX_DEPTH)
 	for r in Game.rooms:
 		_draw_room(r)
 	_draw_doors()
@@ -212,7 +216,14 @@ func _draw_rest(depth_rows: int) -> void:
 	_draw_trader()
 	for fl in floaters:
 		var a := clampf(fl.life, 0.0, 1.0)
-		_text(fl.pos, fl.text, 30, Color(fl.color, a), true)
+		var ic: Texture2D = Art.marker_icon(fl.get("icon", "")) if fl.get("icon", "") != "" else null
+		if ic:
+			var tw := font.get_string_size(fl.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 32).x
+			var x0: float = fl.pos.x - (tw + 40) / 2.0
+			draw_texture_rect(ic, Rect2(Vector2(x0, fl.pos.y - 30), Vector2(36, 36)), false, Color(1, 1, 1, a))
+			_text(Vector2(x0 + 40, fl.pos.y), fl.text, 32, Color(fl.color, a))
+		else:
+			_text(fl.pos, fl.text, 30, Color(fl.color, a), true)
 
 ## Питомец плавает восьмёркой перед отсеками верхних уровней.
 func _draw_pet() -> void:
@@ -352,7 +363,8 @@ func _try_pop_treasure(world: Vector2) -> bool:
 	for b in treasure:
 		if world.distance_to(b.p) < 44.0:
 			var r := Game.pop_bubble(b.rich)
-			floaters.append({"pos": b.p, "text": r.text, "color": r.color, "life": 1.4})
+			var m := Art.split_marker(r.text)
+			floaters.append({"pos": b.p, "text": m[1], "icon": m[0], "color": r.color, "life": 1.4})
 			treasure.erase(b)
 			return true
 	return false
@@ -440,10 +452,13 @@ func _draw_room(r: Dictionary) -> void:
 	draw_rect(inner, dark.lerp(col.darkened(0.55), 0.55 * light))
 	var art := Art.room(r.type)
 	if art:
+		# эффект диорамы: задняя стена смещается от камеры, между ней и рамкой — стены в перспективе
+		var back := _diorama_back(inner)
+		_draw_diorama_walls(inner, back, col, light)
 		var n: int = r.get("size", 1)
-		var seg_w := inner.size.x / n
+		var seg_w := back.size.x / n
 		for i in n:
-			var seg := Rect2(inner.position.x + seg_w * i, inner.position.y, seg_w, inner.size.y)
+			var seg := Rect2(back.position.x + seg_w * i, back.position.y, seg_w, back.size.y)
 			if i % 2 == 1:
 				draw_set_transform(Vector2(seg.end.x, seg.position.y), 0.0, Vector2(-1, 1))
 				draw_texture_rect(art, Rect2(Vector2.ZERO, seg.size), false, Color(light, light, light))
@@ -603,6 +618,48 @@ static func _short_time(sec: float) -> String:
 		return "%dh %02dm" % [s / 3600, (s % 3600) / 60]
 	return "%d:%02d" % [s / 60, s % 60]
 
+## Задняя стена отсека: чуть меньше рамки и сдвинута в сторону от центра экрана.
+const DEPTH := 0.13          # насколько «глубокая» комната
+const DEPTH_SHIFT := 0.08    # сила параллакса
+
+func _diorama_back(inner: Rect2) -> Rect2:
+	var cam := camera.get_screen_center_position() if camera else inner.get_center()
+	var off := (inner.get_center() - cam) * DEPTH_SHIFT
+	off.x = clampf(off.x, -inner.size.x * 0.12, inner.size.x * 0.12)
+	off.y = clampf(off.y, -inner.size.y * 0.14, inner.size.y * 0.14)
+	var shrink := Vector2(inner.size.x * DEPTH, inner.size.y * DEPTH * 1.4)
+	return Rect2(inner.position + shrink / 2.0 - off, inner.size - shrink)
+
+func _draw_diorama_walls(inner: Rect2, back: Rect2, col: Color, light: float) -> void:
+	var a := inner.position
+	var b := Vector2(inner.end.x, inner.position.y)
+	var c := inner.end
+	var d := Vector2(inner.position.x, inner.end.y)
+	var ba := back.position
+	var bb := Vector2(back.end.x, back.position.y)
+	var bc := back.end
+	var bd := Vector2(back.position.x, back.end.y)
+	var base := Color(0.16, 0.18, 0.22).lerp(col.darkened(0.6), 0.35)
+	var l := light
+	# потолок, пол, стены — разная освещённость даёт объём
+	draw_colored_polygon(PackedVector2Array([a, b, bb, ba]), Color(base.darkened(0.45), 1.0) * Color(l, l, l))
+	draw_colored_polygon(PackedVector2Array([d, bd, bc, c]), Color(base.lightened(0.12), 1.0) * Color(l, l, l))
+	draw_colored_polygon(PackedVector2Array([a, ba, bd, d]), Color(base.darkened(0.2), 1.0) * Color(l, l, l))
+	draw_colored_polygon(PackedVector2Array([b, c, bc, bb]), Color(base.darkened(0.3), 1.0) * Color(l, l, l))
+	# металлические панели пола и рёбра
+	for i in 1:
+		pass
+	var lines := Color(0, 0, 0, 0.35)
+	draw_line(a, ba, lines, 2.0)
+	draw_line(b, bb, lines, 2.0)
+	draw_line(c, bc, lines, 2.0)
+	draw_line(d, bd, lines, 2.0)
+	for k in range(1, 4):
+		var f := k / 4.0
+		draw_line(d.lerp(c, f), bd.lerp(bc, f), Color(0, 0, 0, 0.18), 1.5)
+	# свет от лампы на полу
+	draw_colored_polygon(PackedVector2Array([d.lerp(c, 0.25), d.lerp(c, 0.75), bd.lerp(bc, 0.7), bd.lerp(bc, 0.3)]), Color(col.lightened(0.4), 0.08 * l))
+
 func _star(c: Vector2, rad: float) -> void:
 	var pts := PackedVector2Array()
 	for i in 10:
@@ -725,6 +782,12 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 	draw_set_transform(feet + Vector2(0, bob), 0.0, Vector2(facing, 1.0))
 	draw_texture_rect(sprite, Rect2(Vector2(-size.x / 2.0, -size.y), size), false, tint)
 	draw_set_transform(Vector2.ZERO)
+	if c.room == -1 and c.get("help", -1) == -1 and not lifted:
+		# свободен — просит работу
+		var bp := feet + Vector2(0, -h - 20 + sin(t * 3.0 + c.id) * 3.0)
+		draw_circle(bp, 13, Color(1.0, 1.0, 1.0, 0.92))
+		draw_colored_polygon(PackedVector2Array([bp + Vector2(-5, 10), bp + Vector2(5, 10), bp + Vector2(0, 17)]), Color(1, 1, 1, 0.92))
+		_text(bp + Vector2(0, 7), "?", 20, Color(0.1, 0.3, 0.6), true)
 	if w.get("panic", false):
 		var ex := feet + Vector2(0, -h - 22 + sin(t * 10.0 + c.id) * 3.0)
 		draw_circle(ex, 11, Color(1.0, 0.85, 0.2))
@@ -791,7 +854,7 @@ func _on_press(p: Vector2) -> void:
 	if _try_pop_treasure(world):
 		moved = true
 		return
-	if not Game.trader.is_empty() and _trader_rect().grow(20).has_point(world):
+	if not Game.trader.is_empty() and _trader_rect().grow(50).has_point(world):
 		moved = true
 		trader_tapped.emit()
 		return
@@ -857,6 +920,12 @@ func _clamp_camera() -> void:
 	var bottom := (maxi(Game.max_row() + 3, 5)) * CELL_H
 	camera.position.x = clampf(camera.position.x, -200, Defs.GRID_COLS * CELL_W + 200)
 	camera.position.y = clampf(camera.position.y, -500, bottom)
+
+func focus_cell(cell: Vector2i, w: int) -> void:
+	var target := Vector2((cell.x + w / 2.0) * CELL_W, (cell.y + 0.5) * CELL_H + 80)
+	target.x = clampf(target.x, 300, Defs.GRID_COLS * CELL_W - 300)
+	var tw := create_tween()
+	tw.tween_property(camera, "position", target, 0.4).set_trans(Tween.TRANS_SINE)
 
 func focus_room(r: Dictionary) -> void:
 	var target := room_rect(r).get_center() + Vector2(0, 120)

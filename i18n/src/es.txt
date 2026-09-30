@@ -422,3 +422,8 @@
 420|Elige tu desafío
 421|Solo puedes cambiarlo empezando de nuevo.
 422|Recomendado
+423|Mercader
+424|No hay espacio libre
+425|Construye un ascensor hacia abajo para abrir nuevos pisos.
+426|Primero construye salas junto al ascensor.
+427|Necesitas %d perlas más.

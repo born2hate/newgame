@@ -421,3 +421,8 @@
 420|Scegli la tua sfida
 421|Puoi cambiarla solo ricominciando.
 422|Consigliata
+423|Mercante
+424|Nessuno spazio libero
+425|Costruisci un ascensore verso il basso per aprire nuovi piani.
+426|Prima costruisci stanze accanto all'ascensore.
+427|Ti servono altre %d perle.

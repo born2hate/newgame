@@ -421,3 +421,8 @@
 420|Zorluğunu seç
 421|Yalnızca baştan başlayarak değiştirebilirsin.
 422|Önerilen
+423|Tüccar
+424|Boş yer yok
+425|Yeni katlar açmak için aşağı doğru asansör inşa et.
+426|Önce asansörün yanına oda inşa et.
+427|%d inci daha gerekli.

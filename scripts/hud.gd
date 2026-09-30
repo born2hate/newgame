@@ -46,6 +46,7 @@ func _ready() -> void:
 	_build_toast()
 	Game.changed.connect(_on_changed)
 	Game.message.connect(show_toast)
+	Game.banner.connect(show_banner)
 	view.room_selected.connect(_on_room_selected)
 	view.build_finished.connect(_on_build_finished)
 	view.colonist_selected.connect(_open_colonist)
@@ -56,6 +57,7 @@ func _ready() -> void:
 	more.hud = self
 	add_child(more)
 	view.trader_tapped.connect(func(): more.open_trader())
+	_build_trader_button()
 	_build_popup()
 	_build_ad_overlay()
 	_refresh_top()
@@ -278,7 +280,26 @@ func _button(text: String, cb: Callable, min_h := 72) -> Button:
 	b.pressed.connect(func(): Audio.play("tap"))
 	b.pressed.connect(cb)
 	_auto_style(b, text)
+	set_cost_text(b, text)
 	return b
+
+## Значки валют в тексте кнопки заменяем настоящими иконками: ◉ жемчуг, ◆ кристаллы, ⚗ наука.
+const CURRENCY_GLYPHS := {"◉": "res://art/icons/pearls.png", "◆": "res://art/icons/crystals.png", "⚗": "res://art/icons/science.png"}
+
+func set_cost_text(b: Button, text: String) -> void:
+	for g in CURRENCY_GLYPHS:
+		if g in text:
+			var tex := Art.tex(CURRENCY_GLYPHS[g])
+			if tex:
+				b.icon = tex
+				b.expand_icon = true
+				b.add_theme_constant_override("icon_max_width", 30)
+				b.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
+				b.vertical_icon_alignment = VERTICAL_ALIGNMENT_CENTER
+				b.alignment = HORIZONTAL_ALIGNMENT_CENTER
+				text = text.replace(g + " ", "").replace(g, "").strip_edges()
+			break
+	b.text = text
 
 # ---------------------------------------------------------------- верхняя панель
 
@@ -375,6 +396,10 @@ func _refresh_top() -> void:
 	science_label.text = str(Game.science)
 	pop_label.text = "%d/%d" % [Game.colonists.size(), Game.population_cap()]
 	boost_label.text = tr("x2 %s") % _clock(Game.boost_left()) if Game.boost_active() else ""
+	if trader_btn:
+		trader_btn.visible = not Game.trader.is_empty() and not sheet.visible
+		if trader_btn.visible:
+			trader_btn.text = "%s %s" % [tr("Trader"), _clock(float(Game.trader.until) - Game.now())]
 	if tasks_badge:
 		tasks_badge.visible = Game.quests_ready() > 0 or Game.season_claimable() > 0 or Game.story_ready() or Game.achievements_ready() > 0
 		tasks_badge.queue_redraw()
@@ -421,6 +446,23 @@ func _build_bottom_bar() -> void:
 				shop_badge.draw_arc(Vector2.ZERO, 11 * pulse, 0, TAU, 20, Color.WHITE, 2.0))
 			b.add_child(shop_badge)
 
+# кнопка торговца: видна, пока торговец у шлюза
+var trader_btn: Button
+
+func _build_trader_button() -> void:
+	trader_btn = _button("", func(): more.open_trader(), 64)
+	_green(trader_btn)
+	trader_btn.icon = Art.tex("res://art/creatures/trader_sub.png")
+	trader_btn.expand_icon = true
+	trader_btn.add_theme_constant_override("icon_max_width", 90)
+	trader_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	trader_btn.offset_left = -300
+	trader_btn.offset_right = -16
+	trader_btn.offset_top = 270
+	trader_btn.offset_bottom = 334
+	trader_btn.visible = false
+	root.add_child(trader_btn)
+
 func _collect_all() -> void:
 	var n := Game.collect_all()
 	show_toast(tr("Collected from %d rooms") % n if n > 0 else tr("Nothing to collect yet"))
@@ -455,6 +497,22 @@ func _build_sheet() -> void:
 	sheet_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	sheet_body.add_theme_constant_override("separation", 12)
 	pad.add_child(sheet_body)
+	get_tree().node_added.connect(_on_node_added)
+
+## Чтобы список прокручивался пальцем, элементы внутри панели не должны «съедать» касание.
+func _on_node_added(n: Node) -> void:
+	if not (n is Control and sheet and sheet.is_ancestor_of(n)) or n is ScrollBar:
+		return
+	var c := n as Control
+	if c.mouse_filter == Control.MOUSE_FILTER_STOP:
+		c.mouse_filter = Control.MOUSE_FILTER_PASS
+	# длинные тексты (особенно в переводах) переносим, а не выталкиваем кнопки за край
+	var expands := (c.size_flags_horizontal & Control.SIZE_EXPAND) != 0
+	if c is Label and (expands or c.get_parent() is VBoxContainer):
+		var l := c as Label
+		if l.autowrap_mode == TextServer.AUTOWRAP_OFF:
+			l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+
 
 func _open_sheet(kind: String, height := 560) -> void:
 	sheet_kind = kind
@@ -528,7 +586,8 @@ func _open_build() -> void:
 		var b: Button
 		if Game.is_unlocked(type):
 			b = _button("◉ %d" % cost, _start_build.bind(type), 64)
-			b.disabled = Game.pearls < cost
+			if Game.pearls < cost:
+				b.modulate = Color(1, 1, 1, 0.55)
 		else:
 			b = _button(tr("Needs %d colonists") % def.unlock_pop, func(): pass, 64)
 			b.disabled = true
@@ -538,7 +597,17 @@ func _open_build() -> void:
 
 func _start_build(type: String) -> void:
 	_close_sheet()
+	var need := Game.build_cost(type) - Game.pearls
+	if need > 0:
+		show_banner("pearls", tr("Not enough pearls"), tr("You need %d more pearls.") % need)
+		Audio.play("error")
+		return
+	var spots := Game.build_spots(type)
+	if spots.is_empty():
+		show_banner("build", tr("No free space"), tr("Build an Elevator below to open new floors.") if type != "elevator" else tr("Build rooms next to the elevator first."))
+		return
 	view.build_type = type
+	view.focus_cell(spots[0], Defs.room_width(type))
 	build_hint_label.text = tr("Where to place %s?") % tr(Defs.ROOMS[type].name)
 	build_hint.visible = true
 	bottom_bar.visible = false
@@ -709,7 +778,7 @@ func _refresh_room_live() -> void:
 	if room_live_labels.has("safe"):
 		var sb: Button = room_live_labels.safe
 		var cost := Game.safe_rush_cost(r)
-		sb.text = tr("Finish now, no risk: ◆ %d") % maxi(cost, 0)
+		set_cost_text(sb, tr("Finish now, no risk: ◆ %d") % maxi(cost, 0))
 		sb.disabled = cost < 0 or r.ready or r.incident > 0.0
 		sb.visible = Game.crystal_rush_allowed()
 
@@ -971,6 +1040,68 @@ func _build_toast() -> void:
 	toast.modulate.a = 0.0
 	root.add_child(toast)
 
+# ---------------------------------------------------------------- баннеры
+
+var banner_queue: Array = []
+var banner_node: PanelContainer
+var banner_busy := false
+
+func show_banner(icon: String, title: String, text: String) -> void:
+	banner_queue.append([icon, title.strip_edges().trim_suffix(":"), text])
+	if not banner_busy:
+		_next_banner()
+
+func _next_banner() -> void:
+	if banner_queue.is_empty():
+		banner_busy = false
+		return
+	banner_busy = true
+	var b: Array = banner_queue.pop_front()
+	if banner_node:
+		banner_node.queue_free()
+	banner_node = PanelContainer.new()
+	banner_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var st := _box(Color(0.12, 0.08, 0.02, 0.96), Color(1.0, 0.8, 0.3), 22, 4)
+	st.shadow_size = 12
+	st.content_margin_left = 16
+	banner_node.add_theme_stylebox_override("panel", st)
+	banner_node.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	banner_node.offset_left = 24
+	banner_node.offset_right = -24
+	root.add_child(banner_node)
+	var hb := HBoxContainer.new()
+	hb.add_theme_constant_override("separation", 14)
+	banner_node.add_child(hb)
+	var tex := Art.marker_icon(b[0])
+	if tex:
+		var ic := TextureRect.new()
+		ic.texture = tex
+		ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		ic.custom_minimum_size = Vector2(76, 76)
+		hb.add_child(ic)
+	var vb := VBoxContainer.new()
+	vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vb.alignment = BoxContainer.ALIGNMENT_CENTER
+	var t := _label(b[1], 28, Color(1.0, 0.86, 0.35))
+	t.add_theme_constant_override("outline_size", 7)
+	t.add_theme_color_override("font_outline_color", Color(0.3, 0.12, 0.0))
+	vb.add_child(t)
+	if b[2] != "":
+		var d := _label(b[2], 20, Color(1, 0.97, 0.9))
+		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(d)
+	hb.add_child(vb)
+	# выезжает сверху, подпрыгивает, держится и уезжает
+	banner_node.offset_top = -160
+	banner_node.offset_bottom = -160
+	var tw := create_tween()
+	tw.tween_property(banner_node, "offset_top", 150.0, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.parallel().tween_property(banner_node, "offset_bottom", 150.0, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_interval(2.2)
+	tw.tween_property(banner_node, "modulate:a", 0.0, 0.3)
+	tw.tween_callback(_next_banner)
+
 func show_toast(text: String) -> void:
 	toast.text = text
 	toast_time = 3.0
@@ -1027,7 +1158,11 @@ func _open_shop() -> void:
 	var dinfo := VBoxContainer.new()
 	dinfo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	dinfo.add_child(_label(tr("Daily reward"), 24))
-	dinfo.add_child(_label(tr("Day %d: %s") % [Game.daily_next_index() + 1, _reward_text(Defs.DAILY[Game.daily_next_index()])], 18, Color(0.9, 0.85, 0.7)))
+	var drow := HBoxContainer.new()
+	drow.add_theme_constant_override("separation", 8)
+	drow.add_child(_label(tr("Day %d") % (Game.daily_next_index() + 1) + ":", 18, Color(0.9, 0.85, 0.7)))
+	drow.add_child(_reward_chips(Defs.DAILY[Game.daily_next_index()], 28, 18))
+	dinfo.add_child(drow)
 	daily.add_child(dinfo)
 	var db := _button(tr("Claim") if Game.daily_available() else tr("Tomorrow"), func():
 		Game.claim_daily()
@@ -1228,6 +1363,54 @@ func _kind_name(kind: String) -> String:
 		"colonist_legendary": return tr("Legendary colonist")
 	return kind
 
+## Награда как список [иконка, короткий текст].
+func _reward_items(r: Dictionary) -> Array:
+	var out := []
+	if r.has("pearls"): out.append(["pearls", str(r.pearls)])
+	if r.has("crystals"): out.append(["crystals", str(r.crystals)])
+	for k in r.get("crates", {}):
+		out.append(["crate_" + k, "×%d" % r.crates[k]])
+	if r.has("colonist"): out.append(["colonist" if r.colonist != "legendary" else "captain", tr(r.colonist.capitalize())])
+	if r.has("item"): out.append(["item_diving_armor", tr(r.item.capitalize())])
+	return out
+
+## Награда картинками: [иконка] 100  [иконка] ×1
+func _reward_chips(r: Dictionary, size := 30, font := 18, center := false) -> HBoxContainer:
+	var hb := HBoxContainer.new()
+	hb.add_theme_constant_override("separation", 6)
+	hb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if center:
+		hb.alignment = BoxContainer.ALIGNMENT_CENTER
+	for it in _reward_items(r):
+		var tex := Art.marker_icon(it[0])
+		if tex:
+			var t := TextureRect.new()
+			t.texture = tex
+			t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			t.custom_minimum_size = Vector2(size, size)
+			t.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			hb.add_child(t)
+		var l := _label(it[1], font)
+		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		hb.add_child(l)
+	return hb
+
+## Кнопка с наградой: иконка первой награды + короткий текст всех.
+func _reward_button(b: Button, r: Dictionary, prefix := "") -> void:
+	var items := _reward_items(r)
+	if items.is_empty():
+		return
+	var tex := Art.marker_icon(items[0][0])
+	if tex:
+		b.icon = tex
+		b.expand_icon = true
+		b.add_theme_constant_override("icon_max_width", 34)
+	var parts := []
+	for i in items.size():
+		parts.append(items[i][1] if i == 0 else tr(items[i][1]) if not items[i][0].begins_with("crate_") else tr(Defs.CRATES[items[i][0].trim_prefix("crate_")].name))
+	b.text = prefix + "  ".join(parts)
+
 func _reward_text(r: Dictionary) -> String:
 	var parts := []
 	if r.has("pearls"): parts.append(tr("%d pearls") % r.pearls)
@@ -1282,10 +1465,12 @@ func _open_daily() -> void:
 		var t := _label(tr("Day %d") % (i + 1), 18, Color(1.0, 0.9, 0.6) if i == next else Color(0.8, 0.85, 0.9))
 		t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vb.add_child(t)
-		var rw := _label(("✓ " if i < next else "") + _reward_text(Defs.DAILY[i]), 15)
-		rw.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		rw.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		vb.add_child(rw)
+		var chips := _reward_chips(Defs.DAILY[i], 40, 18, true)
+		if i < next:
+			chips.modulate = Color(1, 1, 1, 0.45)
+			var ok := _label("✓", 18, Color(0.5, 1.0, 0.6))
+			chips.add_child(ok)
+		vb.add_child(chips)
 		grid.add_child(cell)
 	sheet_body.add_child(_with_icon(_button(tr("Claim"), func():
 		Game.claim_daily()
@@ -1329,10 +1514,26 @@ func _show_rewards(title: String, lines: Array) -> void:
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vb.add_child(t)
 	for line in lines:
-		var l := _label(line, 24)
-		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		var m := Art.split_marker(line)
+		var row := HBoxContainer.new()
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_theme_constant_override("separation", 12)
+		var ic := Art.marker_icon(m[0]) if m[0] != "" else null
+		if ic:
+			var tr_ := TextureRect.new()
+			tr_.texture = ic
+			tr_.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			tr_.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			tr_.custom_minimum_size = Vector2(52, 52)
+			row.add_child(tr_)
+		var l := _label(m[1], 24)
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		vb.add_child(l)
+		l.custom_minimum_size.x = 0
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL if ic == null else Control.SIZE_SHRINK_BEGIN
+		if ic == null:
+			l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		row.add_child(l)
+		vb.add_child(row)
 	vb.add_child(_button(tr("Great!"), func(): popup_bg.visible = false, 68))
 	popup_bg.visible = true
 	popup.scale = Vector2(0.6, 0.6)
@@ -1430,7 +1631,7 @@ func _refresh_dock_live(_r: Dictionary) -> void:
 	d.fin.visible = not done and Game.crystal_rush_allowed()
 	d.ad.visible = not done
 	d.claim.visible = done
-	d.fin.text = tr("Finish ◆ %d") % Game.finish_cost(e) if not done else ""
+	set_cost_text(d.fin, tr("Finish ◆ %d") % Game.finish_cost(e) if not done else "")
 	var lines := Game.visible_log(e)
 	if lines.size() != d.shown:
 		d.shown = lines.size()
@@ -1545,7 +1746,12 @@ func _open_tasks() -> void:
 		pb.max_value = q.target
 		pb.value = q.progress
 		info.add_child(pb)
-		info.add_child(_label("%d/%d · %s · +%d %s" % [q.progress, q.target, _reward_text(q.reward), q.xp, tr("season XP")], 16, Color(0.75, 0.85, 0.95)))
+		var qrow := HBoxContainer.new()
+		qrow.add_theme_constant_override("separation", 10)
+		qrow.add_child(_label("%d/%d" % [q.progress, q.target], 16, Color(0.75, 0.85, 0.95)))
+		qrow.add_child(_reward_chips(q.reward, 26, 16))
+		qrow.add_child(_label("+%d %s" % [q.xp, tr("season XP")], 16, Color(0.75, 0.85, 0.95)))
+		info.add_child(qrow)
 		row.add_child(info)
 		var b := _button(tr("Done") if q.claimed else tr("Claim"), func():
 			Game.claim_quest(q)
@@ -1599,14 +1805,10 @@ func _open_tasks() -> void:
 			var claimed: bool = i in (Game.season_claimed_premium if prem else Game.season_claimed_free)
 			var reached := i < tier
 			var locked: bool = prem and not Game.season_pass
-			var txt := _reward_text_full(Defs.SEASON_TIERS[i]["premium" if prem else "free"])
-			if claimed:
-				txt = "✓ " + txt
-			elif locked:
-				txt = "🔒 " + txt
-			var b := _button(txt, func():
+			var b := _button("", func():
 				Game.claim_season(i, prem)
 				_open_tasks(), 62)
+			_reward_button(b, Defs.SEASON_TIERS[i]["premium" if prem else "free"], "✓ " if claimed else ("🔒 " if locked else ""))
 			b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			b.add_theme_font_size_override("font_size", 17)
 			b.disabled = claimed or not reached or locked
