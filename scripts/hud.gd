@@ -323,6 +323,7 @@ func set_cost_text(b: Button, text: String) -> void:
 # ---------------------------------------------------------------- верхняя панель
 
 var top_panel: PanelContainer
+var build_cards := {}
 
 func _build_top_bar() -> void:
 	var panel := PanelContainer.new()
@@ -579,11 +580,13 @@ func _header(title: String) -> void:
 func _open_build() -> void:
 	_open_sheet("build", 620)
 	_header(tr("Build"))
+	build_cards = {}
 	for type in Defs.ROOMS:
 		var def: Dictionary = Defs.ROOMS[type]
 		if not def.buildable:
 			continue
 		var card := PanelContainer.new()
+		build_cards[type] = card
 		card.add_theme_stylebox_override("panel", _box(Color(def.color.darkened(0.75), 0.9), Color(def.color, 0.6), 14))
 		var hb := HBoxContainer.new()
 		hb.add_theme_constant_override("separation", 12)

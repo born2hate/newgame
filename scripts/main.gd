@@ -136,6 +136,13 @@ func _dev_screenshot() -> void:
 		"tut_top":
 			hud.root.offset_top = 90
 			hud.tutorial._show(2)
+		"tut_card":
+			hud._open_build()
+			hud.tutorial._show(4)
+		"tut_slot":
+			hud.tutorial._show(5)
+			hud._start_build("living")
+			await get_tree().create_timer(0.6).timeout
 		"tut_reactor":
 			hud.tutorial._show(1)
 		"tut2":

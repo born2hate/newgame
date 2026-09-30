@@ -17,8 +17,8 @@ const STEPS := [
 	{"text": "The reactor has produced energy. Tap the reactor to collect it!", "target": "room:reactor", "wait": "event:collect_energy"},
 	{"text": "Great! Keep an eye on energy, oxygen and food up here. If they run out, colonists get hurt.", "target": "top", "wait": "next"},
 	{"text": "We need room for new survivors. Tap Build.", "target": "button:0", "wait": "sheet:build"},
-	{"text": "Choose Living Quarters from the list.", "target": "", "wait": "build_mode"},
-	{"text": "Tap a glowing green slot to build it there.", "target": "", "wait": "event:build"},
+	{"text": "Choose Living Quarters from the list.", "target": "card:living", "wait": "build_mode"},
+	{"text": "Tap a glowing green slot to build it there.", "target": "slot", "wait": "event:build"},
 	{"text": "One colonist is idle in the airlock. Drag them with your finger into a room with free slots, like the Algae Farm.", "target": "drag", "wait": "event:assign"},
 	{"text": "Tap any colonist to see their skills, level and gear.", "target": "", "wait": "sheet:colonist"},
 	{"text": "Colonists level up while working. Put strong ones in the Reactor, techies in the O₂ Generator, biologists on the Farm.", "target": "", "wait": "next"},
@@ -150,6 +150,20 @@ func _target_rect() -> Rect2:
 	if step < 0 or step >= STEPS.size():
 		return Rect2()
 	var target: String = STEPS[step].target
+	if target.begins_with("card:"):
+		var card: Control = hud.build_cards.get(target.trim_prefix("card:"))
+		if card and is_instance_valid(card) and card.is_visible_in_tree():
+			return card.get_global_rect().grow(4)
+		return Rect2()
+	if target == "slot" and view.build_type != "":
+		var spots := Game.build_spots(view.build_type)
+		if spots.is_empty():
+			return Rect2()
+		var cell: Vector2i = spots[0]
+		var w := Defs.room_width(view.build_type)
+		var wr := Rect2(cell.x * view.CELL_W, cell.y * view.CELL_H, w * view.CELL_W, view.CELL_H)
+		var xf: Transform2D = view.get_viewport().get_canvas_transform()
+		return Rect2(xf * wr.position, xf.basis_xform(wr.size)).grow(4)
 	if target == "drag":
 		var path := _drag_path()
 		return path[2].grow(6) if not path.is_empty() else Rect2()
