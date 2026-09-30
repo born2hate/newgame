@@ -428,3 +428,7 @@
 427|Butuh %d mutiara lagi.
 428|Untuk keluar, bangun Dermaga Kapal Selam. Dari sana awak berangkat ekspedisi.
 429|Bangun Dermaga
+430|Perhatian: tidak ada yang tinggal di markas! Ruangan akan berhenti sampai awak kembali.
+431|Kolonis gugur
+432|Koloni hilang
+433|Semua telah meninggal. Di mode Bertahan Hidup ini akhir — tapi setiap koloni memberi pelajaran. Coba lagi?

@@ -428,3 +428,7 @@
 427|Faltam %d pérolas.
 428|Para sair, construa uma doca do batiscafo. Dela as tripulações partem em expedições.
 429|Construir doca
+430|Atenção: ninguém ficará na base! As salas vão parar até a tripulação voltar.
+431|Colono perdido
+432|A colônia foi perdida
+433|Todos morreram. No Sobrevivência é o fim, mas toda colônia ensina algo. Tentar de novo?

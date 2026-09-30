@@ -428,5 +428,9 @@
 "Build rooms next to the elevator first.",
 "You need %d more pearls.",
 "To go outside, build a Sub Dock. Crews sail from it on expeditions for loot.",
-"Build a Sub Dock"
+"Build a Sub Dock",
+"Warning: nobody will stay at the base! Rooms will stop working until the crew returns.",
+"Colonist lost",
+"The colony is lost",
+"Everyone has died. In Survival mode that is the end — but every colony teaches something. Try again?"
 ]

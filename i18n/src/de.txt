@@ -428,3 +428,7 @@
 427|Dir fehlen noch %d Perlen.
 428|Um nach draußen zu gehen, baue ein U-Boot-Dock. Von dort starten Crews auf Expeditionen.
 429|U-Boot-Dock bauen
+430|Achtung: Niemand bleibt in der Basis! Die Räume stehen still, bis die Crew zurück ist.
+431|Kolonist verloren
+432|Die Kolonie ist verloren
+433|Alle sind gestorben. Im Überlebensmodus ist das das Ende – aber jede Kolonie lehrt etwas. Nochmal?

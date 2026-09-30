@@ -282,6 +282,10 @@ func _initialize() -> void:
 		sv.resources.oxygen = 0.0
 		sv.simulate(1.0, false)
 	check(sv.colonists.size() == n0 - 1, "выживание: колонист погибает")
+	sv.colonists = [sv.colonists[0]]
+	sv.colonists[0].health = 0.0
+	sv.simulate(1.0, false)
+	check(sv.colony_lost, "выживание: колония потеряна, когда погибли все")
 	var cm = load("res://scripts/game_state.gd").new()
 	cm.new_game()
 	cm.set_difficulty("calm")

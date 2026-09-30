@@ -47,6 +47,7 @@ func _ready() -> void:
 	Game.changed.connect(_on_changed)
 	Game.message.connect(show_toast)
 	Game.banner.connect(show_banner)
+	Game.lost.connect(_on_colony_lost)
 	view.room_selected.connect(_on_room_selected)
 	view.build_finished.connect(_on_build_finished)
 	view.colonist_selected.connect(_open_colonist)
@@ -59,12 +60,15 @@ func _ready() -> void:
 	view.trader_tapped.connect(func(): more.open_trader())
 	view.outside_tapped.connect(open_outside)
 	_build_trader_button()
+	_build_expedition_button()
 	_build_popup()
 	_build_ad_overlay()
 	_refresh_top()
 	apply_safe_area()
 	get_viewport().size_changed.connect(apply_safe_area)
-	if not Game.mode_chosen:
+	if Game.mode().permadeath and Game.colonists.is_empty():
+		_on_colony_lost.call_deferred()
+	elif not Game.mode_chosen:
 		open_mode_picker.call_deferred()
 	elif not Game.tutorial_done:
 		start_tutorial.call_deferred()
@@ -462,6 +466,7 @@ func _refresh_top() -> void:
 	science_label.text = str(Game.science)
 	pop_label.text = "%d/%d" % [Game.colonists.size(), Game.population_cap()]
 	boost_label.text = tr("x2 %s") % _clock(Game.boost_left()) if Game.boost_active() else ""
+	_refresh_expedition_button()
 	if trader_btn:
 		trader_btn.visible = not Game.trader.is_empty() and not sheet.visible
 		if trader_btn.visible:
@@ -528,6 +533,48 @@ func _build_trader_button() -> void:
 	trader_btn.offset_bottom = 334
 	trader_btn.visible = false
 	root.add_child(trader_btn)
+
+# кнопка экспедиции: видна, пока экипаж в море или ждёт с добычей
+var exp_btn: Button
+
+func _build_expedition_button() -> void:
+	exp_btn = _button("", func():
+		if Game.expeditions.is_empty():
+			return
+		var e: Dictionary = Game.expeditions[0]
+		if Game.expedition_done(e):
+			Game.claim_expedition(e)
+		else:
+			_open_room(e.dock), 64)
+	exp_btn.icon = Art.tex("res://art/creatures/bathyscaphe.png")
+	exp_btn.expand_icon = true
+	exp_btn.add_theme_constant_override("icon_max_width", 70)
+	exp_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	exp_btn.offset_left = -330
+	exp_btn.offset_right = -16
+	exp_btn.offset_top = 344
+	exp_btn.offset_bottom = 408
+	exp_btn.visible = false
+	root.add_child(exp_btn)
+
+func _refresh_expedition_button() -> void:
+	if exp_btn == null:
+		return
+	exp_btn.visible = not Game.expeditions.is_empty() and not sheet.visible
+	if not exp_btn.visible:
+		return
+	var e: Dictionary = Game.expeditions[0]
+	if Game.expedition_done(e):
+		exp_btn.text = tr("Collect loot!")
+		_gold(exp_btn)
+		exp_btn.scale = Vector2.ONE * (1.0 + 0.04 * sin(Time.get_ticks_msec() / 150.0))
+	else:
+		exp_btn.text = "%s %s" % [tr(Defs.ZONES[e.zone].name), _clock(float(e.end) - Game.now())]
+		exp_btn.scale = Vector2.ONE
+	exp_btn.pivot_offset = exp_btn.size / 2.0
+	# если торговца нет — поднимаемся на его место
+	exp_btn.offset_top = 344 if (trader_btn and trader_btn.visible) else 270
+	exp_btn.offset_bottom = exp_btn.offset_top + 64
 
 func _collect_all() -> void:
 	var n := Game.collect_all()
@@ -1198,7 +1245,25 @@ func _next_banner() -> void:
 	tw.tween_property(banner_node, "modulate:a", 0.0, 0.3)
 	tw.tween_callback(_next_banner)
 
-func show_toast(text: String) -> void:
+func _on_colony_lost() -> void:
+	for ch in popup.get_children():
+		ch.queue_free()
+	var vb := VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 14)
+	popup.add_child(vb)
+	var t := _label(tr("The colony is lost"), 32, Color(1.0, 0.5, 0.45))
+	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vb.add_child(t)
+	var d := _label(tr("Everyone has died. In Survival mode that is the end — but every colony teaches something. Try again?"), 20)
+	d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	d.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	d.custom_minimum_size.x = 480
+	vb.add_child(d)
+	vb.add_child(_gold(_button(tr("Start over"), func():
+		popup_bg.visible = false
+		Game.reset()
+		open_mode_picker(), 70)))
+	popup_bg.visible = true
 	toast.text = text
 	toast_time = 3.0
 
@@ -1833,6 +1898,11 @@ func _open_planner(dock_id: int, zone_idx: int) -> void:
 	var summary := tr("Crew power: %d / %d recommended") % [int(Game.crew_power(plan_crew)), Defs.ZONES[plan_zone].power]
 	var col := Color(0.5, 1.0, 0.6) if chance >= 1.0 else (Color(1.0, 0.85, 0.4) if chance >= 0.7 else Color(1.0, 0.5, 0.5))
 	sheet_body.add_child(_label(summary, 20, col))
+	var left := Game.colonists.filter(func(c): return c.room != Game.ON_EXPEDITION and not c.id in plan_crew).size()
+	if not plan_crew.is_empty() and left == 0:
+		var wl := _label(tr("Warning: nobody will stay at the base! Rooms will stop working until the crew returns."), 18, Color(1.0, 0.5, 0.45))
+		wl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		sheet_body.add_child(wl)
 	var go := _button(tr("Launch the bathyscaphe!"), func():
 		if plan_crew.is_empty():
 			return

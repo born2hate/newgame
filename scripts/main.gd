@@ -299,6 +299,12 @@ func _dev_screenshot() -> void:
 			view.drag_colonist = Game.colonists[3].id
 			view.drag_pos = Vector2(620, 180)
 			await get_tree().create_timer(0.3).timeout
+		"expbtn":
+			Audio.set_language("ru")
+			hud._close_sheet()
+			var dk := Game._add_room("dock", 3, 1)
+			Game.launch_expedition(dk.id, 0, [Game.colonists[0].id])
+			await get_tree().create_timer(0.5).timeout
 		"zoom3d":
 			camera.zoom = Vector2(2.0, 2.0)
 			camera.position = Vector2(560, 150)

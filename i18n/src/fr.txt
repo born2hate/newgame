@@ -428,3 +428,7 @@
 427|Il te manque %d perles.
 428|Pour sortir, construis un dock de bathyscaphe. Les équipages en partent en expédition.
 429|Construire le dock
+430|Attention : personne ne restera à la base ! Les salles s'arrêteront jusqu'au retour de l'équipage.
+431|Colon perdu
+432|La colonie est perdue
+433|Tout le monde est mort. En Survie, c'est la fin — mais chaque colonie apprend quelque chose. On recommence ?

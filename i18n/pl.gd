@@ -434,6 +434,10 @@ const T := {
 	"You need %d more pearls.": "Brakuje jeszcze %d pereł.",
 	"To go outside, build a Sub Dock. Crews sail from it on expeditions for loot.": "Aby wyjść na zewnątrz, zbuduj dok batyskafu. Z niego załogi ruszają na wyprawy.",
 	"Build a Sub Dock": "Zbuduj dok",
+	"Warning: nobody will stay at the base! Rooms will stop working until the crew returns.": "Uwaga: w bazie nikt nie zostanie! Pomieszczenia staną do powrotu załogi.",
+	"Colonist lost": "Kolonista zginął",
+	"The colony is lost": "Kolonia upadła",
+	"Everyone has died. In Survival mode that is the end — but every colony teaches something. Try again?": "Wszyscy zginęli. W Przetrwaniu to koniec — ale każda kolonia czegoś uczy. Jeszcze raz?",
 }
 
 static func make() -> Translation:

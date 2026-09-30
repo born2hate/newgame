@@ -266,6 +266,9 @@ func room_power(room: Dictionary) -> float:
 func cycle_time(room: Dictionary) -> float:
 	var def: Dictionary = Defs.ROOMS[room.type]
 	var power := room_power(room)
+	# аварийный режим: без людей и без энергии реактор всё равно медленно работает
+	if power <= 0.0 and room.type == "reactor" and resources.get("energy", 0.0) < 10.0:
+		power = 2.0
 	if power <= 0.0:
 		return INF
 	return def.cycle * PACE / (power / 5.0)
@@ -334,7 +337,7 @@ func simulate(delta: float, offline: bool) -> void:
 	var xp_mult := 1.5 if has_research("training_programs") else 1.0
 	for c in colonists:
 		if starving and not offline and mode().hunger:
-			c.health = maxf(health_floor(), c.health - 1.5 * delta * mode().damage)
+			c.health = maxf(health_floor(), c.health - 0.35 * delta * mode().damage)
 		elif not starving:
 			c.health = minf(100.0, c.health + heal_rate * delta)
 		if c.room >= 0:
@@ -365,10 +368,14 @@ func simulate(delta: float, offline: bool) -> void:
 
 	# новые колонисты
 	if colonists.size() < population_cap():
-		arrival_timer += delta
+		# если на базе никого не осталось — помощь приходит быстрее
+		var at_base := colonists.filter(func(c): return c.room != ON_EXPEDITION).size()
+		arrival_timer += delta * (4.0 if at_base == 0 else (2.0 if at_base <= 2 else 1.0))
 		if arrival_timer >= ARRIVAL_INTERVAL:
 			arrival_timer = 0.0
 			var c := _make_colonist()
+			for k in ["oxygen", "food", "energy"]:
+				resources[k] = minf(storage_cap(), resources[k] + 25.0)
 			if has_research("legendary_signal") and rng.randf() < 0.1:
 				for k in ["str", "tech", "bio"]:
 					c[k] = rng.randi_range(4, 7)
@@ -948,6 +955,8 @@ var trader := {}
 var trader_timer := 300.0
 var tutorial_done := false
 var difficulty := "normal"
+var colony_lost := false
+signal lost
 var mode_chosen := true
 
 func can_have_hazard(room: Dictionary) -> bool:
@@ -1625,9 +1634,12 @@ func _check_deaths() -> void:
 		if c.health <= 0.0 and c.room != ON_EXPEDITION:
 			colonists.erase(c)
 			stats["deaths"] = stats.get("deaths", 0) + 1
-			message.emit(tr("%s has died. The colony mourns.") % c.name)
+			banner.emit("suit_%d" % c.suit, tr("Colonist lost"), tr("%s has died. The colony mourns.") % c.name)
 			event.emit("breach")
 			changed.emit()
+	if colonists.is_empty() and not colony_lost:
+		colony_lost = true
+		lost.emit()
 
 ## Колонисты, чей отсек исчез, возвращаются в шлюз.
 func _fix_orphans() -> void:
@@ -1638,6 +1650,7 @@ func _fix_orphans() -> void:
 			c.help = -1
 
 func reset() -> void:
+	colony_lost = false
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
 	new_game()
 

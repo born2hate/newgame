@@ -428,3 +428,7 @@
 427|Ti servono altre %d perle.
 428|Per uscire, costruisci un molo del batiscafo. Da lì gli equipaggi partono in spedizione.
 429|Costruisci il molo
+430|Attenzione: nessuno resterà alla base! Le stanze si fermeranno finché l'equipaggio non torna.
+431|Colono perso
+432|La colonia è perduta
+433|Sono morti tutti. In Sopravvivenza è la fine, ma ogni colonia insegna qualcosa. Riprovi?

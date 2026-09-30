@@ -428,3 +428,7 @@
 427|Brakuje jeszcze %d pereł.
 428|Aby wyjść na zewnątrz, zbuduj dok batyskafu. Z niego załogi ruszają na wyprawy.
 429|Zbuduj dok
+430|Uwaga: w bazie nikt nie zostanie! Pomieszczenia staną do powrotu załogi.
+431|Kolonista zginął
+432|Kolonia upadła
+433|Wszyscy zginęli. W Przetrwaniu to koniec — ale każda kolonia czegoś uczy. Jeszcze raz?
