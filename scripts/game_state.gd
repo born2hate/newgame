@@ -243,7 +243,7 @@ func simulate(delta: float, offline: bool) -> void:
 			var c := _make_colonist()
 			colonists.append(c)
 			if not offline:
-				message.emit("Прибыл новый колонист: %s" % c.name)
+				message.emit(tr("New colonist arrived: %s") % c.name)
 			changed.emit()
 	for k in resources:
 		resources[k] = minf(resources[k], cap)
@@ -260,7 +260,7 @@ func _level_up(c: Dictionary) -> void:
 		stat = ["str", "tech", "bio"].pick_random()
 	c[stat] = mini(10, c[stat] + 1)
 	pearls += 15
-	message.emit("%s — уровень %d! %s +1" % [c.name, c.level, Defs.STATS[stat]])
+	message.emit(tr("%s reached level %d! %s +1") % [c.name, c.level, Defs.STATS[stat]])
 	changed.emit()
 
 func seconds_until_arrival() -> float:
@@ -273,13 +273,13 @@ func seconds_until_arrival() -> float:
 func build(type: String, col: int, row: int) -> bool:
 	var cost := build_cost(type)
 	if pearls < cost:
-		message.emit("Не хватает жемчуга")
+		message.emit(tr("Not enough pearls"))
 		return false
 	if not can_build_at(type, col, row):
 		return false
 	pearls -= cost
 	var r := _add_room(type, col, row)
-	floating_text.emit(r.id, "-%d Ж" % cost, Defs.RESOURCES.pearls.color)
+	floating_text.emit(r.id, "-%d P" % cost, Defs.RESOURCES.pearls.color)
 	changed.emit()
 	return true
 
@@ -288,11 +288,11 @@ func upgrade(room: Dictionary) -> void:
 		return
 	var cost := Defs.upgrade_cost(room.type, room.level)
 	if pearls < cost:
-		message.emit("Не хватает жемчуга")
+		message.emit(tr("Not enough pearls"))
 		return
 	pearls -= cost
 	room.level += 1
-	message.emit("%s улучшен до уровня %d" % [Defs.ROOMS[room.type].name, room.level])
+	message.emit(tr("%s upgraded to level %d") % [Defs.ROOMS[room.type].name, room.level])
 	changed.emit()
 
 func collect(room: Dictionary) -> void:
@@ -325,7 +325,7 @@ func rush(room: Dictionary) -> void:
 	if room.ready or room.incident > 0.0 or not Defs.ROOMS[room.type].has("produces"):
 		return
 	if workers_in(room).is_empty():
-		message.emit("В комнате никто не работает")
+		message.emit(tr("Nobody is working in this room"))
 		return
 	var chance := rush_chance(room)
 	room.heat += 1.0
@@ -333,7 +333,7 @@ func rush(room: Dictionary) -> void:
 		room.progress = 1.0
 		room.ready = true
 		pearls += 10
-		floating_text.emit(room.id, "Успех! +10 Ж", Color(0.6, 1.0, 0.7))
+		floating_text.emit(room.id, tr("Success! +10 P"), Color(0.6, 1.0, 0.7))
 	else:
 		room.progress = 0.0
 		room.incident = 12.0
@@ -342,8 +342,8 @@ func rush(room: Dictionary) -> void:
 		var res: String = Defs.ROOMS[room.type].produces
 		if resources.has(res):
 			resources[res] = maxf(0.0, resources[res] - 15.0)
-		floating_text.emit(room.id, "ПРОБОИНА!", Color(1.0, 0.3, 0.3))
-		message.emit("Авария в отсеке «%s»! Ремонт 12 с" % Defs.ROOMS[room.type].name)
+		floating_text.emit(room.id, tr("HULL BREACH!"), Color(1.0, 0.3, 0.3))
+		message.emit(tr("Breach in %s! Repairs take 12s") % Defs.ROOMS[room.type].name)
 	changed.emit()
 
 func assign(colonist: Dictionary, room: Dictionary) -> bool:
@@ -353,12 +353,12 @@ func assign(colonist: Dictionary, room: Dictionary) -> bool:
 		return true
 	var slots := Defs.room_slots(room.type, room.level)
 	if slots == 0:
-		message.emit("Здесь нельзя работать")
+		message.emit(tr("Nobody can work here"))
 		return false
 	if colonist.room == room.id:
 		return true
 	if workers_in(room).size() >= slots:
-		message.emit("Все места заняты")
+		message.emit(tr("All slots are taken"))
 		return false
 	colonist.room = room.id
 	colonist.xp = 0.0
@@ -418,9 +418,9 @@ func _apply_offline(elapsed: float) -> void:
 	for r in rooms:
 		if r.ready:
 			ready += 1
-	var text := "Пока вас не было (%s): готово отсеков — %d" % [_fmt_time(elapsed), ready]
+	var text := tr("While you were away (%s): %d rooms ready") % [_fmt_time(elapsed), ready]
 	if colonists.size() > before:
-		text += ", новых колонистов — %d" % (colonists.size() - before)
+		text += tr(", %d new colonists") % (colonists.size() - before)
 	call_deferred("emit_signal", "message", text)
 
 func reset() -> void:
@@ -430,7 +430,7 @@ func reset() -> void:
 static func _fmt_time(sec: float) -> String:
 	var s := int(sec)
 	if s >= 3600:
-		return "%d ч %d мин" % [s / 3600, (s % 3600) / 60]
+		return "%dh %dm" % [s / 3600, (s % 3600) / 60]
 	if s >= 60:
-		return "%d мин" % (s / 60)
-	return "%d с" % s
+		return "%dm" % (s / 60)
+	return "%ds" % s

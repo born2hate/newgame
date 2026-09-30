@@ -160,8 +160,8 @@ func _draw_res_bar(bar: Control, k: String) -> void:
 	bar.draw_string(font, tp, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 22, tc)
 
 func _refresh_top() -> void:
-	pearls_label.text = "◉ %d жемчуга" % Game.pearls
-	pop_label.text = "Колонисты %d/%d" % [Game.colonists.size(), Game.population_cap()]
+	pearls_label.text = tr("◉ %d pearls") % Game.pearls
+	pop_label.text = tr("Colonists %d/%d") % [Game.colonists.size(), Game.population_cap()]
 	for k in res_bars:
 		res_bars[k].queue_redraw()
 
@@ -176,7 +176,7 @@ func _build_bottom_bar() -> void:
 	bottom_bar.offset_bottom = -16
 	bottom_bar.add_theme_constant_override("separation", 10)
 	root.add_child(bottom_bar)
-	for item in [["Строить", _open_build], ["Колонисты", _open_colonists], ["Собрать всё", _collect_all]]:
+	for item in [["Build", _open_build], ["Colonists", _open_colonists], ["Collect all", _collect_all]]:
 		var b := _button(item[0], item[1], 84)
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		b.add_theme_font_size_override("font_size", 26)
@@ -184,7 +184,7 @@ func _build_bottom_bar() -> void:
 
 func _collect_all() -> void:
 	var n := Game.collect_all()
-	show_toast("Собрано с отсеков: %d" % n if n > 0 else "Пока нечего собирать")
+	show_toast(tr("Collected from %d rooms") % n if n > 0 else tr("Nothing to collect yet"))
 
 # ---------------------------------------------------------------- выдвижная панель
 
@@ -239,7 +239,7 @@ func _header(title: String) -> void:
 
 func _open_build() -> void:
 	_open_sheet("build", 620)
-	_header("Строительство")
+	_header(tr("Build"))
 	for type in Defs.ROOMS:
 		var def: Dictionary = Defs.ROOMS[type]
 		if not def.buildable:
@@ -271,8 +271,7 @@ func _open_build() -> void:
 			b = _button("◉ %d" % cost, _start_build.bind(type), 64)
 			b.disabled = Game.pearls < cost
 		else:
-			b = _button("🔒 %d кол." % def.unlock_pop, func(): pass, 64)
-			b.text = "нужно %d кол." % def.unlock_pop
+			b = _button(tr("Needs %d colonists") % def.unlock_pop, func(): pass, 64)
 			b.disabled = true
 		b.custom_minimum_size.x = 150
 		hb.add_child(b)
@@ -281,7 +280,7 @@ func _open_build() -> void:
 func _start_build(type: String) -> void:
 	_close_sheet()
 	view.build_type = type
-	build_hint_label.text = "Куда поставить «%s»?" % Defs.ROOMS[type].name
+	build_hint_label.text = tr("Where to place %s?") % tr(Defs.ROOMS[type].name)
 	build_hint.visible = true
 	bottom_bar.visible = false
 
@@ -300,7 +299,7 @@ func _build_build_hint() -> void:
 	build_hint_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	build_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hb.add_child(build_hint_label)
-	var cancel := _button("Отмена", _cancel_build, 64)
+	var cancel := _button("Cancel", _cancel_build, 64)
 	cancel.custom_minimum_size.x = 150
 	hb.add_child(cancel)
 
@@ -331,7 +330,7 @@ func _open_room(id: int) -> void:
 	view.selected_room = id
 	var def: Dictionary = Defs.ROOMS[r.type]
 	_open_sheet("room", 470)
-	_header("%s · ур. %d" % [def.name, r.level])
+	_header(tr("%s · lvl %d") % [tr(def.name), r.level])
 	var d := _label(def.desc, 20, Color(0.7, 0.82, 0.92))
 	d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	sheet_body.add_child(d)
@@ -343,25 +342,25 @@ func _open_room(id: int) -> void:
 	var slots := Defs.room_slots(r.type, r.level)
 	if slots > 0:
 		var stat_name: String = Defs.STATS[def.stat]
-		sheet_body.add_child(_label("Рабочие (%d/%d) · важна %s" % [Game.workers_in(r).size(), slots, stat_name.to_lower()], 22, ACCENT))
+		sheet_body.add_child(_label(tr("Workers (%d/%d) · needs %s") % [Game.workers_in(r).size(), slots, tr(stat_name)], 22, ACCENT))
 		for c in Game.workers_in(r):
 			var row := HBoxContainer.new()
-			var l := _label("%s  ·  %s %d  ·  ♥ %d" % [c.name, stat_name, c[def.stat], int(c.health)], 21)
+			var l := _label("%s  ·  %s %d  ·  ♥ %d" % [c.name, tr(stat_name), c[def.stat], int(c.health)], 21)
 			l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			row.add_child(l)
-			var out := _button("Снять", func():
+			var out := _button("Remove", func():
 				Game.assign(c, {})
 				_open_room(id), 56)
 			out.custom_minimum_size.x = 120
 			row.add_child(out)
 			sheet_body.add_child(row)
 		if Game.workers_in(r).size() < slots:
-			sheet_body.add_child(_button("+ Назначить колониста", _open_pick.bind(id), 64))
+			sheet_body.add_child(_button("+ Assign colonist", _open_pick.bind(id), 64))
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 10)
 	if r.level < Defs.MAX_LEVEL:
 		var cost := Defs.upgrade_cost(r.type, r.level)
-		var up := _button("Улучшить ◉%d" % cost, func():
+		var up := _button(tr("Upgrade ◉%d") % cost, func():
 			Game.upgrade(r)
 			_open_room(id), 72)
 		up.disabled = Game.pearls < cost
@@ -387,19 +386,19 @@ func _refresh_room_live() -> void:
 		var res: String = def.produces
 		var txt := ""
 		if r.incident > 0.0:
-			txt = "Авария! Ремонт %d с" % ceili(r.incident)
+			txt = tr("Hull breach! Repairs: %ds") % ceili(r.incident)
 		elif r.ready:
-			txt = "Готово: +%d %s — нажми на отсек" % [int(Game.production_amount(r)), Defs.RESOURCES[res].name.to_lower()]
+			txt = tr("Ready: +%d %s. Tap the room!") % [int(Game.production_amount(r)), tr(Defs.RESOURCES[res].name).to_lower()]
 		else:
 			var ct := Game.cycle_time(r)
 			if ct == INF:
-				txt = "Нет рабочих — производство стоит"
+				txt = tr("No workers, production stopped")
 			else:
-				txt = "Цикл: %d%% · осталось %d с · +%d за цикл" % [int(r.progress * 100), ceili((1.0 - r.progress) * ct), int(Game.production_amount(r))]
+				txt = tr("Cycle: %d%% · %ds left · +%d per cycle") % [int(r.progress * 100), ceili((1.0 - r.progress) * ct), int(Game.production_amount(r))]
 		room_live_labels.status.text = txt
 	if room_live_labels.has("rush"):
 		var b: Button = room_live_labels.rush
-		b.text = "Ускорить (%d%%)" % int(Game.rush_chance(r) * 100)
+		b.text = tr("Rush (%d%%)") % int(Game.rush_chance(r) * 100)
 		b.disabled = r.ready or r.incident > 0.0 or Game.workers_in(r).is_empty()
 
 # ---------------------------------------------------------------- выбор колониста
@@ -409,14 +408,14 @@ func _open_pick(room_id: int) -> void:
 	var def: Dictionary = Defs.ROOMS[r.type]
 	var stat: String = def.stat
 	_open_sheet("pick", 560)
-	_header("Кого назначить?")
+	_header(tr("Who should work here?"))
 	var list := Game.colonists.duplicate()
 	list.sort_custom(func(a, b): return a[stat] > b[stat])
 	for c in list:
 		if c.room == room_id:
 			continue
-		var where: String = "свободен" if c.room == -1 else Defs.ROOMS[Game.get_room(c.room).type].name
-		var b := _button("%s — %s %d (%s)" % [c.name, Defs.STATS[stat], c[stat], where], func():
+		var where: String = tr("idle") if c.room == -1 else tr(Defs.ROOMS[Game.get_room(c.room).type].name)
+		var b := _button("%s: %s %d (%s)" % [c.name, tr(Defs.STATS[stat]), c[stat], where], func():
 			if Game.assign(c, r):
 				_open_room(room_id), 64)
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -426,21 +425,21 @@ func _open_pick(room_id: int) -> void:
 
 func _open_colonists() -> void:
 	_open_sheet("colonists", 640)
-	_header("Колонисты (%d/%d)" % [Game.colonists.size(), Game.population_cap()])
-	sheet_body.add_child(_label("Перетащи колониста пальцем в нужный отсек", 19, Color(0.7, 0.82, 0.92)))
+	_header(tr("Colonists (%d/%d)") % [Game.colonists.size(), Game.population_cap()])
+	sheet_body.add_child(_label("Drag a colonist into a room to assign them", 19, Color(0.7, 0.82, 0.92)))
 	for c in Game.colonists:
 		var card := PanelContainer.new()
 		card.add_theme_stylebox_override("panel", _box(Color(0.06, 0.16, 0.24, 0.9), Color(ACCENT, 0.3), 14))
 		var vb := VBoxContainer.new()
 		card.add_child(vb)
 		var top := HBoxContainer.new()
-		var n := _label("%s · ур. %d" % [c.name, c.level], 24)
+		var n := _label(tr("%s · lvl %d") % [c.name, c.level], 24)
 		n.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		top.add_child(n)
 		top.add_child(_label("♥ %d" % int(c.health), 22, Color(1.0, 0.5, 0.5)))
 		vb.add_child(top)
-		var where: String = "Свободен (в шлюзе)" if c.room == -1 else Defs.ROOMS[Game.get_room(c.room).type].name
-		vb.add_child(_label("Сила %d · Техника %d · Биология %d · %s" % [c.str, c.tech, c.bio, where], 19, Color(0.75, 0.85, 0.95)))
+		var where: String = tr("Idle (in airlock)") if c.room == -1 else tr(Defs.ROOMS[Game.get_room(c.room).type].name)
+		vb.add_child(_label(tr("Strength %d · Tech %d · Biology %d · %s") % [c.str, c.tech, c.bio, where], 19, Color(0.75, 0.85, 0.95)))
 		var xp := ProgressBar.new()
 		xp.show_percentage = false
 		xp.custom_minimum_size = Vector2(0, 8)
@@ -448,7 +447,7 @@ func _open_colonists() -> void:
 		xp.value = c.xp
 		vb.add_child(xp)
 		sheet_body.add_child(card)
-	var reset := _button("Начать заново", func():
+	var reset := _button("Start over", func():
 		Game.reset()
 		_close_sheet(), 56)
 	reset.modulate = Color(1, 0.7, 0.7)

@@ -370,7 +370,7 @@ func _draw_room(r: Dictionary) -> void:
 	if r.incident > 0.0:
 		var a := 0.25 + 0.2 * sin(t * 10.0)
 		draw_rect(inner, Color(1.0, 0.1, 0.1, a))
-		_text(inner.get_center(), "АВАРИЯ %d" % ceili(r.incident), 26, Color(1, 0.9, 0.9), true)
+		_text(inner.get_center(), tr("BREACH %d") % ceili(r.incident), 26, Color(1, 0.9, 0.9), true)
 	# готово — пузырь с ресурсом
 	if r.ready:
 		var rc2: Color = Defs.RESOURCES[def.produces].color
@@ -446,7 +446,7 @@ func _draw_room_props(r: Dictionary, inner: Rect2, col: Color, light: float) -> 
 			draw_arc(door.get_center(), 14, 0, TAU, 24, Color(0.7, 0.8, 0.9), 3.0)
 			var arrival := Game.seconds_until_arrival()
 			if arrival >= 0.0:
-				_text(Vector2(base.x, inner.position.y + 66), "новый через %d с" % ceili(arrival), 15, Color(0.7, 0.95, 1.0, 0.8), true)
+				_text(Vector2(base.x, inner.position.y + 66), tr("new in %ds") % ceili(arrival), 15, Color(0.7, 0.95, 1.0, 0.8), true)
 
 func _draw_colonist(feet: Vector2, c: Dictionary, lifted: bool) -> void:
 	var sprite := Art.diver(c.suit)
