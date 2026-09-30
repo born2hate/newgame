@@ -570,8 +570,8 @@ func _banner(key: String) -> Control:
 	var tr_ := TextureRect.new()
 	tr_.texture = tex
 	tr_.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	tr_.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	tr_.custom_minimum_size = Vector2(0, 220)
+	tr_.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	tr_.custom_minimum_size = Vector2(0, 340)
 	return tr_
 
 func _open_shop() -> void:
