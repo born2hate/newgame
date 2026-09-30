@@ -1,0 +1,404 @@
+0|%d kristal
+1|%d mutiara
+2|Kolonis %s
+3|Kolonis %s: %s
+4|%s sedang ekspedisi
+5|%s terkendali!
+6|%s bergabung dengan koloni!
+7|%s mencapai level %d! %s +1
+8|Hadiah: %s
+9|%s ditingkatkan ke level %d
+10|%s · lv. %d
+11|%s: +%d%% produksi, lebih banyak insiden
+12|%s: ekspedisi selesai
+13|+ Tugaskan kolonis
+14|+%d kristal
+15|+%d energi, oksigen, dan makanan
+16|+%d mutiara
+17|+%d mutiara karena berhasil menangani
+18|+20% energi dari reaktor.
+19|+20% makanan dari pertanian.
+20|+20% oksigen dari generator.
+21|+4 kapasitas kolonis per level.
+22|+40% mutiara dari peternakan mutiara.
+23|+50% penyimpanan untuk semua sumber daya.
+24|+60 kapasitas tiap sumber daya per level.
+25|, %d kolonis baru
+26|-30 mnt
+27|1. Pilih tujuan
+28|10% pendatang baru adalah kolonis langka.
+29|150 kristal, 1000 mutiara, peliharaan eksklusif Nemo (+10% panen), 2 Peti Perak, dan kolonis langka
+30|2. Pilih hingga 3 awak
+31|2000 mutiara
+32|500 mutiara
+33|Tempat untuk Tidur
+34|Rumah Sejati
+35|Seekor penyu penasaran mengikuti kapal selam sebentar.
+36|Kebocoran tekanan! {n} menambalnya.
+37|Hiu karang berputar dua kali, lalu kehilangan minat.
+38|Seekor kuda laut menumpang di lambung kapal.
+39|Sesuatu yang lebih besar dari koloni lewat di bawah kapal selam.
+40|Pedagang keliling tiba di airlock!
+41|SERANGAN
+42|Brankas Jurang
+43|Rekayasa Jurang
+44|Pasang Jurang
+45|Palung Jurang
+46|Pencapaian: %s
+47|Pencapaian
+48|Iklan diputar… (mode uji)
+49|Iklan dihapus. Hadiah kini instan!
+50|Airlock
+51|Kebun Alga
+52|Semua ruangan memakai energi 40% lebih sedikit.
+53|Semua slot terisi
+54|Semua tingkat tercapai!
+55|Ikan angler menyerang! {n} mengusirnya.
+56|Bangkai kapal tua. Harta dan masalah.
+57|Ke ruangan terbaik
+58|Pengumpul Otomatis
+59|Kembali
+60|Sudah pulang! Ambil jarahannya.
+61|Pekerjaan terbaik: %s
+62|Elektrolisis Lebih Baik
+63|Peti Besar
+64|Pemindai Bio
+65|Biologi
+66|Pemecah Gelembung
+67|Bangun
+68|Bangun %d ruangan
+69|Bangun Lab Riset untuk menghasilkan sains
+70|Bangun Dermaga Kapal Selam dan kirim awak pertama. Siapa tahu apa yang ada di luar.
+71|Bangun di Jurang (baris 11-14).
+72|Bangun di Zona Tengah Malam (baris 6-10).
+73|Bangun di baris %d
+74|Beli %d sains seharga %d mutiara
+75|Beli Peti Perak seharga %d mutiara
+76|Beli perlengkapan legendaris seharga %d kristal
+77|Beli perlengkapan langka seharga %d mutiara
+78|Tenang dan dangkal. Cocok untuk perjalanan pertama.
+79|Batal
+80|Peti Kristal
+81|Pilih Tempat Tinggal dari daftar.
+82|Pilih pakaian
+83|Pilih alat
+84|Ambil
+85|Pelatih
+86|Kumpulkan
+87|Kumpulkan %d energi
+88|Kumpulkan %d makanan
+89|Kumpulkan %d oksigen
+90|Kumpulkan dari ruangan %d kali
+91|Ambil jarahan!
+92|Dikumpulkan dari %d ruangan
+93|Kolonis (%d/%d)
+94|Kolonis mendapat XP 50% lebih cepat.
+95|Kolonis mendapat XP saat bekerja. Tiap level memberi +1 pada keahlian yang dibutuhkan ruangannya, hingga 10.
+96|Kolonis sembuh 3 kali lebih cepat.
+97|Kolonis naik level saat bekerja. Taruh yang kuat di Reaktor, teknisi di Generator O₂, ahli biologi di Kebun.
+98|Pendiri Koloni
+99|Pintu masuk koloni. Kolonis baru tiba di sini.
+100|Berwarna-warni dan penuh mutiara.
+101|Kembali setiap hari untuk hadiah lebih besar!
+102|Komandan Reyes
+103|Komandan Reyes di sini. Permukaan sudah hilang, dan koloni ini satu-satunya yang kita punya. Kumpulkan hasil reaktor untuk mulai.
+104|Biasa
+105|Selesaikan %d ekspedisi
+106|Penyimpanan Terkompresi
+107|Menghubungkan lantai. Dibangun di atas atau di bawah lift lain.
+108|Pisau Karang
+109|Terumbu Karang
+110|Peluang peti
+111|Serangan makhluk di %s!
+112|Makhluk menyerang lebih sering, tetapi menangani insiden memberi mutiara ganda.
+113|Awak
+114|Kekuatan awak: %d / disarankan %d
+115|Awak: %s
+116|Kristal
+117|Siklus: %d%% · sisa %ds · +%d per siklus
+118|Hadiah harian
+119|Hadiah harian, hari %d
+120|Tugas harian
+121|Bahaya: %s · Kekuatan disarankan: %d
+122|Hari %d
+123|Hari %d: %s
+124|Tukar
+125|Sepakat!
+126|Penyelam Dalam
+127|Pengeboran Dalam
+128|Lebih Dalam
+129|Tujuan: %s
+130|Selesai
+131|Selesai!
+132|Panen ganda
+133|Panen ganda selama 30 menit!
+134|Seret kolonis ke sini untuk membantu!
+135|Reaktor Efisien
+136|Lift
+137|Energi
+138|Pakaian Insinyur
+139|Semua Bekerja
+140|Ekspedisi
+141|Log ekspedisi
+142|Ekspedisi 30% lebih singkat.
+143|Ekspedisi membawa +50% jarahan. Kirim ekspedisi!
+144|Ekspedisi membawa jarahan 25% lebih banyak.
+145|Penjelajah
+146|Pakaian Penjelajah
+147|Musim Penjelajah
+148|Mengambil oksigen dari air laut. Butuh Teknik.
+149|KEBAKARAN
+150|BANJIR
+151|Kebun menghasilkan +50%. Kumpulkan makanan!
+152|Selesaikan %d riset
+153|Selesaikan sekarang, tanpa risiko: ◆ %d
+154|Selesaikan ◆ %d
+155|Pemadam Kebakaran
+156|Kebakaran di %s!
+157|Kebakaran, banjir, makhluk bergigi... Tangani 3 insiden dan jaga semua tetap hidup.
+158|Penolong Pertama
+159|Banjir di %s!
+160|Makanan
+161|Gratis
+162|Peti Persediaan Gratis
+163|Sembuh total
+164|Inti Fusi
+165|Perlengkapan
+166|Dapatkan semua hadiah iklan langsung, tanpa menonton video. Selamanya.
+167|Cacing tabung raksasa bergoyang di dekat ventilasi.
+168|Peti Emas
+169|Kapten Emas, hadiah tanpa iklan, pendapatan offline 16 jam, peti gratis tiap 2 jam, +100 kristal
+170|Mantap!
+171|Mantap! Awasi energi, oksigen, dan makanan di atas sini. Jika habis, kolonis terluka.
+172|Koloni Berkembang
+173|Menanam makanan. Butuh Biologi.
+174|Membudidayakan mutiara, mata uang koloni.
+175|LAMBUNG BOCOR!
+176|Segenggam Kristal
+177|Tangani %d insiden
+178|Harpun
+179|Festival Panen
+180|Pemanen
+181|Sembuhkan ◆ %d
+182|Menyembuhkan semua kolonis. Butuh Biologi.
+183|Kesehatan
+184|Rumah kapal selam. Kirim awak ke ekspedisi untuk jarahan.
+185|Cara berkembang
+186|Hidroponik
+187|Ventilasi Hidrotermal
+188|Menganggur (di airlock)
+189|Tanpa kerja kita tak bisa bernapas. Seret kolonis ke ruangan dengan slot kosong.
+190|Berjalan
+191|Insiden menyebar ke %s!
+192|Insiden ditangani dua kali lebih cepat.
+193|Insiden terjadi 30% lebih jarang.
+194|Menuju Biru
+195|Hutan Kelp
+196|Pengetahuan Adalah Kekuatan
+197|Bahasa
+198|Luncurkan kapal selam!
+199|Pergi dalam %s
+200|Legenda Palung
+201|Legendaris
+202|Sinyal Legendaris
+203|Kolonis legendaris
+204|Level %d
+205|Naikkan level kolonis %d kali
+206|Tempat Tinggal
+207|Ahli Bangunan
+208|Klinik
+209|Pakaian Medis
+210|AI Medis
+211|Gabungkan ruangan: bangun ruangan tepat di sebelah ruangan dengan jenis dan level sama. Capai 15 kolonis.
+212|Zona Tengah Malam
+213|Lebih banyak penyintas datang. Bangun Tempat Tinggal agar mereka bisa beristirahat.
+214|Butuh %d kolonis
+215|Ikan badut Nemo bersamamu! +10% untuk semua panen
+216|Kolonis baru tiba: %s
+217|Perlengkapan baru: %s
+218|Tugas baru setiap hari
+219|Lanjut
+220|Tanpa Iklan
+221|Tidak perlu iklan
+222|Belum ada peti. Ambil satu gratis di atas!
+223|Belum ada perlengkapan. Temukan di ekspedisi dan peti!
+224|Tidak ada tempat untuk kolonis baru: +300 mutiara sebagai gantinya
+225|Tidak ada pekerja, produksi berhenti
+226|Tidak ada yang bisa bekerja di sini
+227|Tidak ada yang bekerja di ruangan ini
+228|Kristal tidak cukup
+229|Mutiara tidak cukup
+230|Sumber daya tidak cukup
+231|Sains tidak cukup
+232|Belum ada yang bisa dikumpulkan
+233|Mati
+234|Nyala
+235|Sedang ekspedisi
+236|Satu kolonis menganggur di airlock. Seret dengan jarimu ke ruangan dengan slot kosong, seperti Kebun Alga.
+237|Buka
+238|Buka %d peti
+239|Pemindaian menunjukkan ventilasi hangat di Zona Tengah Malam. Riset Pengeboran Dalam dan bangun ruangan di bawah baris 5.
+240|Oksigen
+241|Generator O₂
+242|Ikan kakatua mengunyah karang di sekitar kapal selam.
+243|Budidaya Mutiara
+244|Peternakan Mutiara
+245|Minggu Mutiara
+246|Peternakan mutiara menghasilkan +50%. Kumpulkan mutiara dari ruangan!
+247|Mutiara
+248|Rencanakan ekspedisi
+249|Pecahkan %d gelembung harta
+250|Kantong Kristal
+251|Premium
+252|Premium terbuka!
+253|Menghasilkan energi. Butuh Kekuatan.
+254|Menghasilkan sains untuk riset. Butuh Teknik.
+255|Langka
+256|Kolonis langka
+257|Kelangkaan: %s
+258|Capai %d kolonis
+259|Reaktor
+260|Pakaian Reaktor
+261|Siap: +%d %s. Ketuk ruangannya!
+262|Lambung Diperkuat
+263|Lepas
+264|Ulangi tutorial
+265|Butuh: %s
+266|Riset
+267|Lab Riset
+268|Riset selesai!
+269|Meriset: %s
+270|Kembali dalam %s
+271|Ruangan mengumpulkan sumber daya sendiri.
+272|Ruangan digabung: %s %d×
+273|Percepat (%d%%)
+274|Percepat ruangan %d kali
+275|Air mendidih, mineral langka.
+276|Sains
+277|Ilmuwan
+278|Berang-berang laut? Sedalam ini? {n} bersumpah mereka melambai.
+279|Tiket Musim
+280|Tiket Musim terbuka!
+281|Tiket Musim · sisa %d hari
+282|Hadiah musim, tingkat %d
+283|Pilih
+284|Dipilih
+285|Kirim %d ekspedisi
+286|Kirim awak ke Palung Jurang. Bawa pulang apa pun yang bernyanyi di bawah sana.
+287|Pengaturan
+288|Toko
+289|Sinyal dari Jurang
+290|Peti Perak
+291|Lewati tutorial
+292|Sesuatu memanggil dari kedalaman. Capai Jurang (baris 11).
+293|Sesuatu bergerak di lorong gelap. {n} tidak menunggu untuk melihatnya.
+294|Pemetaan Sonar
+295|Sonar menemukan kapal tua. Kirim ekspedisi ke Kapal Karam.
+296|Sinyal sonar bergema dalam gelap.
+297|Penawaran khusus
+298|Belanjakan kristal
+299|Mulai ulang
+300|Paket Pemula
+301|Gudang
+302|Cerita selesai!
+303|Misi cerita, tugas harian, riset, dan pencapaian ada di Tugas. Ikuti misiku dan koloni akan tumbuh.
+304|Cerita · bab %d/%d
+305|Kekuatan
+306|Kekuatan %d · Teknik %d · Biologi %d · %s
+307|Arus kuat mengguncang kapal selam. {n} terbentur kepalanya.
+308|Dermaga Kapal Selam
+309|Berhasil! +10 M
+310|Pakaian
+311|Kapal Karam
+312|Persediaan
+313|Peti Persediaan
+314|Lepas
+315|Ketuk kolonis untuk melihat statistiknya
+316|Ketuk slot hijau yang bersinar untuk membangun di sana.
+317|Ketuk lagi untuk menghapus semua kemajuan
+318|Ketuk kolonis mana saja untuk melihat keahlian, level, dan perlengkapan.
+319|Tugas selesai!
+320|Tugas selesai: %s
+321|Tugas
+322|Teknik
+323|Mode uji: pembelian gratis dan tidak ada uang yang ditarik.
+324|Jurang
+325|Bangkai Kapal
+326|Kapal selam berangkat ke %s!
+327|Kapal selam berdengung pelan.
+328|Suar bekerja. Capai 8 kolonis.
+329|Awak pulang dengan tangan kosong.
+330|Awak menyelamatkan persediaan berguna.
+331|Kegelapan terdalam. Legenda tinggal di sini.
+332|Reaktor sudah menghasilkan energi. Ketuk reaktor untuk mengumpulkannya!
+333|Kapal selam baru saja meninggalkan dermaga…
+334|Airnya mendidih di sini. {n} menjaga kapal selam tetap stabil.
+335|Bangkai kapal berderit. {n} memutuskan tidak masuk lebih dalam.
+336|Tingkat %d
+337|Tingkat %d · %d/%d XP ke berikutnya
+338|Besok
+339|Alat
+340|Gelap total. Hanya cahaya umpan di depan...
+341|Tukar %d energi dengan %d mutiara
+342|Tukar %d makanan dengan %d mutiara
+343|Suar Pedagang
+344|Latih ◆ %d
+345|Terlatih! %s +1
+346|Program Pelatihan
+347|Timbunan Harta
+348|Pemburu Harta
+349|Masalah di Bawah
+350|Mesin Turbo
+351|Paparan Senja
+352|Buka hadiah premium di setiap tingkat musim: kristal, peti emas, dan kolonis legendaris
+353|Tingkatkan %d ruangan
+354|Tingkatkan ◉%d
+355|Versi %s
+356|Pedagang Keliling
+357|Pedagang datang dua kali lebih sering.
+358|Tonton
+359|Tonton video pendek
+360|Waspadai kebakaran, banjir, dan makhluk laut. Seret kolonis ke tempat bermasalah. Semoga berhasil, Pengawas!
+361|Kita butuh tempat untuk para penyintas. Ketuk Bangun.
+362|Kita butuh sains. Bangun Lab Riset dan selesaikan satu riset.
+363|Acara mingguan · sisa %d hari
+364|Selamat datang, Pengawas
+365|Selamat datang, Pengawas! Aku Komandan Reyes. Koloni di dasar laut ini adalah rumah terakhir kita. Mari kutunjukkan semuanya.
+366|Obor Las
+367|Taruh %s di mana?
+368|Selama kamu pergi (%s): %d ruangan siap
+369|Siapa yang bekerja di sini?
+370|Pekerja (%d/%d) · butuh %s
+371|Bekerja di: %s
+372|Kunci Pas
+373|XP %d / %d
+374|Kepiting yeti! {n} menghitung setidaknya empat puluh.
+375|Peti milikmu
+376|kosong
+377|ekstrem
+378|tinggi
+379|menganggur
+380|rendah
+381|sedang
+382|baru dalam %ds
+383|kekuatan
+384|XP musim
+385|x2 sumber daya dari ruangan selama 30 mnt
+386|{n} mengumpulkan mineral bercahaya yang langka.
+387|{n} menemukan mutiara sebesar kepalan tangan!
+388|{n} menemukan kerang penuh mutiara!
+389|{n} menemukan buku harian kapten tua. Halaman terakhirnya robek.
+390|{n} menemukan reruntuhan berukir lambang trisula.
+391|{n} sempat tersesat di kelp, lalu menemukan jalan kembali.
+392|{n} tersangkut kelp dan lengannya tergores.
+393|{n} memanen seikat kelp manis.
+394|{n} mendengar nyanyian menembus lambung. Paus? Atau yang lain?
+395|{n} bersenandung lagu pelaut lama.
+396|{n} memotret gurita biru langka.
+397|{n} membuka paksa peti tua.
+398|{n} menarik peti berkarat dari palka!
+399|{n} mengikis mineral langka dari cerobong hitam.
+400|{n} menggambar formasi karang yang aneh.
+401|{n} melihat kawanan ikan bercahaya.
+402|Musik
+403|Suara

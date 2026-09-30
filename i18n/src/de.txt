@@ -1,0 +1,404 @@
+0|%d Kristalle
+1|%d Perlen
+2|%s Kolonist
+3|%s Kolonist: %s
+4|%s ist auf Expedition
+5|%s unter Kontrolle!
+6|%s ist deiner Kolonie beigetreten!
+7|%s hat Stufe %d erreicht! %s +1
+8|Belohnung: %s
+9|%s auf Stufe %d verbessert
+10|%s · St. %d
+11|%s: +%d%% Produktion, mehr Zwischenfälle
+12|%s: Expedition abgeschlossen
+13|+ Kolonist zuweisen
+14|+%d Kristalle
+15|+%d Energie, Sauerstoff und Nahrung
+16|+%d Perlen
+17|+%d Perlen fürs Beheben
+18|+20% Energie aus Reaktoren.
+19|+20% Nahrung von Farmen.
+20|+20% Sauerstoff von Generatoren.
+21|+4 Kolonistenplätze pro Stufe.
+22|+40% Perlen von Perlenfarmen.
+23|+50% Lagerplatz für alle Ressourcen.
+24|+60 Kapazität für jede Ressource pro Stufe.
+25|, %d neue Kolonisten
+26|-30 Min.
+27|1. Wähle ein Ziel
+28|10% der Neuankömmlinge sind seltene Kolonisten.
+29|150 Kristalle, 1000 Perlen, exklusives Haustier Nemo (+10% Ernte), 2 Silberkisten und ein seltener Kolonist
+30|2. Wähle bis zu 3 Crewmitglieder
+31|2000 Perlen
+32|500 Perlen
+33|Ein Platz zum Schlafen
+34|Ein echtes Zuhause
+35|Eine neugierige Schildkröte folgt dem U-Boot eine Weile.
+36|Druckleck! {n} hat es geflickt.
+37|Ein Riffhai zog zwei Kreise und verlor das Interesse.
+38|Ein Seepferdchen fuhr auf dem Rumpf mit.
+39|Etwas Größeres als die Kolonie glitt unter dem U-Boot vorbei.
+40|Ein fahrender Händler ist an der Schleuse angekommen!
+41|ANGRIFF
+42|Tiefseetresor
+43|Tiefseetechnik
+44|Tiefseeflut
+45|Tiefseegraben
+46|Erfolg: %s
+47|Erfolge
+48|Werbung läuft… (Testmodus)
+49|Werbung entfernt. Belohnungen jetzt sofort!
+50|Schleuse
+51|Algenfarm
+52|Alle Räume verbrauchen 40% weniger Energie.
+53|Alle Plätze belegt
+54|Alle Stufen erreicht!
+55|Ein Anglerfisch griff an! {n} hat ihn verjagt.
+56|Ein altes Wrack. Schätze und Ärger.
+57|In den besten Raum
+58|Auto-Sammler
+59|Zurück
+60|Zurück daheim! Hol die Beute.
+61|Bester Job: %s
+62|Bessere Elektrolyse
+63|Große Truhe
+64|Bioscanner
+65|Biologie
+66|Blasenplatzer
+67|Bauen
+68|Baue %d Räume
+69|Baue ein Forschungslabor, um Wissenschaft zu erzeugen
+70|Baue ein U-Boot-Dock und schick die erste Crew los. Wer weiß, was da draußen ist.
+71|Bauen im Abgrund (Reihen 11-14).
+72|Bauen in der Mitternachtszone (Reihen 6-10).
+73|Baue in Reihe %d
+74|%d Wissenschaft für %d Perlen kaufen
+75|Silberkiste für %d Perlen kaufen
+76|Legendäre Ausrüstung für %d Kristalle kaufen
+77|Seltene Ausrüstung für %d Perlen kaufen
+78|Ruhig und flach. Gut für den ersten Ausflug.
+79|Abbrechen
+80|Kristalltruhe
+81|Wähle Wohnquartier aus der Liste.
+82|Wähle einen Anzug
+83|Wähle ein Werkzeug
+84|Abholen
+85|Trainer
+86|Sammeln
+87|Sammle %d Energie
+88|Sammle %d Nahrung
+89|Sammle %d Sauerstoff
+90|Sammle %d-mal aus Räumen
+91|Beute holen!
+92|Aus %d Räumen gesammelt
+93|Kolonisten (%d/%d)
+94|Kolonisten sammeln 50% schneller EP.
+95|Kolonisten sammeln EP bei der Arbeit. Jede Stufe gibt +1 auf die Fähigkeit, die ihr Raum braucht (bis 10).
+96|Kolonisten heilen 3-mal schneller.
+97|Kolonisten steigen bei der Arbeit auf. Starke in den Reaktor, Techniker in den O₂-Generator, Biologen auf die Farm.
+98|Koloniegründer
+99|Eingang der Kolonie. Hier kommen neue Kolonisten an.
+100|Bunt und voller Perlen.
+101|Komm jeden Tag wieder für größere Belohnungen!
+102|Kommandantin Reyes
+103|Hier Kommandantin Reyes. Die Oberfläche ist verloren, diese Kolonie ist alles, was wir haben. Sammle, was der Reaktor erzeugt hat.
+104|Gewöhnlich
+105|Schließe %d Expeditionen ab
+106|Komprimiertes Lager
+107|Verbindet Ebenen. Über oder unter einem anderen Aufzug bauen.
+108|Korallenmesser
+109|Korallenriff
+110|Kisten-Chancen
+111|Kreaturenangriff in %s!
+112|Kreaturen greifen öfter an, aber Zwischenfälle zu beheben gibt doppelte Perlen.
+113|Crew
+114|Crewstärke: %d / %d empfohlen
+115|Crew: %s
+116|Kristalle
+117|Zyklus: %d%% · noch %ds · +%d pro Zyklus
+118|Tägliche Belohnung
+119|Tägliche Belohnung, Tag %d
+120|Tagesaufgaben
+121|Gefahr: %s · Empfohlene Stärke: %d
+122|Tag %d
+123|Tag %d: %s
+124|Handeln
+125|Abgemacht!
+126|Tiefseetaucher
+127|Tiefbohrung
+128|Tiefer
+129|Ziel: %s
+130|Erledigt
+131|Erledigt!
+132|Doppelte Ernte
+133|Doppelte Ernte für 30 Minuten!
+134|Zieh Kolonisten hierher, um zu helfen!
+135|Effiziente Reaktoren
+136|Aufzug
+137|Energie
+138|Ingenieursanzug
+139|Alle an die Arbeit
+140|Expedition
+141|Expeditionslogbuch
+142|Expeditionen sind 30% kürzer.
+143|Expeditionen bringen +50% Beute. Schick Expeditionen los!
+144|Expeditionen bringen 25% mehr Beute.
+145|Entdecker
+146|Entdeckeranzug
+147|Entdeckersaison
+148|Gewinnt Sauerstoff aus Meerwasser. Braucht Technik.
+149|FEUER
+150|FLUT
+151|Farmen produzieren +50%. Sammle Nahrung!
+152|Schließe %d Forschungen ab
+153|Sofort fertig, ohne Risiko: ◆ %d
+154|Fertigstellen ◆ %d
+155|Brandschutz
+156|Feuer in %s!
+157|Feuer, Fluten, Dinge mit Zähnen... Behebe 3 Zwischenfälle und halte alle am Leben.
+158|Ersthelfer
+159|Überflutung in %s!
+160|Nahrung
+161|Gratis
+162|Gratis-Vorratskiste
+163|Vollständig geheilt
+164|Fusionskern
+165|Ausrüstung
+166|Alle Werbebelohnungen sofort, ohne Videos. Für immer.
+167|Riesige Röhrenwürmer wiegen sich an den Quellen.
+168|Goldkiste
+169|Goldener Kapitän, Belohnungen ohne Werbung, 16 h Offline-Einkommen, Gratiskiste alle 2 h, +100 Kristalle
+170|Super!
+171|Super! Behalte Energie, Sauerstoff und Nahrung hier oben im Blick. Gehen sie aus, werden Kolonisten verletzt.
+172|Wachsende Kolonie
+173|Baut Nahrung an. Braucht Biologie.
+174|Züchtet Perlen, die Währung der Kolonie.
+175|RUMPFBRUCH!
+176|Handvoll Kristalle
+177|Behebe %d Zwischenfälle
+178|Harpune
+179|Erntefest
+180|Ernter
+181|Heilen ◆ %d
+182|Heilt alle Kolonisten. Braucht Biologie.
+183|Gesundheit
+184|Heimat des U-Boots. Schick Crews auf Expeditionen nach Beute.
+185|So steigerst du
+186|Hydrokultur
+187|Hydrothermalquellen
+188|Frei (in der Schleuse)
+189|Ohne Arbeit atmen wir nicht. Zieh einen Kolonisten in einen Raum mit freien Plätzen.
+190|Läuft
+191|Zwischenfall breitet sich auf %s aus!
+192|Zwischenfälle werden doppelt so schnell behoben.
+193|Zwischenfälle passieren 30% seltener.
+194|Ins Blaue
+195|Kelpwald
+196|Wissen ist Macht
+197|Sprache
+198|U-Boot starten!
+199|Geht in %s
+200|Legende des Grabens
+201|Legendär
+202|Legendäres Signal
+203|Legendärer Kolonist
+204|Stufe %d
+205|Lass Kolonisten %d-mal aufsteigen
+206|Wohnquartier
+207|Baumeister
+208|Krankenstation
+209|Sanitäteranzug
+210|Medizinische KI
+211|Räume verbinden: Baue einen Raum direkt neben einen gleichen Typs und gleicher Stufe. Erreiche 15 Kolonisten.
+212|Mitternachtszone
+213|Weitere Überlebende kommen. Baue ein Wohnquartier, damit sie ruhen können.
+214|Braucht %d Kolonisten
+215|Clownfisch Nemo ist bei dir! +10% auf alle Ernten
+216|Neuer Kolonist angekommen: %s
+217|Neue Ausrüstung: %s
+218|Jeden Tag neue Aufgaben
+219|Weiter
+220|Keine Werbung
+221|Keine Werbung nötig
+222|Noch keine Kisten. Hol dir oben eine gratis!
+223|Noch keine Ausrüstung. Finde sie auf Expeditionen und in Kisten!
+224|Kein Platz für Kolonisten: stattdessen +300 Perlen
+225|Keine Arbeiter, Produktion steht
+226|Hier kann niemand arbeiten
+227|In diesem Raum arbeitet niemand
+228|Nicht genug Kristalle
+229|Nicht genug Perlen
+230|Nicht genug Ressourcen
+231|Nicht genug Wissenschaft
+232|Noch nichts zu sammeln
+233|Aus
+234|An
+235|Auf Expedition
+236|Ein Kolonist ist frei in der Schleuse. Zieh ihn mit dem Finger in einen Raum mit freien Plätzen, z. B. die Algenfarm.
+237|Öffnen
+238|Öffne %d Kisten
+239|Scans zeigen warme Quellen in der Mitternachtszone. Erforsche Tiefbohrung und baue unter Reihe 5.
+240|Sauerstoff
+241|O₂-Generator
+242|Papageifische knabbern rund ums U-Boot an Korallen.
+243|Perlenzucht
+244|Perlenfarm
+245|Perlenwoche
+246|Perlenfarmen produzieren +50%. Sammle Perlen aus Räumen!
+247|Perlen
+248|Expedition planen
+249|Lass %d Schatzblasen platzen
+250|Beutel Kristalle
+251|Premium
+252|Premium freigeschaltet!
+253|Erzeugt Energie. Braucht Stärke.
+254|Erzeugt Wissenschaft für Forschung. Braucht Technik.
+255|Selten
+256|Seltener Kolonist
+257|Seltenheit: %s
+258|Erreiche %d Kolonisten
+259|Reaktor
+260|Reaktoranzug
+261|Bereit: +%d %s. Tippe auf den Raum!
+262|Verstärkter Rumpf
+263|Entfernen
+264|Tutorial wiederholen
+265|Benötigt: %s
+266|Forschung
+267|Forschungslabor
+268|Forschung abgeschlossen!
+269|Erforsche: %s
+270|Zurück in %s
+271|Räume sammeln Ressourcen selbst ein.
+272|Räume verbunden: %s %d×
+273|Beschleunigen (%d%%)
+274|Beschleunige Räume %d-mal
+275|Kochendes Wasser, seltene Mineralien.
+276|Wissenschaft
+277|Wissenschaftler
+278|Seeotter? So tief? {n} schwört, sie haben gewinkt.
+279|Saisonpass
+280|Saisonpass freigeschaltet!
+281|Saisonpass · noch %d Tage
+282|Saisonbelohnung, Stufe %d
+283|Wählen
+284|Gewählt
+285|Schicke %d Expeditionen
+286|Schick eine Crew in den Tiefseegraben. Bring mit, was dort unten singt.
+287|Einstellungen
+288|Shop
+289|Signal aus dem Abgrund
+290|Silberkiste
+291|Tutorial überspringen
+292|Etwas ruft aus der Tiefe. Erreiche den Abgrund (Reihe 11).
+293|Etwas bewegte sich im dunklen Gang. {n} wartete nicht ab, was es war.
+294|Sonarkartierung
+295|Das Sonar fand ein altes Schiff. Schick eine Expedition zum Gesunkenen Schiff.
+296|Sonarsignale hallen durch die Dunkelheit.
+297|Sonderangebot
+298|Kristalle ausgeben
+299|Neu beginnen
+300|Starterpaket
+301|Lager
+302|Geschichte abgeschlossen!
+303|Story-Missionen, Tagesaufgaben, Forschung und Erfolge findest du unter Aufgaben. Folge meinen Missionen und die Kolonie wächst.
+304|Geschichte · Kapitel %d/%d
+305|Stärke
+306|Stärke %d · Technik %d · Biologie %d · %s
+307|Starke Strömung schüttelte das U-Boot. {n} stieß sich den Kopf.
+308|U-Boot-Dock
+309|Erfolg! +10 P
+310|Anzug
+311|Gesunkenes Schiff
+312|Vorräte
+313|Vorratskiste
+314|Ablegen
+315|Tippe auf einen Kolonisten für seine Werte
+316|Tippe auf ein leuchtend grünes Feld, um dort zu bauen.
+317|Nochmal tippen, um allen Fortschritt zu löschen
+318|Tippe auf einen Kolonisten: Fähigkeiten, Stufe und Ausrüstung.
+319|Aufgabe erledigt!
+320|Aufgabe erledigt: %s
+321|Aufgaben
+322|Technik
+323|Testmodus: Käufe sind gratis, es wird kein Geld abgebucht.
+324|Der Abgrund
+325|Das Wrack
+326|Das U-Boot bricht auf nach %s!
+327|Das U-Boot summt leise vor sich hin.
+328|Das Leuchtfeuer läuft. Erreiche 8 Kolonisten.
+329|Die Crew kam mit leeren Händen zurück.
+330|Die Crew hat nützliche Vorräte geborgen.
+331|Tiefste Dunkelheit. Hier leben Legenden.
+332|Der Reaktor hat Energie erzeugt. Tippe auf den Reaktor, um sie zu sammeln!
+333|Das U-Boot hat gerade abgelegt…
+334|Das Wasser hier kocht. {n} hält das U-Boot ruhig.
+335|Das Wrack ächzt. {n} beschließt, nicht tiefer zu gehen.
+336|Stufe %d
+337|Stufe %d · %d/%d EP bis zur nächsten
+338|Morgen
+339|Werkzeug
+340|Völlige Dunkelheit. Nur das Leuchten des Köders voraus...
+341|%d Energie gegen %d Perlen tauschen
+342|%d Nahrung gegen %d Perlen tauschen
+343|Händler-Leuchtfeuer
+344|Trainieren ◆ %d
+345|Trainiert! %s +1
+346|Trainingsprogramme
+347|Schatzhort
+348|Schatzjäger
+349|Ärger unten
+350|Turbotriebwerke
+351|Dämmerungsschelf
+352|Premium-Belohnungen auf jeder Saisonstufe: Kristalle, Goldkisten und ein legendärer Kolonist
+353|Verbessere %d Räume
+354|Verbessern ◉%d
+355|Version %s
+356|Fahrender Händler
+357|Händler kommen doppelt so oft.
+358|Ansehen
+359|Sieh dir ein kurzes Video an
+360|Vorsicht vor Feuer, Fluten und Meereskreaturen. Zieh Kolonisten dorthin, wo es brennt. Viel Glück, Aufseher!
+361|Wir brauchen Platz für Überlebende. Tippe auf Bauen.
+362|Wir brauchen Wissenschaft. Baue ein Forschungslabor und schließe eine Forschung ab.
+363|Wochenevent · noch %d Tage
+364|Willkommen, Aufseher
+365|Willkommen, Aufseher! Ich bin Kommandantin Reyes. Diese Kolonie am Meeresgrund ist unser letztes Zuhause. Ich zeige dir alles.
+366|Schweißbrenner
+367|Wohin mit %s?
+368|Während du weg warst (%s): %d Räume bereit
+369|Wer soll hier arbeiten?
+370|Arbeiter (%d/%d) · braucht %s
+371|Arbeitet in: %s
+372|Schraubenschlüssel
+373|EP %d / %d
+374|Yeti-Krabben! {n} zählt mindestens vierzig.
+375|Deine Kisten
+376|leer
+377|extrem
+378|hoch
+379|frei
+380|niedrig
+381|mittel
+382|neu in %ds
+383|Stärke
+384|Saison-EP
+385|x2 Ressourcen aus Räumen für 30 Min.
+386|{n} sammelte seltene leuchtende Mineralien.
+387|{n} fand eine faustgroße Perle!
+388|{n} fand eine Muschel voller Perlen!
+389|{n} fand ein altes Kapitänslogbuch. Die letzte Seite fehlt.
+390|{n} fand Ruinen mit eingeritztem Dreizack.
+391|{n} verirrte sich kurz im Kelp, fand aber zurück.
+392|{n} verhedderte sich im Kelp und schürfte sich den Arm auf.
+393|{n} erntete ein Bündel süßen Kelp.
+394|{n} hört Gesang durch den Rumpf. Wale? Oder etwas anderes?
+395|{n} summt ein altes Seemannslied.
+396|{n} fotografierte einen seltenen blauen Oktopus.
+397|{n} brach eine alte Truhe auf.
+398|{n} zog eine rostige Truhe aus dem Laderaum!
+399|{n} kratzte seltene Mineralien von einem Schwarzen Raucher.
+400|{n} zeichnet eine seltsame Korallenformation.
+401|{n} entdeckte einen Schwarm leuchtender Fische.
+402|Musik
+403|Töne

@@ -1,0 +1,404 @@
+0|%d kristal
+1|%d inci
+2|%s koloni sakini
+3|%s koloni sakini: %s
+4|%s keşifte
+5|%s: kontrol altında!
+6|%s kolonine katıldı!
+7|%s seviye %d oldu! %s +1
+8|Ödül: %s
+9|%s seviye %d oldu
+10|%s · sv. %d
+11|%s: +%d%% üretim, daha fazla olay
+12|%s: keşif tamamlandı
+13|+ Sakin ata
+14|+%d kristal
+15|+%d enerji, oksijen ve yiyecek
+16|+%d inci
+17|+%d inci (sorun çözüldü)
+18|Reaktörlerden +%20 enerji.
+19|Çiftliklerden +%20 yiyecek.
+20|Jeneratörlerden +%20 oksijen.
+21|Seviye başına +4 sakin kapasitesi.
+22|İnci çiftliklerinden +%40 inci.
+23|Tüm kaynaklar için +%50 depo.
+24|Seviye başına her kaynağa +60 kapasite.
+25|, %d yeni sakin
+26|-30 dk
+27|1. Bir hedef seç
+28|Yeni gelenlerin %10'u nadir sakin olur.
+29|150 kristal, 1000 inci, özel evcil hayvan Nemo (+%10 toplama), 2 gümüş sandık ve bir nadir sakin
+30|2. En fazla 3 mürettebat seç
+31|2000 inci
+32|500 inci
+33|Uyuyacak Bir Yer
+34|Gerçek Bir Yuva
+35|Meraklı bir kaplumbağa bir süre denizaltıyı takip ediyor.
+36|Basınç sızıntısı! {n} tamir etti.
+37|Bir resif köpekbalığı iki tur attı, sonra ilgisini kaybetti.
+38|Bir denizatı gövdeye tutunup yolculuk etti.
+39|Koloniden büyük bir şey denizaltının altından geçti.
+40|Hava kilidine gezgin bir tüccar geldi!
+41|SALDIRI
+42|Derinlik Kasası
+43|Derinlik Mühendisliği
+44|Derinlik Gelgiti
+45|Derinlik Çukuru
+46|Başarı: %s
+47|Başarılar
+48|Reklam oynatılıyor… (test modu)
+49|Reklamlar kaldırıldı. Ödüller artık anında!
+50|Hava Kilidi
+51|Yosun Çiftliği
+52|Tüm odalar %40 daha az enerji kullanır.
+53|Tüm yerler dolu
+54|Tüm seviyelere ulaşıldı!
+55|Bir fener balığı saldırdı! {n} onu kovaladı.
+56|Eski bir batık. Hazine ve bela.
+57|En iyi odaya
+58|Otomatik Toplayıcılar
+59|Geri
+60|Eve dönüldü! Ganimeti al.
+61|En iyi iş: %s
+62|Gelişmiş Elektroliz
+63|Büyük Sandık
+64|Biyo Tarayıcı
+65|Biyoloji
+66|Baloncuk Patlatıcı
+67|İnşa
+68|%d oda inşa et
+69|Bilim üretmek için bir Araştırma Lab'ı inşa et
+70|Bir denizaltı iskelesi kur ve ilk mürettebatı gönder. Dışarıda ne var kim bilir.
+71|Uçurum'da inşa et (satır 11-14).
+72|Gece Yarısı Bölgesi'nde inşa et (satır 6-10).
+73|%d. satırda inşa et
+74|%d bilimi %d inciye satın al
+75|Gümüş Sandığı %d inciye satın al
+76|Efsanevi ekipmanı %d kristale satın al
+77|Nadir ekipmanı %d inciye satın al
+78|Sakin ve sığ. İlk yolculuk için ideal.
+79|İptal
+80|Kristal Sandığı
+81|Listeden Yaşam Alanı'nı seç.
+82|Bir kıyafet seç
+83|Bir alet seç
+84|Al
+85|Koç
+86|Topla
+87|%d enerji topla
+88|%d yiyecek topla
+89|%d oksijen topla
+90|Odalardan %d kez topla
+91|Ganimeti al!
+92|%d odadan toplandı
+93|Sakinler (%d/%d)
+94|Sakinler %50 daha hızlı XP kazanır.
+95|Sakinler çalışırken XP kazanır. Her seviye, odanın gerektirdiği beceriye +1 verir (en fazla 10).
+96|Sakinler 3 kat daha hızlı iyileşir.
+97|Sakinler çalışarak seviye atlar. Güçlüleri Reaktöre, teknisyenleri O₂ Jeneratörüne, biyologları Çiftliğe koy.
+98|Koloni Kurucusu
+99|Koloni girişi. Yeni sakinler buraya gelir.
+100|Renkli ve inci dolu.
+101|Daha büyük ödüller için her gün gel!
+102|Komutan Reyes
+103|Ben Komutan Reyes. Yüzey yok oldu, elimizde sadece bu koloni var. Başlamak için reaktörün ürettiğini topla.
+104|Sıradan
+105|%d keşif tamamla
+106|Sıkıştırılmış Depo
+107|Katları bağlar. Başka bir asansörün üstüne veya altına inşa edilir.
+108|Mercan Bıçağı
+109|Mercan Resifi
+110|Sandık olasılıkları
+111|Yaratık saldırısı: %s!
+112|Yaratıklar daha sık saldırır ama olayları çözmek iki kat inci verir.
+113|Ekip
+114|Ekip gücü: %d / önerilen %d
+115|Mürettebat: %s
+116|Kristal
+117|Döngü: %d%% · %ds kaldı · döngü başına +%d
+118|Günlük ödül
+119|Günlük ödül, gün %d
+120|Günlük görevler
+121|Tehlike: %s · Önerilen güç: %d
+122|Gün %d
+123|Gün %d: %s
+124|Takas
+125|Anlaştık!
+126|Derin Dalgıç
+127|Derin Sondaj
+128|Daha Derine
+129|Hedef: %s
+130|Tamam
+131|Tamam!
+132|Çift toplama
+133|30 dakika çift toplama!
+134|Yardım için sakinleri buraya sürükle!
+135|Verimli Reaktörler
+136|Asansör
+137|Enerji
+138|Mühendis Kıyafeti
+139|Herkes İş Başına
+140|Keşif
+141|Keşif günlüğü
+142|Keşifler %30 daha kısa sürer.
+143|Keşifler +%50 ganimet getirir. Keşfe çık!
+144|Keşifler %25 daha fazla ganimet getirir.
+145|Kaşif
+146|Kaşif Kıyafeti
+147|Kaşif Sezonu
+148|Deniz suyundan oksijen üretir. Teknik gerekir.
+149|YANGIN
+150|SU BASKINI
+151|Çiftlikler +%50 üretir. Yiyecek topla!
+152|%d araştırma tamamla
+153|Hemen bitir, risksiz: ◆ %d
+154|Bitir ◆ %d
+155|Yangın Söndürme
+156|Yangın: %s!
+157|Yangınlar, su baskınları, dişli şeyler... 3 olayı çöz ve herkesi hayatta tut.
+158|İlk Müdahaleci
+159|Su baskını: %s!
+160|Yiyecek
+161|Ücretsiz
+162|Ücretsiz Erzak Sandığı
+163|Tamamen iyileşti
+164|Füzyon Çekirdeği
+165|Ekipman
+166|Tüm reklam ödülleri anında, video izlemeden. Sonsuza dek.
+167|Dev tüp solucanları kaynakların yanında sallanıyor.
+168|Altın Sandık
+169|Altın Kaptan, reklamsız ödüller, 16 saat çevrimdışı gelir, her 2 saatte ücretsiz sandık, +100 kristal
+170|Harika!
+171|Harika! Enerji, oksijen ve yiyeceği buradan takip et. Biterse sakinler zarar görür.
+172|Büyüyen Koloni
+173|Yiyecek yetiştirir. Biyoloji gerekir.
+174|Koloninin parası olan inci yetiştirir.
+175|GÖVDE DELİNDİ!
+176|Bir Avuç Kristal
+177|%d olayı çöz
+178|Zıpkın
+179|Hasat Festivali
+180|Hasatçı
+181|İyileştir ◆ %d
+182|Tüm sakinleri iyileştirir. Biyoloji gerekir.
+183|Sağlık
+184|Denizaltının evi. Ganimet için ekipleri keşfe gönder.
+185|Nasıl gelişir
+186|Hidroponik
+187|Hidrotermal Kaynaklar
+188|Boşta (hava kilidinde)
+189|Çalışmadan nefes alamayız. Bir sakini boş yeri olan bir odaya sürükle.
+190|Sürüyor
+191|Olay yayıldı: %s!
+192|Olaylar iki kat hızlı çözülür.
+193|Olaylar %30 daha az yaşanır.
+194|Maviliğe Doğru
+195|Yosun Ormanı
+196|Bilgi Güçtür
+197|Dil
+198|Denizaltıyı gönder!
+199|%s sonra gidiyor
+200|Çukurun Efsanesi
+201|Efsanevi
+202|Efsanevi Sinyal
+203|Efsanevi sakin
+204|Seviye %d
+205|Sakinleri %d kez seviye atlat
+206|Yaşam Alanı
+207|Usta İnşaatçı
+208|Revir
+209|Doktor Kıyafeti
+210|Tıbbi Yapay Zekâ
+211|Odaları birleştir: aynı tür ve seviyedeki bir odanın hemen yanına oda kur. 15 sakine ulaş.
+212|Gece Yarısı Bölgesi
+213|Daha fazla hayatta kalan geliyor. Dinlenebilmeleri için Yaşam Alanı kur.
+214|%d sakin gerekir
+215|Palyaço balığı Nemo seninle! Tüm toplamalara +%10
+216|Yeni sakin geldi: %s
+217|Yeni ekipman: %s
+218|Her gün yeni görevler
+219|İleri
+220|Reklamsız
+221|Reklam gerekmez
+222|Henüz sandık yok. Yukarıdan ücretsiz bir tane al!
+223|Henüz ekipman yok. Keşiflerde ve sandıklarda bul!
+224|Yeni sakin için yer yok: yerine +300 inci
+225|Çalışan yok, üretim durdu
+226|Burada kimse çalışamaz
+227|Bu odada kimse çalışmıyor
+228|Yetersiz kristal
+229|Yetersiz inci
+230|Yetersiz kaynak
+231|Yetersiz bilim
+232|Henüz toplanacak bir şey yok
+233|Kapalı
+234|Açık
+235|Keşifte
+236|Bir sakin hava kilidinde boşta. Onu parmağınla boş yeri olan bir odaya, örneğin Yosun Çiftliği'ne sürükle.
+237|Aç
+238|%d sandık aç
+239|Taramalar Gece Yarısı Bölgesi'nde sıcak kaynaklar gösteriyor. Derin Sondaj'ı araştır ve 5. satırın altına oda kur.
+240|Oksijen
+241|O₂ Jeneratörü
+242|Papağan balıkları denizaltının etrafında mercan kemiriyor.
+243|İnci Yetiştiriciliği
+244|İnci Çiftliği
+245|İnci Haftası
+246|İnci çiftlikleri +%50 üretir. Odalardan inci topla!
+247|İnci
+248|Keşif planla
+249|%d hazine baloncuğu patlat
+250|Kristal Kesesi
+251|Premium
+252|Premium açıldı!
+253|Enerji üretir. Güç gerekir.
+254|Araştırma için bilim üretir. Teknik gerekir.
+255|Nadir
+256|Nadir sakin
+257|Nadirlik: %s
+258|%d sakine ulaş
+259|Reaktör
+260|Reaktör Kıyafeti
+261|Hazır: +%d %s. Odaya dokun!
+262|Güçlendirilmiş Gövde
+263|Çıkar
+264|Eğitimi tekrarla
+265|Gerekli: %s
+266|Araştırma
+267|Araştırma Lab'ı
+268|Araştırma tamamlandı!
+269|Araştırılıyor: %s
+270|%s sonra döner
+271|Odalar kaynakları kendi toplar.
+272|Odalar birleşti: %s %d×
+273|Hızlandır (%d%%)
+274|Odaları %d kez hızlandır
+275|Kaynar su, nadir mineraller.
+276|Bilim
+277|Bilim İnsanı
+278|Deniz su samurları mı? Bu derinlikte? {n} el salladıklarına yemin ediyor.
+279|Sezon Kartı
+280|Sezon Kartı açıldı!
+281|Sezon Kartı · %d gün kaldı
+282|Sezon ödülü, seviye %d
+283|Seç
+284|Seçildi
+285|%d keşif gönder
+286|Derinlik Çukuru'na bir ekip gönder. Orada şarkı söyleyen her neyse getir.
+287|Ayarlar
+288|Mağaza
+289|Uçurumdan Sinyal
+290|Gümüş Sandık
+291|Eğitimi atla
+292|Derinlerden bir şey çağırıyor. Uçurum'a ulaş (satır 11).
+293|Karanlık koridorda bir şey kıpırdadı. {n} ne olduğunu görmeyi beklemedi.
+294|Sonar Haritalama
+295|Sonar eski bir gemi buldu. Batık Gemi'ye keşif gönder.
+296|Sonar sinyalleri karanlıkta yankılanıyor.
+297|Özel teklif
+298|Kristal harca
+299|Baştan başla
+300|Başlangıç Paketi
+301|Depo
+302|Hikâye tamamlandı!
+303|Hikâye görevleri, günlük görevler, araştırma ve başarılar Görevler'de. Görevlerimi takip et, koloni büyüsün.
+304|Hikâye · bölüm %d/%d
+305|Güç
+306|Güç %d · Teknik %d · Biyoloji %d · %s
+307|Güçlü akıntılar denizaltıyı salladı. {n} başını çarptı.
+308|Denizaltı İskelesi
+309|Başarılı! +10 İ
+310|Kıyafet
+311|Batık Gemi
+312|Erzak
+313|Erzak Sandığı
+314|Çıkar
+315|Özelliklerini görmek için bir sakine dokun
+316|Oraya inşa etmek için parlayan yeşil bir alana dokun.
+317|Tüm ilerlemeyi silmek için tekrar dokun
+318|Becerileri, seviyeyi ve ekipmanı görmek için bir sakine dokun.
+319|Görev tamamlandı!
+320|Görev tamamlandı: %s
+321|Görevler
+322|Teknik
+323|Test modu: satın alımlar ücretsizdir, para çekilmez.
+324|Uçurum
+325|Batık
+326|Denizaltı yola çıktı: %s!
+327|Denizaltı sessizce vızıldıyor.
+328|İşaret çalışıyor. 8 sakine ulaş.
+329|Ekip eli boş döndü.
+330|Ekip işe yarar erzak kurtardı.
+331|En derin karanlık. Efsaneler burada yaşar.
+332|Reaktör enerji üretti. Toplamak için reaktöre dokun!
+333|Denizaltı iskeleden yeni ayrıldı…
+334|Burada su kaynıyor. {n} denizaltıyı sabit tutuyor.
+335|Batık inliyor. {n} daha derine inmemeye karar veriyor.
+336|Seviye %d
+337|Seviye %d · sonrakine %d/%d XP
+338|Yarın
+339|Alet
+340|Zifiri karanlık. Önde sadece yemin ışığı...
+341|%d enerjiyi %d inciyle takas et
+342|%d yiyeceği %d inciyle takas et
+343|Tüccar İşareti
+344|Eğit ◆ %d
+345|Eğitildi! %s +1
+346|Eğitim Programları
+347|Hazine Yığını
+348|Hazine Avcısı
+349|Aşağıda Bela
+350|Turbo Motorlar
+351|Alacakaranlık Şelfi
+352|Her sezon seviyesinde premium ödüller: kristaller, altın sandıklar ve efsanevi bir sakin
+353|%d odayı geliştir
+354|Geliştir ◉%d
+355|Sürüm %s
+356|Gezgin Tüccar
+357|Tüccarlar iki kat sık gelir.
+358|İzle
+359|Kısa bir video izle
+360|Yangınlara, su baskınlarına ve deniz yaratıklarına dikkat et. Sakinleri belanın olduğu yere sürükle. Bol şans, Gözetmen!
+361|Hayatta kalanlara yer lazım. İnşa'ya dokun.
+362|Bilime ihtiyacımız var. Bir Araştırma Lab'ı kur ve bir araştırmayı tamamla.
+363|Haftalık etkinlik · %d gün kaldı
+364|Hoş geldin, Gözetmen
+365|Hoş geldin, Gözetmen! Ben Komutan Reyes. Okyanusun dibindeki bu koloni son yuvamız. Sana her yeri göstereyim.
+366|Kaynak Hamlacı
+367|%s nereye konsun?
+368|Sen yokken (%s): %d oda hazır
+369|Burada kim çalışsın?
+370|Çalışanlar (%d/%d) · gerekli: %s
+371|Çalıştığı yer: %s
+372|İngiliz Anahtarı
+373|XP %d / %d
+374|Yeti yengeçleri! {n} en az kırk tane sayıyor.
+375|Sandıkların
+376|boş
+377|aşırı
+378|yüksek
+379|boşta
+380|düşük
+381|orta
+382|%ds sonra yeni
+383|güç
+384|sezon XP
+385|30 dk boyunca odalardan x2 kaynak
+386|{n} nadir parlayan mineraller topladı.
+387|{n} yumruk büyüklüğünde bir inci buldu!
+388|{n} inci dolu bir istiridye buldu!
+389|{n} eski bir kaptan günlüğü buldu. Son sayfa yırtılmış.
+390|{n} üzerinde üç dişli mızrak oyulmuş kalıntılar buldu.
+391|{n} yosunlar arasında bir an kayboldu ama yolunu buldu.
+392|{n} yosunlara dolandı ve kolunu sıyırdı.
+393|{n} bir demet tatlı yosun topladı.
+394|{n} gövdenin içinden şarkı duyuyor. Balinalar mı? Başka bir şey mi?
+395|{n} eski bir denizci şarkısı mırıldanıyor.
+396|{n} nadir bir mavi ahtapotun fotoğrafını çekti.
+397|{n} eski bir sandığı zorla açtı.
+398|{n} ambardan paslı bir sandık çıkardı!
+399|{n} kara bir bacadan nadir mineraller kazıdı.
+400|{n} tuhaf bir mercan oluşumunu çiziyor.
+401|{n} parlayan bir balık sürüsü gördü.
+402|Müzik
+403|Sesler

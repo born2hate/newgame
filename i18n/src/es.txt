@@ -1,0 +1,405 @@
+0|%d cristales
+1|%d perlas
+2|Colono %s
+3|Colono %s: %s
+4|%s está de expedición
+5|¡%s bajo control!
+6|¡%s se unió a tu colonia!
+7|¡%s alcanzó el nivel %d! %s +1
+8|Recompensa: %s
+9|%s mejorado a nivel %d
+10|%s · nv. %d
+11|%s: +%d%% de producción, más incidentes
+12|%s: expedición completada
+13|+ Asignar colono
+14|+%d cristales
+15|+%d de energía, oxígeno y comida
+16|+%d perlas
+17|+%d perlas por resolverlo
+18|+20% de energía de los reactores.
+19|+20% de comida de las granjas.
+20|+20% de oxígeno de los generadores.
+21|+4 plazas de colonos por nivel.
+22|+40% de perlas de las granjas de perlas.
+23|+50% de almacenamiento para todo.
+24|+60 de capacidad de cada recurso por nivel.
+25|, %d colonos nuevos
+26|-30 min
+27|1. Elige un destino
+28|El 10% de los recién llegados son colonos raros.
+29|150 cristales, 1000 perlas, mascota exclusiva Nemo (+10% a la recolección), 2 cajas de plata y un colono raro
+30|2. Elige hasta 3 tripulantes
+31|2000 perlas
+32|500 perlas
+33|Un lugar para dormir
+34|Un hogar de verdad
+35|Una tortuga curiosa sigue al batiscafo un rato.
+36|¡Fuga de presión! {n} la reparó.
+37|Un tiburón de arrecife dio dos vueltas y perdió el interés.
+38|Un caballito de mar se subió al casco.
+39|Algo más grande que la colonia pasó bajo el batiscafo.
+40|¡Un comerciante ambulante llegó a la esclusa!
+41|ATAQUE
+42|Bóveda abisal
+43|Ingeniería abisal
+44|Marea abisal
+45|Fosa abisal
+46|Logro: %s
+47|Logros
+48|Anuncio en curso… (modo de prueba)
+49|Anuncios eliminados. ¡Recompensas al instante!
+50|Esclusa
+51|Granja de algas
+52|Todas las salas usan un 40% menos de energía.
+53|No quedan plazas
+54|¡Todos los niveles alcanzados!
+55|¡Atacó un rape! {n} lo ahuyentó.
+56|Un viejo naufragio. Tesoros y problemas.
+57|A la mejor sala
+58|Recolectores automáticos
+59|Atrás
+60|¡De vuelta! Recoge el botín.
+61|Mejor trabajo: %s
+62|Electrólisis mejorada
+63|Cofre grande
+64|Bioescáner
+65|Biología
+66|Revientaburbujas
+67|Construir
+68|Construye %d salas
+69|Construye un laboratorio para producir ciencia
+70|Construye un muelle y envía a la primera tripulación. Quién sabe qué hay ahí fuera.
+71|Construir en el Abismo (filas 11-14).
+72|Construir en la Zona de Medianoche (filas 6-10).
+73|Construye en la fila %d
+74|Comprar %d de ciencia por %d perlas
+75|Comprar una caja de plata por %d perlas
+76|Comprar equipo legendario por %d cristales
+77|Comprar equipo raro por %d perlas
+78|Tranquilo y poco profundo. Ideal para empezar.
+79|Cancelar
+80|Cofre de cristales
+81|Elige Dormitorios en la lista.
+82|Elige un traje
+83|Elige una herramienta
+84|Reclamar
+85|Entrenador
+86|Recoger
+87|Recoge %d de energía
+88|Recoge %d de comida
+89|Recoge %d de oxígeno
+90|Recoge de salas %d veces
+91|¡Recoger botín!
+92|Recogido de %d salas
+93|Colonos (%d/%d)
+94|Los colonos ganan experiencia un 50% más rápido.
+95|Los colonos ganan experiencia trabajando. Cada nivel da +1 a la habilidad que necesita su sala, hasta 10.
+96|Los colonos se curan 3 veces más rápido.
+97|Los colonos suben de nivel trabajando. Pon a los fuertes en el Reactor, a los técnicos en el Generador de O₂ y a los biólogos en la Granja.
+98|Fundador de la colonia
+99|Entrada de la colonia. Aquí llegan los nuevos colonos.
+100|Colorido y lleno de perlas.
+101|¡Vuelve cada día por mejores recompensas!
+102|Comandante Reyes
+103|Aquí la comandante Reyes. La superficie ya no existe y esta colonia es todo lo que tenemos. Recoge lo que produjo el reactor para empezar.
+104|Común
+105|Completa %d expediciones
+106|Almacén comprimido
+107|Conecta niveles. Se construye encima o debajo de otro ascensor.
+108|Cuchillo de coral
+109|Arrecife de coral
+110|Probabilidades de cajas
+111|¡Ataque de criatura en %s!
+112|Las criaturas atacan más a menudo, pero resolver incidentes da el doble de perlas.
+113|Equipo
+114|Poder del equipo: %d / %d recomendado
+115|Tripulación: %s
+116|Cristales
+117|Ciclo: %d%% · faltan %ds · +%d por ciclo
+118|Recompensa diaria
+119|Recompensa diaria, día %d
+120|Tareas diarias
+121|Peligro: %s · Poder recomendado: %d
+122|Día %d
+123|Día %d: %s
+124|Trato
+125|¡Trato hecho!
+126|Buzo de profundidad
+127|Perforación profunda
+128|Más profundo
+129|Destino: %s
+130|Hecho
+131|¡Hecho!
+132|Recolección doble
+133|¡Recolección doble durante 30 minutos!
+134|¡Arrastra colonos aquí para ayudar!
+135|Reactores eficientes
+136|Ascensor
+137|Energía
+138|Traje de ingeniero
+139|Todos a trabajar
+140|Expedición
+141|Diario de expedición
+142|Las expediciones duran un 30% menos.
+143|Las expediciones traen +50% de botín. ¡Envía expediciones!
+144|Las expediciones traen un 25% más de botín.
+145|Explorador
+146|Traje de explorador
+147|Temporada del explorador
+148|Extrae oxígeno del agua. Requiere Técnica.
+149|INCENDIO
+150|INUNDACIÓN
+151|Las granjas producen +50%. ¡Recoge comida!
+152|Termina %d investigaciones
+153|Terminar ya, sin riesgo: ◆ %d
+154|Terminar ◆ %d
+155|Supresión de incendios
+156|¡Incendio en %s!
+157|Incendios, inundaciones, cosas con dientes... Resuelve 3 incidentes y mantén a todos con vida.
+158|Primer respondedor
+159|¡Inundación en %s!
+160|Comida
+161|Gratis
+162|Caja de suministros gratis
+163|Totalmente curado
+164|Núcleo de fusión
+165|Equipamiento
+166|Obtén al instante todas las recompensas de anuncios, sin ver vídeos. Para siempre.
+167|Gusanos tubícolas gigantes se mecen junto a las fuentes.
+168|Caja de oro
+169|Capitán Dorado, recompensas sin anuncios, 16 h de ingresos sin conexión, caja gratis cada 2 h, +100 cristales
+170|¡Genial!
+171|¡Genial! Vigila la energía, el oxígeno y la comida aquí arriba. Si se agotan, los colonos sufren daño.
+172|Colonia en crecimiento
+173|Cultiva comida. Requiere Biología.
+174|Cultiva perlas, la moneda de la colonia.
+175|¡BRECHA EN EL CASCO!
+176|Puñado de cristales
+177|Resuelve %d incidentes
+178|Arpón
+179|Festival de la cosecha
+180|Cosechador
+181|Curar ◆ %d
+182|Cura a todos los colonos. Requiere Biología.
+183|Salud
+184|Base del batiscafo. Envía tripulaciones de expedición a por botín.
+185|Cómo mejorar
+186|Hidroponía
+187|Fuentes hidrotermales
+188|Libre (en la esclusa)
+189|Sin trabajo no respiraremos. Arrastra un colono a una sala con plazas libres.
+190|En curso
+191|¡El incidente se extendió a %s!
+192|Los incidentes se resuelven el doble de rápido.
+193|Los incidentes ocurren un 30% menos.
+194|Hacia el azul
+195|Bosque de algas
+196|El saber es poder
+197|Idioma
+198|¡Lanzar el batiscafo!
+199|Se va en %s
+200|Leyenda de la fosa
+201|Legendario
+202|Señal legendaria
+203|Colono legendario
+204|Nivel %d
+205|Sube de nivel a colonos %d veces
+206|Dormitorios
+207|Maestro constructor
+208|Enfermería
+209|Traje de médico
+210|IA médica
+211|Fusiona salas: construye una sala junto a otra del mismo tipo y nivel. Llega a 15 colonos.
+212|Zona de Medianoche
+213|Vienen más supervivientes. Construye dormitorios para que puedan descansar.
+214|Requiere %d colonos
+215|¡El pez payaso Nemo se une a ti! +10% a toda la recolección
+216|Llegó un nuevo colono: %s
+217|Equipo nuevo: %s
+218|Tareas nuevas cada día
+219|Siguiente
+220|Sin anuncios
+221|No hacen falta anuncios
+222|Aún no hay cajas. ¡Consigue una gratis arriba!
+223|Aún no tienes equipo. ¡Encuéntralo en expediciones y cajas!
+224|No hay sitio para otro colono: +300 perlas a cambio
+225|Sin trabajadores, producción detenida
+226|Aquí no se puede trabajar
+227|Nadie trabaja en esta sala
+228|No hay suficientes cristales
+229|No hay suficientes perlas
+230|No hay suficientes recursos
+231|No hay suficiente ciencia
+232|Aún no hay nada que recoger
+233|No
+234|Sí
+235|De expedición
+236|Un colono está libre en la esclusa. Arrástralo con el dedo a una sala con plazas libres, como la Granja de algas.
+237|Abrir
+238|Abre %d cajas
+239|Los escáneres detectan fuentes cálidas en la Zona de Medianoche. Investiga Perforación profunda y construye por debajo de la fila 5.
+240|Oxígeno
+241|Generador de O₂
+242|Los peces loro mastican coral alrededor del batiscafo.
+243|Cultivo de perlas
+244|Granja de perlas
+245|Semana de las perlas
+246|Las granjas de perlas producen +50%. ¡Recoge perlas de las salas!
+247|Perlas
+248|Planear expedición
+249|Revienta %d burbujas del tesoro
+250|Bolsita de cristales
+251|Premium
+252|¡Premium desbloqueado!
+253|Produce energía. Requiere Fuerza.
+254|Produce ciencia para investigar. Requiere Técnica.
+255|Raro
+256|Colono raro
+257|Rareza: %s
+258|Llega a %d colonos
+259|Reactor
+260|Traje de reactor
+261|Listo: +%d %s. ¡Toca la sala!
+262|Casco reforzado
+263|Quitar
+264|Repetir tutorial
+265|Requiere: %s
+266|Investigación
+267|Laboratorio
+268|¡Investigación completada!
+269|Investigando: %s
+270|Vuelve en %s
+271|Las salas recogen los recursos solas.
+272|Salas fusionadas: %s %d×
+273|Acelerar (%d%%)
+274|Acelera salas %d veces
+275|Agua hirviendo, minerales raros.
+276|Ciencia
+277|Científico
+278|¿Nutrias marinas? ¿Tan hondo? {n} jura que saludaron.
+279|Pase de temporada
+280|¡Pase de temporada desbloqueado!
+281|Pase de temporada · quedan %d días
+282|Recompensa de temporada, nivel %d
+283|Elegir
+284|Elegido
+285|Envía %d expediciones
+286|Envía una tripulación a la Fosa abisal. Trae lo que sea que canta allí abajo.
+287|Ajustes
+288|Tienda
+289|Señal del abismo
+290|Caja de plata
+291|Saltar tutorial
+292|Algo llama desde las profundidades. Llega al Abismo (fila 11).
+293|Algo se movió en el pasillo oscuro. {n} no esperó a ver qué era.
+294|Mapeo por sonar
+295|El sonar encontró un barco antiguo. Envía una expedición al Barco hundido.
+296|Los pings del sonar resuenan en la oscuridad.
+297|Oferta especial
+298|Gastar cristales
+299|Empezar de nuevo
+300|Pack de inicio
+301|Almacén
+302|¡Historia completada!
+303|Misiones de historia, tareas diarias, investigación y logros están en Tareas. Sigue mis misiones y la colonia crecerá.
+304|Historia · capítulo %d/%d
+305|Fuerza
+306|Fuerza %d · Técnica %d · Biología %d · %s
+307|Una fuerte corriente sacudió el batiscafo. {n} se dio un golpe en la cabeza.
+308|Muelle del batiscafo
+309|¡Éxito! +10 P
+310|Traje
+311|Barco hundido
+312|Suministros
+313|Caja de suministros
+314|Quitar
+315|Toca un colono para ver sus estadísticas
+316|Toca una casilla verde brillante para construir ahí.
+317|Toca otra vez para borrar todo el progreso
+318|Toca cualquier colono para ver sus habilidades, nivel y equipo.
+319|¡Tarea completada!
+320|Tarea completada: %s
+321|Tareas
+322|Técnica
+323|Modo de prueba: las compras son gratis y no se cobra dinero.
+324|El Abismo
+325|El naufragio
+326|¡El batiscafo parte hacia %s!
+327|El batiscafo zumba tranquilamente.
+328|La baliza funciona. Llega a 8 colonos.
+329|La tripulación volvió con las manos vacías.
+329|La tripulación volvió con las manos vacías.
+330|La tripulación rescató suministros útiles.
+331|La oscuridad más profunda. Aquí viven leyendas.
+332|El reactor ha producido energía. ¡Toca el reactor para recogerla!
+333|El batiscafo acaba de zarpar…
+334|Aquí el agua hierve. {n} mantiene estable el batiscafo.
+335|El naufragio cruje. {n} decide no adentrarse más.
+336|Nivel %d
+337|Nivel %d · %d/%d XP para el siguiente
+338|Mañana
+339|Herramienta
+340|Oscuridad total. Solo el brillo del señuelo delante...
+341|Cambiar %d de energía por %d perlas
+342|Cambiar %d de comida por %d perlas
+343|Baliza comercial
+344|Entrenar ◆ %d
+345|¡Entrenado! %s +1
+346|Programas de entrenamiento
+347|Tesoro escondido
+348|Cazatesoros
+349|Problemas abajo
+350|Motores turbo
+351|Plataforma crepuscular
+352|Desbloquea recompensas premium en cada nivel de temporada: cristales, cajas de oro y un colono legendario
+353|Mejora %d salas
+354|Mejorar ◉%d
+355|Versión %s
+356|Comerciante ambulante
+357|Los comerciantes vienen el doble de a menudo.
+358|Ver
+359|Mira un vídeo corto
+360|Cuidado con incendios, inundaciones y criaturas marinas. Arrastra colonos donde haya problemas. ¡Buena suerte, Supervisor!
+361|Necesitamos sitio para los supervivientes. Toca Construir.
+362|Necesitamos ciencia. Construye un laboratorio y termina una investigación.
+363|Evento semanal · quedan %d días
+364|Bienvenido, Supervisor
+365|¡Bienvenido, Supervisor! Soy la comandante Reyes. Esta colonia en el fondo del océano es nuestro último hogar. Te enseñaré todo.
+366|Soplete
+367|¿Dónde colocar %s?
+368|Mientras no estabas (%s): %d salas listas
+369|¿Quién trabajará aquí?
+370|Trabajadores (%d/%d) · requiere %s
+371|Trabaja en: %s
+372|Llave inglesa
+373|XP %d / %d
+374|¡Cangrejos yeti! {n} cuenta al menos cuarenta.
+375|Tus cajas
+376|vacío
+377|extremo
+378|alto
+379|libre
+380|bajo
+381|medio
+382|nuevo en %ds
+383|poder
+384|XP de temporada
+385|x2 recursos de las salas durante 30 min
+386|{n} recogió minerales brillantes raros.
+387|¡{n} encontró una perla del tamaño de un puño!
+388|¡{n} encontró una almeja llena de perlas!
+389|{n} encontró un viejo cuaderno de bitácora. Falta la última página.
+390|{n} encontró ruinas con grabados del tridente.
+391|{n} se perdió un momento entre las algas, pero encontró el camino.
+392|{n} se enredó en las algas y se arañó un brazo.
+393|{n} cosechó un manojo de algas dulces.
+394|{n} oye cantos a través del casco. ¿Ballenas? ¿Otra cosa?
+395|{n} tararea una vieja canción marinera.
+396|{n} fotografió un raro pulpo azul.
+397|{n} forzó un viejo cofre.
+398|¡{n} sacó un cofre oxidado de la bodega!
+399|{n} raspó minerales raros de una fumarola negra.
+400|{n} dibuja una extraña formación de coral.
+401|{n} vio un banco de peces brillantes.
+402|Música
+403|Sonidos

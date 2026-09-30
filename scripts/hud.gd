@@ -763,19 +763,21 @@ func _toggle_row(title: String, on: bool, cb: Callable) -> void:
 	row.add_child(b)
 
 func _open_settings() -> void:
-	_open_sheet("settings", 640)
+	_open_sheet("settings", 900)
 	_header(tr("Settings"))
 	_toggle_row("Music", Audio.music_on, Audio.set_music)
 	_toggle_row("Sounds", Audio.sfx_on, Audio.set_sfx)
 	_section(tr("Language"))
-	var langs := HBoxContainer.new()
-	langs.add_theme_constant_override("separation", 10)
-	for pair in [["en", "English"], ["ru", "Русский"]]:
-		var code: String = pair[0]
-		var b := _button(pair[1], func():
+	var langs := GridContainer.new()
+	langs.columns = 2
+	langs.add_theme_constant_override("h_separation", 10)
+	langs.add_theme_constant_override("v_separation", 10)
+	for code in Audio.LANGUAGES:
+		var b := _button(Audio.LANGUAGES[code], func():
 			Audio.set_language(code)
 			_open_settings(), 64)
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		b.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 		if Audio.language == code:
 			b.add_theme_color_override("font_color", Color(1.0, 0.88, 0.5))
 			b.add_theme_stylebox_override("normal", _box(Color(0.25, 0.18, 0.05), Color(1.0, 0.8, 0.3), 14))

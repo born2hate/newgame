@@ -94,6 +94,12 @@ func _dev_screenshot() -> void:
 			camera.zoom = Vector2(0.7, 0.7)
 			camera.position = Vector2(400, 420)
 		"settings": hud._open_settings()
+		"settings_de":
+			Audio.set_language("de")
+			hud._open_settings()
+		"tasks_es":
+			Audio.set_language("es")
+			hud._open_tasks()
 		"settings_ru":
 			Audio.set_language("ru")
 			hud._open_settings()

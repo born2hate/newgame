@@ -2,6 +2,11 @@ extends Node
 ## Звук и музыка: эффекты по событиям игры, фоновая музыка и шум океана, настройки.
 
 const SETTINGS_PATH := "user://settings.cfg"
+## Доступные языки: код → название на самом языке.
+const LANGUAGES := {
+	"en": "English", "ru": "Русский", "es": "Español", "pt_BR": "Português", "de": "Deutsch",
+	"fr": "Français", "it": "Italiano", "tr": "Türkçe", "pl": "Polski", "id": "Bahasa Indonesia",
+}
 const POOL := 8
 
 ## Какой звук играть на событие игры (Game.event).
@@ -25,7 +30,9 @@ var _mute_until := 0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	TranslationServer.add_translation(preload("res://i18n/ru.gd").make())
+	for code in LANGUAGES:
+		if code != "en":
+			TranslationServer.add_translation(load("res://i18n/%s.gd" % code).make())
 	_load_settings()
 	for f in DirAccess.get_files_at("res://audio/sfx"):
 		if f.ends_with(".ogg") or f.ends_with(".ogg.import"):
@@ -98,7 +105,12 @@ func _load_settings() -> void:
 		sfx_on = cfg.get_value("audio", "sfx", true)
 		language = cfg.get_value("general", "language", "")
 	if language == "":
-		language = "ru" if OS.get_locale_language() == "ru" else "en"
+		# язык телефона, если он поддерживается
+		var loc := OS.get_locale()
+		language = "en"
+		for code in LANGUAGES:
+			if loc == code or loc.begins_with(code.split("_")[0]):
+				language = code
 	TranslationServer.set_locale(language)
 
 func _save_settings() -> void:

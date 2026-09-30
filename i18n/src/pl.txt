@@ -1,0 +1,404 @@
+0|%d kryształów
+1|%d pereł
+2|Kolonista: %s
+3|Kolonista %s: %s
+4|%s jest na wyprawie
+5|%s: opanowane!
+6|%s dołącza do kolonii!
+7|%s osiąga poziom %d! %s +1
+8|Nagroda: %s
+9|%s ulepszono do poziomu %d
+10|%s · poz. %d
+11|%s: +%d%% produkcji, więcej incydentów
+12|%s: wyprawa zakończona
+13|+ Przydziel kolonistę
+14|+%d kryształów
+15|+%d energii, tlenu i jedzenia
+16|+%d pereł
+17|+%d pereł za opanowanie
+18|+20% energii z reaktorów.
+19|+20% jedzenia z farm.
+20|+20% tlenu z generatorów.
+21|+4 miejsca dla kolonistów na poziom.
+22|+40% pereł z farm pereł.
+23|+50% miejsca na wszystkie zasoby.
+24|+60 pojemności każdego zasobu na poziom.
+25|, nowi koloniści: %d
+26|-30 min
+27|1. Wybierz cel
+28|10% nowych kolonistów to rzadcy koloniści.
+29|150 kryształów, 1000 pereł, wyjątkowy zwierzak Nemo (+10% do zbiorów), 2 srebrne skrzynie i rzadki kolonista
+30|2. Wybierz do 3 członków załogi
+31|2000 pereł
+32|500 pereł
+33|Miejsce do spania
+34|Prawdziwy dom
+35|Ciekawski żółw płynie przez chwilę za batyskafem.
+36|Wyciek ciśnienia! {n} go załatał.
+37|Rekin rafowy zatoczył dwa koła i stracił zainteresowanie.
+38|Konik morski zabrał się na kadłubie.
+39|Coś większego niż kolonia przepłynęło pod batyskafem.
+40|Do śluzy przypłynął wędrowny kupiec!
+41|ATAK
+42|Skarbiec otchłani
+43|Inżynieria głębinowa
+44|Przypływ otchłani
+45|Rów otchłani
+46|Osiągnięcie: %s
+47|Osiągnięcia
+48|Trwa reklama… (tryb testowy)
+49|Reklamy usunięte. Nagrody od razu!
+50|Śluza
+51|Farma alg
+52|Wszystkie pomieszczenia zużywają 40% mniej energii.
+53|Wszystkie miejsca zajęte
+54|Wszystkie progi osiągnięte!
+55|Zaatakowała żabnica! {n} ją przegonił.
+56|Stary wrak. Skarby i kłopoty.
+57|Do najlepszego pomieszczenia
+58|Automatyczne zbieracze
+59|Wstecz
+60|Wrócili! Odbierz łup.
+61|Najlepsza praca: %s
+62|Lepsza elektroliza
+63|Duża skrzynia
+64|Bioskaner
+65|Biologia
+66|Łowca bąbelków
+67|Budowa
+68|Zbuduj pomieszczenia: %d
+69|Zbuduj laboratorium, aby wytwarzać naukę
+70|Zbuduj dok batyskafu i wyślij pierwszą załogę. Kto wie, co tam jest.
+71|Budowa w Otchłani (rzędy 11-14).
+72|Budowa w Strefie północy (rzędy 6-10).
+73|Zbuduj w rzędzie %d
+74|Kup %d nauki za %d pereł
+75|Kup srebrną skrzynię za %d pereł
+76|Kup legendarny sprzęt za %d kryształów
+77|Kup rzadki sprzęt za %d pereł
+78|Spokojnie i płytko. Dobre na pierwszą wyprawę.
+79|Anuluj
+80|Skrzynia kryształów
+81|Wybierz Kwatery z listy.
+82|Wybierz kombinezon
+83|Wybierz narzędzie
+84|Odbierz
+85|Trener
+86|Zbierz
+87|Zbierz %d energii
+88|Zbierz %d jedzenia
+89|Zbierz %d tlenu
+90|Zbieraj z pomieszczeń %d razy
+91|Odbierz łup!
+92|Zebrano z pomieszczeń: %d
+93|Koloniści (%d/%d)
+94|Koloniści zdobywają PD o 50% szybciej.
+95|Koloniści zdobywają PD podczas pracy. Każdy poziom daje +1 do umiejętności potrzebnej w ich pomieszczeniu (do 10).
+96|Koloniści leczą się 3 razy szybciej.
+97|Koloniści awansują, pracując. Silnych do Reaktora, techników do Generatora O₂, biologów na Farmę.
+98|Założyciel kolonii
+99|Wejście do kolonii. Tu przybywają nowi koloniści.
+100|Kolorowo i pełno pereł.
+101|Wracaj codziennie po większe nagrody!
+102|Komandor Reyes
+103|Tu komandor Reyes. Powierzchni już nie ma, ta kolonia to wszystko, co nam zostało. Zbierz to, co wytworzył reaktor, żeby zacząć.
+104|Zwykły
+105|Ukończ wyprawy: %d
+106|Skompresowany magazyn
+107|Łączy poziomy. Buduje się nad lub pod inną windą.
+108|Nóż koralowy
+109|Rafa koralowa
+110|Szanse skrzyń
+111|Atak stwora: %s!
+112|Stwory atakują częściej, ale opanowanie incydentów daje podwójne perły.
+113|Załoga
+114|Siła załogi: %d / zalecane %d
+115|Załoga: %s
+116|Kryształy
+117|Cykl: %d%% · zostało %ds · +%d na cykl
+118|Nagroda dzienna
+119|Nagroda dzienna, dzień %d
+120|Zadania dnia
+121|Zagrożenie: %s · Zalecana siła: %d
+122|Dzień %d
+123|Dzień %d: %s
+124|Wymień
+125|Umowa!
+126|Głębinowy nurek
+127|Głębokie wiercenie
+128|Głębiej
+129|Cel: %s
+130|Gotowe
+131|Gotowe!
+132|Podwójne zbiory
+133|Podwójne zbiory przez 30 minut!
+134|Przeciągnij tu kolonistów, by pomogli!
+135|Wydajne reaktory
+136|Winda
+137|Energia
+138|Kombinezon inżyniera
+139|Wszyscy do pracy
+140|Wyprawa
+141|Dziennik wyprawy
+142|Wyprawy są o 30% krótsze.
+143|Wyprawy przynoszą +50% łupu. Wysyłaj wyprawy!
+144|Wyprawy przynoszą 25% więcej łupu.
+145|Odkrywca
+146|Kombinezon odkrywcy
+147|Sezon odkrywców
+148|Pozyskuje tlen z wody morskiej. Wymaga Techniki.
+149|POŻAR
+150|ZALANIE
+151|Farmy produkują +50%. Zbieraj jedzenie!
+152|Ukończ badania: %d
+153|Zakończ teraz, bez ryzyka: ◆ %d
+154|Zakończ ◆ %d
+155|System gaśniczy
+156|Pożar: %s!
+157|Pożary, zalania, stwory z zębami... Opanuj 3 incydenty i nie strać nikogo.
+158|Ratownik
+159|Zalanie: %s!
+160|Jedzenie
+161|Za darmo
+162|Darmowa skrzynia zapasów
+163|W pełni wyleczony
+164|Rdzeń fuzyjny
+165|Sprzęt
+166|Wszystkie nagrody za reklamy od razu, bez oglądania. Na zawsze.
+167|Olbrzymie rureczniki kołyszą się przy kominach.
+168|Złota skrzynia
+169|Złoty Kapitan, nagrody bez reklam, 16 h dochodu offline, darmowa skrzynia co 2 h, +100 kryształów
+170|Świetnie!
+171|Świetnie! Pilnuj energii, tlenu i jedzenia tu na górze. Gdy się skończą, koloniści ucierpią.
+172|Rosnąca kolonia
+173|Uprawia jedzenie. Wymaga Biologii.
+174|Hoduje perły, walutę kolonii.
+175|PRZEBICIE KADŁUBA!
+176|Garść kryształów
+177|Opanuj incydenty: %d
+178|Harpun
+179|Święto plonów
+180|Żniwiarz
+181|Wylecz ◆ %d
+182|Leczy wszystkich kolonistów. Wymaga Biologii.
+183|Zdrowie
+184|Baza batyskafu. Wysyłaj załogi na wyprawy po łupy.
+185|Jak się rozwijać
+186|Hydroponika
+187|Kominy hydrotermalne
+188|Wolny (w śluzie)
+189|Bez pracy nie oddychamy. Przeciągnij kolonistę do pomieszczenia z wolnymi miejscami.
+190|W toku
+191|Incydent rozprzestrzenił się: %s!
+192|Incydenty są opanowywane dwa razy szybciej.
+193|Incydenty zdarzają się o 30% rzadziej.
+194|W błękit
+195|Las wodorostów
+196|Wiedza to potęga
+197|Język
+198|Wypuść batyskaf!
+199|Odpływa za %s
+200|Legenda rowu
+201|Legendarny
+202|Legendarny sygnał
+203|Legendarny kolonista
+204|Poziom %d
+205|Awansuj kolonistów %d razy
+206|Kwatery
+207|Mistrz budowy
+208|Ambulatorium
+209|Kombinezon medyka
+210|Medyczna SI
+211|Łącz pomieszczenia: zbuduj pomieszczenie tuż obok takiego samego typu i poziomu. Osiągnij 15 kolonistów.
+212|Strefa północy
+213|Nadchodzą kolejni ocaleni. Zbuduj kwatery, żeby mieli gdzie odpocząć.
+214|Wymaga kolonistów: %d
+215|Błazenek Nemo jest z tobą! +10% do wszystkich zbiorów
+216|Przybył nowy kolonista: %s
+217|Nowy sprzęt: %s
+218|Nowe zadania codziennie
+219|Dalej
+220|Bez reklam
+221|Reklamy niepotrzebne
+222|Brak skrzyń. Weź darmową powyżej!
+223|Brak sprzętu. Znajdź go na wyprawach i w skrzyniach!
+224|Brak miejsca dla kolonisty: zamiast tego +300 pereł
+225|Brak pracowników, produkcja stoi
+226|Tu nikt nie może pracować
+227|Nikt tu nie pracuje
+228|Za mało kryształów
+229|Za mało pereł
+230|Za mało zasobów
+231|Za mało nauki
+232|Na razie nie ma czego zbierać
+233|Wył.
+234|Wł.
+235|Na wyprawie
+236|Jeden kolonista jest wolny w śluzie. Przeciągnij go palcem do pomieszczenia z wolnymi miejscami, np. do Farmy alg.
+237|Otwórz
+238|Otwórz skrzynie: %d
+239|Skany pokazują ciepłe kominy w Strefie północy. Zbadaj Głębokie wiercenie i zbuduj coś poniżej 5. rzędu.
+240|Tlen
+241|Generator O₂
+242|Papugoryby chrupią koral wokół batyskafu.
+243|Hodowla pereł
+244|Farma pereł
+245|Tydzień pereł
+246|Farmy pereł produkują +50%. Zbieraj perły z pomieszczeń!
+247|Perły
+248|Zaplanuj wyprawę
+249|Przebij bąbelki skarbów: %d
+250|Sakiewka kryształów
+251|Premium
+252|Premium odblokowane!
+253|Wytwarza energię. Wymaga Siły.
+254|Wytwarza naukę do badań. Wymaga Techniki.
+255|Rzadki
+256|Rzadki kolonista
+257|Rzadkość: %s
+258|Osiągnij %d kolonistów
+259|Reaktor
+260|Kombinezon reaktorowy
+261|Gotowe: +%d %s. Dotknij pomieszczenia!
+262|Wzmocniony kadłub
+263|Usuń
+264|Powtórz samouczek
+265|Wymaga: %s
+266|Badania
+267|Laboratorium
+268|Badanie ukończone!
+269|Badanie: %s
+270|Wraca za %s
+271|Pomieszczenia same zbierają zasoby.
+272|Połączono pomieszczenia: %s %d×
+273|Przyspiesz (%d%%)
+274|Przyspiesz pomieszczenia %d razy
+275|Wrząca woda, rzadkie minerały.
+276|Nauka
+277|Naukowiec
+278|Wydry morskie? Tak głęboko? {n} przysięga, że pomachały.
+279|Karnet sezonowy
+280|Karnet sezonowy odblokowany!
+281|Karnet sezonowy · zostało dni: %d
+282|Nagroda sezonowa, próg %d
+283|Wybierz
+284|Wybrano
+285|Wyślij wyprawy: %d
+286|Wyślij załogę do Rowu otchłani. Przywieź to, co tam śpiewa.
+287|Ustawienia
+288|Sklep
+289|Sygnał z otchłani
+290|Srebrna skrzynia
+291|Pomiń samouczek
+292|Coś woła z głębin. Dotrzyj do Otchłani (rząd 11).
+293|Coś poruszyło się w ciemnym korytarzu. {n} nie czekał, żeby zobaczyć co.
+294|Mapowanie sonarem
+295|Sonar znalazł stary statek. Wyślij wyprawę do Zatopionego statku.
+296|Sygnały sonaru odbijają się echem w ciemności.
+297|Oferta specjalna
+298|Wydaj kryształy
+299|Zacznij od nowa
+300|Pakiet startowy
+301|Magazyn
+302|Fabuła ukończona!
+303|Misje fabularne, zadania dnia, badania i osiągnięcia są w Zadaniach. Wykonuj moje misje, a kolonia urośnie.
+304|Fabuła · rozdział %d/%d
+305|Siła
+306|Siła %d · Technika %d · Biologia %d · %s
+307|Silne prądy zatrzęsły batyskafem. {n} uderzył się w głowę.
+308|Dok batyskafu
+309|Sukces! +10 P
+310|Kombinezon
+311|Zatopiony statek
+312|Zapasy
+313|Skrzynia zapasów
+314|Zdejmij
+315|Dotknij kolonisty, by zobaczyć jego statystyki
+316|Dotknij świecącego zielonego pola, by tam zbudować.
+317|Dotknij ponownie, by usunąć cały postęp
+318|Dotknij dowolnego kolonisty: umiejętności, poziom i sprzęt.
+319|Zadanie wykonane!
+320|Zadanie wykonane: %s
+321|Zadania
+322|Technika
+323|Tryb testowy: zakupy są darmowe, żadne pieniądze nie są pobierane.
+324|Otchłań
+325|Wrak
+326|Batyskaf wyrusza: %s!
+327|Batyskaf cicho szumi.
+328|Nadajnik działa. Osiągnij 8 kolonistów.
+329|Załoga wróciła z pustymi rękami.
+330|Załoga odzyskała przydatne zapasy.
+331|Najgłębsza ciemność. Tu żyją legendy.
+332|Reaktor wytworzył energię. Dotknij reaktora, żeby ją zebrać!
+333|Batyskaf właśnie odbił od doku…
+334|Woda tu wrze. {n} trzyma batyskaf stabilnie.
+335|Wrak jęczy. {n} postanawia nie schodzić głębiej.
+336|Próg %d
+337|Próg %d · %d/%d PD do następnego
+338|Jutro
+339|Narzędzie
+340|Całkowita ciemność. Przed nami tylko blask przynęty...
+341|Wymień %d energii na %d pereł
+342|Wymień %d jedzenia na %d pereł
+343|Nadajnik dla kupców
+344|Trenuj ◆ %d
+345|Wytrenowano! %s +1
+346|Programy treningowe
+347|Skarbiec
+348|Łowca skarbów
+349|Kłopoty na dole
+350|Silniki turbo
+351|Szelf zmierzchu
+352|Odblokuj nagrody premium na każdym progu: kryształy, złote skrzynie i legendarnego kolonistę
+353|Ulepsz pomieszczenia: %d
+354|Ulepsz ◉%d
+355|Wersja %s
+356|Wędrowny kupiec
+357|Kupcy przypływają dwa razy częściej.
+358|Obejrzyj
+359|Obejrzyj krótki film
+360|Uważaj na pożary, zalania i morskie stwory. Przeciągaj kolonistów tam, gdzie są kłopoty. Powodzenia, Nadzorco!
+361|Potrzebujemy miejsca dla ocalałych. Dotknij Budowa.
+362|Potrzebujemy nauki. Zbuduj laboratorium i ukończ dowolne badanie.
+363|Wydarzenie tygodnia · zostało dni: %d
+364|Witaj, Nadzorco
+365|Witaj, Nadzorco! Jestem komandor Reyes. Ta kolonia na dnie oceanu to nasz ostatni dom. Pokażę ci wszystko.
+366|Palnik spawalniczy
+367|Gdzie postawić: %s?
+368|Gdy cię nie było (%s): gotowe pomieszczenia — %d
+369|Kto ma tu pracować?
+370|Pracownicy (%d/%d) · wymaga: %s
+371|Pracuje: %s
+372|Klucz
+373|PD %d / %d
+374|Kraby yeti! {n} naliczył co najmniej czterdzieści.
+375|Twoje skrzynie
+376|puste
+377|ekstremalne
+378|wysokie
+379|wolny
+380|niskie
+381|średnie
+382|nowy za %ds
+383|siła
+384|PD sezonu
+385|x2 zasoby z pomieszczeń przez 30 min
+386|{n} zebrał rzadkie świecące minerały.
+387|{n} znalazł perłę wielkości pięści!
+388|{n} znalazł małża pełnego pereł!
+389|{n} znalazł stary dziennik kapitana. Ostatnia strona jest wyrwana.
+390|{n} znalazł ruiny z rzeźbionym znakiem trójzębu.
+391|{n} na chwilę zgubił się w wodorostach, ale znalazł drogę.
+392|{n} zaplątał się w wodorosty i otarł ramię.
+393|{n} zebrał pęk słodkich wodorostów.
+394|{n} słyszy śpiew przez kadłub. Wieloryby? Coś innego?
+395|{n} nuci starą szantę.
+396|{n} sfotografował rzadką niebieską ośmiornicę.
+397|{n} podważył starą skrzynię.
+398|{n} wyciągnął zardzewiałą skrzynię z ładowni!
+399|{n} zeskrobał rzadkie minerały z czarnego komina.
+400|{n} szkicuje dziwną formację koralową.
+401|{n} dostrzegł ławicę świecących ryb.
+402|Muzyka
+403|Dźwięki
