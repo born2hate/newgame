@@ -438,6 +438,12 @@ const T := {
 	"Colonist lost": "Sakin kaybedildi",
 	"The colony is lost": "Koloni kaybedildi",
 	"Everyone has died. In Survival mode that is the end — but every colony teaches something. Try again?": "Herkes öldü. Hayatta Kalma'da bu son — ama her koloni bir şey öğretir. Tekrar dene?",
+	"Put strong colonists in the Reactor, techies in the O₂ Generator, biologists on the Farm.": "Güçlüleri Reaktöre, teknisyenleri O₂ Jeneratörüne, biyologları Çiftliğe koy.",
+	"Tap a room when a bubble appears above it to collect resources.": "Odanın üstünde baloncuk çıkınca odaya dokun ve topla.",
+	"Drag colonists into a room with a fire, flood or monster to help.": "Yangın, su baskını veya canavar olan odaya sakinleri sürükle, yardım etsinler.",
+	"Build the same room right next to another to merge them into a bigger one.": "Aynı odayı yanına kurarak onları büyük bir odada birleştir.",
+	"Expeditions bring pearls, crystals, gear and rare colonists.": "Keşifler inci, kristal, ekipman ve nadir sakin getirir.",
+	"Come back every day for a bigger daily reward.": "Daha büyük günlük ödül için her gün gel.",
 }
 
 static func make() -> Translation:

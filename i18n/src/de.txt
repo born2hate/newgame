@@ -432,3 +432,9 @@
 431|Kolonist verloren
 432|Die Kolonie ist verloren
 433|Alle sind gestorben. Im Überlebensmodus ist das das Ende – aber jede Kolonie lehrt etwas. Nochmal?
+434|Starke in den Reaktor, Techniker in den O₂-Generator, Biologen auf die Farm.
+435|Erscheint eine Blase über einem Raum, tippe ihn an, um zu sammeln.
+436|Zieh Kolonisten in Räume mit Feuer, Flut oder Monster, damit sie helfen.
+437|Baue den gleichen Raum direkt daneben, um sie zu einem großen zu verbinden.
+438|Expeditionen bringen Perlen, Kristalle, Ausrüstung und seltene Kolonisten.
+439|Komm jeden Tag für eine größere Tagesbelohnung zurück.

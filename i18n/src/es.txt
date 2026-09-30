@@ -433,3 +433,9 @@
 431|Colono perdido
 432|La colonia se ha perdido
 433|Todos han muerto. En Supervivencia es el final, pero cada colonia enseña algo. ¿Otra vez?
+434|Pon a los fuertes en el Reactor, a los técnicos en el Generador de O₂ y a los biólogos en la Granja.
+435|Cuando aparezca una burbuja sobre una sala, tócala para recoger recursos.
+436|Arrastra colonos a una sala con fuego, inundación o monstruo para ayudar.
+437|Construye la misma sala junto a otra para fusionarlas en una más grande.
+438|Las expediciones traen perlas, cristales, equipo y colonos raros.
+439|Vuelve cada día por una recompensa diaria mayor.

@@ -33,6 +33,11 @@ func _ready() -> void:
 	hud = preload("res://scripts/hud.gd").new()
 	hud.view = view
 	add_child(hud)
+	var uargs := Array(OS.get_cmdline_user_args())
+	var dev: bool = "--selftest" in uargs or uargs.any(func(a): return str(a).begins_with("--screenshot"))
+	if not dev or "--scene=loading" in uargs:
+		var ld = preload("res://scripts/loading.gd").new()
+		add_child(ld)
 	_dev_screenshot()
 	_dev_selftest()
 
@@ -67,6 +72,12 @@ func _dev_screenshot() -> void:
 		Game.tutorial_done = true
 		if hud.tutorial and is_instance_valid(hud.tutorial):
 			hud.tutorial.queue_free()
+	if scene == "loading":
+		Audio.set_language("ru")
+		await get_tree().create_timer(0.8).timeout
+		get_viewport().get_texture().get_image().save_png(path)
+		get_tree().quit()
+		return
 	await get_tree().create_timer(1.5).timeout
 	if not scene.begins_with("tut") and hud.tutorial and is_instance_valid(hud.tutorial):
 		hud.tutorial.queue_free()

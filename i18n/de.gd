@@ -438,6 +438,12 @@ const T := {
 	"Colonist lost": "Kolonist verloren",
 	"The colony is lost": "Die Kolonie ist verloren",
 	"Everyone has died. In Survival mode that is the end — but every colony teaches something. Try again?": "Alle sind gestorben. Im Überlebensmodus ist das das Ende – aber jede Kolonie lehrt etwas. Nochmal?",
+	"Put strong colonists in the Reactor, techies in the O₂ Generator, biologists on the Farm.": "Starke in den Reaktor, Techniker in den O₂-Generator, Biologen auf die Farm.",
+	"Tap a room when a bubble appears above it to collect resources.": "Erscheint eine Blase über einem Raum, tippe ihn an, um zu sammeln.",
+	"Drag colonists into a room with a fire, flood or monster to help.": "Zieh Kolonisten in Räume mit Feuer, Flut oder Monster, damit sie helfen.",
+	"Build the same room right next to another to merge them into a bigger one.": "Baue den gleichen Raum direkt daneben, um sie zu einem großen zu verbinden.",
+	"Expeditions bring pearls, crystals, gear and rare colonists.": "Expeditionen bringen Perlen, Kristalle, Ausrüstung und seltene Kolonisten.",
+	"Come back every day for a bigger daily reward.": "Komm jeden Tag für eine größere Tagesbelohnung zurück.",
 }
 
 static func make() -> Translation:

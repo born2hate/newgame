@@ -6,12 +6,13 @@
 | | | |
 |---|---|---|
 | ![](screenshots/main.png)<br>**База** | ![](screenshots/lab.png)<br>**Лаборатория, док, склад** | ![](screenshots/deep.png)<br>**Глубина, объединённая ферма 2×, торговец, пузыри с сокровищами**<br>🎨 спрайт пузыря (по желанию) |
-| ![](screenshots/room.png)<br>**Карточка отсека** | ![](screenshots/build.png)<br>**Стройка**<br>🎨 иконки отсеков в списке | ![](screenshots/buildmode.png)<br>**Выбор места** |
+| ![](screenshots/room.png)<br>**Карточка отсека** | ![](screenshots/build.png)<br>**Стройка**<br>Мини-картинки отсеков | ![](screenshots/buildmode.png)<br>**Выбор места** |
 | ![](screenshots/colonists.png)<br>**Экипаж** | ![](screenshots/colonist.png)<br>**Карточка колониста** | ![](screenshots/gear.png)<br>**Снаряжение** |
 | ![](screenshots/planner.png)<br>**План экспедиции** | ![](screenshots/expedition.png)<br>**Экспедиция и журнал** | ![](screenshots/fire.png)<br>**Пожар, потоп, удильщик** |
 | ![](screenshots/tasks.png)<br>**Задания, сюжет, событие недели** | ![](screenshots/research.png)<br>**Исследования**<br>🎨 иконки исследований (по желанию) | ![](screenshots/achievements.png)<br>**Достижения** |
 | ![](screenshots/shop.png)<br>**Магазин** | ![](screenshots/shop1.png)<br>**Наборы** | ![](screenshots/shop2.png)<br>**Кристаллы** |
 | ![](screenshots/crate.png)<br>**Открытие ящика** | ![](screenshots/daily.png)<br>**Ежедневная награда**<br>🎨 иконки наград по дням | ![](screenshots/trader.png)<br>**Торговец** |
+| ![](screenshots/loading.png)<br>**Экран загрузки** |
 | ![](screenshots/mode.png)<br>**Выбор сложности** | ![](screenshots/settings.png)<br>**Настройки, 10 языков** | ![](screenshots/tut1.png)<br>**Обучение** | ![](screenshots/tut3.png)<br>**Обучение: подсветка цели** |
 
 ## Что ещё нарисовать (по важности)

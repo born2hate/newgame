@@ -65,9 +65,18 @@ func _process(delta: float) -> void:
 	_update_walkers(delta)
 	_update_treasure(delta)
 	for f in fish:
-		f.p.x += f.v * delta
-		if f.p.x > 1600: f.p.x = -800
-		if f.p.x < -800: f.p.x = 1600
+		# естественнее: скорость «рывками», плавный дрейф по высоте, иногда разворот
+		var burst := 0.6 + 0.4 * (0.5 + 0.5 * sin(t * 0.9 + f.ph * 3.0))
+		f.p.x += f.v * burst * delta
+		f.p.y += sin(t * 0.35 + f.ph) * 6.0 * delta
+		f.p.y = clampf(f.p.y, -600.0, -90.0)
+		f["turn"] = f.get("turn", randf_range(8.0, 25.0)) - delta
+		if f.turn <= 0.0:
+			f.turn = randf_range(10.0, 30.0)
+			if randf() < 0.4:
+				f.v = -f.v
+		if f.p.x > 1700: f.p.x = -800
+		if f.p.x < -800: f.p.x = 1700
 	for fl in floaters:
 		fl.life -= delta
 		fl.pos.y -= 40 * delta
@@ -349,7 +358,9 @@ func _draw_water_life() -> void:
 			var fw := (90.0 if f.kind == "fish_school" else 60.0) * s
 			var fh := fw * spr.get_height() / spr.get_width()
 			# спрайты смотрят вправо; лёгкое покачивание хвостом
-			draw_set_transform(p, sin(t * 4.0 + f.ph) * 0.06, Vector2(dir, 1))
+			# хвост: лёгкое сжатие по длине вместо раскачивания всей рыбы
+			var wag := sin(t * 6.0 + f.ph)
+			draw_set_transform(p, wag * 0.025, Vector2(dir * (1.0 + 0.03 * wag), 1.0 - 0.02 * wag))
 			draw_texture_rect(spr, Rect2(-fw / 2.0, -fh / 2.0, fw, fh), false)
 			draw_set_transform(Vector2.ZERO)
 			continue
@@ -856,7 +867,7 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 	var fighting: bool = w.get("fighting", false) and w.get("panic", false) and not lifted
 	if fighting:
 		walking = false
-	var h := 72.0 * (1.15 if lifted else depth_scale(c))
+	var h := 62.0 * (1.15 if lifted else depth_scale(c))
 	var size := Vector2(h * sprite.get_width() / sprite.get_height(), h)
 	var bob := absf(sin(t * 10.0 + c.id)) * -3.0 if walking else sin(t * 2.0 + c.id) * 0.8
 	var facing: float = w.get("facing", 1.0)

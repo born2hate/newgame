@@ -432,3 +432,9 @@
 431|Kolonista zginął
 432|Kolonia upadła
 433|Wszyscy zginęli. W Przetrwaniu to koniec — ale każda kolonia czegoś uczy. Jeszcze raz?
+434|Silnych do Reaktora, techników do Generatora O₂, biologów na Farmę.
+435|Gdy nad pomieszczeniem pojawi się bąbelek, dotknij go, by zebrać.
+436|Przeciągaj kolonistów tam, gdzie pożar, zalanie lub potwór — pomogą.
+437|Buduj takie samo pomieszczenie obok, by połączyć je w większe.
+438|Wyprawy przynoszą perły, kryształy, sprzęt i rzadkich kolonistów.
+439|Wracaj codziennie po większą nagrodę dzienną.

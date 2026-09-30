@@ -438,6 +438,12 @@ const T := {
 	"Colonist lost": "Kolonis gugur",
 	"The colony is lost": "Koloni hilang",
 	"Everyone has died. In Survival mode that is the end — but every colony teaches something. Try again?": "Semua telah meninggal. Di mode Bertahan Hidup ini akhir — tapi setiap koloni memberi pelajaran. Coba lagi?",
+	"Put strong colonists in the Reactor, techies in the O₂ Generator, biologists on the Farm.": "Taruh yang kuat di Reaktor, teknisi di Generator O₂, ahli biologi di Kebun.",
+	"Tap a room when a bubble appears above it to collect resources.": "Saat gelembung muncul di atas ruangan, ketuk untuk mengumpulkan.",
+	"Drag colonists into a room with a fire, flood or monster to help.": "Seret kolonis ke ruangan yang terbakar, banjir, atau diserang monster.",
+	"Build the same room right next to another to merge them into a bigger one.": "Bangun ruangan yang sama di sebelahnya untuk menggabungkannya.",
+	"Expeditions bring pearls, crystals, gear and rare colonists.": "Ekspedisi membawa mutiara, kristal, perlengkapan, dan kolonis langka.",
+	"Come back every day for a bigger daily reward.": "Kembali setiap hari untuk hadiah harian yang lebih besar.",
 }
 
 static func make() -> Translation:

@@ -432,3 +432,9 @@
 431|Colon perdu
 432|La colonie est perdue
 433|Tout le monde est mort. En Survie, c'est la fin — mais chaque colonie apprend quelque chose. On recommence ?
+434|Les forts au Réacteur, les techniciens au Générateur d'O₂, les biologistes à la Ferme.
+435|Quand une bulle apparaît au-dessus d'une salle, touche-la pour récolter.
+436|Glisse des colons dans une salle en feu, inondée ou attaquée pour aider.
+437|Construis la même salle juste à côté pour les fusionner en une plus grande.
+438|Les expéditions rapportent perles, cristaux, équipement et colons rares.
+439|Reviens chaque jour pour une plus grosse récompense quotidienne.

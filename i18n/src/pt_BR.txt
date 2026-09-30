@@ -432,3 +432,9 @@
 431|Colono perdido
 432|A colônia foi perdida
 433|Todos morreram. No Sobrevivência é o fim, mas toda colônia ensina algo. Tentar de novo?
+434|Ponha os fortes no Reator, os técnicos no Gerador de O₂ e os biólogos na Fazenda.
+435|Quando aparecer uma bolha sobre a sala, toque nela para coletar.
+436|Arraste colonos para uma sala com fogo, inundação ou monstro para ajudar.
+437|Construa a mesma sala ao lado de outra para uni-las numa maior.
+438|Expedições trazem pérolas, cristais, equipamento e colonos raros.
+439|Volte todo dia para uma recompensa diária maior.

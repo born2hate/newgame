@@ -704,7 +704,23 @@ func _open_build() -> void:
 			var f := ThemeDB.fallback_font
 			var s := f.get_string_size(def.icon, HORIZONTAL_ALIGNMENT_LEFT, -1, 34)
 			icon.draw_string(f, Vector2(32 - s.x / 2, 44), def.icon, HORIZONTAL_ALIGNMENT_LEFT, -1, 34, def.color))
-		hb.add_child(icon)
+		var thumb := Art.room(type)
+		if thumb:
+			# мини-картинка отсека вместо значка
+			var frame := PanelContainer.new()
+			var fb := _box(Color(0, 0, 0, 0.4), Color(def.color, 0.9), 10, 2)
+			fb.set_content_margin_all(2)
+			fb.shadow_size = 0
+			frame.add_theme_stylebox_override("panel", fb)
+			var pic := TextureRect.new()
+			pic.texture = thumb
+			pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+			pic.custom_minimum_size = Vector2(118, 74) if type != "elevator" else Vector2(56, 74)
+			frame.add_child(pic)
+			hb.add_child(frame)
+		else:
+			hb.add_child(icon)
 		var info := VBoxContainer.new()
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		info.add_child(_label(def.name, 26))

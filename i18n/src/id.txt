@@ -432,3 +432,9 @@
 431|Kolonis gugur
 432|Koloni hilang
 433|Semua telah meninggal. Di mode Bertahan Hidup ini akhir — tapi setiap koloni memberi pelajaran. Coba lagi?
+434|Taruh yang kuat di Reaktor, teknisi di Generator O₂, ahli biologi di Kebun.
+435|Saat gelembung muncul di atas ruangan, ketuk untuk mengumpulkan.
+436|Seret kolonis ke ruangan yang terbakar, banjir, atau diserang monster.
+437|Bangun ruangan yang sama di sebelahnya untuk menggabungkannya.
+438|Ekspedisi membawa mutiara, kristal, perlengkapan, dan kolonis langka.
+439|Kembali setiap hari untuk hadiah harian yang lebih besar.

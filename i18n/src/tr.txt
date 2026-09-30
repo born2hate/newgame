@@ -432,3 +432,9 @@
 431|Sakin kaybedildi
 432|Koloni kaybedildi
 433|Herkes öldü. Hayatta Kalma'da bu son — ama her koloni bir şey öğretir. Tekrar dene?
+434|Güçlüleri Reaktöre, teknisyenleri O₂ Jeneratörüne, biyologları Çiftliğe koy.
+435|Odanın üstünde baloncuk çıkınca odaya dokun ve topla.
+436|Yangın, su baskını veya canavar olan odaya sakinleri sürükle, yardım etsinler.
+437|Aynı odayı yanına kurarak onları büyük bir odada birleştir.
+438|Keşifler inci, kristal, ekipman ve nadir sakin getirir.
+439|Daha büyük günlük ödül için her gün gel.
