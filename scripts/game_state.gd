@@ -136,7 +136,7 @@ func _make_colonist() -> Dictionary:
 		"id": next_id,
 		"name": "%s %s" % [Defs.FIRST_NAMES.pick_random(), Defs.LAST_NAMES.pick_random()],
 		"str": rng.randi_range(1, 4), "tech": rng.randi_range(1, 4), "bio": rng.randi_range(1, 4),
-		"level": 1, "xp": 0.0, "health": 100.0, "room": -1, "help": -1, "suit_item": -1, "tool_item": -1,
+		"level": 1, "xp": 0.0, "health": 100.0, "room": -1, "help": -1, "suit_item": -1, "tool_item": -1, "armor_item": -1,
 		"suit": rng.randi_range(0, 5),
 	}
 	next_id += 1
@@ -873,7 +873,7 @@ func claim_expedition(e: Dictionary) -> void:
 		if c.is_empty():
 			continue
 		c.room = -1
-		c.health = maxf(10.0, c.health - e.damage.get(str(id), 0))
+		c.health = maxf(10.0, c.health - e.damage.get(str(id), 0) * (1.0 - protection(c)))
 		c.xp += zone.minutes * 4.0
 		while c.xp >= _xp_needed(c):
 			c.xp -= _xp_needed(c)
@@ -987,7 +987,7 @@ func _tick_hazard(r: Dictionary, delta: float, offline: bool) -> void:
 			r.incident -= hazard_power(r) * 1.6 * delta * (2.0 if has_research("fire_suppression") else 1.0) / depth_zone(r.row).danger
 			var dmg: float = HAZARDS[r.hazard].damage * delta
 			for c in crew:
-				c.health = maxf(10.0, c.health - dmg)
+				c.health = maxf(10.0, c.health - dmg * (1.0 - protection(c)))
 		r.spread += delta
 		if r.spread > 20.0 and r.incident > 60.0:
 			r.spread = 0.0
@@ -1130,7 +1130,7 @@ func get_item(uid: int) -> Dictionary:
 
 func item_owner(uid: int) -> Dictionary:
 	for c in colonists:
-		if c.suit_item == uid or c.tool_item == uid:
+		if c.suit_item == uid or c.tool_item == uid or c.get("armor_item", -1) == uid:
 			return c
 	return {}
 
@@ -1144,6 +1144,16 @@ func stat(c: Dictionary, k: String) -> int:
 			if not it.is_empty() and k in item_base(it).stats:
 				v += item_bonus(it)
 	return v
+
+## Доля урона, которую гасит броня (15% / 30% / 50%).
+const ARMOR_PROTECTION := {"common": 0.15, "rare": 0.3, "legendary": 0.5}
+
+func protection(c: Dictionary) -> float:
+	var uid: int = c.get("armor_item", -1)
+	if uid == -1:
+		return 0.0
+	var it := get_item(uid)
+	return 0.0 if it.is_empty() else ARMOR_PROTECTION[it.rarity]
 
 func equip(c: Dictionary, uid: int) -> void:
 	var it := get_item(uid)
@@ -1520,7 +1530,8 @@ func load_game() -> bool:
 		c["help"] = c.get("help", -1)
 		c["suit_item"] = c.get("suit_item", -1)
 		c["tool_item"] = c.get("tool_item", -1)
-		for k in ["id", "str", "tech", "bio", "level", "room", "suit", "help", "suit_item", "tool_item"]:
+		c["armor_item"] = c.get("armor_item", -1)
+		for k in ["id", "str", "tech", "bio", "level", "room", "suit", "help", "suit_item", "tool_item", "armor_item"]:
 			c[k] = int(c[k])
 	_apply_offline(Time.get_unix_time_from_system() - float(data.time))
 	return true

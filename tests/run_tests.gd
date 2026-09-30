@@ -233,6 +233,10 @@ func _initialize() -> void:
 	check(pg.stat(col0, "tech") == t0 + 2, "снаряжение даёт +2 к технике")
 	pg.equip(pg.colonists[1], it.uid)
 	check(col0.tool_item == -1 and pg.colonists[1].tool_item == it.uid, "предмет переходит к другому")
+	var arm: Dictionary = pg.add_item("rare", "diving_armor")
+	var hc: Dictionary = pg.colonists[2]
+	pg.equip(hc, arm.uid)
+	check(hc.armor_item == arm.uid and absf(pg.protection(hc) - 0.3) < 0.001, "броня надета, −30% урона")
 	check(pg.story_index == 0 and not pg.story_ready(), "сюжет: глава 1")
 	pg.track("collect_energy", 20)
 	check(pg.story_ready(), "глава 1 выполнена")

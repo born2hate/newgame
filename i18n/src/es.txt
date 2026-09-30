@@ -403,3 +403,10 @@
 401|{n} vio un banco de peces brillantes.
 402|Música
 403|Sonidos
+404|Armadura
+405|Elige armadura
+406|La armadura reduce el daño de incidentes y expediciones.
+407|-%d%% de daño
+408|Armadura de buceo
+409|Malla antitiburón
+410|Placa térmica

@@ -408,6 +408,13 @@ const T := {
 	"{n} spotted a school of glowing fish.": "{n} melihat kawanan ikan bercahaya.",
 	"Music": "Musik",
 	"Sounds": "Suara",
+	"Armor": "Zirah",
+	"Choose armor": "Pilih zirah",
+	"Armor reduces damage from incidents and expeditions.": "Zirah mengurangi kerusakan dari insiden dan ekspedisi.",
+	"-%d%% damage": "-%d%% kerusakan",
+	"Diving Armor": "Zirah Selam",
+	"Shark Mesh": "Jaring Hiu",
+	"Heat Shield Plate": "Pelat Pelindung Panas",
 }
 
 static func make() -> Translation:

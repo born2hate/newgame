@@ -402,3 +402,10 @@
 401|{n} parlayan bir balık sürüsü gördü.
 402|Müzik
 403|Sesler
+404|Zırh
+405|Zırh seç
+406|Zırh, olaylardan ve keşiflerden alınan hasarı azaltır.
+407|-%d%% hasar
+408|Dalış Zırhı
+409|Köpekbalığı Ağı
+410|Isı Kalkanı Plakası

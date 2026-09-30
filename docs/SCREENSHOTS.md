@@ -18,7 +18,7 @@
 
 1. **Research Lab** — отсек 16:10, как остальные: `underwater research laboratory, glowing specimen tanks, microscopes, holographic screens, purple light, no people`.
 2. **Портрет командира Рейес** (квадрат, прозрачный фон): `portrait of Commander Reyes, confident woman in her 40s, navy captain uniform with trident emblem, diving helmet under arm, friendly but tough`.
-3. **Иконки 9 предметов** одним листом, прозрачный фон: wrench, harpoon, welding torch, bio scanner, coral knife, reactor suit (orange), engineer suit (blue), medic suit (white-red), explorer suit (gold).
+3. **Иконки 12 предметов** одним листом, прозрачный фон: wrench, harpoon, welding torch, bio scanner, coral knife, reactor suit (orange), engineer suit (blue), medic suit (white-red), explorer suit (gold), diving armor (heavy brass plates), shark mesh (chainmail vest), heat shield plate (glowing red chest plate).
 4. **Иконка науки** (как иконка кристалла): `glowing purple science flask with bubbles`.
 5. **Кубки** бронзовый / серебряный / золотой — три отдельные иконки.
 6. **Корабль торговца** (сбоку, смотрит влево, прозрачный фон): `green merchant submarine with cargo nets, lanterns and a shop sign`.

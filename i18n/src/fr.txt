@@ -402,3 +402,10 @@
 401|{n} a repéré un banc de poissons lumineux.
 402|Musique
 403|Sons
+404|Armure
+405|Choisis une armure
+406|L'armure réduit les dégâts des incidents et des expéditions.
+407|-%d%% de dégâts
+408|Armure de plongée
+409|Maille anti-requin
+410|Plaque thermique

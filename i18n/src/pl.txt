@@ -402,3 +402,10 @@
 401|{n} dostrzegł ławicę świecących ryb.
 402|Muzyka
 403|Dźwięki
+404|Pancerz
+405|Wybierz pancerz
+406|Pancerz zmniejsza obrażenia od incydentów i na wyprawach.
+407|-%d%% obrażeń
+408|Pancerz nurka
+409|Siatka przeciw rekinom
+410|Płyta termiczna

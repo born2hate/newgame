@@ -86,6 +86,7 @@ func _dev_screenshot() -> void:
 			Game.add_item("rare", "torch")
 			Game.add_item("legendary", "explorer_suit")
 			Game.equip(Game.colonists[0], Game.items[1].uid)
+			Game.equip(Game.colonists[0], Game.add_item("legendary", "diving_armor").uid)
 			hud._open_colonist(Game.colonists[0].id)
 		"deep":
 			Game.pearls = 5000

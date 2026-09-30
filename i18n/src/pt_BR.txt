@@ -402,3 +402,10 @@
 401|{n} avistou um cardume de peixes brilhantes.
 402|Música
 403|Sons
+404|Armadura
+405|Escolha a armadura
+406|A armadura reduz o dano de incidentes e expedições.
+407|-%d%% de dano
+408|Armadura de mergulho
+409|Malha antitubarão
+410|Placa térmica

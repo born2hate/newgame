@@ -402,3 +402,10 @@
 401|{n} ha avvistato un banco di pesci luminosi.
 402|Musica
 403|Suoni
+404|Armatura
+405|Scegli un'armatura
+406|L'armatura riduce i danni da incidenti e spedizioni.
+407|-%d%% di danni
+408|Armatura da sub
+409|Maglia anti-squalo
+410|Piastra termica

@@ -210,45 +210,58 @@ func open_trader() -> void:
 
 func add_gear_section(c: Dictionary) -> void:
 	hud._section(tr("Gear"))
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 10)
-	for kind in ["suit", "tool"]:
-		var uid: int = c[kind + "_item"]
+	var row := GridContainer.new()
+	row.columns = 3
+	row.add_theme_constant_override("h_separation", 8)
+	for kind in ["suit", "tool", "armor"]:
+		var uid: int = c.get(kind + "_item", -1)
 		var it := Game.get_item(uid) if uid != -1 else {}
-		var txt: String = (tr("Suit") if kind == "suit" else tr("Tool")) + ": "
+		var txt: String = slot_name(kind) + ":\n"
 		if it.is_empty():
 			txt += tr("empty")
 		else:
-			var bonus := Game.item_bonus(it)
-			var st: Array = Game.item_base(it).stats.map(func(k): return tr(Defs.STATS[k]))
-			txt += "%s (+%d %s)" % [Game.item_name(it), bonus, "/".join(st)]
-		var b: Button = hud._button(txt, open_gear_picker.bind(c.id, kind), 64)
+			txt += "%s\n%s" % [Game.item_name(it), item_effect(it)]
+		var b: Button = hud._button(txt, open_gear_picker.bind(c.id, kind), 96)
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		b.add_theme_font_size_override("font_size", 16)
+		b.add_theme_font_size_override("font_size", 15)
 		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		b.custom_minimum_size.x = 0
 		if not it.is_empty():
 			b.add_theme_color_override("font_color", Defs.ITEM_RARITY[it.rarity].color)
 		row.add_child(b)
 	_body().add_child(row)
 
+func slot_name(kind: String) -> String:
+	return {"suit": tr("Suit"), "tool": tr("Tool"), "armor": tr("Armor")}[kind]
+
+func item_effect(it: Dictionary) -> String:
+	var b := Game.item_base(it)
+	if b.kind == "armor":
+		return tr("-%d%% damage") % int(Game.ARMOR_PROTECTION[it.rarity] * 100)
+	var st: Array = b.stats.map(func(k): return tr(Defs.STATS[k]))
+	return "+%d %s" % [Game.item_bonus(it), "/".join(st)]
+
 func open_gear_picker(cid: int, kind: String) -> void:
 	var c := Game.get_colonist(cid)
 	hud._open_sheet("gear", 700)
-	hud._header(tr("Choose a suit") if kind == "suit" else tr("Choose a tool"))
-	if c[kind + "_item"] != -1:
+	hud._header({"suit": tr("Choose a suit"), "tool": tr("Choose a tool"), "armor": tr("Choose armor")}[kind])
+	if kind == "armor":
+		var hint: Label = hud._label(tr("Armor reduces damage from incidents and expeditions."), 18, Color(0.75, 0.85, 0.95))
+		hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_body().add_child(hint)
+	if c.get(kind + "_item", -1) != -1:
 		_body().add_child(hud._button(tr("Take off"), func():
 			Game.unequip(c, kind)
 			hud._open_colonist(cid), 60))
 	var list := Game.items.filter(func(it): return Game.item_base(it).kind == kind)
-	list.sort_custom(func(a, b): return Game.item_bonus(a) > Game.item_bonus(b))
+	list.sort_custom(func(a, b): return Defs.ITEM_RARITY.keys().find(a.rarity) > Defs.ITEM_RARITY.keys().find(b.rarity))
 	if list.is_empty():
 		var l: Label = hud._label(tr("No gear yet. Find it on expeditions and in crates!"), 19, Color(0.7, 0.8, 0.9))
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_body().add_child(l)
 	for it in list:
 		var owner := Game.item_owner(it.uid)
-		var st: Array = Game.item_base(it).stats.map(func(k): return tr(Defs.STATS[k]))
-		var txt := "%s · +%d %s" % [Game.item_name(it), Game.item_bonus(it), "/".join(st)]
+		var txt := "%s · %s" % [Game.item_name(it), item_effect(it)]
 		if not owner.is_empty():
 			txt += " · " + owner.name.split(" ")[0]
 		var b: Button = hud._button(txt, func():

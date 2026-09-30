@@ -227,6 +227,9 @@ const ITEMS := [
 	{"id": "engineer_suit", "kind": "suit", "name": "Engineer Suit", "stats": ["tech"]},
 	{"id": "medic_suit", "kind": "suit", "name": "Medic Suit", "stats": ["bio"]},
 	{"id": "explorer_suit", "kind": "suit", "name": "Explorer Suit", "stats": ["str", "tech", "bio"]},
+	{"id": "diving_armor", "kind": "armor", "name": "Diving Armor", "stats": []},
+	{"id": "shark_mesh", "kind": "armor", "name": "Shark Mesh", "stats": []},
+	{"id": "heat_plate", "kind": "armor", "name": "Heat Shield Plate", "stats": []},
 ]
 const ITEM_RARITY := {
 	"common": {"name": "Common", "bonus": 1, "color": Color(0.8, 0.85, 0.9)},

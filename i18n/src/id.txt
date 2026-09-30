@@ -402,3 +402,10 @@
 401|{n} melihat kawanan ikan bercahaya.
 402|Musik
 403|Suara
+404|Zirah
+405|Pilih zirah
+406|Zirah mengurangi kerusakan dari insiden dan ekspedisi.
+407|-%d%% kerusakan
+408|Zirah Selam
+409|Jaring Hiu
+410|Pelat Pelindung Panas

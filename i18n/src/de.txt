@@ -402,3 +402,10 @@
 401|{n} entdeckte einen Schwarm leuchtender Fische.
 402|Musik
 403|Töne
+404|Rüstung
+405|Wähle eine Rüstung
+406|Rüstung verringert Schaden durch Zwischenfälle und Expeditionen.
+407|-%d%% Schaden
+408|Taucherrüstung
+409|Hainetz
+410|Hitzeschild-Platte
