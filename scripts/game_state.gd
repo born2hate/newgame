@@ -9,6 +9,7 @@ const SAVE_PATH := "user://save.json"
 const SAVE_VERSION := 1
 const ARRIVAL_INTERVAL := 75.0
 const MAX_OFFLINE := 8.0 * 3600.0
+const MAX_OFFLINE_PREMIUM := 16.0 * 3600.0
 const O2_PER_COLONIST := 0.07
 const FOOD_PER_COLONIST := 0.05
 
@@ -20,6 +21,19 @@ var next_id := 1
 var arrival_timer := 0.0
 var autosave_timer := 0.0
 var rng := RandomNumberGenerator.new()
+
+# премиум-экономика
+signal rewards_granted(title: String, lines: Array)
+const FREE_CRATE_COOLDOWN := 4.0 * 3600.0
+const BOOST_DURATION := 30.0 * 60.0
+var crystals := 0
+var crates := {"common": 0, "silver": 0, "gold": 0}
+var premium := false
+var owned_products: Array = []
+var boost_until := 0.0
+var free_crate_at := 0.0
+var daily_day := -1
+var daily_streak := 0
 
 func _ready() -> void:
 	rng.randomize()
@@ -42,6 +56,14 @@ func _notification(what: int) -> void:
 func new_game() -> void:
 	resources = {"energy": 60.0, "oxygen": 60.0, "food": 60.0}
 	pearls = 300
+	crystals = 25
+	crates = {"common": 1, "silver": 0, "gold": 0}
+	premium = false
+	owned_products = []
+	boost_until = 0.0
+	free_crate_at = 0.0
+	daily_day = -1
+	daily_streak = 0
 	rooms = []
 	colonists = []
 	next_id = 1
@@ -299,7 +321,7 @@ func collect(room: Dictionary) -> void:
 	if not room.ready:
 		return
 	var def: Dictionary = Defs.ROOMS[room.type]
-	var amount := production_amount(room)
+	var amount := production_amount(room) * (2.0 if boost_active() else 1.0)
 	var res: String = def.produces
 	if res == "pearls":
 		pearls += int(amount)
@@ -369,6 +391,188 @@ func auto_assign(colonist: Dictionary, room: Dictionary) -> void:
 	if not room.is_empty():
 		assign(colonist, room)
 
+# ---------------------------------------------------------------- премиум-экономика
+
+static func now() -> float:
+	return Time.get_unix_time_from_system()
+
+func boost_active() -> bool:
+	return now() < boost_until
+
+func boost_left() -> float:
+	return maxf(0.0, boost_until - now())
+
+func start_boost() -> void:
+	boost_until = maxf(boost_until, now()) + BOOST_DURATION
+	message.emit(tr("Double collection active for 30 minutes!"))
+	changed.emit()
+
+func spend_crystals(n: int) -> bool:
+	if crystals < n:
+		message.emit(tr("Not enough crystals"))
+		return false
+	crystals -= n
+	changed.emit()
+	return true
+
+## Цена безопасного ускорения: 1 кристалл за каждые 20 секунд оставшегося цикла.
+func safe_rush_cost(room: Dictionary) -> int:
+	var t := cycle_time(room)
+	if t == INF:
+		return -1
+	return clampi(ceili((1.0 - room.progress) * t / 20.0), 1, 60)
+
+func rush_safe(room: Dictionary) -> void:
+	if room.ready or room.incident > 0.0 or not Defs.ROOMS[room.type].has("produces"):
+		return
+	var cost := safe_rush_cost(room)
+	if cost < 0:
+		message.emit(tr("Nobody is working in this room"))
+		return
+	if not spend_crystals(cost):
+		return
+	room.progress = 1.0
+	room.ready = true
+	floating_text.emit(room.id, tr("Done!"), Color(0.6, 0.9, 1.0))
+	changed.emit()
+
+## Выдать награду. reward: {pearls, crystals, crates: {type: n}, colonist: rarity, premium}.
+func grant(reward: Dictionary, title: String) -> void:
+	var lines := []
+	if reward.has("pearls"):
+		pearls += int(reward.pearls)
+		lines.append(tr("+%d pearls") % int(reward.pearls))
+	if reward.has("crystals"):
+		crystals += int(reward.crystals)
+		lines.append(tr("+%d crystals") % int(reward.crystals))
+	for k in reward.get("crates", {}):
+		crates[k] += int(reward.crates[k])
+		lines.append("+%d %s" % [int(reward.crates[k]), tr(Defs.CRATES[k].name)])
+	if reward.has("colonist"):
+		lines.append(_grant_colonist(reward.colonist))
+	if reward.get("premium", false):
+		premium = true
+		lines.append(tr("Premium unlocked!"))
+	changed.emit()
+	rewards_granted.emit(title, lines)
+
+func _grant_colonist(rarity: String) -> String:
+	if colonists.size() >= population_cap():
+		pearls += 300
+		return tr("No room for a new colonist: +300 pearls instead")
+	var c := _make_colonist()
+	var lo := 4 if rarity == "rare" else 7
+	var hi := 7 if rarity == "rare" else 10
+	for k in ["str", "tech", "bio"]:
+		c[k] = rng.randi_range(lo, hi)
+	c["rarity"] = rarity
+	colonists.append(c)
+	return tr("%s colonist: %s") % [tr(rarity.capitalize()), c.name]
+
+func crate_odds(type: String) -> Array:
+	var table: Array = Defs.CRATES[type].table
+	var total := 0.0
+	for e in table:
+		total += e[0]
+	var out := []
+	for e in table:
+		out.append([e[1], e[0] / total])
+	return out
+
+func open_crate(type: String) -> void:
+	if crates.get(type, 0) <= 0:
+		return
+	crates[type] -= 1
+	var def: Dictionary = Defs.CRATES[type]
+	var reward := {"pearls": 0, "crystals": 0}
+	var extra := []
+	var kinds := []
+	if def.has("guaranteed"):
+		kinds.append(def.guaranteed)
+	for i in def.rolls:
+		kinds.append(_roll(def.table))
+	for k in kinds:
+		var e := _entry(def.table, k)
+		match k:
+			"pearls":
+				reward.pearls += rng.randi_range(e[2], e[3])
+			"crystals":
+				reward.crystals += rng.randi_range(e[2], e[3])
+			"resources":
+				var amt := rng.randi_range(e[2], e[3])
+				for r in resources:
+					resources[r] = minf(storage_cap(), resources[r] + amt)
+				extra.append(tr("+%d energy, oxygen and food") % amt)
+			"colonist_rare":
+				extra.append(_grant_colonist("rare"))
+			"colonist_legendary":
+				extra.append(_grant_colonist("legendary"))
+	if reward.pearls == 0:
+		reward.erase("pearls")
+	if reward.crystals == 0:
+		reward.erase("crystals")
+	var lines := []
+	if reward.has("pearls"):
+		pearls += reward.pearls
+		lines.append(tr("+%d pearls") % reward.pearls)
+	if reward.has("crystals"):
+		crystals += reward.crystals
+		lines.append(tr("+%d crystals") % reward.crystals)
+	lines.append_array(extra)
+	changed.emit()
+	rewards_granted.emit(tr(def.name), lines)
+
+func _roll(table: Array) -> String:
+	var total := 0.0
+	for e in table:
+		total += e[0]
+	var x := rng.randf() * total
+	for e in table:
+		x -= e[0]
+		if x <= 0.0:
+			return e[1]
+	return table[0][1]
+
+func _entry(table: Array, kind: String) -> Array:
+	for e in table:
+		if e[1] == kind:
+			return e
+	return [0, kind, 1, 1]
+
+func free_crate_ready() -> bool:
+	return now() >= free_crate_at
+
+func free_crate_left() -> float:
+	return maxf(0.0, free_crate_at - now())
+
+func claim_free_crate() -> void:
+	if not free_crate_ready():
+		return
+	free_crate_at = now() + FREE_CRATE_COOLDOWN * (0.5 if premium else 1.0)
+	crates.common += 1
+	open_crate("common")
+
+static func today() -> int:
+	return int(now() / 86400.0)
+
+func daily_available() -> bool:
+	return daily_day < today()
+
+## Номер дня (0..6), который будет выдан при следующем получении.
+func daily_next_index() -> int:
+	var streak := daily_streak + 1 if daily_day == today() - 1 else 1
+	if daily_day == today():
+		streak = daily_streak
+	return (streak - 1) % Defs.DAILY.size()
+
+func claim_daily() -> void:
+	if not daily_available():
+		return
+	daily_streak = daily_streak + 1 if daily_day == today() - 1 else 1
+	daily_day = today()
+	var idx := (daily_streak - 1) % Defs.DAILY.size()
+	grant(Defs.DAILY[idx], tr("Daily reward, day %d") % (idx + 1))
+
 # ---------------------------------------------------------------- сохранения
 
 func save_game() -> void:
@@ -376,6 +580,11 @@ func save_game() -> void:
 		"version": SAVE_VERSION, "time": Time.get_unix_time_from_system(),
 		"resources": resources, "pearls": pearls, "rooms": rooms,
 		"colonists": colonists, "next_id": next_id, "arrival_timer": arrival_timer,
+		"meta": {
+			"crystals": crystals, "crates": crates, "premium": premium, "owned": owned_products,
+			"boost_until": boost_until, "free_crate_at": free_crate_at,
+			"daily_day": daily_day, "daily_streak": daily_streak,
+		},
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f:
@@ -396,6 +605,17 @@ func load_game() -> bool:
 	colonists = data.colonists
 	next_id = int(data.next_id)
 	arrival_timer = data.arrival_timer
+	var meta: Dictionary = data.get("meta", {})
+	crystals = int(meta.get("crystals", 25))
+	crates = {"common": 0, "silver": 0, "gold": 0}
+	for k in meta.get("crates", {}):
+		crates[k] = int(meta.crates[k])
+	premium = bool(meta.get("premium", false))
+	owned_products = meta.get("owned", [])
+	boost_until = float(meta.get("boost_until", 0.0))
+	free_crate_at = float(meta.get("free_crate_at", 0.0))
+	daily_day = int(meta.get("daily_day", -1))
+	daily_streak = int(meta.get("daily_streak", 0))
 	# JSON хранит числа как float — вернём целые поля
 	for r in rooms:
 		for k in ["id", "col", "row", "level"]:
@@ -407,7 +627,7 @@ func load_game() -> bool:
 	return true
 
 func _apply_offline(elapsed: float) -> void:
-	elapsed = clampf(elapsed, 0.0, MAX_OFFLINE)
+	elapsed = clampf(elapsed, 0.0, MAX_OFFLINE_PREMIUM if premium else MAX_OFFLINE)
 	if elapsed < 30.0:
 		return
 	var before := colonists.size()

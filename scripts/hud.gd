@@ -9,6 +9,12 @@ var root: Control
 var theme_res: Theme
 var res_bars := {}
 var pearls_label: Label
+var crystals_label: Label
+var boost_label: Label
+var shop_badge: Control
+var popup: PanelContainer
+var popup_bg: ColorRect
+var ad_overlay: ColorRect
 var pop_label: Label
 var bottom_bar: HBoxContainer
 var sheet: PanelContainer          # нижняя выдвижная панель
@@ -37,7 +43,14 @@ func _ready() -> void:
 	Game.message.connect(show_toast)
 	view.room_selected.connect(_on_room_selected)
 	view.build_finished.connect(_on_build_finished)
+	Game.rewards_granted.connect(_show_rewards)
+	Store.ad_started.connect(_on_ad_started)
+	Store.ad_finished.connect(func(): ad_overlay.visible = false)
+	_build_popup()
+	_build_ad_overlay()
 	_refresh_top()
+	if Game.daily_available():
+		get_tree().create_timer(1.2).timeout.connect(_open_daily)
 
 func _process(delta: float) -> void:
 	refresh_timer += delta
@@ -46,6 +59,8 @@ func _process(delta: float) -> void:
 		_refresh_top()
 		if sheet_kind == "room":
 			_refresh_room_live()
+		elif sheet_kind == "shop":
+			_refresh_shop_live()
 	if toast_time > 0.0:
 		toast_time -= delta
 		toast.modulate.a = clampf(toast_time * 2.0, 0.0, 1.0)
@@ -96,6 +111,20 @@ func _label(text: String, size := 24, color := Color(0.88, 0.96, 1.0)) -> Label:
 	l.add_theme_color_override("font_color", color)
 	return l
 
+func _icon(res: String, size := 32, col := Color.WHITE) -> Control:
+	var c := Control.new()
+	c.custom_minimum_size = Vector2(size, size)
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var tint: Color = Defs.RESOURCES[res].color if Defs.RESOURCES.has(res) and col == Color.WHITE else col
+	c.draw.connect(func(): Icons.draw(c, res, c.size / 2.0, size * 0.4, tint))
+	return c
+
+static func _clock(sec: float) -> String:
+	var s := int(sec)
+	if s >= 3600:
+		return "%d:%02d:%02d" % [s / 3600, (s % 3600) / 60, s % 60]
+	return "%d:%02d" % [s / 60, s % 60]
+
 func _button(text: String, cb: Callable, min_h := 72) -> Button:
 	var b := Button.new()
 	b.text = text
@@ -117,10 +146,22 @@ func _build_top_bar() -> void:
 	panel.add_child(vb)
 	var row := HBoxContainer.new()
 	vb.add_child(row)
-	pearls_label = _label("", 28, Defs.RESOURCES.pearls.color)
-	pearls_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_theme_constant_override("separation", 6)
+	row.add_child(_icon("pearls", 30))
+	pearls_label = _label("", 26, Defs.RESOURCES.pearls.color)
 	row.add_child(pearls_label)
-	pop_label = _label("", 26)
+	var gap := Control.new()
+	gap.custom_minimum_size.x = 14
+	row.add_child(gap)
+	row.add_child(_icon("crystals", 30))
+	crystals_label = _label("", 26, Defs.RESOURCES.crystals.color)
+	row.add_child(crystals_label)
+	boost_label = _label("", 20, Color(1.0, 0.85, 0.3))
+	boost_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	boost_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	row.add_child(boost_label)
+	row.add_child(_icon("people", 26, Color(0.85, 0.95, 1.0)))
+	pop_label = _label("", 24)
 	row.add_child(pop_label)
 	var bars := HBoxContainer.new()
 	bars.add_theme_constant_override("separation", 10)
@@ -160,8 +201,13 @@ func _draw_res_bar(bar: Control, k: String) -> void:
 	bar.draw_string(font, tp, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 22, tc)
 
 func _refresh_top() -> void:
-	pearls_label.text = tr("◉ %d pearls") % Game.pearls
-	pop_label.text = tr("Colonists %d/%d") % [Game.colonists.size(), Game.population_cap()]
+	pearls_label.text = str(Game.pearls)
+	crystals_label.text = str(Game.crystals)
+	pop_label.text = "%d/%d" % [Game.colonists.size(), Game.population_cap()]
+	boost_label.text = tr("x2 %s") % _clock(Game.boost_left()) if Game.boost_active() else ""
+	if shop_badge:
+		shop_badge.visible = Game.daily_available() or Game.free_crate_ready()
+		shop_badge.queue_redraw()
 	for k in res_bars:
 		res_bars[k].queue_redraw()
 
@@ -176,11 +222,22 @@ func _build_bottom_bar() -> void:
 	bottom_bar.offset_bottom = -16
 	bottom_bar.add_theme_constant_override("separation", 10)
 	root.add_child(bottom_bar)
-	for item in [["Build", _open_build], ["Colonists", _open_colonists], ["Collect all", _collect_all]]:
+	for item in [["Build", _open_build], ["Colonists", _open_colonists], ["Shop", _open_shop], ["Collect", _collect_all]]:
 		var b := _button(item[0], item[1], 84)
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		b.add_theme_font_size_override("font_size", 26)
+		b.add_theme_font_size_override("font_size", 23)
 		bottom_bar.add_child(b)
+		if item[0] == "Shop":
+			b.add_theme_color_override("font_color", Color(1.0, 0.9, 0.5))
+			shop_badge = Control.new()
+			shop_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			shop_badge.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+			shop_badge.position = Vector2(-18, 4)
+			shop_badge.draw.connect(func():
+				var pulse := 1.0 + 0.15 * sin(Time.get_ticks_msec() / 150.0)
+				shop_badge.draw_circle(Vector2.ZERO, 11 * pulse, Color(1.0, 0.25, 0.3))
+				shop_badge.draw_arc(Vector2.ZERO, 11 * pulse, 0, TAU, 20, Color.WHITE, 2.0))
+			b.add_child(shop_badge)
 
 func _collect_all() -> void:
 	var n := Game.collect_all()
@@ -373,8 +430,15 @@ func _open_room(id: int) -> void:
 		rush.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		actions.add_child(rush)
 		room_live_labels["rush"] = rush
+		var safe := _button("", func():
+			Game.rush_safe(r)
+			_open_room(id), 72)
+		safe.add_theme_color_override("font_color", Defs.RESOURCES.crystals.color)
+		room_live_labels["safe"] = safe
 	if actions.get_child_count() > 0:
 		sheet_body.add_child(actions)
+	if room_live_labels.has("safe"):
+		sheet_body.add_child(room_live_labels.safe)
 	_refresh_room_live()
 
 func _refresh_room_live() -> void:
@@ -400,6 +464,11 @@ func _refresh_room_live() -> void:
 		var b: Button = room_live_labels.rush
 		b.text = tr("Rush (%d%%)") % int(Game.rush_chance(r) * 100)
 		b.disabled = r.ready or r.incident > 0.0 or Game.workers_in(r).is_empty()
+	if room_live_labels.has("safe"):
+		var sb: Button = room_live_labels.safe
+		var cost := Game.safe_rush_cost(r)
+		sb.text = tr("Finish now, no risk: ◆ %d") % maxi(cost, 0)
+		sb.disabled = cost < 0 or r.ready or r.incident > 0.0
 
 # ---------------------------------------------------------------- выбор колониста
 
@@ -475,3 +544,321 @@ func _on_changed() -> void:
 	_refresh_top()
 	if sheet_kind == "room" and sheet_room != -1:
 		pass
+
+# ---------------------------------------------------------------- магазин
+
+var shop_live := {}
+
+func _section(title: String) -> void:
+	var l := _label(title, 26, Color(1.0, 0.88, 0.5))
+	l.add_theme_constant_override("outline_size", 6)
+	sheet_body.add_child(l)
+
+func _card(bg: Color, border: Color) -> HBoxContainer:
+	var card := PanelContainer.new()
+	card.add_theme_stylebox_override("panel", _box(bg, border, 16))
+	var hb := HBoxContainer.new()
+	hb.add_theme_constant_override("separation", 12)
+	card.add_child(hb)
+	sheet_body.add_child(card)
+	return hb
+
+func _banner(key: String) -> Control:
+	var tex := Art.tex("res://art/ui/shop/%s.png" % key)
+	if tex == null:
+		return null
+	var tr_ := TextureRect.new()
+	tr_.texture = tex
+	tr_.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	tr_.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	tr_.custom_minimum_size = Vector2(0, 220)
+	return tr_
+
+func _open_shop() -> void:
+	_open_sheet("shop", 900)
+	shop_live = {}
+	_header(tr("Shop"))
+	var wallet := HBoxContainer.new()
+	wallet.add_child(_icon("pearls", 28))
+	wallet.add_child(_label(str(Game.pearls), 22, Defs.RESOURCES.pearls.color))
+	wallet.add_child(_icon("crystals", 28))
+	wallet.add_child(_label(str(Game.crystals), 22, Defs.RESOURCES.crystals.color))
+	sheet_body.add_child(wallet)
+
+	_section(tr("Free"))
+	var daily := _card(Color(0.2, 0.12, 0.05, 0.9), Color(1.0, 0.75, 0.3, 0.8))
+	var dinfo := VBoxContainer.new()
+	dinfo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dinfo.add_child(_label(tr("Daily reward"), 24))
+	dinfo.add_child(_label(tr("Day %d: %s") % [Game.daily_next_index() + 1, _reward_text(Defs.DAILY[Game.daily_next_index()])], 18, Color(0.9, 0.85, 0.7)))
+	daily.add_child(dinfo)
+	var db := _button(tr("Claim") if Game.daily_available() else tr("Tomorrow"), func():
+		Game.claim_daily()
+		_open_shop(), 64)
+	db.disabled = not Game.daily_available()
+	db.custom_minimum_size.x = 170
+	daily.add_child(db)
+
+	var free := _card(Color(0.05, 0.14, 0.22, 0.9), Color(0.5, 0.8, 1.0, 0.7))
+	free.add_child(_crate_icon("common", 64))
+	var finfo := VBoxContainer.new()
+	finfo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	finfo.add_child(_label(tr("Free Supply Crate"), 24))
+	finfo.add_child(_label(tr("Watch a short video") if not Game.premium else tr("Premium: no ads needed"), 18, Color(0.75, 0.85, 0.95)))
+	free.add_child(finfo)
+	var fb := _button("", func(): Store.show_rewarded(func():
+		Game.claim_free_crate()
+		_open_shop()), 64)
+	fb.custom_minimum_size.x = 170
+	free.add_child(fb)
+	shop_live["free"] = fb
+
+	var boost := _card(Color(0.18, 0.15, 0.03, 0.9), Color(1.0, 0.85, 0.3, 0.7))
+	var binfo := VBoxContainer.new()
+	binfo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	binfo.add_child(_label(tr("Double collection"), 24))
+	binfo.add_child(_label(tr("x2 resources from rooms for 30 min"), 18, Color(0.9, 0.85, 0.7)))
+	boost.add_child(binfo)
+	var bb := _button(tr("▶ Watch"), func(): Store.show_rewarded(func():
+		Game.start_boost()
+		_open_shop()), 64)
+	bb.custom_minimum_size.x = 170
+	boost.add_child(bb)
+
+	_section(tr("Your crates"))
+	var any := false
+	for type in Defs.CRATES:
+		if Game.crates[type] <= 0:
+			continue
+		any = true
+		var row := _card(Color(Defs.CRATES[type].color.darkened(0.8), 0.9), Color(Defs.CRATES[type].color, 0.7))
+		row.add_child(_crate_icon(type, 64))
+		var l := _label("%s ×%d" % [tr(Defs.CRATES[type].name), Game.crates[type]], 24)
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(l)
+		var ob := _button(tr("Open"), func():
+			Game.open_crate(type)
+			_open_shop(), 64)
+		ob.custom_minimum_size.x = 150
+		row.add_child(ob)
+	if not any:
+		sheet_body.add_child(_label(tr("No crates yet. Get one for free above!"), 19, Color(0.7, 0.8, 0.9)))
+
+	for id in ["starter_pack", "premium"]:
+		if not Store.can_buy(id):
+			continue
+		var p := Store.product(id)
+		_section(tr("Special offer") if id == "starter_pack" else tr("Premium"))
+		var banner := _banner(p.banner)
+		if banner:
+			sheet_body.add_child(banner)
+		var offer := _card(Color(0.25, 0.1, 0.3, 0.92) if id == "starter_pack" else Color(0.25, 0.2, 0.05, 0.92), Color(1.0, 0.8, 0.4, 0.9))
+		var oinfo := VBoxContainer.new()
+		oinfo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		oinfo.add_child(_label(tr(p.title), 26, Color(1.0, 0.9, 0.6)))
+		var d := _label(tr(p.desc), 18, Color(0.9, 0.9, 0.95))
+		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		oinfo.add_child(d)
+		offer.add_child(oinfo)
+		var pb := _button(p.price, func():
+			Store.purchase(id)
+			_open_shop(), 72)
+		pb.custom_minimum_size.x = 150
+		offer.add_child(pb)
+
+	_section(tr("Crystals"))
+	var grid := GridContainer.new()
+	grid.columns = 3
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	sheet_body.add_child(grid)
+	for p in Store.IAP:
+		if not p.has("pack"):
+			continue
+		var cell := PanelContainer.new()
+		cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		cell.add_theme_stylebox_override("panel", _box(Color(0.05, 0.12, 0.25, 0.92), Color(0.55, 0.8, 1.0, 0.6), 14))
+		var vb := VBoxContainer.new()
+		vb.alignment = BoxContainer.ALIGNMENT_CENTER
+		cell.add_child(vb)
+		var art := Art.tex("res://art/ui/shop/crystals_%d.png" % p.pack)
+		if art:
+			var ti := TextureRect.new()
+			ti.texture = art
+			ti.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			ti.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			ti.custom_minimum_size = Vector2(0, 90)
+			vb.add_child(ti)
+		else:
+			var ic := _icon("crystals", 60 + p.pack * 6)
+			ic.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+			vb.add_child(ic)
+		var amt := _label(str(p.reward.crystals), 24, Defs.RESOURCES.crystals.color)
+		amt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vb.add_child(amt)
+		vb.add_child(_button(p.price, Store.purchase.bind(p.id), 56))
+		grid.add_child(cell)
+
+	_section(tr("Spend crystals"))
+	for item in Store.CRYSTAL_ITEMS:
+		var row := _card(Color(0.05, 0.12, 0.2, 0.9), Color(0.55, 0.8, 1.0, 0.4))
+		if item.reward.has("crates"):
+			row.add_child(_crate_icon(item.reward.crates.keys()[0], 56))
+		else:
+			row.add_child(_icon("pearls", 56))
+		var l := _label(tr(item.title), 22)
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(l)
+		var cb := _button("◆ %d" % item.cost, func():
+			Store.buy_with_crystals(item.id)
+			_open_shop(), 60)
+		cb.add_theme_color_override("font_color", Defs.RESOURCES.crystals.color)
+		cb.disabled = Game.crystals < item.cost
+		cb.custom_minimum_size.x = 140
+		row.add_child(cb)
+
+	_section(tr("Crate odds"))
+	for type in Defs.CRATES:
+		var parts := []
+		for o in Game.crate_odds(type):
+			parts.append("%s %d%%" % [_kind_name(o[0]), roundi(o[1] * 100.0)])
+		var l := _label("%s: %s" % [tr(Defs.CRATES[type].name), ", ".join(parts)], 16, Color(0.65, 0.75, 0.85))
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		sheet_body.add_child(l)
+	if Store.DEV_MODE:
+		sheet_body.add_child(_label(tr("Test mode: purchases are free and no money is charged."), 16, Color(1.0, 0.6, 0.6)))
+	_refresh_shop_live()
+
+func _refresh_shop_live() -> void:
+	if shop_live.has("free"):
+		var fb: Button = shop_live.free
+		if Game.free_crate_ready():
+			fb.text = tr("▶ Free") if not Game.premium else tr("Claim")
+			fb.disabled = false
+		else:
+			fb.text = _clock(Game.free_crate_left())
+			fb.disabled = true
+
+func _kind_name(kind: String) -> String:
+	match kind:
+		"pearls": return tr("Pearls")
+		"crystals": return tr("Crystals")
+		"resources": return tr("Supplies")
+		"colonist_rare": return tr("Rare colonist")
+		"colonist_legendary": return tr("Legendary colonist")
+	return kind
+
+func _reward_text(r: Dictionary) -> String:
+	var parts := []
+	if r.has("pearls"): parts.append(tr("%d pearls") % r.pearls)
+	if r.has("crystals"): parts.append(tr("%d crystals") % r.crystals)
+	for k in r.get("crates", {}):
+		parts.append(tr(Defs.CRATES[k].name))
+	return ", ".join(parts)
+
+func _crate_icon(type: String, size: int) -> Control:
+	var tex := Art.tex("res://art/ui/shop/crate_%s.png" % type)
+	if tex:
+		var t := TextureRect.new()
+		t.texture = tex
+		t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		t.custom_minimum_size = Vector2(size, size)
+		return t
+	var col: Color = Defs.CRATES[type].color
+	var c := Control.new()
+	c.custom_minimum_size = Vector2(size, size)
+	c.draw.connect(func():
+		var r := Rect2(Vector2(size * 0.12, size * 0.28), Vector2(size * 0.76, size * 0.6))
+		c.draw_rect(r, Color(0.4, 0.28, 0.15))
+		c.draw_rect(Rect2(r.position, Vector2(r.size.x, r.size.y * 0.3)), Color(0.5, 0.36, 0.2))
+		c.draw_rect(r, col, false, 3.0)
+		c.draw_rect(Rect2(r.position + Vector2(r.size.x * 0.42, 0), Vector2(r.size.x * 0.16, r.size.y)), col)
+		c.draw_circle(r.get_center() + Vector2(0, -r.size.y * 0.05), size * 0.07, Color(0.5, 1.0, 1.0)))
+	return c
+
+# ---------------------------------------------------------------- ежедневная награда
+
+func _open_daily() -> void:
+	if sheet.visible or not Game.daily_available():
+		return
+	_open_sheet("daily", 470)
+	_header(tr("Daily reward"))
+	sheet_body.add_child(_label(tr("Come back every day for bigger rewards!"), 19, Color(0.8, 0.88, 0.95)))
+	var grid := GridContainer.new()
+	grid.columns = 4
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	sheet_body.add_child(grid)
+	var next := Game.daily_next_index()
+	for i in Defs.DAILY.size():
+		var cell := PanelContainer.new()
+		cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var border := Color(1.0, 0.8, 0.3) if i == next else Color(0.5, 0.7, 0.9, 0.4)
+		var bg := Color(0.25, 0.18, 0.05, 0.95) if i == next else (Color(0.05, 0.2, 0.1, 0.9) if i < next else Color(0.05, 0.1, 0.18, 0.9))
+		cell.add_theme_stylebox_override("panel", _box(bg, border, 12, 3 if i == next else 2))
+		var vb := VBoxContainer.new()
+		cell.add_child(vb)
+		var t := _label(tr("Day %d") % (i + 1), 18, Color(1.0, 0.9, 0.6) if i == next else Color(0.8, 0.85, 0.9))
+		t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vb.add_child(t)
+		var rw := _label(("✓ " if i < next else "") + _reward_text(Defs.DAILY[i]), 15)
+		rw.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		rw.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vb.add_child(rw)
+		grid.add_child(cell)
+	sheet_body.add_child(_button(tr("Claim"), func():
+		Game.claim_daily()
+		_close_sheet(), 72))
+
+# ---------------------------------------------------------------- окно наград и реклама
+
+func _build_popup() -> void:
+	popup = PanelContainer.new()
+	popup.set_anchors_preset(Control.PRESET_CENTER)
+	popup.custom_minimum_size = Vector2(560, 0)
+	popup.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	popup.grow_vertical = Control.GROW_DIRECTION_BOTH
+	popup.add_theme_stylebox_override("panel", _box(Color(0.04, 0.1, 0.18, 0.97), Color(1.0, 0.85, 0.4), 22, 3))
+	popup_bg = ColorRect.new()
+	popup_bg.color = Color(0, 0, 0, 0.55)
+	popup_bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	popup_bg.visible = false
+	root.add_child(popup_bg)
+	popup_bg.add_child(popup)
+
+func _show_rewards(title: String, lines: Array) -> void:
+	for ch in popup.get_children():
+		ch.queue_free()
+	var vb := VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 12)
+	popup.add_child(vb)
+	var t := _label(title, 32, Color(1.0, 0.88, 0.5))
+	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vb.add_child(t)
+	for line in lines:
+		var l := _label(line, 24)
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(l)
+	vb.add_child(_button(tr("Great!"), func(): popup_bg.visible = false, 68))
+	popup_bg.visible = true
+	popup.scale = Vector2(0.6, 0.6)
+	popup.pivot_offset = popup.size / 2.0
+	var tw := create_tween()
+	tw.tween_property(popup, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+func _build_ad_overlay() -> void:
+	ad_overlay = ColorRect.new()
+	ad_overlay.color = Color(0, 0, 0, 0.85)
+	ad_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	ad_overlay.visible = false
+	root.add_child(ad_overlay)
+	var l := _label(tr("Ad playing… (test mode)"), 30)
+	l.set_anchors_preset(Control.PRESET_CENTER)
+	l.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	ad_overlay.add_child(l)
+
+func _on_ad_started() -> void:
+	ad_overlay.visible = true

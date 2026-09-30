@@ -52,6 +52,11 @@ func _dev_screenshot() -> void:
 		"buildmode": hud._start_build("living")
 		"room": view.room_selected.emit(Game.find_room_of_type("reactor").id)
 		"colonists": hud._open_colonists()
+		"shop": hud._open_shop()
+		"daily": hud._open_daily()
+		"crate":
+			Game.crates.silver = 1
+			Game.open_crate("silver")
 		"deep": camera.position.y = 700
 		"zoom":
 			camera.zoom = Vector2(1.5, 1.5)

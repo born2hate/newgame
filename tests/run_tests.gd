@@ -69,6 +69,48 @@ func _initialize() -> void:
 	check(ready >= 3, "после 2 ч отсеки ждут сбора (%d)" % ready)
 	check(g3.colonists.size() == 6, "колонисты прибыли офлайн до лимита")
 
+	# экономика
+	var eco = load("res://scripts/game_state.gd").new()
+	eco.new_game()
+	check(eco.crystals == 25 and eco.crates.common == 1, "стартовые кристаллы и ящик")
+	var p0: int = eco.pearls
+	eco.open_crate("common")
+	check(eco.crates.common == 0, "ящик открыт")
+	check(eco.pearls > p0 or eco.crystals > 25 or eco.colonists.size() > 4 or eco.resources.energy > 60.0, "из ящика что-то выпало")
+	eco.open_crate("common")
+	check(eco.crates.common == 0, "пустой ящик не открывается")
+	var odds_sum := 0.0
+	for o in eco.crate_odds("gold"):
+		odds_sum += o[1]
+	check(absf(odds_sum - 1.0) < 0.001, "шансы ящика в сумме 100%")
+	check(eco.daily_available(), "ежедневная награда доступна")
+	var pd: int = eco.pearls
+	eco.claim_daily()
+	check(eco.pearls == pd + 100 and not eco.daily_available(), "награда дня 1 получена, повторно нельзя")
+	eco.daily_day -= 1
+	check(eco.daily_available() and eco.daily_next_index() == 1, "следующий день продолжает серию")
+	eco.daily_day -= 2
+	check(eco.daily_next_index() == 0, "пропуск дня сбрасывает серию")
+	var farm: Dictionary = eco.find_room_of_type("farm")
+	var cost: int = eco.safe_rush_cost(farm)
+	var cr: int = eco.crystals
+	eco.rush_safe(farm)
+	check(farm.ready and eco.crystals == cr - cost, "безопасное ускорение за %d кристаллов" % cost)
+	eco.start_boost()
+	eco.resources.food = 0.0
+	var food0: float = eco.resources.food
+	eco.collect(farm)
+	check(eco.resources.food - food0 >= eco.production_amount(farm) * 2.0 - 0.01, "x2 сбор при бусте")
+	eco.crystals = 0
+	check(not eco.spend_crystals(5), "нельзя потратить больше, чем есть")
+	eco.grant({"premium": true, "crystals": 100, "crates": {"gold": 1}}, "test")
+	check(eco.premium and eco.crystals == 100 and eco.crates.gold == 1, "выдача награды из покупки")
+	eco.save_game()
+	var e2 = load("res://scripts/game_state.gd").new()
+	e2.load_game()
+	check(e2.premium and e2.crates.gold == 1 and e2.crystals == 100, "экономика сохраняется")
+	eco.free(); e2.free()
+
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(g.SAVE_PATH))
 	g.free(); g2.free(); g3.free()
 	print("FAILURES: %d" % failures)

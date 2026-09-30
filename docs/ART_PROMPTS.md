@@ -95,3 +95,12 @@ transparent background, no text: <объект>
 
 Готовые файлы можно прислать мне в чат или закинуть в папку `art/`; дальше я подгоню подсветку,
 анимацию и эффекты под новый арт.
+
+## Магазин → `art/ui/shop/` и `art/icons/`
+
+| Файл | Что |
+|---|---|
+| `art/icons/crystals.png` | иконка кристалла (256×256, прозрачный фон) |
+| `art/ui/shop/crystals_0.png` … `crystals_5.png` | кучки кристаллов от маленькой до огромной |
+| `art/ui/shop/crate_common.png`, `crate_silver.png`, `crate_gold.png` | ящики припасов |
+| `art/ui/shop/starter.png`, `premium.png`, `season.png` | баннеры 16:9 |

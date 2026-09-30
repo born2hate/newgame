@@ -11,6 +11,7 @@ const RESOURCES := {
 	"oxygen": {"name": "Oxygen", "short": "O₂", "color": Color(0.35, 0.92, 1.0)},
 	"food": {"name": "Food", "short": "F", "color": Color(0.5, 1.0, 0.55)},
 	"pearls": {"name": "Pearls", "short": "P", "color": Color(1.0, 0.75, 0.95)},
+	"crystals": {"name": "Crystals", "short": "C", "color": Color(0.55, 0.8, 1.0)},
 }
 
 const STATS := {
@@ -73,6 +74,26 @@ const ROOMS := {
 		"icon": "✚", "unlock_pop": 12, "desc": "Heals all colonists. Needs Biology.",
 	},
 }
+
+## Ящики припасов: rolls — сколько наград, table — [вес, вид, мин, макс].
+## Шансы показываются игроку в магазине (требование Apple/Google).
+const CRATES := {
+	"common": {"name": "Supply Crate", "rolls": 2, "color": Color(0.55, 0.75, 0.9), "table": [
+		[50, "pearls", 80, 200], [20, "resources", 40, 80], [15, "crystals", 3, 8],
+		[12, "colonist_rare", 1, 1], [3, "colonist_legendary", 1, 1]]},
+	"silver": {"name": "Silver Crate", "rolls": 3, "color": Color(0.85, 0.9, 1.0), "table": [
+		[40, "pearls", 200, 450], [20, "resources", 80, 150], [18, "crystals", 8, 20],
+		[17, "colonist_rare", 1, 1], [5, "colonist_legendary", 1, 1]]},
+	"gold": {"name": "Gold Crate", "rolls": 4, "color": Color(1.0, 0.8, 0.3), "guaranteed": "colonist_rare", "table": [
+		[35, "pearls", 400, 900], [20, "resources", 150, 250], [22, "crystals", 20, 45],
+		[15, "colonist_rare", 1, 1], [8, "colonist_legendary", 1, 1]]},
+}
+
+## Ежедневные награды: 7-дневный цикл, серия сбрасывается при пропуске дня.
+const DAILY := [
+	{"pearls": 100}, {"pearls": 200}, {"crystals": 5}, {"pearls": 350},
+	{"crates": {"common": 1}}, {"crystals": 15}, {"crates": {"silver": 1}},
+]
 
 const FIRST_NAMES := [
 	"Ava", "Ben", "Cora", "Dan", "Ella", "Finn", "Gina", "Hugo", "Iris", "Jack",
