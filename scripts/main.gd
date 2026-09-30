@@ -57,6 +57,9 @@ func _dev_screenshot() -> void:
 		hud.tutorial.queue_free()
 	if scene != "mode" and hud.sheet_kind == "mode":
 		hud._close_sheet()
+	if scene.begins_with("tut"):
+		hud.start_tutorial()
+		await get_tree().create_timer(0.6).timeout
 	if not scene.begins_with("tut") and hud.sheet_kind == "daily" and scene != "daily":
 		hud._close_sheet()
 	match scene:

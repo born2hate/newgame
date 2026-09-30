@@ -87,7 +87,7 @@ func add_story_section() -> void:
 		return
 	hud._section(tr("Story · chapter %d/%d") % [Game.story_index + 1, Defs.STORY.size()])
 	var row: HBoxContainer = hud._card(Color(0.08, 0.14, 0.26, 0.95), Color(1.0, 0.8, 0.4, 0.8))
-	row.add_child(hud._portrait({"suit": Art.CAPTAIN_SUIT}, 90))
+	row.add_child(hud.reyes_portrait(96))
 	var info := VBoxContainer.new()
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info.add_child(hud._label(tr(st.title), 22, Color(1.0, 0.88, 0.5)))
@@ -151,11 +151,12 @@ func open_achievements() -> void:
 		var ready := Game.achievement_ready(a)
 		var row: HBoxContainer = hud._card(Color(0.2, 0.15, 0.04, 0.95) if ready else Color(0.05, 0.12, 0.2, 0.9), Color(1.0, 0.8, 0.3) if ready else Color(0.5, 0.7, 0.9, 0.4))
 		var cup := TextureRect.new()
-		cup.texture = Art.tex("res://art/ui/icons/trophy.png")
+		var cup_names := ["trophy_bronze", "trophy_bronze", "trophy_silver", "trophy_gold"]
+		cup.texture = Art.tex("res://art/ui/icons/%s.png" % cup_names[t])
 		cup.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		cup.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		cup.custom_minimum_size = Vector2(64, 64)
-		cup.modulate = [Color(0.5, 0.5, 0.55), Color(0.85, 0.55, 0.3), Color(0.85, 0.9, 1.0), Color(1, 1, 1)][t]
+		cup.modulate = Color(0.35, 0.35, 0.4, 0.8) if t == 0 else Color.WHITE
 		row.add_child(cup)
 		var info := VBoxContainer.new()
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -223,6 +224,14 @@ func add_gear_section(c: Dictionary) -> void:
 		else:
 			txt += "%s\n%s" % [Game.item_name(it), item_effect(it)]
 		var b: Button = hud._button(txt, open_gear_picker.bind(c.id, kind), 96)
+		if not it.is_empty():
+			var ic := Art.tex("res://art/items/%s.png" % it.base)
+			if ic:
+				b.icon = ic
+				b.expand_icon = true
+				b.add_theme_constant_override("icon_max_width", 52)
+				b.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+				b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		b.add_theme_font_size_override("font_size", 15)
 		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -271,6 +280,11 @@ func open_gear_picker(cid: int, kind: String) -> void:
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.add_theme_font_size_override("font_size", 18)
 		b.add_theme_color_override("font_color", Defs.ITEM_RARITY[it.rarity].color)
+		var ic2 := Art.tex("res://art/items/%s.png" % it.base)
+		if ic2:
+			b.icon = ic2
+			b.expand_icon = true
+			b.add_theme_constant_override("icon_max_width", 48)
 		b.disabled = owner.get("id", -1) == cid
 		_body().add_child(b)
 	_body().add_child(hud._button(tr("Back"), hud._open_colonist.bind(cid), 56))

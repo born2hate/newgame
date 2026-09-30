@@ -360,17 +360,23 @@ func _try_pop_treasure(world: Vector2) -> bool:
 func _trader_rect() -> Rect2:
 	var al := Game.find_room_of_type("airlock")
 	var cx := room_rect(al).get_center().x + 230 if not al.is_empty() else 600.0
-	return Rect2(cx - 90, -150 + sin(t * 1.2) * 6, 180, 80)
+	return Rect2(cx - 110, -150 + sin(t * 1.2) * 6, 230, 70)
 
 func _draw_trader() -> void:
 	if Game.trader.is_empty():
 		return
-	var sub := Art.tex("res://art/creatures/bathyscaphe.png")
 	var r := _trader_rect()
-	if sub:
-		draw_set_transform(r.position + Vector2(r.size.x, 0), 0.0, Vector2(-1, 1))
-		draw_texture_rect(sub, Rect2(Vector2.ZERO, r.size), false, Color(0.75, 1.0, 0.8))
-		draw_set_transform(Vector2.ZERO)
+	var ship := Art.tex("res://art/creatures/trader_sub.png")
+	if ship:
+		# корабль торговца смотрит влево — к шлюзу
+		var h := r.size.x * ship.get_height() / ship.get_width()
+		draw_texture_rect(ship, Rect2(r.position.x, r.get_center().y - h / 2.0, r.size.x, h), false)
+	else:
+		var sub := Art.tex("res://art/creatures/bathyscaphe.png")
+		if sub:
+			draw_set_transform(r.position + Vector2(r.size.x, 0), 0.0, Vector2(-1, 1))
+			draw_texture_rect(sub, Rect2(Vector2.ZERO, r.size), false, Color(0.75, 1.0, 0.8))
+			draw_set_transform(Vector2.ZERO)
 	var bp := r.position + Vector2(r.size.x * 0.5, -22 + sin(t * 3.0) * 4)
 	draw_circle(bp, 22, Color(0.1, 0.25, 0.15, 0.9))
 	draw_arc(bp, 22, 0, TAU, 24, Color(0.5, 1.0, 0.6), 3.0)

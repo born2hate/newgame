@@ -744,6 +744,17 @@ func _portrait(c: Dictionary, size: int) -> Control:
 	t.custom_minimum_size = Vector2(size * 0.75, size)
 	return t
 
+func reyes_portrait(size: int) -> Control:
+	var tex := Art.tex("res://art/characters/reyes.png")
+	if tex == null:
+		return _portrait({"suit": Art.CAPTAIN_SUIT}, size)
+	var t := TextureRect.new()
+	t.texture = tex
+	t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	t.custom_minimum_size = Vector2(size, size)
+	return t
+
 func _where(c: Dictionary) -> String:
 	if c.room == Game.ON_EXPEDITION:
 		return tr("On expedition")
@@ -1355,6 +1366,14 @@ func _dock_section(r: Dictionary) -> void:
 		sheet_body.add_child(_with_icon(_button(tr("Plan an expedition"), _open_planner.bind(r.id, 0), 76), "expedition", 48))
 		return
 	var zone: Dictionary = Defs.ZONES[e.zone]
+	var zbanner := Art.tex("res://art/zones/%s.png" % zone.id)
+	if zbanner:
+		var zb := TextureRect.new()
+		zb.texture = zbanner
+		zb.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		zb.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		zb.custom_minimum_size = Vector2(0, 170)
+		sheet_body.add_child(zb)
 	var crew_names := []
 	for id in e.crew:
 		crew_names.append(Game.get_colonist(id).get("name", "?"))
@@ -1438,6 +1457,16 @@ func _open_planner(dock_id: int, zone_idx: int) -> void:
 		var unlocked := Game.zone_unlocked(i)
 		var sel := i == plan_zone
 		var row := _card(Color(0.25, 0.18, 0.05, 0.95) if sel else Color(0.05, 0.12, 0.2, 0.9), Color(1.0, 0.8, 0.3) if sel else Color(0.5, 0.7, 0.9, 0.4))
+		var zpic := Art.tex("res://art/zones/%s.png" % z.id)
+		if zpic:
+			var zt := TextureRect.new()
+			zt.texture = zpic
+			zt.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			zt.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+			zt.custom_minimum_size = Vector2(130, 90)
+			if not unlocked:
+				zt.modulate = Color(0.35, 0.35, 0.4)
+			row.add_child(zt)
 		var info := VBoxContainer.new()
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		info.add_child(_label("%s · %s" % [tr(z.name), _clock(z.minutes * 60.0)], 22, Color(1.0, 0.9, 0.6) if sel else Color.WHITE))

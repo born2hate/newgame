@@ -43,7 +43,7 @@ func _ready() -> void:
 	var hb := HBoxContainer.new()
 	hb.add_theme_constant_override("separation", 12)
 	bubble.add_child(hb)
-	hb.add_child(hud._portrait({"suit": Art.CAPTAIN_SUIT}, 110))
+	hb.add_child(hud.reyes_portrait(120))
 	var vb := VBoxContainer.new()
 	vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	hb.add_child(vb)
