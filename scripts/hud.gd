@@ -61,6 +61,8 @@ func _ready() -> void:
 	_build_popup()
 	_build_ad_overlay()
 	_refresh_top()
+	apply_safe_area()
+	get_viewport().size_changed.connect(apply_safe_area)
 	if not Game.mode_chosen:
 		open_mode_picker.call_deferred()
 	elif not Game.tutorial_done:
@@ -100,6 +102,22 @@ func open_mode_picker() -> void:
 		for k in st:
 			b.add_theme_stylebox_override(k, st[k])
 		row.add_child(b)
+
+## Отступы от выреза камеры, скруглённых углов и системных панелей (например, Samsung S25).
+var safe_top := 0.0
+
+func apply_safe_area() -> void:
+	var win := DisplayServer.window_get_size()
+	var safe := DisplayServer.get_display_safe_area()
+	if win.x <= 0 or safe.size.x <= 0:
+		return
+	var vp := get_viewport().get_visible_rect().size
+	var k := vp.y / float(win.y)
+	var top := maxf(0.0, safe.position.y) * k
+	var bottom := maxf(0.0, float(win.y) - float(safe.end.y)) * k
+	safe_top = top
+	root.offset_top = top
+	root.offset_bottom = -bottom
 
 func start_tutorial() -> void:
 	if tutorial and is_instance_valid(tutorial):
@@ -860,7 +878,7 @@ func _open_colonists() -> void:
 		var xp := ProgressBar.new()
 		xp.show_percentage = false
 		xp.custom_minimum_size = Vector2(0, 8)
-		xp.max_value = 90.0 * c.level
+		xp.max_value = Game._xp_needed(c)
 		xp.value = c.xp
 		vb.add_child(xp)
 		var open := Button.new()
@@ -910,11 +928,11 @@ func _open_colonist(id: int) -> void:
 	var rcol: Color = {"common": Color(0.8, 0.85, 0.9), "rare": Color(0.5, 0.8, 1.0), "legendary": Color(1.0, 0.8, 0.3)}[rarity]
 	info.add_child(_label(tr("Rarity: %s") % tr(rarity.capitalize()), 19, rcol))
 	info.add_child(_label(tr("Works in: %s") % _where(c), 19, Color(0.8, 0.88, 0.95)))
-	info.add_child(_label("XP %d / %d" % [int(c.xp), int(90.0 * c.level)], 17, Color(0.7, 0.8, 0.9)))
+	info.add_child(_label("XP %d / %d" % [int(c.xp), int(Game._xp_needed(c))], 17, Color(0.7, 0.8, 0.9)))
 	var xp := ProgressBar.new()
 	xp.show_percentage = false
 	xp.custom_minimum_size = Vector2(0, 12)
-	xp.max_value = 90.0 * c.level
+	xp.max_value = Game._xp_needed(c)
 	xp.value = c.xp
 	info.add_child(xp)
 	info.add_child(_label("%s %d%%" % [tr("Health"), int(c.health)], 17, Color(1.0, 0.6, 0.6)))

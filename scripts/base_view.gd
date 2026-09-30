@@ -38,11 +38,12 @@ func _ready() -> void:
 	font = ThemeDB.fallback_font
 	var r := RandomNumberGenerator.new()
 	r.seed = 7
-	for i in 7:
+	var kinds := ["fish_yellow", "fish_blue", "fish_clown", "fish_angel", "fish_school", "fish_yellow", "fish_blue", "fish_school"]
+	for i in kinds.size():
 		fish.append({
-			"p": Vector2(r.randf_range(-600, 1400), r.randf_range(-560, -80)),
-			"v": r.randf_range(25, 70) * (1 if r.randf() > 0.5 else -1),
-			"s": r.randf_range(0.6, 1.4), "ph": r.randf() * TAU,
+			"p": Vector2(r.randf_range(-600, 1400), r.randf_range(-560, -120)),
+			"v": r.randf_range(25, 60) * (1 if r.randf() > 0.5 else -1),
+			"s": r.randf_range(0.7, 1.2), "ph": r.randf() * TAU, "kind": kinds[i],
 		})
 	Game.floating_text.connect(_on_floating_text)
 	var rock := Polygon2D.new()
@@ -112,8 +113,24 @@ func _update_walkers(delta: float) -> void:
 			danger = Game.get_room(here).get("incident", 0.0) > 0.0
 		w["panic"] = danger
 		if danger:
-			w.wait = 0.0
 			w["working"] = false
+			if w.wait > 0.0:
+				w.wait -= delta
+				continue
+			var goal := _hazard_target_x(Game.get_room(here), c.id)
+			var dd: float = goal - w.x
+			if absf(dd) < 0.03:
+				w["fighting"] = true
+				w.wait = randf_range(1.2, 2.4)
+				w.facing = signf(_hazard_focus_x(Game.get_room(here)) - w.x)
+				if w.facing == 0.0:
+					w.facing = 1.0
+			else:
+				w["fighting"] = false
+				w.facing = signf(dd)
+				w.x += signf(dd) * minf(absf(dd), delta * 0.9)
+			continue
+		w["fighting"] = false
 		# работник: стоит у своего рабочего места и трудится, изредка переходит к другому
 		var room: Dictionary = Game.get_room(here) if here >= 0 else {}
 		var job: bool = not danger and c.get("help", -1) == -1 and not room.is_empty() and Game.slots(room) > 0
@@ -289,6 +306,15 @@ func _draw_water_life() -> void:
 		var p: Vector2 = f.p + Vector2(0, sin(t * 1.5 + f.ph) * 6)
 		var s: float = f.s
 		var dir := signf(f.v)
+		var spr := Art.tex("res://art/creatures/fish/%s.png" % f.kind)
+		if spr:
+			var fw := (90.0 if f.kind == "fish_school" else 60.0) * s
+			var fh := fw * spr.get_height() / spr.get_width()
+			# спрайты смотрят вправо; лёгкое покачивание хвостом
+			draw_set_transform(p, sin(t * 4.0 + f.ph) * 0.06, Vector2(dir, 1))
+			draw_texture_rect(spr, Rect2(-fw / 2.0, -fh / 2.0, fw, fh), false)
+			draw_set_transform(Vector2.ZERO)
+			continue
 		var col := Color(0.55, 0.85, 1.0, 0.35)
 		var body := PackedVector2Array()
 		for i in 12:
@@ -345,7 +371,7 @@ func _draw_depth_zones(depth_rows: int) -> void:
 		var y: float = z.from * CELL_H - 3
 		var open := Game.zone_unlocked_row(z.from)
 		var col: Color = z.color
-		for i in 40:
+		for i in int((Defs.GRID_COLS * CELL_W + 400) / 30.0):
 			var x := -200.0 + i * 30.0
 			draw_line(Vector2(x, y), Vector2(x + 18, y), Color(col, 0.7), 3.0)
 		var label := tr(z.name)
@@ -789,6 +815,9 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 	var w: Dictionary = walkers.get(c.id, {})
 	var walking: bool = w.get("wait", 1.0) <= 0.0 and not lifted
 	var working: bool = w.get("working", false) and not walking and not lifted
+	var fighting: bool = w.get("fighting", false) and w.get("panic", false) and not lifted
+	if fighting:
+		walking = false
 	var h := 72.0 * (1.15 if lifted else 1.0)
 	var size := Vector2(h * sprite.get_width() / sprite.get_height(), h)
 	var bob := absf(sin(t * 10.0 + c.id)) * -3.0 if walking else sin(t * 2.0 + c.id) * 0.8
@@ -804,7 +833,13 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 			bob = 0.0
 	var squash := 1.0
 	var lean := 0.0
-	if working:
+	if fighting:
+		# резкие удары / отдача от выстрела
+		var hit := sin(t * 12.0 + c.id * 2.3)
+		lean = 0.12 * maxf(0.0, hit) * facing
+		squash = 1.0 - 0.04 * absf(hit)
+		bob = 0.0
+	elif working:
 		# ритмичные движения: наклон и «работа руками»
 		var beat := sin(t * 7.0 + c.id * 1.7)
 		squash = 1.0 - 0.05 * maxf(0.0, beat)
@@ -815,13 +850,15 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 	draw_set_transform(Vector2.ZERO)
 	if working:
 		_draw_work_fx(feet, c, facing, h)
+	if fighting:
+		_draw_fight_fx(feet, c, facing, h)
 	if c.room == -1 and c.get("help", -1) == -1 and not lifted:
 		# свободен — просит работу
 		var bp := feet + Vector2(0, -h - 20 + sin(t * 3.0 + c.id) * 3.0)
 		draw_circle(bp, 13, Color(1.0, 1.0, 1.0, 0.92))
 		draw_colored_polygon(PackedVector2Array([bp + Vector2(-5, 10), bp + Vector2(5, 10), bp + Vector2(0, 17)]), Color(1, 1, 1, 0.92))
 		_text(bp + Vector2(0, 7), "?", 20, Color(0.1, 0.3, 0.6), true)
-	if w.get("panic", false):
+	if w.get("panic", false) and not fighting:
 		var ex := feet + Vector2(0, -h - 22 + sin(t * 10.0 + c.id) * 3.0)
 		draw_circle(ex, 11, Color(1.0, 0.85, 0.2))
 		_text(ex + Vector2(0, 7), "!", 20, Color(0.2, 0.05, 0.0), true)
@@ -829,6 +866,78 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 		var hb := Rect2(feet + Vector2(-12, -h - 8), Vector2(24, 4))
 		draw_rect(hb, Color(0, 0, 0, 0.6))
 		draw_rect(Rect2(hb.position, Vector2(hb.size.x * c.health / 100.0, hb.size.y)), Color(1.0, 0.3, 0.3).lerp(Color(0.4, 1.0, 0.4), c.health / 100.0))
+
+## Где стоять во время беды: у чудовища / огня, чуть в стороне, у каждого своё место.
+func _hazard_focus_x(room: Dictionary) -> float:
+	if room.get("hazard", "") == "creature":
+		return 0.5 + sin(t * 2.5) * 0.2
+	return 0.5
+
+func _hazard_target_x(room: Dictionary, cid: int) -> float:
+	var side := -1.0 if cid % 2 == 0 else 1.0
+	return clampf(_hazard_focus_x(room) + side * (0.22 + 0.06 * (cid % 3)), 0.05, 0.95)
+
+## Бой: гарпун стреляет, горелка жжёт, инструменты бьют, без оружия — кулаки.
+## Пожар — огнетушитель, потоп — насос с брызгами.
+func _draw_fight_fx(feet: Vector2, c: Dictionary, facing: float, h: float) -> void:
+	var room := Game.get_room(c.help if c.get("help", -1) != -1 else c.room)
+	if room.is_empty():
+		return
+	var rect := room_rect(room)
+	var hand := feet + Vector2(facing * 22.0, -h * 0.5)
+	var focus := Vector2(rect.position.x + 22 + _hazard_focus_x(room) * (rect.size.x - 44), hand.y)
+	var k := fmod(t * 2.2 + c.id * 0.41, 1.0)
+	match room.hazard:
+		"creature":
+			var tool_id := ""
+			var uid: int = c.get("tool_item", -1)
+			if uid != -1:
+				tool_id = Game.get_item(uid).get("base", "")
+			match tool_id:
+				"harpoon":
+					# гарпун летит к чудовищу
+					var p := hand.lerp(focus, k)
+					draw_line(hand, p, Color(0.8, 0.8, 0.75, 0.7), 1.5)
+					draw_line(p - Vector2(facing * 14, 0), p, Color(0.85, 0.85, 0.9), 4.0)
+					draw_colored_polygon(PackedVector2Array([p, p - Vector2(facing * 8, -5), p - Vector2(facing * 8, 5)]), Color(0.95, 0.95, 1.0))
+				"torch":
+					for i in 6:
+						var q := fmod(k + i / 6.0, 1.0)
+						var p := hand + Vector2(facing * q * 60.0, sin(t * 20.0 + i) * 4.0 * q)
+						draw_circle(p, 3.0 + 6.0 * q, Color(1.0, 0.8 - 0.5 * q, 0.2, 0.9 * (1.0 - q)))
+				"":
+					# кулаки: «бах» у руки
+					if k < 0.4:
+						var pp := hand + Vector2(facing * 10.0, 0)
+						_star_burst(pp, 10.0 + 14.0 * k, Color(1.0, 0.95, 0.5, 1.0 - k * 2.0))
+				_:
+					# удар инструментом — дуга
+					var a0 := -PI * 0.8 if facing > 0 else -PI * 0.2
+					draw_arc(hand, 26.0, a0, a0 + PI * 0.6 * facing, 12, Color(1, 1, 1, 0.8 * (1.0 - k)), 3.0)
+					if k < 0.3:
+						_star_burst(hand + Vector2(facing * 24, -6), 9.0, Color(1.0, 0.9, 0.5, 1.0 - k * 3.0))
+		"fire":
+			# огнетушитель: белая пена конусом к огню
+			draw_rect(Rect2(hand - Vector2(5, 10), Vector2(10, 20)), Color(0.85, 0.15, 0.15))
+			for i in 9:
+				var q := fmod(k + i / 9.0, 1.0)
+				var spread := (i % 3 - 1) * 10.0 * q
+				var p := hand + Vector2(facing * (10.0 + q * 70.0), spread + q * 8.0)
+				draw_circle(p, 3.0 + 7.0 * q, Color(0.95, 0.98, 1.0, 0.85 * (1.0 - q)))
+		"flood":
+			# откачивают воду: брызги из ведра
+			draw_rect(Rect2(hand - Vector2(7, 6), Vector2(14, 12)), Color(0.55, 0.6, 0.7))
+			for i in 5:
+				var q := fmod(k + i / 5.0, 1.0)
+				var p := hand + Vector2(facing * (6.0 + q * 30.0) + (i - 2) * 3.0, -q * 36.0 + q * q * 40.0)
+				draw_circle(p, 3.0, Color(0.6, 0.9, 1.0, 1.0 - q))
+
+func _star_burst(c: Vector2, r: float, col: Color) -> void:
+	var pts := PackedVector2Array()
+	for i in 16:
+		var a := i * TAU / 16.0
+		pts.append(c + Vector2(cos(a), sin(a)) * (r if i % 2 == 0 else r * 0.45))
+	draw_colored_polygon(pts, col)
 
 ## Эффект работы у рук колониста — по типу отсека.
 func _draw_work_fx(feet: Vector2, c: Dictionary, facing: float, h: float) -> void:
@@ -950,6 +1059,11 @@ func _on_release(p: Vector2) -> void:
 	if moved:
 		return
 	if build_type != "":
+		# в режиме стройки можно собирать готовые ресурсы
+		var tapped := Game.room_at(cell.x, cell.y)
+		if not tapped.is_empty() and tapped.ready:
+			Game.collect(tapped)
+			return
 		var w := Defs.room_width(build_type)
 		# пробуем поставить так, чтобы касание попало внутрь комнаты
 		for dc in range(0, -w, -1):

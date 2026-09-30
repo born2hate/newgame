@@ -7,11 +7,13 @@ signal floating_text(room_id: int, text: String, color: Color)
 
 const SAVE_PATH := "user://save.json"
 const SAVE_VERSION := 1
-const ARRIVAL_INTERVAL := 75.0
+const ARRIVAL_INTERVAL := 180.0
 const MAX_OFFLINE := 8.0 * 3600.0
 const MAX_OFFLINE_PREMIUM := 16.0 * 3600.0
-const O2_PER_COLONIST := 0.07
-const FOOD_PER_COLONIST := 0.05
+## Темп игры: всё рассчитано на спокойные заходы по несколько минут.
+const PACE := 3.0
+const O2_PER_COLONIST := 0.07 / PACE
+const FOOD_PER_COLONIST := 0.05 / PACE
 
 var resources := {}
 var pearls := 0
@@ -266,7 +268,7 @@ func cycle_time(room: Dictionary) -> float:
 	var power := room_power(room)
 	if power <= 0.0:
 		return INF
-	return def.cycle / (power / 5.0)
+	return def.cycle * PACE / (power / 5.0)
 
 func production_amount(room: Dictionary) -> float:
 	var def: Dictionary = Defs.ROOMS[room.type]
@@ -295,7 +297,7 @@ func simulate(delta: float, offline: bool) -> void:
 	# расход
 	var energy_use := 0.0
 	for r in rooms:
-		energy_use += Defs.ROOMS[r.type].energy * r.level * r.size * (0.6 if has_research("fusion_core") else 1.0)
+		energy_use += Defs.ROOMS[r.type].energy / PACE * r.level * r.size * (0.6 if has_research("fusion_core") else 1.0)
 	resources.energy = maxf(0.0, resources.energy - energy_use * delta)
 	var pop := colonists.size()
 	var consume: float = mode().consume
@@ -348,7 +350,7 @@ func simulate(delta: float, offline: bool) -> void:
 		incident_timer -= delta
 		if incident_timer <= 0.0:
 			var mult := (1.0 / 0.7 if has_research("reinforced_hull") else 1.0) * (0.6 if weekly_mod() == "tide" else 1.0)
-			incident_timer = rng.randf_range(150.0, 300.0) * mult * mode().incidents
+			incident_timer = rng.randf_range(300.0, 540.0) * mult * mode().incidents
 			_spawn_random_incident()
 	if not offline and colonists.size() >= 6:
 		trader_timer -= delta * (2.0 if has_research("trader_beacon") else 1.0)
@@ -380,7 +382,7 @@ func simulate(delta: float, offline: bool) -> void:
 		resources[k] = minf(resources[k], cap)
 
 func _xp_needed(c: Dictionary) -> float:
-	return 90.0 * c.level
+	return 200.0 * c.level
 
 func _level_up(c: Dictionary) -> void:
 	c.xp = 0.0
@@ -575,7 +577,7 @@ func safe_rush_cost(room: Dictionary) -> int:
 	var t := cycle_time(room)
 	if t == INF:
 		return -1
-	return clampi(ceili((1.0 - room.progress) * t / 20.0), 1, 60)
+	return clampi(ceili((1.0 - room.progress) * t / 60.0), 1, 60)
 
 func rush_safe(room: Dictionary) -> void:
 	if not crystal_rush_allowed():

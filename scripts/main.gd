@@ -230,6 +230,24 @@ func _dev_screenshot() -> void:
 			camera.position = Vector2(620, 300)
 			Game.assign(Game.colonists[3], Game.find_room_of_type("farm"))
 			await get_tree().create_timer(6.0).timeout
+		"fight":
+			hud._close_sheet()
+			camera.zoom = Vector2(1.7, 1.7)
+			camera.position = Vector2(560, 230)
+			Game.add_item("rare", "harpoon")
+			Game.equip(Game.colonists[1], Game.items[-1].uid)
+			Game.start_hazard(Game.find_room_of_type("oxygen"), "creature")
+			Game.send_help(Game.colonists[3], Game.find_room_of_type("oxygen"))
+			Game.start_hazard(Game.find_room_of_type("farm"), "fire")
+			Game.send_help(Game.colonists[0], Game.find_room_of_type("farm"))
+			await get_tree().create_timer(2.5).timeout
+		"wide":
+			camera.zoom = Vector2(0.5, 0.5)
+			camera.position = Vector2(700, 300)
+			hud._start_build("farm")
+			await get_tree().create_timer(0.6).timeout
+			camera.zoom = Vector2(0.5, 0.5)
+			camera.position = Vector2(700, 300)
 		"zoom3d":
 			camera.zoom = Vector2(2.0, 2.0)
 			camera.position = Vector2(560, 150)

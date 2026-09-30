@@ -2,7 +2,7 @@ class_name Defs
 extends RefCounted
 ## Статические данные игры: типы комнат, ресурсы, имена колонистов.
 
-const GRID_COLS := 8
+const GRID_COLS := 14
 const MAX_DEPTH := 14
 const MAX_LEVEL := 3
 

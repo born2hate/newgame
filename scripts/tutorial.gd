@@ -114,6 +114,7 @@ func _process(delta: float) -> void:
 		bubble.offset_top = 150
 	else:
 		bubble.offset_top = vp.y - 360
+	bubble.offset_top += hud.safe_top
 	bubble.offset_bottom = bubble.offset_top
 	overlay.queue_redraw()
 
