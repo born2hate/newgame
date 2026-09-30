@@ -409,3 +409,15 @@
 408|Armure de plongée
 409|Maille anti-requin
 410|Plaque thermique
+411|Détente
+412|Normal
+413|Survie
+414|Incidents plus rares et plus faibles, consommation réduite, la faim ne blesse pas. Construis et détends-toi.
+415|L'expérience prévue.
+416|Incidents plus fréquents et plus forts, consommation accrue. Les colons peuvent mourir pour de bon. Pas d'accélération aux cristaux. +50 % de récompenses.
+417|Vrai survivant
+418|Atteins %d colons en Survie
+419|%s est mort. La colonie est en deuil.
+420|Choisis ton défi
+421|Tu ne peux le changer qu'en recommençant.
+422|Recommandé

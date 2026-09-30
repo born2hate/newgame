@@ -104,6 +104,8 @@ func new_game() -> void:
 	weekly_claimed = []
 	trader = {}
 	tutorial_done = false
+	difficulty = "normal"
+	mode_chosen = false
 	rooms = []
 	colonists = []
 	next_id = 1
@@ -269,6 +271,8 @@ func production_amount(room: Dictionary) -> float:
 		"pearls":
 			m *= 1.4 if has_research("pearl_cultivation") else 1.0
 			m *= 1.5 if weekly_mod() == "pearl_week" else 1.0
+	if res == "pearls":
+		m *= mode().reward
 	return def.amount * (1.0 + 0.6 * (room.level - 1)) * room.size * m
 
 func rush_chance(room: Dictionary) -> float:
@@ -284,8 +288,9 @@ func simulate(delta: float, offline: bool) -> void:
 		energy_use += Defs.ROOMS[r.type].energy * r.level * r.size * (0.6 if has_research("fusion_core") else 1.0)
 	resources.energy = maxf(0.0, resources.energy - energy_use * delta)
 	var pop := colonists.size()
-	resources.oxygen = maxf(0.0, resources.oxygen - O2_PER_COLONIST * pop * delta)
-	resources.food = maxf(0.0, resources.food - FOOD_PER_COLONIST * pop * delta)
+	var consume: float = mode().consume
+	resources.oxygen = maxf(0.0, resources.oxygen - O2_PER_COLONIST * pop * delta * consume)
+	resources.food = maxf(0.0, resources.food - FOOD_PER_COLONIST * pop * delta * consume)
 	var powered: bool = resources.energy > 0.0
 	var starving: bool = resources.oxygen <= 0.0 or resources.food <= 0.0
 
@@ -316,8 +321,8 @@ func simulate(delta: float, offline: bool) -> void:
 		heal_rate *= 3.0
 	var xp_mult := 1.5 if has_research("training_programs") else 1.0
 	for c in colonists:
-		if starving and not offline:
-			c.health = maxf(10.0, c.health - 1.5 * delta)
+		if starving and not offline and mode().hunger:
+			c.health = maxf(health_floor(), c.health - 1.5 * delta * mode().damage)
 		elif not starving:
 			c.health = minf(100.0, c.health + heal_rate * delta)
 		if c.room >= 0:
@@ -325,12 +330,15 @@ func simulate(delta: float, offline: bool) -> void:
 			if c.xp >= _xp_needed(c):
 				_level_up(c)
 
+	if not offline:
+		_check_deaths()
+
 	# случайные инциденты (только в игре, не офлайн)
 	if not offline and colonists.size() >= 5:
 		incident_timer -= delta
 		if incident_timer <= 0.0:
 			var mult := (1.0 / 0.7 if has_research("reinforced_hull") else 1.0) * (0.6 if weekly_mod() == "tide" else 1.0)
-			incident_timer = rng.randf_range(150.0, 300.0) * mult
+			incident_timer = rng.randf_range(150.0, 300.0) * mult * mode().incidents
 			_spawn_random_incident()
 	if not offline and colonists.size() >= 6:
 		trader_timer -= delta * (2.0 if has_research("trader_beacon") else 1.0)
@@ -559,6 +567,8 @@ func safe_rush_cost(room: Dictionary) -> int:
 	return clampi(ceili((1.0 - room.progress) * t / 20.0), 1, 60)
 
 func rush_safe(room: Dictionary) -> void:
+	if not crystal_rush_allowed():
+		return
 	if room.ready or room.incident > 0.0 or not Defs.ROOMS[room.type].has("produces"):
 		return
 	var cost := safe_rush_cost(room)
@@ -779,7 +789,7 @@ func launch_expedition(dock_id: int, zone_idx: int, ids: Array) -> bool:
 		return false
 	var zone: Dictionary = Defs.ZONES[zone_idx]
 	var f := expedition_chance(zone_idx, ids)
-	var loot_mult := (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0)
+	var loot_mult: float = (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * mode().reward
 	var names := []
 	for id in ids:
 		names.append(get_colonist(id).name.split(" ")[0])
@@ -848,6 +858,8 @@ func finish_cost(e: Dictionary) -> int:
 	return maxi(1, ceili((float(e.end) - now()) / 120.0))
 
 func finish_expedition_now(e: Dictionary) -> void:
+	if not crystal_rush_allowed():
+		return
 	if expedition_done(e) or not spend_crystals(finish_cost(e)):
 		return
 	e.end = now()
@@ -873,7 +885,7 @@ func claim_expedition(e: Dictionary) -> void:
 		if c.is_empty():
 			continue
 		c.room = -1
-		c.health = maxf(10.0, c.health - e.damage.get(str(id), 0) * (1.0 - protection(c)))
+		c.health = maxf(health_floor(), c.health - e.damage.get(str(id), 0) * (1.0 - protection(c)) * mode().damage)
 		c.xp += zone.minutes * 4.0
 		while c.xp >= _xp_needed(c):
 			c.xp -= _xp_needed(c)
@@ -921,6 +933,8 @@ var weekly_claimed: Array = []
 var trader := {}
 var trader_timer := 300.0
 var tutorial_done := false
+var difficulty := "normal"
+var mode_chosen := true
 
 func can_have_hazard(room: Dictionary) -> bool:
 	return not room.is_empty() and room.type != "elevator" and room.type != "airlock"
@@ -987,7 +1001,7 @@ func _tick_hazard(r: Dictionary, delta: float, offline: bool) -> void:
 			r.incident -= hazard_power(r) * 1.6 * delta * (2.0 if has_research("fire_suppression") else 1.0) / depth_zone(r.row).danger
 			var dmg: float = HAZARDS[r.hazard].damage * delta
 			for c in crew:
-				c.health = maxf(10.0, c.health - dmg * (1.0 - protection(c)))
+				c.health = maxf(health_floor(), c.health - dmg * (1.0 - protection(c)) * mode().damage)
 		r.spread += delta
 		if r.spread > 20.0 and r.incident > 60.0:
 			r.spread = 0.0
@@ -1016,7 +1030,7 @@ func _resolve_hazard(r: Dictionary, offline: bool) -> void:
 			c.help = -1
 	if offline:
 		return
-	var reward: int = (10 + 10 * r.level) * (2 if weekly_mod() == "tide" else 1)
+	var reward: int = int((10 + 10 * r.level) * (2 if weekly_mod() == "tide" else 1) * mode().reward)
 	pearls += reward
 	for c in crew:
 		c.xp += 20.0
@@ -1077,6 +1091,8 @@ func research_finish_cost() -> int:
 	return maxi(1, ceili(research_left() / 60.0))
 
 func finish_research_now() -> void:
+	if not crystal_rush_allowed():
+		return
 	if research_current.is_empty() or not spend_crystals(research_finish_cost()):
 		return
 	research_current.end = now()
@@ -1201,6 +1217,8 @@ func stat_value(key: String) -> int:
 	match key:
 		"population":
 			return colonists.size()
+		"survival_pop":
+			return colonists.size() if difficulty == "survival" else 0
 		"depth":
 			return max_row() + 1
 	return stats.get(key, 0)
@@ -1443,7 +1461,7 @@ func save_game() -> void:
 			"items": items, "stats": stats, "achievements_claimed": achievements_claimed,
 			"story_index": story_index, "story_count": story_count, "weekly_week": weekly_week,
 			"weekly_progress": weekly_progress, "weekly_claimed": weekly_claimed, "trader": trader,
-			"tutorial_done": tutorial_done,
+			"tutorial_done": tutorial_done, "difficulty": difficulty, "mode_chosen": mode_chosen,
 		},
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -1518,6 +1536,8 @@ func load_game() -> bool:
 	weekly_claimed = meta.get("weekly_claimed", []).map(func(v): return int(v))
 	trader = meta.get("trader", {})
 	tutorial_done = bool(meta.get("tutorial_done", true))
+	difficulty = str(meta.get("difficulty", "normal"))
+	mode_chosen = bool(meta.get("mode_chosen", true))
 	# JSON хранит числа как float — вернём целые поля
 	for r in rooms:
 		for k in ["id", "col", "row", "level"]:
@@ -1552,6 +1572,35 @@ func _apply_offline(elapsed: float) -> void:
 	if colonists.size() > before:
 		text += tr(", %d new colonists") % (colonists.size() - before)
 	call_deferred("emit_signal", "message", text)
+
+# ---------------------------------------------------------------- сложность
+
+func mode() -> Dictionary:
+	return Defs.DIFFICULTY.get(difficulty, Defs.DIFFICULTY.normal)
+
+func set_difficulty(d: String) -> void:
+	difficulty = d
+	mode_chosen = true
+	changed.emit()
+	save_game()
+
+func crystal_rush_allowed() -> bool:
+	return mode().crystal_rush
+
+## В Выживании здоровье может упасть до нуля.
+func health_floor() -> float:
+	return 0.0 if mode().permadeath else 10.0
+
+func _check_deaths() -> void:
+	if not mode().permadeath:
+		return
+	for c in colonists.duplicate():
+		if c.health <= 0.0 and c.room != ON_EXPEDITION:
+			colonists.erase(c)
+			stats["deaths"] = stats.get("deaths", 0) + 1
+			message.emit(tr("%s has died. The colony mourns.") % c.name)
+			event.emit("breach")
+			changed.emit()
 
 func reset() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))

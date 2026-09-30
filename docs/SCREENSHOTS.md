@@ -12,7 +12,7 @@
 | ![](screenshots/tasks.png)<br>**Задания, сюжет, событие недели**<br>🎨 портрет командира Рейес | ![](screenshots/research.png)<br>**Исследования**<br>🎨 иконка науки, иконки исследований | ![](screenshots/achievements.png)<br>**Достижения**<br>🎨 кубки бронза/серебро/золото |
 | ![](screenshots/shop.png)<br>**Магазин** | ![](screenshots/shop1.png)<br>**Наборы** | ![](screenshots/shop2.png)<br>**Кристаллы** |
 | ![](screenshots/crate.png)<br>**Открытие ящика** | ![](screenshots/daily.png)<br>**Ежедневная награда**<br>🎨 иконки наград по дням | ![](screenshots/trader.png)<br>**Торговец** |
-| ![](screenshots/settings.png)<br>**Настройки, 10 языков** | ![](screenshots/tut1.png)<br>**Обучение** | ![](screenshots/tut3.png)<br>**Обучение: подсветка цели** |
+| ![](screenshots/mode.png)<br>**Выбор сложности** | ![](screenshots/settings.png)<br>**Настройки, 10 языков** | ![](screenshots/tut1.png)<br>**Обучение** | ![](screenshots/tut3.png)<br>**Обучение: подсветка цели** |
 
 ## Что ещё нарисовать (по важности)
 

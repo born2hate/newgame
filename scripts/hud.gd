@@ -11,6 +11,7 @@ var res_bars := {}
 var pearls_label: Label
 var crystals_label: Label
 var science_label: Label
+var mode_label: Label
 var science_icon: Control
 var more: Node
 var boost_label: Label
@@ -58,12 +59,45 @@ func _ready() -> void:
 	_build_popup()
 	_build_ad_overlay()
 	_refresh_top()
-	if not Game.tutorial_done:
+	if not Game.mode_chosen:
+		open_mode_picker.call_deferred()
+	elif not Game.tutorial_done:
 		start_tutorial.call_deferred()
 	elif Game.daily_available():
 		get_tree().create_timer(1.2).timeout.connect(_open_daily)
 
 var tutorial: CanvasLayer
+
+## Выбор сложности при новой игре.
+func open_mode_picker() -> void:
+	_open_sheet("mode", 520)
+	var title := _label(tr("Choose your challenge"), 32, Color(1.0, 0.86, 0.35))
+	title.add_theme_constant_override("outline_size", 8)
+	title.add_theme_color_override("font_outline_color", Color(0.25, 0.1, 0.0, 0.9))
+	sheet_body.add_child(title)
+	var hint := _label(tr("You can only change it by starting over."), 18, Color(0.75, 0.85, 0.95))
+	sheet_body.add_child(hint)
+	for key in ["calm", "normal", "survival"]:
+		var d: Dictionary = Defs.DIFFICULTY[key]
+		var row := _card(Color(d.color.darkened(0.8), 0.95), Color(d.color, 0.9))
+		var info := VBoxContainer.new()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var name_l := _label(tr(d.name) + ("  · " + tr("Recommended") if key == "normal" else ""), 26, d.color)
+		info.add_child(name_l)
+		var dl := _label(tr(d.desc), 17, Color(0.88, 0.92, 0.98))
+		dl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		info.add_child(dl)
+		row.add_child(info)
+		var b := _button(tr("Select"), func():
+			Game.set_difficulty(key)
+			_close_sheet()
+			if not Game.tutorial_done:
+				start_tutorial(), 64)
+		b.custom_minimum_size.x = 140
+		var st := button_styles(d.color.darkened(0.2), d.color.lightened(0.3), d.color.darkened(0.6))
+		for k in st:
+			b.add_theme_stylebox_override(k, st[k])
+		row.add_child(b)
 
 func start_tutorial() -> void:
 	if tutorial and is_instance_valid(tutorial):
@@ -279,6 +313,8 @@ func _build_top_bar() -> void:
 	boost_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	row.add_child(boost_label)
 	row.add_child(_icon("people", 26, Color(0.85, 0.95, 1.0)))
+	mode_label = _label("", 18)
+	row.add_child(mode_label)
 	pop_label = _label("", 24)
 	row.add_child(pop_label)
 	var gear := TextureButton.new()
@@ -330,6 +366,9 @@ func _draw_res_bar(bar: Control, k: String) -> void:
 func _refresh_top() -> void:
 	pearls_label.text = str(Game.pearls)
 	crystals_label.text = str(Game.crystals)
+	var md: Dictionary = Game.mode()
+	mode_label.text = "" if Game.difficulty == "normal" else tr(md.name) + " "
+	mode_label.add_theme_color_override("font_color", md.color)
 	var show_sci := Game.science > 0 or Game.count_of("lab") > 0
 	science_label.visible = show_sci
 	science_icon.visible = show_sci
@@ -672,6 +711,7 @@ func _refresh_room_live() -> void:
 		var cost := Game.safe_rush_cost(r)
 		sb.text = tr("Finish now, no risk: ◆ %d") % maxi(cost, 0)
 		sb.disabled = cost < 0 or r.ready or r.incident > 0.0
+		sb.visible = Game.crystal_rush_allowed()
 
 # ---------------------------------------------------------------- выбор колониста
 
@@ -898,7 +938,7 @@ func _open_settings() -> void:
 		if reset.get_meta("armed", false):
 			Game.reset()
 			_close_sheet()
-			start_tutorial()
+			open_mode_picker()
 		else:
 			reset.set_meta("armed", true)
 			reset.text = tr("Tap again to erase all progress"))
@@ -1368,7 +1408,7 @@ func _refresh_dock_live(_r: Dictionary) -> void:
 	var done := Game.expedition_done(e)
 	d.bar.value = Game.expedition_progress(e)
 	d.status.text = tr("Back home! Collect the loot.") if done else tr("Returns in %s") % _clock(float(e.end) - Game.now())
-	d.fin.visible = not done
+	d.fin.visible = not done and Game.crystal_rush_allowed()
 	d.ad.visible = not done
 	d.claim.visible = done
 	d.fin.text = tr("Finish ◆ %d") % Game.finish_cost(e) if not done else ""

@@ -415,6 +415,18 @@ const T := {
 	"Diving Armor": "Zirah Selam",
 	"Shark Mesh": "Jaring Hiu",
 	"Heat Shield Plate": "Pelat Pelindung Panas",
+	"Calm": "Santai",
+	"Normal": "Normal",
+	"Survival": "Bertahan Hidup",
+	"Fewer and weaker incidents, slower resource use, no harm from hunger. Just build and relax.": "Insiden lebih jarang dan lemah, konsumsi lebih lambat, lapar tidak melukai. Bangun saja dan bersantai.",
+	"The intended experience.": "Pengalaman sesuai rancangan.",
+	"More and stronger incidents, faster resource use. Colonists can die forever. No crystal speed-ups. +50% rewards.": "Insiden lebih sering dan kuat, konsumsi lebih cepat. Kolonis bisa mati selamanya. Tanpa percepatan kristal. +50% hadiah.",
+	"True Survivor": "Penyintas Sejati",
+	"Reach %d colonists in Survival": "Capai %d kolonis di mode Bertahan Hidup",
+	"%s has died. The colony mourns.": "%s telah meninggal. Koloni berduka.",
+	"Choose your challenge": "Pilih tantanganmu",
+	"You can only change it by starting over.": "Hanya bisa diubah dengan memulai ulang.",
+	"Recommended": "Disarankan",
 }
 
 static func make() -> Translation:

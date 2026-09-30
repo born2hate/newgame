@@ -39,6 +39,7 @@ func open_research() -> void:
 		var fin: Button = hud._button(tr("Finish ◆ %d") % Game.research_finish_cost(), func():
 			Game.finish_research_now()
 			open_research(), 60)
+		fin.visible = Game.crystal_rush_allowed()
 		fin.custom_minimum_size.x = 170
 		fin.add_theme_color_override("font_color", Defs.RESOURCES.crystals.color)
 		row.add_child(fin)

@@ -415,6 +415,18 @@ const T := {
 	"Diving Armor": "Водолазная броня",
 	"Shark Mesh": "Акулья сетка",
 	"Heat Shield Plate": "Жаростойкая пластина",
+	"Calm": "Спокойный",
+	"Normal": "Обычный",
+	"Survival": "Выживание",
+	"Fewer and weaker incidents, slower resource use, no harm from hunger. Just build and relax.": "Беды реже и слабее, ресурсы тратятся медленнее, голод не ранит. Просто строй и отдыхай.",
+	"The intended experience.": "Игра как задумано.",
+	"More and stronger incidents, faster resource use. Colonists can die forever. No crystal speed-ups. +50% rewards.": "Беды чаще и сильнее, ресурсы тратятся быстрее. Колонисты могут погибнуть навсегда. Без ускорений за кристаллы. +50% к наградам.",
+	"True Survivor": "Настоящий выживший",
+	"Reach %d colonists in Survival": "Достигни %d колонистов в Выживании",
+	"%s has died. The colony mourns.": "%s погиб. Колония скорбит.",
+	"Choose your challenge": "Выбери сложность",
+	"You can only change it by starting over.": "Сменить её можно, только начав заново.",
+	"Recommended": "Рекомендуем",
 }
 
 static func make() -> Translation:

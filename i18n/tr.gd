@@ -415,6 +415,18 @@ const T := {
 	"Diving Armor": "Dalış Zırhı",
 	"Shark Mesh": "Köpekbalığı Ağı",
 	"Heat Shield Plate": "Isı Kalkanı Plakası",
+	"Calm": "Rahat",
+	"Normal": "Normal",
+	"Survival": "Hayatta Kalma",
+	"Fewer and weaker incidents, slower resource use, no harm from hunger. Just build and relax.": "Daha seyrek ve zayıf olaylar, daha az tüketim, açlık zarar vermez. Sadece inşa et ve rahatla.",
+	"The intended experience.": "Tasarlandığı gibi oyun.",
+	"More and stronger incidents, faster resource use. Colonists can die forever. No crystal speed-ups. +50% rewards.": "Daha sık ve güçlü olaylar, daha fazla tüketim. Sakinler kalıcı olarak ölebilir. Kristalle hızlandırma yok. +%50 ödül.",
+	"True Survivor": "Gerçek Hayatta Kalan",
+	"Reach %d colonists in Survival": "Hayatta Kalma'da %d sakine ulaş",
+	"%s has died. The colony mourns.": "%s öldü. Koloni yasta.",
+	"Choose your challenge": "Zorluğunu seç",
+	"You can only change it by starting over.": "Yalnızca baştan başlayarak değiştirebilirsin.",
+	"Recommended": "Önerilen",
 }
 
 static func make() -> Translation:

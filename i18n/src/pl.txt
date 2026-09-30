@@ -409,3 +409,15 @@
 408|Pancerz nurka
 409|Siatka przeciw rekinom
 410|Płyta termiczna
+411|Spokojny
+412|Normalny
+413|Przetrwanie
+414|Rzadsze i słabsze incydenty, mniejsze zużycie, głód nie rani. Po prostu buduj i odpoczywaj.
+415|Rozgrywka zgodnie z zamysłem.
+416|Częstsze i silniejsze incydenty, większe zużycie. Koloniści mogą zginąć na zawsze. Bez przyspieszania kryształami. +50% nagród.
+417|Prawdziwy ocalały
+418|Osiągnij %d kolonistów w Przetrwaniu
+419|%s nie żyje. Kolonia jest w żałobie.
+420|Wybierz wyzwanie
+421|Zmienić można tylko, zaczynając od nowa.
+422|Polecany

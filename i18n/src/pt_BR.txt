@@ -409,3 +409,15 @@
 408|Armadura de mergulho
 409|Malha antitubarão
 410|Placa térmica
+411|Tranquilo
+412|Normal
+413|Sobrevivência
+414|Incidentes mais raros e fracos, menos consumo, a fome não machuca. Só construa e relaxe.
+415|A experiência pensada.
+416|Mais incidentes e mais fortes, mais consumo. Colonos podem morrer para sempre. Sem acelerar com cristais. +50% de recompensas.
+417|Sobrevivente de verdade
+418|Chegue a %d colonos no Sobrevivência
+419|%s morreu. A colônia está de luto.
+420|Escolha seu desafio
+421|Só é possível mudar recomeçando.
+422|Recomendado

@@ -415,6 +415,18 @@ const T := {
 	"Diving Armor": "Pancerz nurka",
 	"Shark Mesh": "Siatka przeciw rekinom",
 	"Heat Shield Plate": "Płyta termiczna",
+	"Calm": "Spokojny",
+	"Normal": "Normalny",
+	"Survival": "Przetrwanie",
+	"Fewer and weaker incidents, slower resource use, no harm from hunger. Just build and relax.": "Rzadsze i słabsze incydenty, mniejsze zużycie, głód nie rani. Po prostu buduj i odpoczywaj.",
+	"The intended experience.": "Rozgrywka zgodnie z zamysłem.",
+	"More and stronger incidents, faster resource use. Colonists can die forever. No crystal speed-ups. +50% rewards.": "Częstsze i silniejsze incydenty, większe zużycie. Koloniści mogą zginąć na zawsze. Bez przyspieszania kryształami. +50% nagród.",
+	"True Survivor": "Prawdziwy ocalały",
+	"Reach %d colonists in Survival": "Osiągnij %d kolonistów w Przetrwaniu",
+	"%s has died. The colony mourns.": "%s nie żyje. Kolonia jest w żałobie.",
+	"Choose your challenge": "Wybierz wyzwanie",
+	"You can only change it by starting over.": "Zmienić można tylko, zaczynając od nowa.",
+	"Recommended": "Polecany",
 }
 
 static func make() -> Translation:

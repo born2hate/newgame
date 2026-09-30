@@ -409,3 +409,15 @@
 408|Dalış Zırhı
 409|Köpekbalığı Ağı
 410|Isı Kalkanı Plakası
+411|Rahat
+412|Normal
+413|Hayatta Kalma
+414|Daha seyrek ve zayıf olaylar, daha az tüketim, açlık zarar vermez. Sadece inşa et ve rahatla.
+415|Tasarlandığı gibi oyun.
+416|Daha sık ve güçlü olaylar, daha fazla tüketim. Sakinler kalıcı olarak ölebilir. Kristalle hızlandırma yok. +%50 ödül.
+417|Gerçek Hayatta Kalan
+418|Hayatta Kalma'da %d sakine ulaş
+419|%s öldü. Koloni yasta.
+420|Zorluğunu seç
+421|Yalnızca baştan başlayarak değiştirebilirsin.
+422|Önerilen

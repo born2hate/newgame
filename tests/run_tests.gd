@@ -268,6 +268,34 @@ func _initialize() -> void:
 	check(pg2.room_at(1, 1).size == 2 and pg2.has_research("deep_drilling") and pg2.items.size() >= 1 and pg2.story_index == 1, "прогрессия сохраняется")
 	pg.free(); pg2.free()
 
+	# сложность
+	var sv = load("res://scripts/game_state.gd").new()
+	sv.new_game()
+	check(not sv.mode_chosen, "новая игра просит выбрать режим")
+	sv.set_difficulty("survival")
+	check(sv.difficulty == "survival" and not sv.crystal_rush_allowed(), "выживание: без ускорения за кристаллы")
+	var vic: Dictionary = sv.colonists[0]
+	vic.health = 1.0
+	sv.resources.oxygen = 0.0
+	var n0: int = sv.colonists.size()
+	for i in 3:
+		sv.resources.oxygen = 0.0
+		sv.simulate(1.0, false)
+	check(sv.colonists.size() == n0 - 1, "выживание: колонист погибает")
+	var cm = load("res://scripts/game_state.gd").new()
+	cm.new_game()
+	cm.set_difficulty("calm")
+	cm.colonists[0].health = 50.0
+	cm.resources.oxygen = 0.0
+	cm.resources.food = 0.0
+	cm.simulate(5.0, false)
+	check(cm.colonists[0].health >= 50.0, "спокойный: голод не ранит")
+	sv.save_game()
+	var sv2 = load("res://scripts/game_state.gd").new()
+	sv2.load_game()
+	check(sv2.difficulty == "survival", "режим сохраняется")
+	sv.free(); sv2.free(); cm.free()
+
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(g.SAVE_PATH))
 	g.free(); g2.free(); g3.free()
 	print("FAILURES: %d" % failures)

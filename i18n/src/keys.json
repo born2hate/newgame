@@ -409,5 +409,17 @@
 "-%d%% damage",
 "Diving Armor",
 "Shark Mesh",
-"Heat Shield Plate"
+"Heat Shield Plate",
+"Calm",
+"Normal",
+"Survival",
+"Fewer and weaker incidents, slower resource use, no harm from hunger. Just build and relax.",
+"The intended experience.",
+"More and stronger incidents, faster resource use. Colonists can die forever. No crystal speed-ups. +50% rewards.",
+"True Survivor",
+"Reach %d colonists in Survival",
+"%s has died. The colony mourns.",
+"Choose your challenge",
+"You can only change it by starting over.",
+"Recommended"
 ]

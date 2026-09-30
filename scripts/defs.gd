@@ -185,6 +185,19 @@ const SEASON_TIERS := [
 	{"free": {"crates": {"gold": 1}}, "premium": {"colonist": "legendary"}},
 ]
 
+## Режимы сложности.
+const DIFFICULTY := {
+	"calm": {"name": "Calm", "desc": "Fewer and weaker incidents, slower resource use, no harm from hunger. Just build and relax.",
+		"incidents": 2.0, "damage": 0.5, "consume": 0.7, "hunger": false, "permadeath": false, "crystal_rush": true, "reward": 1.0,
+		"color": Color(0.5, 0.95, 0.6)},
+	"normal": {"name": "Normal", "desc": "The intended experience.",
+		"incidents": 1.0, "damage": 1.0, "consume": 1.0, "hunger": true, "permadeath": false, "crystal_rush": true, "reward": 1.0,
+		"color": Color(0.45, 0.85, 1.0)},
+	"survival": {"name": "Survival", "desc": "More and stronger incidents, faster resource use. Colonists can die forever. No crystal speed-ups. +50% rewards.",
+		"incidents": 0.6, "damage": 1.5, "consume": 1.3, "hunger": true, "permadeath": true, "crystal_rush": false, "reward": 1.5,
+		"color": Color(1.0, 0.4, 0.35)},
+}
+
 ## Зоны глубины. Каждые 5 рядов — новая зона: больше добычи, но и больше бед.
 const DEPTH_ZONES := [
 	{"name": "Twilight Shelf", "from": 0, "bonus": 0.0, "crystal_chance": 0.0, "danger": 1.0, "research": "",
@@ -264,6 +277,7 @@ const ACHIEVEMENTS := [
 	{"id": "deep", "name": "Deep Diver", "desc": "Build on row %d", "stat": "depth", "tiers": [5, 10, 14], "reward": [15, 30, 60]},
 	{"id": "looter", "name": "Treasure Hunter", "desc": "Open %d crates", "stat": "crate", "tiers": [5, 20, 60], "reward": [10, 25, 50]},
 	{"id": "trainer", "name": "Coach", "desc": "Level up colonists %d times", "stat": "level_up", "tiers": [10, 50, 150], "reward": [10, 25, 50]},
+	{"id": "survivor", "name": "True Survivor", "desc": "Reach %d colonists in Survival", "stat": "survival_pop", "tiers": [10, 20, 35], "reward": [30, 60, 120]},
 	{"id": "bubbles", "name": "Bubble Popper", "desc": "Pop %d treasure bubbles", "stat": "bubble", "tiers": [10, 50, 200], "reward": [10, 20, 40]},
 ]
 

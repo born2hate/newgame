@@ -409,3 +409,15 @@
 408|Zirah Selam
 409|Jaring Hiu
 410|Pelat Pelindung Panas
+411|Santai
+412|Normal
+413|Bertahan Hidup
+414|Insiden lebih jarang dan lemah, konsumsi lebih lambat, lapar tidak melukai. Bangun saja dan bersantai.
+415|Pengalaman sesuai rancangan.
+416|Insiden lebih sering dan kuat, konsumsi lebih cepat. Kolonis bisa mati selamanya. Tanpa percepatan kristal. +50% hadiah.
+417|Penyintas Sejati
+418|Capai %d kolonis di mode Bertahan Hidup
+419|%s telah meninggal. Koloni berduka.
+420|Pilih tantanganmu
+421|Hanya bisa diubah dengan memulai ulang.
+422|Disarankan

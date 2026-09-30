@@ -409,3 +409,15 @@
 408|Armatura da sub
 409|Maglia anti-squalo
 410|Piastra termica
+411|Tranquilla
+412|Normale
+413|Sopravvivenza
+414|Incidenti più rari e deboli, consumi ridotti, la fame non ferisce. Costruisci e rilassati.
+415|L'esperienza prevista.
+416|Incidenti più frequenti e forti, consumi maggiori. I coloni possono morire per sempre. Niente accelerazioni con i cristalli. +50% di ricompense.
+417|Vero sopravvissuto
+418|Raggiungi %d coloni in Sopravvivenza
+419|%s è morto. La colonia è in lutto.
+420|Scegli la tua sfida
+421|Puoi cambiarla solo ricominciando.
+422|Consigliata

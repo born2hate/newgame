@@ -409,3 +409,15 @@
 408|Taucherrüstung
 409|Hainetz
 410|Hitzeschild-Platte
+411|Entspannt
+412|Normal
+413|Überleben
+414|Seltenere und schwächere Zwischenfälle, weniger Verbrauch, Hunger schadet nicht. Einfach bauen und entspannen.
+415|Das vorgesehene Spielerlebnis.
+416|Mehr und stärkere Zwischenfälle, mehr Verbrauch. Kolonisten können für immer sterben. Kein Beschleunigen mit Kristallen. +50% Belohnungen.
+417|Echter Überlebender
+418|Erreiche %d Kolonisten im Überlebensmodus
+419|%s ist gestorben. Die Kolonie trauert.
+420|Wähle deine Herausforderung
+421|Ändern geht nur durch einen Neustart.
+422|Empfohlen

@@ -46,6 +46,8 @@ func _dev_screenshot() -> void:
 			scene = a.trim_prefix("--scene=")
 	if path == "":
 		return
+	if scene != "mode":
+		Game.mode_chosen = true
 	if not scene.begins_with("tut"):
 		Game.tutorial_done = true
 		if hud.tutorial and is_instance_valid(hud.tutorial):
@@ -53,6 +55,8 @@ func _dev_screenshot() -> void:
 	await get_tree().create_timer(1.5).timeout
 	if not scene.begins_with("tut") and hud.tutorial and is_instance_valid(hud.tutorial):
 		hud.tutorial.queue_free()
+	if scene != "mode" and hud.sheet_kind == "mode":
+		hud._close_sheet()
 	if not scene.begins_with("tut") and hud.sheet_kind == "daily" and scene != "daily":
 		hud._close_sheet()
 	match scene:
@@ -62,6 +66,9 @@ func _dev_screenshot() -> void:
 		"colonists": hud._open_colonists()
 		"shop": hud._open_shop()
 		"tasks": hud._open_tasks()
+		"mode":
+			hud._close_sheet()
+			hud.open_mode_picker()
 		"tut1": pass
 		"tut2":
 			await get_tree().create_timer(4.0).timeout

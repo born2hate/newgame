@@ -410,3 +410,15 @@
 408|Armadura de buceo
 409|Malla antitiburón
 410|Placa térmica
+411|Tranquilo
+412|Normal
+413|Supervivencia
+414|Incidentes menos frecuentes y más débiles, menos consumo, el hambre no hace daño. Construye y relájate.
+415|La experiencia prevista.
+416|Más incidentes y más fuertes, más consumo. Los colonos pueden morir para siempre. Sin aceleraciones con cristales. +50% de recompensas.
+417|Superviviente de verdad
+418|Llega a %d colonos en Supervivencia
+419|%s ha muerto. La colonia está de luto.
+420|Elige tu desafío
+421|Solo puedes cambiarlo empezando de nuevo.
+422|Recomendado
