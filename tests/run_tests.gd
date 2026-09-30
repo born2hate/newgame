@@ -111,6 +111,50 @@ func _initialize() -> void:
 	check(e2.premium and e2.crates.gold == 1 and e2.crystals == 100, "экономика сохраняется")
 	eco.free(); e2.free()
 
+	# экспедиции
+	var ex = load("res://scripts/game_state.gd").new()
+	ex.new_game()
+	ex.pearls = 1000
+	var dock: Dictionary = ex._add_room("dock", 3, 1)
+	var crew := [ex.colonists[0].id, ex.colonists[1].id]
+	check(ex.launch_expedition(dock.id, 0, crew), "экспедиция запущена")
+	check(ex.colonists[0].room == ex.ON_EXPEDITION, "экипаж ушёл из отсеков")
+	check(not ex.assign(ex.colonists[0], ex.find_room_of_type("farm")), "нельзя назначить ушедшего")
+	check(not ex.launch_expedition(dock.id, 0, [ex.colonists[2].id]), "один батискаф на док")
+	var exp_e: Dictionary = ex.expedition_at(dock.id)
+	check(not ex.expedition_done(exp_e) and ex.visible_log(exp_e).is_empty(), "в начале журнал пуст")
+	exp_e.start = ex.now() - 600.0
+	exp_e.end = ex.now()
+	check(ex.expedition_done(exp_e) and ex.visible_log(exp_e).size() == exp_e.events.size(), "по возвращении виден весь журнал")
+	var pb: int = ex.pearls
+	ex.claim_expedition(exp_e)
+	check(ex.expeditions.is_empty() and ex.colonists[0].room == -1, "экипаж вернулся")
+	check(ex.pearls > pb, "добыча получена")
+	ex.refresh_daily_systems()
+	check(ex.quests.size() == 3, "3 ежедневных задания")
+	var q: Dictionary = ex.quests[0]
+	ex.track(q.event, 1000)
+	check(q.progress == q.target, "прогресс задания")
+	ex.claim_quest(q)
+	check(q.claimed and ex.season_xp == q.xp, "задание даёт опыт сезона")
+	ex.season_xp = 250
+	check(ex.season_tier() == 2, "уровень сезона 2")
+	var pp: int = ex.pearls
+	ex.claim_season(0, false)
+	check(ex.pearls == pp + 200, "бесплатная награда сезона")
+	ex.claim_season(0, true)
+	check(not 0 in ex.season_claimed_premium, "платная ветка закрыта без пропуска")
+	ex.season_pass = true
+	ex.claim_season(0, true)
+	check(0 in ex.season_claimed_premium, "платная ветка с пропуском")
+	ex.claim_season(5, false)
+	check(not 5 in ex.season_claimed_free, "недостигнутый уровень недоступен")
+	ex.save_game()
+	var ex2 = load("res://scripts/game_state.gd").new()
+	ex2.load_game()
+	check(ex2.season_xp == 250 and ex2.season_pass and ex2.quests.size() == 3, "сезон и задания сохраняются")
+	ex.free(); ex2.free()
+
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(g.SAVE_PATH))
 	g.free(); g2.free(); g3.free()
 	print("FAILURES: %d" % failures)

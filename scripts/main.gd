@@ -53,6 +53,17 @@ func _dev_screenshot() -> void:
 		"room": view.room_selected.emit(Game.find_room_of_type("reactor").id)
 		"colonists": hud._open_colonists()
 		"shop": hud._open_shop()
+		"tasks": hud._open_tasks()
+		"planner":
+			var d := Game._add_room("dock", 3, 1)
+			hud._open_planner(d.id, 1)
+		"expedition":
+			var d := Game._add_room("dock", 3, 1)
+			Game.launch_expedition(d.id, 1, [Game.colonists[3].id, Game.colonists[0].id])
+			var e := Game.expedition_at(d.id)
+			e.start = Game.now() - 1100.0
+			e.end = Game.now() + 700.0
+			view.room_selected.emit(d.id)
 		"shop1":
 			hud._open_shop()
 			await get_tree().process_frame

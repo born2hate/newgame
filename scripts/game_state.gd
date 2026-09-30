@@ -35,16 +35,29 @@ var free_crate_at := 0.0
 var daily_day := -1
 var daily_streak := 0
 
+# экспедиции, задания, сезон
+const ON_EXPEDITION := -2
+var expeditions: Array = []
+var quests: Array = []
+var quest_day := -1
+var season_start := -1
+var season_xp := 0
+var season_pass := false
+var season_claimed_free: Array = []
+var season_claimed_premium: Array = []
+
 func _ready() -> void:
 	rng.randomize()
 	if not load_game():
 		new_game()
+	refresh_daily_systems()
 
 func _process(delta: float) -> void:
 	simulate(delta, false)
 	autosave_timer += delta
 	if autosave_timer > 15.0:
 		autosave_timer = 0.0
+		refresh_daily_systems()
 		save_game()
 
 func _notification(what: int) -> void:
@@ -64,6 +77,14 @@ func new_game() -> void:
 	free_crate_at = 0.0
 	daily_day = -1
 	daily_streak = 0
+	expeditions = []
+	quests = []
+	quest_day = -1
+	season_start = -1
+	season_xp = 0
+	season_pass = false
+	season_claimed_free = []
+	season_claimed_premium = []
 	rooms = []
 	colonists = []
 	next_id = 1
@@ -276,6 +297,7 @@ func _xp_needed(c: Dictionary) -> float:
 func _level_up(c: Dictionary) -> void:
 	c.xp = 0.0
 	c.level += 1
+	track("level_up")
 	var room := get_room(c.room)
 	var stat: String = Defs.ROOMS[room.type].get("stat", "") if not room.is_empty() else ""
 	if stat == "":
@@ -301,6 +323,7 @@ func build(type: String, col: int, row: int) -> bool:
 		return false
 	pearls -= cost
 	var r := _add_room(type, col, row)
+	track("build")
 	floating_text.emit(r.id, "-%d P" % cost, Defs.RESOURCES.pearls.color)
 	changed.emit()
 	return true
@@ -314,6 +337,7 @@ func upgrade(room: Dictionary) -> void:
 		return
 	pearls -= cost
 	room.level += 1
+	track("upgrade")
 	message.emit(tr("%s upgraded to level %d") % [Defs.ROOMS[room.type].name, room.level])
 	changed.emit()
 
@@ -332,6 +356,7 @@ func collect(room: Dictionary) -> void:
 	room.ready = false
 	room.progress = 0.0
 	floating_text.emit(room.id, "+%d %s" % [int(amount), Defs.RESOURCES[res].short], Defs.RESOURCES[res].color)
+	track("collect_" + res, int(amount))
 	changed.emit()
 
 func collect_all() -> int:
@@ -351,6 +376,7 @@ func rush(room: Dictionary) -> void:
 		return
 	var chance := rush_chance(room)
 	room.heat += 1.0
+	track("rush")
 	if rng.randf() < chance:
 		room.progress = 1.0
 		room.ready = true
@@ -369,6 +395,9 @@ func rush(room: Dictionary) -> void:
 	changed.emit()
 
 func assign(colonist: Dictionary, room: Dictionary) -> bool:
+	if colonist.room == ON_EXPEDITION:
+		message.emit(tr("%s is away on an expedition") % colonist.name)
+		return false
 	if room.is_empty() or room.type == "airlock":
 		colonist.room = -1
 		changed.emit()
@@ -438,7 +467,8 @@ func rush_safe(room: Dictionary) -> void:
 
 ## Выдать награду. reward: {pearls, crystals, crates: {type: n}, colonist: rarity, premium}.
 func grant(reward: Dictionary, title: String) -> void:
-	var lines := []
+	var lines := _pending_lines.duplicate()
+	_pending_lines = []
 	if reward.has("pearls"):
 		pearls += int(reward.pearls)
 		lines.append(tr("+%d pearls") % int(reward.pearls))
@@ -450,6 +480,9 @@ func grant(reward: Dictionary, title: String) -> void:
 		lines.append("+%d %s" % [int(reward.crates[k]), tr(Defs.CRATES[k].name)])
 	if reward.has("colonist"):
 		lines.append(_grant_colonist(reward.colonist))
+	if reward.get("season_pass", false):
+		season_pass = true
+		lines.append(tr("Season Pass unlocked!"))
 	if reward.get("premium", false):
 		premium = true
 		lines.append(tr("Premium unlocked!"))
@@ -483,6 +516,7 @@ func open_crate(type: String) -> void:
 	if crates.get(type, 0) <= 0:
 		return
 	crates[type] -= 1
+	track("crate")
 	var def: Dictionary = Defs.CRATES[type]
 	var reward := {"pearls": 0, "crystals": 0}
 	var extra := []
@@ -573,6 +607,210 @@ func claim_daily() -> void:
 	var idx := (daily_streak - 1) % Defs.DAILY.size()
 	grant(Defs.DAILY[idx], tr("Daily reward, day %d") % (idx + 1))
 
+# ---------------------------------------------------------------- экспедиции
+
+func expedition_at(dock_id: int) -> Dictionary:
+	for e in expeditions:
+		if e.dock == dock_id:
+			return e
+	return {}
+
+func expedition_done(e: Dictionary) -> bool:
+	return now() >= float(e.end)
+
+func expedition_progress(e: Dictionary) -> float:
+	return clampf((now() - float(e.start)) / maxf(1.0, float(e.end) - float(e.start)), 0.0, 1.0)
+
+func available_crew() -> Array:
+	return colonists.filter(func(c): return c.room != ON_EXPEDITION)
+
+func crew_power(ids: Array) -> float:
+	var p := 0.0
+	for id in ids:
+		var c := get_colonist(id)
+		if not c.is_empty():
+			p += (c.str + c.tech + c.bio) * (0.5 + 0.5 * c.health / 100.0)
+	return p
+
+func expedition_chance(zone_idx: int, ids: Array) -> float:
+	var zone: Dictionary = Defs.ZONES[zone_idx]
+	return clampf(crew_power(ids) / zone.power, 0.3, 1.5)
+
+func zone_unlocked(zone_idx: int) -> bool:
+	return colonists.size() >= Defs.ZONES[zone_idx].unlock_pop
+
+func launch_expedition(dock_id: int, zone_idx: int, ids: Array) -> bool:
+	if not expedition_at(dock_id).is_empty() or ids.is_empty() or ids.size() > 3:
+		return false
+	var zone: Dictionary = Defs.ZONES[zone_idx]
+	var f := expedition_chance(zone_idx, ids)
+	var names := []
+	for id in ids:
+		names.append(get_colonist(id).name.split(" ")[0])
+	# исход определяется сразу — так он одинаков и онлайн, и офлайн
+	var loot := {}
+	var L: Dictionary = zone.loot
+	if L.has("pearls"):
+		loot.pearls = int(rng.randi_range(L.pearls[0], L.pearls[1]) * f)
+	if L.has("crystals"):
+		loot.crystals = int(rng.randi_range(L.crystals[0], L.crystals[1]) * f)
+	if L.has("resources"):
+		loot.resources = int(rng.randi_range(L.resources[0], L.resources[1]) * f)
+	if L.has("crate") and rng.randf() < 0.3 + 0.4 * f:
+		loot.crates = {L.crate: 1}
+	if L.has("survivor") and rng.randf() < L.survivor * f:
+		loot.colonist = "rare"
+	var events := []
+	var damage := {}
+	var n := clampi(3 + zone.minutes / 20, 3, 10)
+	for i in n:
+		var who: String = names.pick_random()
+		var roll := rng.randf()
+		var text := ""
+		if roll < zone.danger * (1.3 - 0.5 * f):
+			var victim: int = ids.pick_random()
+			damage[str(victim)] = damage.get(str(victim), 0) + rng.randi_range(8, 25)
+			who = get_colonist(victim).name.split(" ")[0]
+			text = Defs.LOG_DANGER.pick_random()
+		elif roll < 0.65:
+			text = Defs.LOG_FIND.pick_random()
+		else:
+			text = Defs.LOG_CALM.pick_random()
+		events.append({"at": (i + 1.0) / (n + 1.0), "text": tr(text).replace("{n}", who)})
+	for id in ids:
+		get_colonist(id).room = ON_EXPEDITION
+	var start := now()
+	expeditions.append({
+		"id": next_id, "dock": dock_id, "zone": zone_idx, "crew": ids.duplicate(),
+		"start": start, "end": start + zone.minutes * 60.0,
+		"events": events, "loot": loot, "damage": damage,
+	})
+	next_id += 1
+	track("expedition")
+	message.emit(tr("The bathyscaphe departs for %s!") % tr(zone.name))
+	changed.emit()
+	save_game()
+	return true
+
+func visible_log(e: Dictionary) -> Array:
+	var p := expedition_progress(e)
+	return e.events.filter(func(ev): return ev.at <= p).map(func(ev): return ev.text)
+
+func finish_cost(e: Dictionary) -> int:
+	return maxi(1, ceili((float(e.end) - now()) / 120.0))
+
+func finish_expedition_now(e: Dictionary) -> void:
+	if expedition_done(e) or not spend_crystals(finish_cost(e)):
+		return
+	e.end = now()
+	changed.emit()
+
+func cut_expedition(e: Dictionary, seconds: float) -> void:
+	e.end = maxf(now(), float(e.end) - seconds)
+	changed.emit()
+
+func claim_expedition(e: Dictionary) -> void:
+	if not expedition_done(e):
+		return
+	expeditions.erase(e)
+	var zone: Dictionary = Defs.ZONES[e.zone]
+	var lines := []
+	var loot: Dictionary = e.loot
+	if loot.get("resources", 0) > 0:
+		for r in resources:
+			resources[r] = minf(storage_cap(), resources[r] + loot.resources)
+		lines.append(tr("+%d energy, oxygen and food") % loot.resources)
+	for id in e.crew:
+		var c := get_colonist(id)
+		if c.is_empty():
+			continue
+		c.room = -1
+		c.health = maxf(10.0, c.health - e.damage.get(str(id), 0))
+		c.xp += zone.minutes * 4.0
+		while c.xp >= _xp_needed(c):
+			c.xp -= _xp_needed(c)
+			var keep: float = c.xp
+			_level_up(c)
+			c.xp = keep
+	var reward := loot.duplicate()
+	reward.erase("resources")
+	if reward.get("pearls", 0) <= 0: reward.erase("pearls")
+	if reward.get("crystals", 0) <= 0: reward.erase("crystals")
+	var title := tr("%s: expedition complete") % tr(zone.name)
+	if reward.is_empty():
+		changed.emit()
+		rewards_granted.emit(title, lines if not lines.is_empty() else [tr("The crew came back empty-handed.")])
+	else:
+		# grant сам покажет окно; строки про ресурсы добавим в начало
+		_pending_lines = lines
+		grant(reward, title)
+	save_game()
+
+var _pending_lines: Array = []
+
+# ---------------------------------------------------------------- задания и сезон
+
+func refresh_daily_systems() -> void:
+	if quest_day != today():
+		quest_day = today()
+		quests = []
+		var pool := range(Defs.QUEST_POOL.size())
+		pool.shuffle()
+		for i in Defs.QUESTS_PER_DAY:
+			var q: Dictionary = Defs.QUEST_POOL[pool[i]]
+			quests.append({
+				"event": q.event, "text": q.text, "target": rng.randi_range(q.target[0], q.target[1]),
+				"progress": 0, "reward": q.reward, "xp": q.xp, "claimed": false,
+			})
+	if season_start < 0 or today() - season_start >= Defs.SEASON_DAYS:
+		season_start = today()
+		season_xp = 0
+		season_pass = false
+		season_claimed_free = []
+		season_claimed_premium = []
+
+func track(event: String, amount := 1) -> void:
+	for q in quests:
+		if q.event == event and not q.claimed and q.progress < q.target:
+			q.progress = mini(q.target, q.progress + amount)
+			if q.progress >= q.target:
+				message.emit(tr("Task complete: %s") % (tr(q.text) % q.target))
+
+func quests_ready() -> int:
+	return quests.filter(func(q): return q.progress >= q.target and not q.claimed).size()
+
+func claim_quest(q: Dictionary) -> void:
+	if q.claimed or q.progress < q.target:
+		return
+	q.claimed = true
+	season_xp += q.xp
+	grant(q.reward, tr("Task complete!"))
+
+func season_tier() -> int:
+	return mini(season_xp / Defs.SEASON_XP_PER_TIER, Defs.SEASON_TIERS.size())
+
+func season_days_left() -> int:
+	return maxi(0, Defs.SEASON_DAYS - (today() - season_start))
+
+func season_claimable() -> int:
+	var n := 0
+	for i in season_tier():
+		if not i in season_claimed_free:
+			n += 1
+		if season_pass and not i in season_claimed_premium:
+			n += 1
+	return n
+
+func claim_season(tier: int, premium_track: bool) -> void:
+	if tier >= season_tier():
+		return
+	var claimed: Array = season_claimed_premium if premium_track else season_claimed_free
+	if tier in claimed or (premium_track and not season_pass):
+		return
+	claimed.append(tier)
+	var key := "premium" if premium_track else "free"
+	grant(Defs.SEASON_TIERS[tier][key], tr("Season reward, tier %d") % (tier + 1))
+
 # ---------------------------------------------------------------- сохранения
 
 func save_game() -> void:
@@ -584,6 +822,9 @@ func save_game() -> void:
 			"crystals": crystals, "crates": crates, "premium": premium, "owned": owned_products,
 			"boost_until": boost_until, "free_crate_at": free_crate_at,
 			"daily_day": daily_day, "daily_streak": daily_streak,
+			"expeditions": expeditions, "quests": quests, "quest_day": quest_day,
+			"season_start": season_start, "season_xp": season_xp, "season_pass": season_pass,
+			"season_claimed_free": season_claimed_free, "season_claimed_premium": season_claimed_premium,
 		},
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -616,6 +857,25 @@ func load_game() -> bool:
 	free_crate_at = float(meta.get("free_crate_at", 0.0))
 	daily_day = int(meta.get("daily_day", -1))
 	daily_streak = int(meta.get("daily_streak", 0))
+	expeditions = meta.get("expeditions", [])
+	for e in expeditions:
+		for k in ["id", "dock", "zone"]:
+			e[k] = int(e[k])
+		var crew := []
+		for cid in e.crew:
+			crew.append(int(cid))
+		e.crew = crew
+	quests = meta.get("quests", [])
+	for q in quests:
+		q.target = int(q.target)
+		q.progress = int(q.progress)
+		q.xp = int(q.xp)
+	quest_day = int(meta.get("quest_day", -1))
+	season_start = int(meta.get("season_start", -1))
+	season_xp = int(meta.get("season_xp", 0))
+	season_pass = bool(meta.get("season_pass", false))
+	season_claimed_free = meta.get("season_claimed_free", []).map(func(v): return int(v))
+	season_claimed_premium = meta.get("season_claimed_premium", []).map(func(v): return int(v))
 	# JSON хранит числа как float — вернём целые поля
 	for r in rooms:
 		for k in ["id", "col", "row", "level"]:

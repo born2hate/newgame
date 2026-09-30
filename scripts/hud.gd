@@ -12,6 +12,7 @@ var pearls_label: Label
 var crystals_label: Label
 var boost_label: Label
 var shop_badge: Control
+var tasks_badge: Control
 var popup: PanelContainer
 var popup_bg: ColorRect
 var ad_overlay: ColorRect
@@ -61,6 +62,8 @@ func _process(delta: float) -> void:
 			_refresh_room_live()
 		elif sheet_kind == "shop":
 			_refresh_shop_live()
+		elif sheet_kind == "room" or sheet_kind == "dock":
+			pass
 	if toast_time > 0.0:
 		toast_time -= delta
 		toast.modulate.a = clampf(toast_time * 2.0, 0.0, 1.0)
@@ -102,6 +105,14 @@ func _make_theme() -> Theme:
 	th.set_color("font_color", "Label", Color(0.88, 0.96, 1.0))
 	th.set_color("font_outline_color", "Label", Color(0, 0, 0, 0.6))
 	th.set_constant("outline_size", "Label", 4)
+	var pb_bg := _box(Color(0, 0, 0, 0.5), Color(ACCENT, 0.3), 8, 1)
+	pb_bg.shadow_size = 0
+	pb_bg.set_content_margin_all(0)
+	var pb_fill := _box(Color(1.0, 0.78, 0.3), Color(0, 0, 0, 0), 8, 0)
+	pb_fill.shadow_size = 0
+	pb_fill.set_content_margin_all(0)
+	th.set_stylebox("background", "ProgressBar", pb_bg)
+	th.set_stylebox("fill", "ProgressBar", pb_fill)
 	return th
 
 func _label(text: String, size := 24, color := Color(0.88, 0.96, 1.0)) -> Label:
@@ -110,6 +121,17 @@ func _label(text: String, size := 24, color := Color(0.88, 0.96, 1.0)) -> Label:
 	l.add_theme_font_size_override("font_size", size)
 	l.add_theme_color_override("font_color", color)
 	return l
+
+func _badge() -> Control:
+	var bd := Control.new()
+	bd.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bd.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	bd.position = Vector2(-16, 4)
+	bd.draw.connect(func():
+		var pulse := 1.0 + 0.15 * sin(Time.get_ticks_msec() / 150.0)
+		bd.draw_circle(Vector2.ZERO, 11 * pulse, Color(1.0, 0.25, 0.3))
+		bd.draw_arc(Vector2.ZERO, 11 * pulse, 0, TAU, 20, Color.WHITE, 2.0))
+	return bd
 
 func _icon(res: String, size := 32, col := Color.WHITE) -> Control:
 	var c := Control.new()
@@ -205,6 +227,9 @@ func _refresh_top() -> void:
 	crystals_label.text = str(Game.crystals)
 	pop_label.text = "%d/%d" % [Game.colonists.size(), Game.population_cap()]
 	boost_label.text = tr("x2 %s") % _clock(Game.boost_left()) if Game.boost_active() else ""
+	if tasks_badge:
+		tasks_badge.visible = Game.quests_ready() > 0 or Game.season_claimable() > 0
+		tasks_badge.queue_redraw()
 	if shop_badge:
 		shop_badge.visible = Game.daily_available() or Game.free_crate_ready()
 		shop_badge.queue_redraw()
@@ -222,11 +247,14 @@ func _build_bottom_bar() -> void:
 	bottom_bar.offset_bottom = -16
 	bottom_bar.add_theme_constant_override("separation", 10)
 	root.add_child(bottom_bar)
-	for item in [["Build", _open_build], ["Colonists", _open_colonists], ["Shop", _open_shop], ["Collect", _collect_all]]:
+	for item in [["Build", _open_build], ["Crew", _open_colonists], ["Tasks", _open_tasks], ["Shop", _open_shop], ["Collect", _collect_all]]:
 		var b := _button(item[0], item[1], 84)
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		b.add_theme_font_size_override("font_size", 23)
+		b.add_theme_font_size_override("font_size", 21)
 		bottom_bar.add_child(b)
+		if item[0] == "Tasks":
+			tasks_badge = _badge()
+			b.add_child(tasks_badge)
 		if item[0] == "Shop":
 			b.add_theme_color_override("font_color", Color(1.0, 0.9, 0.5))
 			shop_badge = Control.new()
@@ -392,6 +420,8 @@ func _open_room(id: int) -> void:
 	d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	sheet_body.add_child(d)
 	room_live_labels = {}
+	if r.type == "dock":
+		_dock_section(r)
 	if def.has("produces"):
 		var st := _label("", 22)
 		sheet_body.add_child(st)
@@ -446,6 +476,8 @@ func _refresh_room_live() -> void:
 	if r.is_empty():
 		return
 	var def: Dictionary = Defs.ROOMS[r.type]
+	if room_live_labels.has("exp"):
+		_refresh_dock_live(r)
 	if room_live_labels.has("status"):
 		var res: String = def.produces
 		var txt := ""
@@ -874,3 +906,224 @@ func _build_ad_overlay() -> void:
 
 func _on_ad_started() -> void:
 	ad_overlay.visible = true
+
+# ---------------------------------------------------------------- экспедиции
+
+var plan_zone := 0
+var plan_crew: Array = []
+
+func _dock_section(r: Dictionary) -> void:
+	var e := Game.expedition_at(r.id)
+	if e.is_empty():
+		sheet_body.add_child(_button(tr("Plan an expedition"), _open_planner.bind(r.id, 0), 76))
+		return
+	var zone: Dictionary = Defs.ZONES[e.zone]
+	var crew_names := []
+	for id in e.crew:
+		crew_names.append(Game.get_colonist(id).get("name", "?"))
+	sheet_body.add_child(_label(tr("Destination: %s") % tr(zone.name), 24, Color(1.0, 0.88, 0.5)))
+	var cl := _label(tr("Crew: %s") % ", ".join(crew_names), 19, Color(0.8, 0.88, 0.95))
+	cl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	sheet_body.add_child(cl)
+	var pb := ProgressBar.new()
+	pb.custom_minimum_size = Vector2(0, 26)
+	pb.show_percentage = false
+	pb.max_value = 1.0
+	pb.step = 0.001
+	sheet_body.add_child(pb)
+	var st := _label("", 20)
+	sheet_body.add_child(st)
+	var logbox := VBoxContainer.new()
+	sheet_body.add_child(_label(tr("Expedition log"), 20, ACCENT))
+	sheet_body.add_child(logbox)
+	var actions := HBoxContainer.new()
+	actions.add_theme_constant_override("separation", 10)
+	var fin := _button("", func():
+		Game.finish_expedition_now(e)
+		_open_room(r.id), 70)
+	fin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	fin.add_theme_color_override("font_color", Defs.RESOURCES.crystals.color)
+	actions.add_child(fin)
+	var ad := _button(tr("▶ -30 min"), func(): Store.show_rewarded(func():
+		Game.cut_expedition(e, 1800.0)
+		_open_room(r.id)), 70)
+	ad.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	actions.add_child(ad)
+	sheet_body.add_child(actions)
+	var claim := _button(tr("Collect loot!"), func():
+		Game.claim_expedition(e)
+		_close_sheet(), 76)
+	sheet_body.add_child(claim)
+	room_live_labels["exp"] = {"e": e, "bar": pb, "status": st, "log": logbox, "fin": fin, "ad": ad, "claim": claim, "shown": -1}
+	_refresh_dock_live(r)
+
+func _refresh_dock_live(_r: Dictionary) -> void:
+	var d: Dictionary = room_live_labels.exp
+	var e: Dictionary = d.e
+	var done := Game.expedition_done(e)
+	d.bar.value = Game.expedition_progress(e)
+	d.status.text = tr("Back home! Collect the loot.") if done else tr("Returns in %s") % _clock(float(e.end) - Game.now())
+	d.fin.visible = not done
+	d.ad.visible = not done
+	d.claim.visible = done
+	d.fin.text = tr("Finish ◆ %d") % Game.finish_cost(e) if not done else ""
+	var lines := Game.visible_log(e)
+	if lines.size() != d.shown:
+		d.shown = lines.size()
+		for ch in d.log.get_children():
+			ch.queue_free()
+		if lines.is_empty():
+			d.log.add_child(_label(tr("The sub just left the dock…"), 18, Color(0.7, 0.8, 0.9)))
+		for line in lines:
+			var l := _label("• " + line, 18, Color(0.85, 0.92, 1.0))
+			l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			d.log.add_child(l)
+
+func _open_planner(dock_id: int, zone_idx: int) -> void:
+	plan_zone = zone_idx
+	plan_crew = plan_crew.filter(func(id): return not Game.get_colonist(id).is_empty() and Game.get_colonist(id).room != Game.ON_EXPEDITION)
+	_open_sheet("planner", 900)
+	_header(tr("Expedition"))
+	sheet_body.add_child(_label(tr("1. Choose a destination"), 22, ACCENT))
+	for i in Defs.ZONES.size():
+		var z: Dictionary = Defs.ZONES[i]
+		var unlocked := Game.zone_unlocked(i)
+		var sel := i == plan_zone
+		var row := _card(Color(0.25, 0.18, 0.05, 0.95) if sel else Color(0.05, 0.12, 0.2, 0.9), Color(1.0, 0.8, 0.3) if sel else Color(0.5, 0.7, 0.9, 0.4))
+		var info := VBoxContainer.new()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info.add_child(_label("%s · %s" % [tr(z.name), _clock(z.minutes * 60.0)], 22, Color(1.0, 0.9, 0.6) if sel else Color.WHITE))
+		var dl := _label(tr(z.desc) if unlocked else tr("Needs %d colonists") % z.unlock_pop, 17, Color(0.75, 0.85, 0.95))
+		dl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		info.add_child(dl)
+		info.add_child(_label(tr("Danger: %s · Recommended power: %d") % [_danger_text(z.danger), z.power], 16, Color(1.0, 0.7, 0.6)))
+		row.add_child(info)
+		var b := _button(tr("Selected") if sel else tr("Select"), _open_planner.bind(dock_id, i), 56)
+		b.disabled = not unlocked or sel
+		b.custom_minimum_size.x = 130
+		row.add_child(b)
+	sheet_body.add_child(_label(tr("2. Pick up to 3 crew members"), 22, ACCENT))
+	var crew := Game.available_crew()
+	crew.sort_custom(func(a, b): return a.str + a.tech + a.bio > b.str + b.tech + b.bio)
+	for c in crew:
+		var chosen: bool = c.id in plan_crew
+		var t := _button("%s%s  ·  %s %d  ♥%d" % ["✓ " if chosen else "", c.name, tr("power"), c.str + c.tech + c.bio, int(c.health)], func():
+			if chosen:
+				plan_crew.erase(c.id)
+			elif plan_crew.size() < 3:
+				plan_crew.append(c.id)
+			_open_planner(dock_id, plan_zone), 58)
+		t.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		if chosen:
+			t.add_theme_color_override("font_color", Color(1.0, 0.9, 0.5))
+		sheet_body.add_child(t)
+	var chance := Game.expedition_chance(plan_zone, plan_crew) if not plan_crew.is_empty() else 0.0
+	var summary := tr("Crew power: %d / %d recommended") % [int(Game.crew_power(plan_crew)), Defs.ZONES[plan_zone].power]
+	var col := Color(0.5, 1.0, 0.6) if chance >= 1.0 else (Color(1.0, 0.85, 0.4) if chance >= 0.7 else Color(1.0, 0.5, 0.5))
+	sheet_body.add_child(_label(summary, 20, col))
+	var go := _button(tr("Launch the bathyscaphe!"), func():
+		if Game.launch_expedition(dock_id, plan_zone, plan_crew):
+			plan_crew = []
+			_close_sheet(), 80)
+	go.disabled = plan_crew.is_empty()
+	sheet_body.add_child(go)
+
+func _danger_text(d: float) -> String:
+	if d < 0.2: return tr("low")
+	if d < 0.4: return tr("medium")
+	if d < 0.6: return tr("high")
+	return tr("extreme")
+
+# ---------------------------------------------------------------- задания и сезон
+
+func _open_tasks() -> void:
+	_open_sheet("tasks", 900)
+	_header(tr("Tasks"))
+	_section(tr("Daily tasks"))
+	for q in Game.quests:
+		var row := _card(Color(0.05, 0.14, 0.1, 0.9) if q.claimed else Color(0.05, 0.12, 0.2, 0.9), Color(0.5, 0.9, 0.6, 0.6) if q.progress >= q.target else Color(0.5, 0.7, 0.9, 0.4))
+		var info := VBoxContainer.new()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info.add_child(_label(tr(q.text) % q.target, 22))
+		var pb := ProgressBar.new()
+		pb.custom_minimum_size = Vector2(0, 14)
+		pb.show_percentage = false
+		pb.max_value = q.target
+		pb.value = q.progress
+		info.add_child(pb)
+		info.add_child(_label("%d/%d · %s · +%d %s" % [q.progress, q.target, _reward_text(q.reward), q.xp, tr("season XP")], 16, Color(0.75, 0.85, 0.95)))
+		row.add_child(info)
+		var b := _button(tr("Done") if q.claimed else tr("Claim"), func():
+			Game.claim_quest(q)
+			_open_tasks(), 60)
+		b.disabled = q.claimed or q.progress < q.target
+		b.custom_minimum_size.x = 130
+		row.add_child(b)
+	sheet_body.add_child(_label(tr("New tasks every day"), 16, Color(0.6, 0.7, 0.8)))
+
+	_section(tr("Season Pass · %d days left") % Game.season_days_left())
+	var tier := Game.season_tier()
+	var into := Game.season_xp % Defs.SEASON_XP_PER_TIER
+	var head := _label(tr("Tier %d · %d/%d XP to next") % [tier, into, Defs.SEASON_XP_PER_TIER] if tier < Defs.SEASON_TIERS.size() else tr("All tiers reached!"), 20, Color(1.0, 0.88, 0.5))
+	sheet_body.add_child(head)
+	var banner := _banner("season")
+	if banner and not Game.season_pass:
+		sheet_body.add_child(banner)
+	if not Game.season_pass:
+		var p := Store.product("season_pass")
+		var offer := _card(Color(0.25, 0.2, 0.05, 0.92), Color(1.0, 0.8, 0.4, 0.9))
+		var d := _label(tr(p.desc), 18)
+		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		d.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		offer.add_child(d)
+		var bb := _button(p.price, func():
+			Store.purchase("season_pass")
+			_open_tasks(), 70)
+		bb.custom_minimum_size.x = 140
+		offer.add_child(bb)
+	var hdr := HBoxContainer.new()
+	var h1 := _label(tr("Free"), 18, Color(0.8, 0.9, 1.0))
+	h1.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	h1.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var h2 := _label(tr("Premium"), 18, Color(1.0, 0.85, 0.4))
+	h2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	h2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var sp := Control.new()
+	sp.custom_minimum_size.x = 60
+	hdr.add_child(sp)
+	hdr.add_child(h1)
+	hdr.add_child(h2)
+	sheet_body.add_child(hdr)
+	for i in Defs.SEASON_TIERS.size():
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		var num := _label(str(i + 1), 24, Color(1.0, 0.88, 0.5) if i < tier else Color(0.5, 0.6, 0.7))
+		num.custom_minimum_size.x = 60
+		num.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		row.add_child(num)
+		for prem in [false, true]:
+			var claimed: bool = i in (Game.season_claimed_premium if prem else Game.season_claimed_free)
+			var reached := i < tier
+			var locked: bool = prem and not Game.season_pass
+			var txt := _reward_text_full(Defs.SEASON_TIERS[i]["premium" if prem else "free"])
+			if claimed:
+				txt = "✓ " + txt
+			elif locked:
+				txt = "🔒 " + txt
+			var b := _button(txt, func():
+				Game.claim_season(i, prem)
+				_open_tasks(), 62)
+			b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			b.add_theme_font_size_override("font_size", 17)
+			b.disabled = claimed or not reached or locked
+			if prem:
+				b.add_theme_color_override("font_color", Color(1.0, 0.88, 0.5))
+				b.add_theme_color_override("font_disabled_color", Color(0.6, 0.5, 0.3))
+			row.add_child(b)
+		sheet_body.add_child(row)
+
+func _reward_text_full(r: Dictionary) -> String:
+	var t := _reward_text(r)
+	if r.has("colonist"):
+		t = (t + ", " if t != "" else "") + tr("%s colonist") % tr(r.colonist.capitalize())
+	return t

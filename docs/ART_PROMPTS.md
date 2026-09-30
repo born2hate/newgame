@@ -104,3 +104,10 @@ transparent background, no text: <объект>
 | `art/ui/shop/crystals_0.png` … `crystals_5.png` | кучки кристаллов от маленькой до огромной |
 | `art/ui/shop/crate_common.png`, `crate_silver.png`, `crate_gold.png` | ящики припасов |
 | `art/ui/shop/starter.png`, `premium.png`, `season.png` | баннеры 16:9 |
+
+## Экспедиции
+
+| Файл | Что |
+|---|---|
+| `art/rooms/dock.png` | отсек-док 16:10: `underwater submarine dock room, a water pool with an open hatch in the floor, mechanical crane arm, fuel pipes, tool racks, yellow warning stripes, no submarine, no people` |
+| `art/ui/shop/season.png` | баннер сезонного пропуска 16:9 |

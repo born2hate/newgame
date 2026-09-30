@@ -186,7 +186,7 @@ func _draw_rest(depth_rows: int) -> void:
 		_draw_room(r)
 	_draw_doors()
 	for c in Game.colonists:
-		if c.id != drag_colonist:
+		if c.id != drag_colonist and c.room != Game.ON_EXPEDITION:
 			_draw_colonist(colonist_world_pos(c), c, false)
 	if drag_colonist != -1:
 		var c := Game.get_colonist(drag_colonist)
@@ -371,6 +371,8 @@ func _draw_room(r: Dictionary) -> void:
 		var a := 0.25 + 0.2 * sin(t * 10.0)
 		draw_rect(inner, Color(1.0, 0.1, 0.1, a))
 		_text(inner.get_center(), tr("BREACH %d") % ceili(r.incident), 26, Color(1, 0.9, 0.9), true)
+	if r.type == "dock":
+		_draw_dock_overlay(r, rect)
 	# готово — пузырь с ресурсом
 	if r.ready:
 		var rc2: Color = Defs.RESOURCES[def.produces].color
@@ -379,6 +381,44 @@ func _draw_room(r: Dictionary) -> void:
 		draw_circle(bp, 20, Color(0.05, 0.1, 0.15, 0.9))
 		draw_arc(bp, 20, 0, TAU, 32, rc2, 3.0)
 		Icons.draw(self, def.produces, bp, 11.0, rc2)
+
+## Док: батискаф стоит в доке, либо уплыл (прогресс экспедиции), либо вернулся с добычей.
+func _draw_dock_overlay(r: Dictionary, rect: Rect2) -> void:
+	var inner := rect.grow(-WALL)
+	var e := Game.expedition_at(r.id)
+	var sub := Art.tex("res://art/creatures/bathyscaphe.png")
+	var away := not e.is_empty() and not Game.expedition_done(e)
+	if Art.room("dock") == null:
+		# вода в доке
+		var water := Rect2(inner.position.x + 6, inner.end.y - 40, inner.size.x - 12, 36)
+		draw_rect(water, Color(0.1, 0.45, 0.65, 0.8))
+		for i in 4:
+			var wx := water.position.x + fmod(t * 20.0 + i * 50.0, water.size.x)
+			draw_line(Vector2(wx, water.position.y + 4), Vector2(wx + 14, water.position.y + 4), Color(0.6, 0.9, 1.0, 0.5), 2.0)
+	if sub and not away:
+		var sw := inner.size.x * 0.62
+		var sh := sw * sub.get_height() / sub.get_width()
+		var bob := sin(t * 1.5 + r.id) * 3.0
+		draw_texture_rect(sub, Rect2(inner.get_center().x - sw / 2.0, inner.end.y - sh - 6 + bob, sw, sh), false)
+	if away:
+		var p := Game.expedition_progress(e)
+		var bar := Rect2(inner.position.x + 8, inner.end.y - 16, inner.size.x - 16, 8)
+		draw_rect(bar, Color(0, 0, 0, 0.6))
+		draw_rect(Rect2(bar.position, Vector2(bar.size.x * p, bar.size.y)), Color(1.0, 0.8, 0.3))
+		var left := float(e.end) - Game.now()
+		_text(inner.get_center() + Vector2(0, 8), tr("%s: %s") % [tr(Defs.ZONES[e.zone].name), _short_time(left)], 15, Color(1, 0.95, 0.8), true)
+	elif not e.is_empty():
+		var bp := Vector2(rect.get_center().x, rect.position.y + 30 + sin(t * 3.0 + r.id) * 5)
+		draw_circle(bp, 28, Color(1.0, 0.8, 0.3, 0.3))
+		draw_circle(bp, 21, Color(0.05, 0.1, 0.15, 0.9))
+		draw_arc(bp, 21, 0, TAU, 32, Color(1.0, 0.8, 0.3), 3.0)
+		Icons.draw(self, "pearls", bp, 11.0, Color(1.0, 0.85, 0.95))
+
+static func _short_time(sec: float) -> String:
+	var s := maxi(0, int(sec))
+	if s >= 3600:
+		return "%dh %02dm" % [s / 3600, (s % 3600) / 60]
+	return "%d:%02d" % [s / 60, s % 60]
 
 func _star(c: Vector2, rad: float) -> void:
 	var pts := PackedVector2Array()
@@ -562,6 +602,8 @@ func _on_press(p: Vector2) -> void:
 		return
 	var world := screen_to_world(p)
 	for c in Game.colonists:
+		if c.room == Game.ON_EXPEDITION:
+			continue
 		var cp := colonist_world_pos(c)
 		if world.distance_to(cp + Vector2(0, -28)) < 30.0:
 			drag_colonist = c.id
@@ -599,6 +641,11 @@ func _on_release(p: Vector2) -> void:
 	if room.ready:
 		Game.collect(room)
 		return
+	if room.type == "dock":
+		var e := Game.expedition_at(room.id)
+		if not e.is_empty() and Game.expedition_done(e):
+			Game.claim_expedition(e)
+			return
 	selected_room = room.id
 	room_selected.emit(room.id)
 

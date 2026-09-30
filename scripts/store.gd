@@ -21,6 +21,9 @@ const IAP := [
 	{"id": "premium", "title": "Premium", "price": "$4.99", "one_time": true, "banner": "premium",
 		"desc": "Rewards without ads, 16h offline income, free crate every 2h, +100 crystals",
 		"reward": {"premium": true, "crystals": 100}},
+	{"id": "season_pass", "title": "Season Pass", "price": "$4.99", "banner": "season",
+		"desc": "Unlock premium rewards on every season tier: crystals, gold crates and a Legendary colonist",
+		"reward": {"season_pass": true}},
 	{"id": "crystals_60", "title": "Handful of Crystals", "price": "$0.99", "reward": {"crystals": 60}, "pack": 0},
 	{"id": "crystals_330", "title": "Pouch of Crystals", "price": "$4.99", "reward": {"crystals": 330}, "pack": 1},
 	{"id": "crystals_700", "title": "Chest of Crystals", "price": "$9.99", "reward": {"crystals": 700}, "pack": 2},
@@ -49,6 +52,8 @@ func is_owned(id: String) -> bool:
 	return id in Game.owned_products
 
 func can_buy(id: String) -> bool:
+	if id == "season_pass":
+		return not Game.season_pass
 	var p := product(id)
 	return not p.is_empty() and not (p.get("one_time", false) and is_owned(id))
 
