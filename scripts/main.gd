@@ -225,6 +225,11 @@ func _dev_screenshot() -> void:
 			hud._close_sheet()
 			Store.purchase("starter_pack")
 			hud.popup_bg.visible = false
+		"work":
+			camera.zoom = Vector2(1.8, 1.8)
+			camera.position = Vector2(620, 300)
+			Game.assign(Game.colonists[3], Game.find_room_of_type("farm"))
+			await get_tree().create_timer(6.0).timeout
 		"zoom3d":
 			camera.zoom = Vector2(2.0, 2.0)
 			camera.position = Vector2(560, 150)

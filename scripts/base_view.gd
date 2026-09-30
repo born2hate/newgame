@@ -113,14 +113,36 @@ func _update_walkers(delta: float) -> void:
 		w["panic"] = danger
 		if danger:
 			w.wait = 0.0
+			w["working"] = false
+		# работник: стоит у своего рабочего места и трудится, изредка переходит к другому
+		var room: Dictionary = Game.get_room(here) if here >= 0 else {}
+		var job: bool = not danger and c.get("help", -1) == -1 and not room.is_empty() and Game.slots(room) > 0
+		if job and not w.has("station"):
+			var mates := Game.workers_in(room)
+			var idx := mates.find(c)
+			var n := maxi(1, Game.slots(room))
+			w["station"] = (maxi(idx, 0) + 0.5) / n
+			w.target = w.station
+			w.wait = 0.0
+		elif not job and w.has("station"):
+			w.erase("station")
+			w["working"] = false
 		if w.wait > 0.0:
 			w.wait -= delta
 			continue
 		var d: float = w.target - w.x
 		if absf(d) < 0.01:
-			w.wait = randf_range(1.0, 4.0)
-			w.target = randf()
+			if job:
+				# пришёл к месту — работает 8–16 с, потом может сходить к соседнему месту
+				w["working"] = not room.ready and Game.room_power(room) > 0.0
+				w.facing = 1.0 if fmod(w.station * 7.0, 2.0) < 1.0 else -1.0
+				w.wait = randf_range(8.0, 16.0)
+				w.target = w.station if randf() < 0.75 else clampf(w.station + randf_range(-0.25, 0.25), 0.05, 0.95)
+			else:
+				w.wait = randf_range(1.0, 4.0)
+				w.target = randf()
 		else:
+			w["working"] = false
 			w.facing = signf(d)
 			w.x += signf(d) * minf(absf(d), delta * (0.9 if w.get("panic", false) else 0.25))
 	for id in walkers.keys():
@@ -766,6 +788,7 @@ func _draw_colonist(feet: Vector2, c: Dictionary, lifted: bool) -> void:
 func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: Texture2D) -> void:
 	var w: Dictionary = walkers.get(c.id, {})
 	var walking: bool = w.get("wait", 1.0) <= 0.0 and not lifted
+	var working: bool = w.get("working", false) and not walking and not lifted
 	var h := 72.0 * (1.15 if lifted else 1.0)
 	var size := Vector2(h * sprite.get_width() / sprite.get_height(), h)
 	var bob := absf(sin(t * 10.0 + c.id)) * -3.0 if walking else sin(t * 2.0 + c.id) * 0.8
@@ -779,9 +802,19 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 			sprite = frame
 			size = Vector2(h * 0.95 * sprite.get_width() / sprite.get_height(), h * 0.95)
 			bob = 0.0
-	draw_set_transform(feet + Vector2(0, bob), 0.0, Vector2(facing, 1.0))
+	var squash := 1.0
+	var lean := 0.0
+	if working:
+		# ритмичные движения: наклон и «работа руками»
+		var beat := sin(t * 7.0 + c.id * 1.7)
+		squash = 1.0 - 0.05 * maxf(0.0, beat)
+		lean = 0.07 * beat * facing
+		bob = 0.0
+	draw_set_transform(feet + Vector2(0, bob), lean, Vector2(facing, squash))
 	draw_texture_rect(sprite, Rect2(Vector2(-size.x / 2.0, -size.y), size), false, tint)
 	draw_set_transform(Vector2.ZERO)
+	if working:
+		_draw_work_fx(feet, c, facing, h)
 	if c.room == -1 and c.get("help", -1) == -1 and not lifted:
 		# свободен — просит работу
 		var bp := feet + Vector2(0, -h - 20 + sin(t * 3.0 + c.id) * 3.0)
@@ -796,6 +829,37 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 		var hb := Rect2(feet + Vector2(-12, -h - 8), Vector2(24, 4))
 		draw_rect(hb, Color(0, 0, 0, 0.6))
 		draw_rect(Rect2(hb.position, Vector2(hb.size.x * c.health / 100.0, hb.size.y)), Color(1.0, 0.3, 0.3).lerp(Color(0.4, 1.0, 0.4), c.health / 100.0))
+
+## Эффект работы у рук колониста — по типу отсека.
+func _draw_work_fx(feet: Vector2, c: Dictionary, facing: float, h: float) -> void:
+	var room := Game.get_room(c.room)
+	if room.is_empty():
+		return
+	var hand := feet + Vector2(facing * 20.0, -h * 0.5)
+	var k := fmod(t * 1.8 + c.id * 0.37, 1.0)
+	match room.type:
+		"reactor", "dock", "storage":
+			# искры от инструмента
+			for i in 4:
+				var a: float = (i * 1.7 + c.id) + t * 9.0
+				var r := 8.0 + 24.0 * fmod(k + i * 0.25, 1.0)
+				var p := hand + Vector2(cos(a) * r * facing, sin(a) * r * 0.6 - r * 0.3)
+				draw_circle(p, 3.4, Color(1.0, 0.85 - 0.3 * fmod(k + i * 0.25, 1.0), 0.3, 1.0 - fmod(k + i * 0.25, 1.0)))
+		"oxygen":
+			for i in 3:
+				var q := fmod(k + i * 0.33, 1.0)
+				draw_arc(hand + Vector2(sin(t * 3.0 + i) * 4.0, -q * 48.0), 4.5 + q * 3.0, 0, TAU, 10, Color(0.8, 1.0, 1.0, 0.95 * (1.0 - q)), 2.5)
+		"farm", "pearl", "medbay":
+			for i in 3:
+				var q := fmod(k + i * 0.33, 1.0)
+				var col := Color(0.5, 1.0, 0.5) if room.type == "farm" else (Color(1.0, 0.8, 0.95) if room.type == "pearl" else Color(1.0, 0.5, 0.5))
+				var p := hand + Vector2((i - 1) * 10.0, -q * 38.0)
+				draw_circle(p, 5.0 * (1.0 - q) + 1.5, Color(col, 1.0 - q))
+		"lab":
+			for i in 4:
+				var q := fmod(k + i * 0.25, 1.0)
+				var a := i * TAU / 4.0 + t * 2.0
+				draw_circle(hand + Vector2(cos(a), sin(a)) * (6.0 + 16.0 * q), 3.2, Color(0.8, 0.6, 1.0, 1.0 - q))
 
 func _text(pos: Vector2, text: String, size: int, col: Color, centered := false) -> void:
 	var p := pos
