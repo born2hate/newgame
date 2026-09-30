@@ -46,7 +46,15 @@ func _dev_screenshot() -> void:
 			scene = a.trim_prefix("--scene=")
 	if path == "":
 		return
+	if not scene.begins_with("tut"):
+		Game.tutorial_done = true
+		if hud.tutorial and is_instance_valid(hud.tutorial):
+			hud.tutorial.queue_free()
 	await get_tree().create_timer(1.5).timeout
+	if not scene.begins_with("tut") and hud.tutorial and is_instance_valid(hud.tutorial):
+		hud.tutorial.queue_free()
+	if not scene.begins_with("tut") and hud.sheet_kind == "daily" and scene != "daily":
+		hud._close_sheet()
 	match scene:
 		"build": hud._open_build()
 		"buildmode": hud._start_build("living")
@@ -135,6 +143,14 @@ func _dev_screenshot() -> void:
 			hud._close_sheet()
 			Store.purchase("starter_pack")
 			hud.popup_bg.visible = false
+		"lab":
+			Game.pearls = 5000
+			Game.build("elevator", 5, 2)
+			Game.build("lab", 6, 2)
+			Game.find_room_of_type("lab").progress = 0.6
+			Game.build("dock", 3, 1)
+			Game.build("storage", 3, 2)
+			camera.position = Vector2(400, 330)
 		"shop1":
 			hud._open_shop()
 			await get_tree().process_frame
