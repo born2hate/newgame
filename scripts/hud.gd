@@ -57,6 +57,7 @@ func _ready() -> void:
 	more.hud = self
 	add_child(more)
 	view.trader_tapped.connect(func(): more.open_trader())
+	view.outside_tapped.connect(open_outside)
 	_build_trader_button()
 	_build_popup()
 	_build_ad_overlay()
@@ -714,6 +715,8 @@ func _open_room(id: int) -> void:
 		sheet_body.add_child(hz)
 	if r.type == "dock":
 		_dock_section(r)
+	if r.type == "airlock":
+		_outside_section()
 	if def.has("produces"):
 		var st := _label("", 20, Color(1.0, 0.92, 0.6))
 		st.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -741,7 +744,7 @@ func _open_room(id: int) -> void:
 			sheet_body.add_child(_button("+ Assign colonist", _open_pick.bind(id), 64))
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 10)
-	if r.level < Defs.MAX_LEVEL:
+	if r.level < Defs.MAX_LEVEL and def.get("buildable", false):
 		var cost := Game.upgrade_cost(r)
 		var up := _button(tr("Upgrade ◉%d") % cost, func():
 			Game.upgrade(r)
@@ -1578,6 +1581,40 @@ func _on_ad_started() -> void:
 
 var plan_zone := 0
 var plan_crew: Array = []
+
+## Выход наружу: экспедиции идут через док батискафа.
+func open_outside() -> void:
+	var dock := Game.find_room_of_type("dock")
+	if not dock.is_empty():
+		view.selected_room = dock.id
+		_open_room(dock.id)
+		return
+	_open_sheet("outside", 460)
+	_header(tr("Expedition"))
+	_outside_section()
+
+func _outside_section() -> void:
+	var dock := Game.find_room_of_type("dock")
+	var z := Art.tex("res://art/zones/reef.png")
+	if z:
+		var zb := TextureRect.new()
+		zb.texture = z
+		zb.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		zb.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		zb.custom_minimum_size = Vector2(0, 140)
+		sheet_body.add_child(zb)
+	if not dock.is_empty():
+		sheet_body.add_child(_with_icon(_button(tr("Plan an expedition"), func(): _open_room(dock.id), 72), "expedition", 44))
+		return
+	var need: int = Defs.ROOMS.dock.unlock_pop
+	var txt := tr("To go outside, build a Sub Dock. Crews sail from it on expeditions for loot.")
+	var l := _label(txt, 19, Color(0.85, 0.92, 1.0))
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	sheet_body.add_child(l)
+	if Game.is_unlocked("dock"):
+		sheet_body.add_child(_with_icon(_button(tr("Build a Sub Dock"), _start_build.bind("dock"), 72), "build", 44))
+	else:
+		sheet_body.add_child(_label(tr("Needs %d colonists") % need + "  (%d/%d)" % [Game.colonists.size(), need], 20, Color(1.0, 0.75, 0.5)))
 
 func _dock_section(r: Dictionary) -> void:
 	var e := Game.expedition_at(r.id)

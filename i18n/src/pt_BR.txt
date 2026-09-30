@@ -426,3 +426,5 @@
 425|Construa um elevador para baixo para abrir novos andares.
 426|Primeiro construa salas ao lado do elevador.
 427|Faltam %d pérolas.
+428|Para sair, construa uma doca do batiscafo. Dela as tripulações partem em expedições.
+429|Construir doca

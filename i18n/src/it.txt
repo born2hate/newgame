@@ -426,3 +426,5 @@
 425|Costruisci un ascensore verso il basso per aprire nuovi piani.
 426|Prima costruisci stanze accanto all'ascensore.
 427|Ti servono altre %d perle.
+428|Per uscire, costruisci un molo del batiscafo. Da lì gli equipaggi partono in spedizione.
+429|Costruisci il molo

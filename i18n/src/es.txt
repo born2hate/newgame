@@ -427,3 +427,5 @@
 425|Construye un ascensor hacia abajo para abrir nuevos pisos.
 426|Primero construye salas junto al ascensor.
 427|Necesitas %d perlas más.
+428|Para salir, construye un muelle del batiscafo. Desde allí las tripulaciones parten de expedición.
+429|Construir muelle

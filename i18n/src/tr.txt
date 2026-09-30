@@ -426,3 +426,5 @@
 425|Yeni katlar açmak için aşağı doğru asansör inşa et.
 426|Önce asansörün yanına oda inşa et.
 427|%d inci daha gerekli.
+428|Dışarı çıkmak için bir denizaltı iskelesi kur. Ekipler oradan keşfe çıkar.
+429|İskele kur

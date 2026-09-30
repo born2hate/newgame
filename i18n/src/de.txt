@@ -426,3 +426,5 @@
 425|Baue einen Aufzug nach unten, um neue Etagen zu öffnen.
 426|Baue zuerst Räume neben dem Aufzug.
 427|Dir fehlen noch %d Perlen.
+428|Um nach draußen zu gehen, baue ein U-Boot-Dock. Von dort starten Crews auf Expeditionen.
+429|U-Boot-Dock bauen

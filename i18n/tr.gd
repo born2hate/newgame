@@ -432,6 +432,8 @@ const T := {
 	"Build an Elevator below to open new floors.": "Yeni katlar açmak için aşağı doğru asansör inşa et.",
 	"Build rooms next to the elevator first.": "Önce asansörün yanına oda inşa et.",
 	"You need %d more pearls.": "%d inci daha gerekli.",
+	"To go outside, build a Sub Dock. Crews sail from it on expeditions for loot.": "Dışarı çıkmak için bir denizaltı iskelesi kur. Ekipler oradan keşfe çıkar.",
+	"Build a Sub Dock": "İskele kur",
 }
 
 static func make() -> Translation:

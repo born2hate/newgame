@@ -5,6 +5,7 @@ signal room_selected(room_id: int)
 signal build_finished
 signal colonist_selected(colonist_id: int)
 signal trader_tapped
+signal outside_tapped
 
 const CELL_W := 100.0
 const CELL_H := 130.0
@@ -667,8 +668,8 @@ static func _short_time(sec: float) -> String:
 	return "%d:%02d" % [s / 60, s % 60]
 
 ## Задняя стена отсека: чуть меньше рамки и сдвинута в сторону от центра экрана.
-const DEPTH := 0.13          # насколько «глубокая» комната
-const DEPTH_SHIFT := 0.08    # сила параллакса
+const DEPTH := 0.06          # глубина комнаты — лёгкая, как в Fallout Shelter
+const DEPTH_SHIFT := 0.0     # без параллакса: камера не «крутит» комнаты
 
 func _diorama_back(inner: Rect2) -> Rect2:
 	var cam := camera.get_screen_center_position() if camera else inner.get_center()
@@ -1074,6 +1075,10 @@ func _on_release(p: Vector2) -> void:
 				return
 		return
 	var room := Game.room_at(cell.x, cell.y)
+	var al := Game.find_room_of_type("airlock")
+	if room.is_empty() and world.y < 0 and world.y > -260 and not al.is_empty() and absf(world.x - room_rect(al).get_center().x) < 170:
+		outside_tapped.emit()
+		return
 	if room.is_empty():
 		selected_room = -1
 		room_selected.emit(-1)

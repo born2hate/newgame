@@ -426,3 +426,5 @@
 425|Bangun lift ke bawah untuk membuka lantai baru.
 426|Bangun ruangan di sebelah lift terlebih dahulu.
 427|Butuh %d mutiara lagi.
+428|Untuk keluar, bangun Dermaga Kapal Selam. Dari sana awak berangkat ekspedisi.
+429|Bangun Dermaga

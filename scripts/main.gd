@@ -248,6 +248,9 @@ func _dev_screenshot() -> void:
 			await get_tree().create_timer(0.6).timeout
 			camera.zoom = Vector2(0.5, 0.5)
 			camera.position = Vector2(700, 300)
+		"outside":
+			Audio.set_language("ru")
+			view.room_selected.emit(Game.find_room_of_type("airlock").id)
 		"zoom3d":
 			camera.zoom = Vector2(2.0, 2.0)
 			camera.position = Vector2(560, 150)

@@ -426,3 +426,5 @@
 425|Construis un ascenseur vers le bas pour ouvrir de nouveaux étages.
 426|Construis d'abord des salles à côté de l'ascenseur.
 427|Il te manque %d perles.
+428|Pour sortir, construis un dock de bathyscaphe. Les équipages en partent en expédition.
+429|Construire le dock

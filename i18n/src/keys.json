@@ -426,5 +426,7 @@
 "No free space",
 "Build an Elevator below to open new floors.",
 "Build rooms next to the elevator first.",
-"You need %d more pearls."
+"You need %d more pearls.",
+"To go outside, build a Sub Dock. Crews sail from it on expeditions for loot.",
+"Build a Sub Dock"
 ]
