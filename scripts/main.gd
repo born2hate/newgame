@@ -53,6 +53,11 @@ func _dev_screenshot() -> void:
 		"room": view.room_selected.emit(Game.find_room_of_type("reactor").id)
 		"colonists": hud._open_colonists()
 		"shop": hud._open_shop()
+		"shop2":
+			hud._open_shop()
+			await get_tree().process_frame
+			var sc := hud.sheet.get_child(0) as ScrollContainer
+			sc.scroll_vertical = 1100
 		"daily": hud._open_daily()
 		"crate":
 			Game.crates.silver = 1

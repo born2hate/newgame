@@ -833,6 +833,18 @@ func _show_rewards(title: String, lines: Array) -> void:
 	var vb := VBoxContainer.new()
 	vb.add_theme_constant_override("separation", 12)
 	popup.add_child(vb)
+	var is_crate := false
+	for k in Defs.CRATES:
+		if title == tr(Defs.CRATES[k].name):
+			is_crate = true
+	var open_tex := Art.tex("res://art/ui/shop/crate_open.png")
+	if is_crate and open_tex:
+		var img := TextureRect.new()
+		img.texture = open_tex
+		img.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		img.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		img.custom_minimum_size = Vector2(0, 220)
+		vb.add_child(img)
 	var t := _label(title, 32, Color(1.0, 0.88, 0.5))
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vb.add_child(t)
