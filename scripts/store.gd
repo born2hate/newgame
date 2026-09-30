@@ -19,7 +19,7 @@ const IAP := [
 		"desc": "150 crystals, 1000 pearls, 2 Silver Crates and a Rare colonist",
 		"reward": {"crystals": 150, "pearls": 1000, "crates": {"silver": 2}, "colonist": "rare"}},
 	{"id": "premium", "title": "Premium", "price": "$4.99", "one_time": true, "banner": "premium",
-		"desc": "Rewards without ads, 16h offline income, free crate every 2h, +100 crystals",
+		"desc": "Golden Captain colonist, rewards without ads, 16h offline income, free crate every 2h, +100 crystals",
 		"reward": {"premium": true, "crystals": 100}},
 	{"id": "season_pass", "title": "Season Pass", "price": "$4.99", "banner": "season",
 		"desc": "Unlock premium rewards on every season tier: crystals, gold crates and a Legendary colonist",

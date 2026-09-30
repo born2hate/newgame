@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bhm5uyisa3eou"
-path="res://.godot/imported/diver_0.png-366ff3181f958fece4abc863e01339fd.ctex"
+uid="uid://bwa4413ivmsjs"
+path="res://.godot/imported/season_card.png-0e647aeed913764ad88b5c520712d692.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/characters/diver_0.png"
-dest_files=["res://.godot/imported/diver_0.png-366ff3181f958fece4abc863e01339fd.ctex"]
+source_file="res://art/ui/shop/season_card.png"
+dest_files=["res://.godot/imported/season_card.png-0e647aeed913764ad88b5c520712d692.ctex"]
 
 [params]
 

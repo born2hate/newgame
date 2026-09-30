@@ -486,6 +486,7 @@ func grant(reward: Dictionary, title: String) -> void:
 	if reward.get("premium", false):
 		premium = true
 		lines.append(tr("Premium unlocked!"))
+		lines.append(_grant_captain())
 	changed.emit()
 	rewards_granted.emit(title, lines)
 
@@ -501,6 +502,17 @@ func _grant_colonist(rarity: String) -> String:
 	c["rarity"] = rarity
 	colonists.append(c)
 	return tr("%s colonist: %s") % [tr(rarity.capitalize()), c.name]
+
+## Капитан — особый колонист за Premium (приходит сверх лимита жилья).
+func _grant_captain() -> String:
+	var c := _make_colonist()
+	c.name = "Captain " + c.name.split(" ")[1]
+	c.suit = Art.CAPTAIN_SUIT
+	c["rarity"] = "legendary"
+	for k in ["str", "tech", "bio"]:
+		c[k] = rng.randi_range(6, 8)
+	colonists.append(c)
+	return tr("%s joined your colony!") % c.name
 
 func crate_odds(type: String) -> Array:
 	var table: Array = Defs.CRATES[type].table

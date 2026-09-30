@@ -200,6 +200,15 @@ func _draw_rest(depth_rows: int) -> void:
 		_text(fl.pos, fl.text, 30, Color(fl.color, a), true)
 
 func _draw_water_life() -> void:
+	var fishy := Art.tex("res://art/creatures/anglerfish.png")
+	if fishy:
+		# редко проплывает вдалеке
+		var cycle := fmod(t, 70.0)
+		if cycle < 40.0:
+			var fw := 170.0
+			var fh := fw * fishy.get_height() / fishy.get_width()
+			var fx := 1500.0 - cycle * 55.0
+			draw_texture_rect(fishy, Rect2(fx, -620 + sin(t * 0.7) * 20, fw, fh), false, Color(0.55, 0.6, 0.8, 0.7))
 	var sub := Art.tex("res://art/creatures/bathyscaphe.png")
 	if sub:
 		var sw := 150.0
@@ -534,7 +543,7 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 		draw_circle(feet + Vector2(0, 2), 16, Color(0, 0, 0, 0.3))
 	var tint := Color.WHITE if c.health >= 50.0 else Color(0.75, 0.75, 0.75)
 	if walking:
-		var frame := Art.walk(c.suit, int(t * 9.0 + c.id) % 6)
+		var frame := Art.walk_frame(c.suit, t * 11.0 + c.id)
 		if frame:
 			sprite = frame
 			size = Vector2(h * 0.95 * sprite.get_width() / sprite.get_height(), h * 0.95)

@@ -105,6 +105,7 @@ func _initialize() -> void:
 	check(not eco.spend_crystals(5), "нельзя потратить больше, чем есть")
 	eco.grant({"premium": true, "crystals": 100, "crates": {"gold": 1}}, "test")
 	check(eco.premium and eco.crystals == 100 and eco.crates.gold == 1, "выдача награды из покупки")
+	check(eco.colonists[-1].suit == Art.CAPTAIN_SUIT, "Premium даёт капитана")
 	eco.save_game()
 	var e2 = load("res://scripts/game_state.gd").new()
 	e2.load_game()

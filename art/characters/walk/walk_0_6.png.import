@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://6lhqykv5a7lk"
-path="res://.godot/imported/diver_1.png-8e24bc9abf632b404d223efafad9bf86.ctex"
+uid="uid://q1axiwnuis1s"
+path="res://.godot/imported/walk_0_6.png-36b926ef6b59f67b41779e91b08b1573.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/characters/diver_1.png"
-dest_files=["res://.godot/imported/diver_1.png-8e24bc9abf632b404d223efafad9bf86.ctex"]
+source_file="res://art/characters/walk/walk_0_6.png"
+dest_files=["res://.godot/imported/walk_0_6.png-36b926ef6b59f67b41779e91b08b1573.ctex"]
 
 [params]
 

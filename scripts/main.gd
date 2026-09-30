@@ -55,6 +55,13 @@ func _dev_screenshot() -> void:
 		"shop": hud._open_shop()
 		"tasks": hud._open_tasks()
 		"bar": hud._close_sheet()
+		"captain":
+			hud._close_sheet()
+			Store.purchase("premium")
+			var cap: Dictionary = Game.colonists[-1]
+			Game.assign(cap, Game.find_room_of_type("reactor"))
+			var d := Game._add_room("dock", 3, 1)
+			hud.popup_bg.visible = false
 		"planner":
 			var d := Game._add_room("dock", 3, 1)
 			hud._open_planner(d.id, 1)
