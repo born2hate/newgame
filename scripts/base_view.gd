@@ -683,7 +683,7 @@ static func _short_time(sec: float) -> String:
 	return "%d:%02d" % [s / 60, s % 60]
 
 ## Задняя стена отсека: чуть меньше рамки и сдвинута в сторону от центра экрана.
-const DEPTH := 0.06          # глубина комнаты — лёгкая, как в Fallout Shelter
+const DEPTH := 0.10          # глубина комнаты: видны пол, потолок и стены
 const DEPTH_SHIFT := 0.0     # без параллакса: камера не «крутит» комнаты
 
 func _diorama_back(inner: Rect2) -> Rect2:
