@@ -104,6 +104,21 @@ func _dev_screenshot() -> void:
 		"banner":
 			Game.track(Game.quests[0].event, 999)
 			await get_tree().create_timer(0.7).timeout
+		"closetest":
+			hud._open_build()
+			await get_tree().create_timer(0.5).timeout
+			var xbtn: Button = hud.sheet_body.get_child(0).get_child(1)
+			var pos := xbtn.get_global_rect().get_center()
+			var e1 := InputEventScreenTouch.new(); e1.index = 0; e1.position = pos; e1.pressed = true
+			Input.parse_input_event(e1)
+			await get_tree().process_frame
+			var d := InputEventScreenDrag.new(); d.index = 0; d.position = pos + Vector2(3, 4); d.relative = Vector2(3, 4)
+			Input.parse_input_event(d)
+			await get_tree().process_frame
+			var e2 := InputEventScreenTouch.new(); e2.index = 0; e2.position = pos + Vector2(3, 4); e2.pressed = false
+			Input.parse_input_event(e2)
+			await get_tree().create_timer(0.3).timeout
+			print("CLOSE visible_after=", hud.sheet.visible)
 		"scrolltest":
 			hud._open_build()
 			await get_tree().create_timer(0.5).timeout

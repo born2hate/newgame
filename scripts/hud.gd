@@ -305,20 +305,63 @@ func _button(text: String, cb: Callable, min_h := 72) -> Button:
 ## Значки валют в тексте кнопки заменяем настоящими иконками: ◉ жемчуг, ◆ кристаллы, ⚗ наука.
 const CURRENCY_GLYPHS := {"◉": "res://art/icons/pearls.png", "◆": "res://art/icons/crystals.png", "⚗": "res://art/icons/science.png"}
 
+## Надпись в кнопке с ценой берёт шрифт и цвета самой кнопки (когда она уже в дереве и видит тему).
+func _style_cost_label(b: Button) -> void:
+	if not b.has_meta("cost_box"):
+		return
+	var lab := (b.get_meta("cost_box") as HBoxContainer).get_child(0) as Label
+	var fs := b.get_theme_font_size("font_size") if b.is_inside_tree() or b.has_theme_font_size_override("font_size") else 22
+	lab.add_theme_font_size_override("font_size", fs)
+	var fc := Color.WHITE
+	if b.is_inside_tree() or b.has_theme_color_override("font_color"):
+		fc = b.get_theme_color("font_disabled_color") if b.disabled else b.get_theme_color("font_color")
+	lab.add_theme_color_override("font_color", fc)
+	lab.add_theme_color_override("font_outline_color", Color(0.02, 0.12, 0.2, 0.9) if fc.get_luminance() > 0.5 else Color(1, 0.95, 0.7, 0.5))
+	lab.add_theme_constant_override("outline_size", 4)
+
 func set_cost_text(b: Button, text: String) -> void:
+	var glyph := ""
 	for g in CURRENCY_GLYPHS:
 		if g in text:
-			var tex := Art.tex(CURRENCY_GLYPHS[g])
-			if tex:
-				b.icon = tex
-				b.expand_icon = true
-				b.add_theme_constant_override("icon_max_width", 30)
-				b.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
-				b.vertical_icon_alignment = VERTICAL_ALIGNMENT_CENTER
-				b.alignment = HORIZONTAL_ALIGNMENT_CENTER
-				text = text.replace(g + " ", "").replace(g, "").strip_edges()
+			glyph = g
 			break
-	b.text = text
+	var box: HBoxContainer = b.get_meta("cost_box") if b.has_meta("cost_box") else null
+	if glyph == "" or Art.tex(CURRENCY_GLYPHS[glyph]) == null:
+		if box:
+			box.queue_free()
+			b.remove_meta("cost_box")
+		b.text = text
+		return
+	# «Улучшить 60 [иконка]»: текст и число, затем картинка валюты
+	var clean := text.replace(glyph + " ", "").replace(glyph, "").strip_edges()
+	b.text = ""
+	if box == null:
+		box = HBoxContainer.new()
+		box.alignment = BoxContainer.ALIGNMENT_CENTER
+		box.add_theme_constant_override("separation", 6)
+		box.set_anchors_preset(Control.PRESET_FULL_RECT)
+		box.offset_bottom = -4
+		box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var l := Label.new()
+		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		box.add_child(l)
+		var ic := TextureRect.new()
+		ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		ic.custom_minimum_size = Vector2(30, 30)
+		ic.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		box.add_child(ic)
+		b.add_child(box)
+		b.set_meta("cost_box", box)
+	var lab := box.get_child(0) as Label
+	lab.text = clean
+	_style_cost_label(b)
+	if not b.is_inside_tree() and not b.tree_entered.is_connected(_style_cost_label):
+		b.tree_entered.connect(_style_cost_label.bind(b))
+	(box.get_child(1) as TextureRect).texture = Art.tex(CURRENCY_GLYPHS[glyph])
+	if b.custom_minimum_size.x < 10:
+		b.custom_minimum_size.x = lab.get_minimum_size().x + 70
 
 # ---------------------------------------------------------------- верхняя панель
 
@@ -509,6 +552,8 @@ func _build_sheet() -> void:
 	root.add_child(sheet)
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	# без мёртвой зоны любое дрожание пальца считается прокруткой и отменяет нажатие кнопок
+	scroll.scroll_deadzone = 24
 	scroll.custom_minimum_size = Vector2(0, 560)
 	sheet.add_child(scroll)
 	# справа — место под полосу прокрутки, чтобы она не налезала на кнопки
@@ -1655,6 +1700,7 @@ func _dock_section(r: Dictionary) -> void:
 	logbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	sheet_body.add_child(_label(tr("Expedition log"), 20, ACCENT))
 	var logscroll := ScrollContainer.new()
+	logscroll.scroll_deadzone = 24
 	logscroll.custom_minimum_size = Vector2(0, 260)
 	logscroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	logscroll.add_theme_stylebox_override("panel", _box(Color(0, 0, 0, 0.35), Color(ACCENT, 0.25), 12, 1))
