@@ -101,25 +101,87 @@ func _box(bg: Color, border: Color, radius := 18, bw := 2) -> StyleBoxFlat:
 	s.shadow_size = 6
 	return s
 
+## Объёмная «игровая» кнопка: светлая кромка, тёмный низ, при нажатии «проседает».
+static func button_styles(bg: Color, rim: Color, base: Color) -> Dictionary:
+	var n := StyleBoxFlat.new()
+	n.bg_color = bg
+	n.border_color = base
+	n.border_width_left = 2
+	n.border_width_right = 2
+	n.border_width_top = 2
+	n.border_width_bottom = 7
+	n.set_corner_radius_all(16)
+	n.content_margin_left = 14
+	n.content_margin_right = 14
+	n.content_margin_top = 8
+	n.content_margin_bottom = 12
+	n.shadow_color = Color(0, 0, 0, 0.35)
+	n.shadow_size = 4
+	n.shadow_offset = Vector2(0, 3)
+	var h := n.duplicate()
+	h.bg_color = bg.lightened(0.12)
+	var p := n.duplicate()
+	p.bg_color = bg.darkened(0.1)
+	p.border_width_bottom = 2
+	p.content_margin_top = 13
+	p.content_margin_bottom = 7
+	p.shadow_size = 1
+	var d := n.duplicate()
+	d.bg_color = Color(0.16, 0.2, 0.26)
+	d.border_color = Color(0.08, 0.1, 0.13)
+	d.shadow_size = 0
+	# светлый блик сверху — через вторую рамку не выйдет, поэтому светлая верхняя кромка
+	for sb in [n, h]:
+		sb.border_blend = false
+	n.expand_margin_top = 0
+	return {"normal": n, "hover": h, "pressed": p, "disabled": d}
+
+const GOLD_KEYS := ["Claim", "Collect loot!", "Launch the bathyscaphe!", "Open", "Deal", "Great!", "Next",
+	"+ Assign colonist", "Plan an expedition", "Assign to best room"]
+
+## Главные действия — золотые, покупки за деньги — зелёные.
+func _auto_style(b: Button, text: String) -> void:
+	for k in GOLD_KEYS:
+		if text == tr(k):
+			_gold(b)
+			return
+	var up := tr("Upgrade ◉%d").split("◉")[0]
+	if text.begins_with("$") or text.begins_with("⚗") or (up != "" and text.begins_with(up)):
+		_green(b) if text.begins_with("$") else _gold(b)
+
+## Золотая кнопка для главных действий.
+func _gold(b: Button) -> Button:
+	var st := button_styles(Color(1.0, 0.72, 0.16), Color(1.0, 0.92, 0.5), Color(0.62, 0.33, 0.04))
+	for k in st:
+		b.add_theme_stylebox_override(k, st[k])
+	b.add_theme_color_override("font_color", Color(0.3, 0.12, 0.0))
+	b.add_theme_color_override("font_hover_color", Color(0.3, 0.12, 0.0))
+	b.add_theme_color_override("font_pressed_color", Color(0.3, 0.12, 0.0))
+	b.add_theme_color_override("font_outline_color", Color(1.0, 0.95, 0.7, 0.6))
+	b.add_theme_constant_override("outline_size", 2)
+	return b
+
+## Зелёная кнопка для «купить за реальные деньги».
+func _green(b: Button) -> Button:
+	var st := button_styles(Color(0.2, 0.75, 0.35), Color(0.6, 1.0, 0.6), Color(0.05, 0.35, 0.12))
+	for k in st:
+		b.add_theme_stylebox_override(k, st[k])
+	return b
+
 func _make_theme() -> Theme:
 	var th := Theme.new()
 	th.default_font_size = 24
 	th.set_stylebox("panel", "PanelContainer", _box(PANEL_BG, Color(ACCENT, 0.45)))
-	var normal := _box(Color(0.07, 0.25, 0.36), Color(ACCENT, 0.7), 14)
-	normal.set_content_margin_all(12)
-	var hover := normal.duplicate()
-	hover.bg_color = Color(0.1, 0.33, 0.46)
-	var pressed := normal.duplicate()
-	pressed.bg_color = Color(0.05, 0.18, 0.26)
-	var disabled := normal.duplicate()
-	disabled.bg_color = Color(0.1, 0.12, 0.15)
-	disabled.border_color = Color(0.3, 0.3, 0.35)
-	th.set_stylebox("normal", "Button", normal)
-	th.set_stylebox("hover", "Button", hover)
-	th.set_stylebox("pressed", "Button", pressed)
-	th.set_stylebox("disabled", "Button", disabled)
+	var btn := button_styles(Color(0.08, 0.5, 0.72), Color(0.45, 0.9, 1.0), Color(0.03, 0.22, 0.36))
+	for k in btn:
+		th.set_stylebox(k, "Button", btn[k])
 	th.set_stylebox("focus", "Button", StyleBoxEmpty.new())
-	th.set_color("font_color", "Button", Color(0.9, 0.98, 1.0))
+	th.set_color("font_color", "Button", Color(1, 1, 1))
+	th.set_color("font_hover_color", "Button", Color(1, 1, 1))
+	th.set_color("font_pressed_color", "Button", Color(0.9, 0.97, 1.0))
+	th.set_color("font_outline_color", "Button", Color(0.02, 0.12, 0.2, 0.9))
+	th.set_constant("outline_size", "Button", 5)
+	th.set_stylebox("panel", "PanelContainer", _box(PANEL_BG, Color(0.35, 0.85, 1.0, 0.8), 20, 3))
 	th.set_color("font_disabled_color", "Button", Color(0.5, 0.55, 0.6))
 	th.set_font_size("font_size", "Button", 24)
 	th.set_color("font_color", "Label", Color(0.88, 0.96, 1.0))
@@ -181,6 +243,7 @@ func _button(text: String, cb: Callable, min_h := 72) -> Button:
 	b.custom_minimum_size = Vector2(0, min_h)
 	b.pressed.connect(func(): Audio.play("tap"))
 	b.pressed.connect(cb)
+	_auto_style(b, text)
 	return b
 
 # ---------------------------------------------------------------- верхняя панель
@@ -328,9 +391,15 @@ func _collect_all() -> void:
 func _build_sheet() -> void:
 	sheet = PanelContainer.new()
 	sheet.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	sheet.offset_left = 8
-	sheet.offset_right = -8
-	sheet.offset_bottom = -8
+	sheet.offset_left = 12
+	sheet.offset_right = -12
+	sheet.offset_bottom = -12
+	var sheet_box := _box(PANEL_BG, Color(ACCENT, 0.45))
+	sheet_box.content_margin_left = 20
+	sheet_box.content_margin_right = 12
+	sheet_box.content_margin_top = 18
+	sheet_box.content_margin_bottom = 18
+	sheet.add_theme_stylebox_override("panel", sheet_box)
 	sheet.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	sheet.visible = false
 	root.add_child(sheet)
@@ -338,10 +407,15 @@ func _build_sheet() -> void:
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.custom_minimum_size = Vector2(0, 560)
 	sheet.add_child(scroll)
+	# справа — место под полосу прокрутки, чтобы она не налезала на кнопки
+	var pad := MarginContainer.new()
+	pad.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	pad.add_theme_constant_override("margin_right", 14)
+	scroll.add_child(pad)
 	sheet_body = VBoxContainer.new()
 	sheet_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	sheet_body.add_theme_constant_override("separation", 10)
-	scroll.add_child(sheet_body)
+	sheet_body.add_theme_constant_override("separation", 12)
+	pad.add_child(sheet_body)
 
 func _open_sheet(kind: String, height := 560) -> void:
 	sheet_kind = kind
@@ -368,11 +442,16 @@ func _close_sheet() -> void:
 
 func _header(title: String) -> void:
 	var row := HBoxContainer.new()
-	var l := _label(title, 32, ACCENT)
+	var l := _label(title, 34, Color(1.0, 0.86, 0.35))
+	l.add_theme_constant_override("outline_size", 8)
+	l.add_theme_color_override("font_outline_color", Color(0.25, 0.1, 0.0, 0.9))
 	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(l)
 	var close := _button("✕", _close_sheet, 60)
 	close.custom_minimum_size.x = 60
+	var red := button_styles(Color(0.85, 0.25, 0.3), Color(1.0, 0.6, 0.6), Color(0.45, 0.08, 0.12))
+	for k in red:
+		close.add_theme_stylebox_override(k, red[k])
 	row.add_child(close)
 	sheet_body.add_child(row)
 
@@ -470,15 +549,37 @@ func _open_room(id: int) -> void:
 	sheet_room = id
 	view.selected_room = id
 	var def: Dictionary = Defs.ROOMS[r.type]
-	_open_sheet("room", 620 if r.type == "dock" else 470)
+	_open_sheet("room", 640 if r.type == "dock" else 520)
 	var size_txt := " %d×" % r.size if r.size > 1 else ""
 	_header(tr("%s · lvl %d") % [tr(def.name) + size_txt, r.level])
+	var top := HBoxContainer.new()
+	top.add_theme_constant_override("separation", 14)
+	var art := Art.room(r.type)
+	if art:
+		var frame := PanelContainer.new()
+		var fb := _box(Color(0, 0, 0, 0.4), Color(def.color, 0.8), 10, 2)
+		fb.set_content_margin_all(3)
+		frame.add_theme_stylebox_override("panel", fb)
+		var pic := TextureRect.new()
+		pic.texture = art
+		pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		pic.custom_minimum_size = Vector2(190, 119)
+		frame.add_child(pic)
+		top.add_child(frame)
+	var info := VBoxContainer.new()
+	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info.add_theme_constant_override("separation", 6)
+	var d := _label(def.desc, 19, Color(0.75, 0.85, 0.95))
+	d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	info.add_child(d)
 	var zone := Game.depth_zone(r.row)
 	if zone.bonus > 0.0:
-		sheet_body.add_child(_label(tr("%s: +%d%% production, more incidents") % [tr(zone.name), int(zone.bonus * 100)], 18, zone.color))
-	var d := _label(def.desc, 20, Color(0.7, 0.82, 0.92))
-	d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	sheet_body.add_child(d)
+		var zl := _label(tr("%s: +%d%% production, more incidents") % [tr(zone.name), int(zone.bonus * 100)], 16, zone.color)
+		zl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		info.add_child(zl)
+	top.add_child(info)
+	sheet_body.add_child(top)
 	room_live_labels = {}
 	if def.has("produces") == false and r.incident > 0.0:
 		var hz := _label("", 22, Color(1.0, 0.6, 0.5))
@@ -488,8 +589,9 @@ func _open_room(id: int) -> void:
 	if r.type == "dock":
 		_dock_section(r)
 	if def.has("produces"):
-		var st := _label("", 22)
-		sheet_body.add_child(st)
+		var st := _label("", 20, Color(1.0, 0.92, 0.6))
+		st.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		info.add_child(st)
 		room_live_labels["status"] = st
 	var slots := Game.slots(r)
 	if slots > 0:
@@ -497,7 +599,9 @@ func _open_room(id: int) -> void:
 		sheet_body.add_child(_label(tr("Workers (%d/%d) · needs %s") % [Game.workers_in(r).size(), slots, tr(stat_name)], 22, ACCENT))
 		for c in Game.workers_in(r):
 			var row := HBoxContainer.new()
-			var l := _button("%s  ·  %s %d  ·  ♥ %d" % [c.name, tr(stat_name), c[def.stat], int(c.health)], _open_colonist.bind(c.id), 56)
+			row.add_theme_constant_override("separation", 8)
+			row.add_child(_portrait(c, 56))
+			var l := _button("%s  ·  %s %d  ·  ♥ %d" % [c.name, tr(stat_name), Game.stat(c, def.stat), int(c.health)], _open_colonist.bind(c.id), 56)
 			l.alignment = HORIZONTAL_ALIGNMENT_LEFT
 			l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			row.add_child(l)
