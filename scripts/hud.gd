@@ -260,8 +260,9 @@ func _build_bottom_bar() -> void:
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		b.add_theme_font_size_override("font_size", 21)
 		bottom_bar.add_child(b)
-		if item[0] == "Tasks" or item[0] == "Shop":
-			_with_icon(b, item[0].to_lower(), 44)
+		var icon_name: String = {"Build": "build", "Crew": "crew", "Tasks": "tasks", "Shop": "shop", "Collect": "gift"}[item[0]]
+		if Art.tex("res://art/ui/icons/%s.png" % icon_name):
+			_with_icon(b, icon_name, 44)
 			b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			b.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
 			b.add_theme_font_size_override("font_size", 17)
@@ -653,7 +654,7 @@ func _open_shop() -> void:
 	var finfo := VBoxContainer.new()
 	finfo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	finfo.add_child(_label(tr("Free Supply Crate"), 24))
-	finfo.add_child(_label(tr("Watch a short video") if not Game.premium else tr("Premium: no ads needed"), 18, Color(0.75, 0.85, 0.95)))
+	finfo.add_child(_label(tr("Watch a short video") if not Game.ads_removed() else tr("No ads needed"), 18, Color(0.75, 0.85, 0.95)))
 	free.add_child(finfo)
 	var fb := _button("", func(): Store.show_rewarded(func():
 		Game.claim_free_crate()
@@ -694,6 +695,29 @@ func _open_shop() -> void:
 		row.add_child(ob)
 	if not any:
 		sheet_body.add_child(_label(tr("No crates yet. Get one for free above!"), 19, Color(0.7, 0.8, 0.9)))
+
+	if Store.can_buy("no_ads") and not Game.premium:
+		var na := Store.product("no_ads")
+		var nrow := _card(Color(0.2, 0.06, 0.08, 0.92), Color(1.0, 0.45, 0.45, 0.8))
+		var nic := TextureRect.new()
+		nic.texture = Art.tex("res://art/ui/icons/ad.png")
+		nic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		nic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		nic.custom_minimum_size = Vector2(72, 72)
+		nic.draw.connect(func(): nic.draw_line(Vector2(8, 8), Vector2(64, 64), Color(1, 0.2, 0.2), 7.0))
+		nrow.add_child(nic)
+		var ninfo := VBoxContainer.new()
+		ninfo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		ninfo.add_child(_label(tr(na.title), 24, Color(1.0, 0.8, 0.8)))
+		var nd := _label(tr(na.desc), 17)
+		nd.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		ninfo.add_child(nd)
+		nrow.add_child(ninfo)
+		var nb := _button(na.price, func():
+			Store.purchase("no_ads")
+			_open_shop(), 64)
+		nb.custom_minimum_size.x = 130
+		nrow.add_child(nb)
 
 	for id in ["starter_pack", "premium"]:
 		if not Store.can_buy(id):
@@ -793,7 +817,7 @@ func _refresh_shop_live() -> void:
 	if shop_live.has("free"):
 		var fb: Button = shop_live.free
 		if Game.free_crate_ready():
-			fb.text = tr("Free") if not Game.premium else tr("Claim")
+			fb.text = tr("Free") if not Game.ads_removed() else tr("Claim")
 			fb.disabled = false
 		else:
 			fb.text = _clock(Game.free_crate_left())
@@ -943,7 +967,7 @@ var plan_crew: Array = []
 func _dock_section(r: Dictionary) -> void:
 	var e := Game.expedition_at(r.id)
 	if e.is_empty():
-		sheet_body.add_child(_button(tr("Plan an expedition"), _open_planner.bind(r.id, 0), 76))
+		sheet_body.add_child(_with_icon(_button(tr("Plan an expedition"), _open_planner.bind(r.id, 0), 76), "expedition", 48))
 		return
 	var zone: Dictionary = Defs.ZONES[e.zone]
 	var crew_names := []
@@ -1052,6 +1076,8 @@ func _open_planner(dock_id: int, zone_idx: int) -> void:
 	var col := Color(0.5, 1.0, 0.6) if chance >= 1.0 else (Color(1.0, 0.85, 0.4) if chance >= 0.7 else Color(1.0, 0.5, 0.5))
 	sheet_body.add_child(_label(summary, 20, col))
 	var go := _button(tr("Launch the bathyscaphe!"), func():
+		if plan_crew.is_empty():
+			return
 		if Game.launch_expedition(dock_id, plan_zone, plan_crew):
 			plan_crew = []
 			_close_sheet(), 80)

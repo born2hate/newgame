@@ -21,6 +21,9 @@ const IAP := [
 	{"id": "premium", "title": "Premium", "price": "$4.99", "one_time": true, "banner": "premium",
 		"desc": "Golden Captain colonist, rewards without ads, 16h offline income, free crate every 2h, +100 crystals",
 		"reward": {"premium": true, "crystals": 100}},
+	{"id": "no_ads", "title": "No Ads", "price": "$2.99", "one_time": true,
+		"desc": "Get every ad reward instantly, without watching videos. Forever.",
+		"reward": {"no_ads": true}},
 	{"id": "season_pass", "title": "Season Pass", "price": "$4.99", "banner": "season",
 		"desc": "Unlock premium rewards on every season tier: crystals, gold crates and a Legendary colonist",
 		"reward": {"season_pass": true}},
@@ -54,6 +57,8 @@ func is_owned(id: String) -> bool:
 func can_buy(id: String) -> bool:
 	if id == "season_pass":
 		return not Game.season_pass
+	if id == "no_ads" and Game.ads_removed():
+		return false
 	var p := product(id)
 	return not p.is_empty() and not (p.get("one_time", false) and is_owned(id))
 
@@ -84,7 +89,7 @@ func buy_with_crystals(id: String) -> void:
 func show_rewarded(on_reward: Callable) -> void:
 	if ad_playing:
 		return
-	if Game.premium:
+	if Game.ads_removed():
 		on_reward.call()
 		return
 	ad_playing = true
