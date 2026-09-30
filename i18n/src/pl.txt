@@ -476,3 +476,6 @@
 475|%d min
 476|Pracownicy (%d/%d)
 477|trening
+478|Taras widokowy
+479|Widok na głębiny: świetny nastrój dla wszystkich i +10% doświadczenia na poziom.
+480|Doświadczenie kolonistów +%d%%

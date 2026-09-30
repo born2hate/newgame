@@ -476,3 +476,6 @@
 475|%d min
 476|Trabalhadores (%d/%d)
 477|treino
+478|Mirante
+479|Vista das profundezas: ótimo ânimo para todos e +10% de experiência por nível.
+480|Experiência dos colonos +%d%%

@@ -476,3 +476,6 @@
 475|%d dk
 476|Çalışanlar (%d/%d)
 477|antrenman
+478|Seyir güvertesi
+479|Derinlik manzarası: herkese harika moral ve seviye başına +10% deneyim.
+480|Sakin deneyimi +%d%%

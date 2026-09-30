@@ -17,6 +17,14 @@ static func tex(path: String) -> Texture2D:
 static func room(type: String) -> Texture2D:
 	return tex("res://art/rooms/%s.png" % type)
 
+## Картинка конкретного отсека: у некоторых на 3-м уровне своя (living_3.png).
+static func room_of(r: Dictionary) -> Texture2D:
+	if int(r.get("level", 1)) >= 3:
+		var up := tex("res://art/rooms/%s_3.png" % r.type)
+		if up:
+			return up
+	return room(r.type)
+
 static func icon(res: String) -> Texture2D:
 	return tex("res://art/icons/%s.png" % res)
 

@@ -476,3 +476,6 @@
 475|%d mnt
 476|Pekerja (%d/%d)
 477|latihan
+478|Dek observasi
+479|Pemandangan laut dalam: suasana hati hebat untuk semua dan +10% pengalaman per level.
+480|Pengalaman kolonis +%d%%

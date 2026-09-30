@@ -148,6 +148,11 @@ const ROOMS := {
 		"energy": 0.0, "color": Color(0.4, 0.8, 1.0), "icon": "✇", "unlock_pop": 35,
 		"desc": "Free energy from deep currents, no workers needed. Only from row 7 down.",
 	},
+	"observatory": {
+		"name": "Observation Deck", "width": 2, "cost": 900, "buildable": true, "slots": 0,
+		"mood": 15, "xp_bonus": 0.1, "energy": 0.15, "color": Color(0.35, 0.75, 1.0), "icon": "◎",
+		"unlock_pop": 40, "desc": "A view of the deep: great mood for all and +10% colonist XP per level.",
+	},
 }
 
 ## Ящики припасов: rolls — сколько наград, table — [вес, вид, мин, макс].

@@ -558,7 +558,7 @@ func _draw_room(r: Dictionary) -> void:
 	var inner := rect.grow(-WALL)
 	var dark := Color(0.05, 0.08, 0.12)
 	draw_rect(inner, dark.lerp(col.darkened(0.55), 0.55 * light))
-	var art := Art.room(r.type)
+	var art := Art.room_of(r)
 	if art:
 		# эффект диорамы: задняя стена смещается от камеры, между ней и рамкой — стены в перспективе
 		var back := _diorama_back(inner)

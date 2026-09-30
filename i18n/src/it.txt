@@ -476,3 +476,6 @@
 475|%d min
 476|Lavoratori (%d/%d)
 477|allenamento
+478|Ponte d'osservazione
+479|Vista sugli abissi: ottimo umore per tutti e +10% di esperienza per livello.
+480|EXP dei coloni +%d%%

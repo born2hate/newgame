@@ -132,6 +132,11 @@ func _dev_screenshot() -> void:
 			camera.position = Vector2(700, 300)
 			view.treasure.append({"p": Vector2(500, -150), "rich": false, "ph": 0.0})
 			await get_tree().create_timer(0.8).timeout
+		"deck":
+			Game.find_room_of_type("living").level = 3
+			Game._add_room("observatory", 7, 1)
+			camera.position = Vector2(700, 300)
+			await get_tree().create_timer(0.5).timeout
 		"gym_ru":
 			Audio.set_language("ru")
 			var gy := Game._add_room("gym", 7, 1)

@@ -808,7 +808,7 @@ func _open_room(id: int) -> void:
 	_header(tr("%s · lvl %d") % [tr(def.name) + size_txt, r.level])
 	var top := HBoxContainer.new()
 	top.add_theme_constant_override("separation", 14)
-	var art := Art.room(r.type)
+	var art := Art.room_of(r)
 	if art:
 		var frame := PanelContainer.new()
 		var fb := _box(Color(0, 0, 0, 0.4), Color(def.color, 0.8), 10, 2)

@@ -482,6 +482,9 @@ const T := {
 	"%d min": "%d min",
 	"Workers (%d/%d)": "Ouvriers (%d/%d)",
 	"training": "entraînement",
+	"Observation Deck": "Pont d'observation",
+	"A view of the deep: great mood for all and +10% colonist XP per level.": "Vue sur les abysses : excellent moral pour tous et +10% d'expérience par niveau.",
+	"Colonist XP +%d%%": "XP des colons +%d%%",
 }
 
 static func make() -> Translation:

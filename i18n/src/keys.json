@@ -476,5 +476,8 @@
 "Endurance: less damage. Charm: trader discounts. Luck: chance to collect double. Mood: work speed.",
 "%d min",
 "Workers (%d/%d)",
-"training"
+"training",
+"Observation Deck",
+"A view of the deep: great mood for all and +10% colonist XP per level.",
+"Colonist XP +%d%%"
 ]

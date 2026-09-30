@@ -329,6 +329,8 @@ func room_effect(r: Dictionary) -> String:
 		parts.append(tr("Trains: %s · +1 every %s of work") % [", ".join(names), tr("%d min") % ceili(train_time(r) / 60.0)])
 	if def.get("mood", 0) > 0:
 		parts.append(tr("Mood +%d for everyone") % (int(def.mood) * r.level * r.size))
+	if def.get("xp_bonus", 0.0) > 0.0:
+		parts.append(tr("Colonist XP +%d%%") % int(def.xp_bonus * r.level * r.size * 100))
 	if def.get("pearl_bonus", 0.0) > 0.0:
 		parts.append(tr("Pearls +%d%%") % int(def.pearl_bonus * r.level * r.size * 100))
 	match r.type:
@@ -414,6 +416,8 @@ func simulate(delta: float, offline: bool) -> void:
 	if has_research("medical_ai"):
 		heal_rate *= 3.0
 	var xp_mult := 1.5 if has_research("training_programs") else 1.0
+	for r in rooms:
+		xp_mult += float(Defs.ROOMS[r.type].get("xp_bonus", 0.0)) * r.level * r.size
 	var mood_target := 60.0 + mood_bonus() - (35.0 if starving else 0.0) - (15.0 if not powered else 0.0)
 	for c in colonists:
 		var mt := mood_target

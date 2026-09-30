@@ -476,3 +476,6 @@
 475|%d min
 476|Ouvriers (%d/%d)
 477|entraînement
+478|Pont d'observation
+479|Vue sur les abysses : excellent moral pour tous et +10% d'expérience par niveau.
+480|XP des colons +%d%%

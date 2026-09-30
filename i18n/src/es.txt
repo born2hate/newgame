@@ -477,3 +477,6 @@
 475|%d min
 476|Trabajadores (%d/%d)
 477|entrenando
+478|Mirador
+479|Vista del abismo: gran ánimo para todos y +10% de experiencia por nivel.
+480|Experiencia de colonos +%d%%
