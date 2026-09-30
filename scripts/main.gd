@@ -25,8 +25,8 @@ func _ready() -> void:
 	view = preload("res://scripts/base_view.gd").new()
 	add_child(view)
 	camera = Camera2D.new()
-	camera.position = Vector2(400, 180)
-	camera.zoom = Vector2(0.85, 0.85)
+	camera.position = Vector2(400, 200)
+	camera.zoom = Vector2(1.2, 1.2)
 	view.add_child(camera)
 	view.camera = camera
 
@@ -53,6 +53,9 @@ func _dev_screenshot() -> void:
 		"room": view.room_selected.emit(Game.find_room_of_type("reactor").id)
 		"colonists": hud._open_colonists()
 		"deep": camera.position.y = 700
+		"zoom":
+			camera.zoom = Vector2(1.5, 1.5)
+			camera.position = Vector2(200, 120)
 	await get_tree().create_timer(0.8).timeout
 	get_viewport().get_texture().get_image().save_png(path)
 	get_tree().quit()

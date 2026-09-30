@@ -31,3 +31,9 @@ renderer/rendering_method="mobile"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0.01, 0.05, 0.1, 1)
+
+[importer_defaults]
+
+texture={
+"mipmaps/generate": true
+}

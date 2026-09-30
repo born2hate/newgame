@@ -54,6 +54,7 @@ func _ready() -> void:
 		mat.set_shader_parameter("use_tex", true)
 	rock.show_behind_parent = true
 	add_child(rock)
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 
 func _process(delta: float) -> void:
 	t += delta
@@ -270,6 +271,12 @@ func _draw_room(r: Dictionary) -> void:
 	var art := Art.room(r.type)
 	if art:
 		draw_texture_rect(art, inner, false, Color(light, light, light))
+		if r.type == "reactor" and powered:
+			# пульсация ядра поверх картинки
+			var core := inner.get_center() + Vector2(0, 4)
+			var pulse := 0.5 + 0.5 * sin(t * 3.0)
+			draw_circle(core, inner.size.y * 0.32, Color(1.0, 0.75, 0.3, 0.10 + 0.08 * pulse))
+			draw_circle(core, inner.size.y * 0.16, Color(1.0, 0.9, 0.6, 0.08 + 0.08 * pulse))
 		if def.has("produces"):
 			var bar0 := Rect2(inner.position.x + 8, inner.end.y - 14, inner.size.x - 16, 7)
 			draw_rect(bar0, Color(0, 0, 0, 0.55))
@@ -542,7 +549,7 @@ func _on_release(p: Vector2) -> void:
 	room_selected.emit(room.id)
 
 func _zoom_by(f: float) -> void:
-	var z := clampf(camera.zoom.x * f, 0.45, 1.6)
+	var z := clampf(camera.zoom.x * f, 0.45, 2.2)
 	camera.zoom = Vector2(z, z)
 	_clamp_camera()
 
