@@ -31,6 +31,11 @@ static func draw(ci: CanvasItem, res: String, c: Vector2, s: float, col: Color) 
 			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -1.0) * s, c + Vector2(0.7, -0.3) * s,
 				c + Vector2(0, -0.1) * s, c + Vector2(-0.7, -0.3) * s]), col.lightened(0.45))
 			ci.draw_polyline(PackedVector2Array([g[0], g[1], g[2], g[3], g[0]]), col.darkened(0.4), maxf(1.0, s * 0.1))
+		"science":
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-0.3, -1.0) * s, c + Vector2(0.3, -1.0) * s,
+				c + Vector2(0.3, -0.3) * s, c + Vector2(0.85, 0.85) * s, c + Vector2(-0.85, 0.85) * s, c + Vector2(-0.3, -0.3) * s]), col)
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-0.55, 0.3) * s, c + Vector2(0.55, 0.3) * s,
+				c + Vector2(0.85, 0.85) * s, c + Vector2(-0.85, 0.85) * s]), col.lightened(0.4))
 		"people":
 			ci.draw_circle(c + Vector2(0, -0.45) * s, 0.35 * s, col)
 			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-0.65, 0.95) * s,

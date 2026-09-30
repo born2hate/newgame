@@ -10,6 +10,9 @@ var theme_res: Theme
 var res_bars := {}
 var pearls_label: Label
 var crystals_label: Label
+var science_label: Label
+var science_icon: Control
+var more: Node
 var boost_label: Label
 var shop_badge: Control
 var tasks_badge: Control
@@ -48,6 +51,10 @@ func _ready() -> void:
 	Game.rewards_granted.connect(_show_rewards)
 	Store.ad_started.connect(_on_ad_started)
 	Store.ad_finished.connect(func(): ad_overlay.visible = false)
+	more = preload("res://scripts/hud_more.gd").new()
+	more.hud = self
+	add_child(more)
+	view.trader_tapped.connect(func(): more.open_trader())
 	_build_popup()
 	_build_ad_overlay()
 	_refresh_top()
@@ -188,6 +195,10 @@ func _build_top_bar() -> void:
 	row.add_child(_icon("crystals", 30))
 	crystals_label = _label("", 26, Defs.RESOURCES.crystals.color)
 	row.add_child(crystals_label)
+	science_icon = _icon("science", 28)
+	row.add_child(science_icon)
+	science_label = _label("", 24, Defs.RESOURCES.science.color)
+	row.add_child(science_label)
 	boost_label = _label("", 20, Color(1.0, 0.85, 0.3))
 	boost_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	boost_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -244,10 +255,14 @@ func _draw_res_bar(bar: Control, k: String) -> void:
 func _refresh_top() -> void:
 	pearls_label.text = str(Game.pearls)
 	crystals_label.text = str(Game.crystals)
+	var show_sci := Game.science > 0 or Game.count_of("lab") > 0
+	science_label.visible = show_sci
+	science_icon.visible = show_sci
+	science_label.text = str(Game.science)
 	pop_label.text = "%d/%d" % [Game.colonists.size(), Game.population_cap()]
 	boost_label.text = tr("x2 %s") % _clock(Game.boost_left()) if Game.boost_active() else ""
 	if tasks_badge:
-		tasks_badge.visible = Game.quests_ready() > 0 or Game.season_claimable() > 0
+		tasks_badge.visible = Game.quests_ready() > 0 or Game.season_claimable() > 0 or Game.story_ready() or Game.achievements_ready() > 0
 		tasks_badge.queue_redraw()
 	if shop_badge:
 		shop_badge.visible = Game.daily_available() or Game.free_crate_ready()
@@ -443,8 +458,12 @@ func _open_room(id: int) -> void:
 	sheet_room = id
 	view.selected_room = id
 	var def: Dictionary = Defs.ROOMS[r.type]
-	_open_sheet("room", 470)
-	_header(tr("%s · lvl %d") % [tr(def.name), r.level])
+	_open_sheet("room", 620 if r.type == "dock" else 470)
+	var size_txt := " %d×" % r.size if r.size > 1 else ""
+	_header(tr("%s · lvl %d") % [tr(def.name) + size_txt, r.level])
+	var zone := Game.depth_zone(r.row)
+	if zone.bonus > 0.0:
+		sheet_body.add_child(_label(tr("%s: +%d%% production, more incidents") % [tr(zone.name), int(zone.bonus * 100)], 18, zone.color))
 	var d := _label(def.desc, 20, Color(0.7, 0.82, 0.92))
 	d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	sheet_body.add_child(d)
@@ -460,7 +479,7 @@ func _open_room(id: int) -> void:
 		var st := _label("", 22)
 		sheet_body.add_child(st)
 		room_live_labels["status"] = st
-	var slots := Defs.room_slots(r.type, r.level)
+	var slots := Game.slots(r)
 	if slots > 0:
 		var stat_name: String = Defs.STATS[def.stat]
 		sheet_body.add_child(_label(tr("Workers (%d/%d) · needs %s") % [Game.workers_in(r).size(), slots, tr(stat_name)], 22, ACCENT))
@@ -481,7 +500,7 @@ func _open_room(id: int) -> void:
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 10)
 	if r.level < Defs.MAX_LEVEL:
-		var cost := Defs.upgrade_cost(r.type, r.level)
+		var cost := Game.upgrade_cost(r)
 		var up := _button(tr("Upgrade ◉%d") % cost, func():
 			Game.upgrade(r)
 			_open_room(id), 72)
@@ -678,7 +697,9 @@ func _open_colonist(id: int) -> void:
 	var best := Game.best_stat(c)
 	var cols := {"str": Color(1.0, 0.72, 0.25), "tech": Color(0.35, 0.85, 1.0), "bio": Color(0.45, 0.95, 0.5)}
 	for k in ["str", "tech", "bio"]:
-		var row := _stat_bar(Defs.STATS[k], c[k], cols[k], k == best)
+		var row := _stat_bar(Defs.STATS[k], mini(10, Game.stat(c, k)), cols[k], k == best)
+		if Game.stat(c, k) > c[k]:
+			row.get_child(2).text = "%d+%d" % [c[k], Game.stat(c, k) - c[k]]
 		var tb := _button(tr("Train ◆ %d") % Game.train_cost(c, k) if c[k] < 10 else "MAX", func():
 			Game.train(c, k)
 			_open_colonist(id), 50)
@@ -689,6 +710,7 @@ func _open_colonist(id: int) -> void:
 		row.add_child(tb)
 		sheet_body.add_child(row)
 
+	more.add_gear_section(c)
 	sheet_body.add_child(_label(tr("Best job: %s") % tr(Defs.ROOMS[Game.best_job_type(c)].name), 20, Color(1.0, 0.9, 0.6)))
 	var how := _label(tr("How to grow") + ": " + tr("Colonists gain XP while working. Each level adds +1 to the skill their room needs, up to 10."), 17, Color(0.72, 0.82, 0.92))
 	how.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -1187,8 +1209,14 @@ func _dock_section(r: Dictionary) -> void:
 	var st := _label("", 20)
 	sheet_body.add_child(st)
 	var logbox := VBoxContainer.new()
+	logbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	sheet_body.add_child(_label(tr("Expedition log"), 20, ACCENT))
-	sheet_body.add_child(logbox)
+	var logscroll := ScrollContainer.new()
+	logscroll.custom_minimum_size = Vector2(0, 260)
+	logscroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	logscroll.add_theme_stylebox_override("panel", _box(Color(0, 0, 0, 0.35), Color(ACCENT, 0.25), 12, 1))
+	logscroll.add_child(logbox)
+	sheet_body.add_child(logscroll)
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 10)
 	var fin := _button("", func():
@@ -1209,7 +1237,7 @@ func _dock_section(r: Dictionary) -> void:
 		Game.claim_expedition(e)
 		_close_sheet(), 76)
 	sheet_body.add_child(claim)
-	room_live_labels["exp"] = {"e": e, "bar": pb, "status": st, "log": logbox, "fin": fin, "ad": ad, "claim": claim, "shown": -1}
+	room_live_labels["exp"] = {"e": e, "bar": pb, "status": st, "log": logbox, "scroll": logscroll, "fin": fin, "ad": ad, "claim": claim, "shown": -1}
 	_refresh_dock_live(r)
 
 func _refresh_dock_live(_r: Dictionary) -> void:
@@ -1233,6 +1261,9 @@ func _refresh_dock_live(_r: Dictionary) -> void:
 			var l := _label("• " + line, 18, Color(0.85, 0.92, 1.0))
 			l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			d.log.add_child(l)
+		# новые записи внизу — прокручиваем к ним
+		var sc: ScrollContainer = d.scroll
+		get_tree().process_frame.connect(func(): sc.scroll_vertical = int(sc.get_v_scroll_bar().max_value), CONNECT_ONE_SHOT)
 
 func _open_planner(dock_id: int, zone_idx: int) -> void:
 	plan_zone = zone_idx
@@ -1296,6 +1327,21 @@ func _danger_text(d: float) -> String:
 func _open_tasks() -> void:
 	_open_sheet("tasks", 900)
 	_header(tr("Tasks"))
+	var nav := HBoxContainer.new()
+	nav.add_theme_constant_override("separation", 10)
+	var rb := _with_icon(_button(tr("Research"), more.open_research, 64), "expedition", 36)
+	rb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if Game.research_current.is_empty() and Game.count_of("lab") > 0:
+		rb.add_child(_badge())
+	nav.add_child(rb)
+	var ab := _with_icon(_button(tr("Achievements"), more.open_achievements, 64), "trophy", 36)
+	ab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if Game.achievements_ready() > 0:
+		ab.add_child(_badge())
+	nav.add_child(ab)
+	sheet_body.add_child(nav)
+	more.add_story_section()
+	more.add_weekly_section()
 	_section(tr("Daily tasks"))
 	for q in Game.quests:
 		var row := _card(Color(0.05, 0.14, 0.1, 0.9) if q.claimed else Color(0.05, 0.12, 0.2, 0.9), Color(0.5, 0.9, 0.6, 0.6) if q.progress >= q.target else Color(0.5, 0.7, 0.9, 0.4))

@@ -12,6 +12,7 @@ const RESOURCES := {
 	"food": {"name": "Food", "short": "F", "color": Color(0.5, 1.0, 0.55)},
 	"pearls": {"name": "Pearls", "short": "P", "color": Color(1.0, 0.75, 0.95)},
 	"crystals": {"name": "Crystals", "short": "C", "color": Color(0.55, 0.8, 1.0)},
+	"science": {"name": "Science", "short": "S", "color": Color(0.75, 0.6, 1.0)},
 }
 
 const STATS := {
@@ -73,6 +74,12 @@ const ROOMS := {
 		"energy": 0.1, "color": Color(1.0, 0.8, 0.3), "icon": "⚓", "unlock_pop": 5,
 		"desc": "Home of a bathyscaphe. Send crews on expeditions for loot.",
 	},
+	"lab": {
+		"name": "Research Lab", "width": 2, "cost": 220, "buildable": true, "slots": 2,
+		"produces": "science", "stat": "tech", "amount": 10.0, "cycle": 30.0,
+		"energy": 0.18, "color": Color(0.7, 0.55, 1.0), "icon": "⚗", "unlock_pop": 6,
+		"desc": "Produces science for research. Needs Tech.",
+	},
 	"medbay": {
 		"name": "Medbay", "width": 2, "cost": 200, "buildable": true, "slots": 2,
 		"stat": "bio", "heal": true, "energy": 0.15, "color": Color(1.0, 0.4, 0.45),
@@ -121,6 +128,19 @@ const ZONES := [
 ]
 
 ## Шаблоны записей журнала экспедиции ({n} — имя члена экипажа).
+## Дополнительные записи журнала для конкретных зон.
+const LOG_ZONE := {
+	"kelp": ["{n} got lost in the kelp for a moment, then found the way back.", "Sea otters? This deep? {n} swears they waved.",
+		"{n} harvested a bundle of sweet kelp.", "A seahorse hitched a ride on the hull."],
+	"reef": ["{n} found a pearl the size of a fist!", "Parrotfish crunch coral all around the sub.",
+		"{n} photographed a rare blue octopus.", "A reef shark circled twice, then lost interest."],
+	"wreck": ["{n} found an old captain's log. The last page is torn out.", "The wreck groans. {n} decides not to go deeper.",
+		"{n} pulled a rusty chest out of the cargo hold!", "Something moved in the dark hallway. {n} didn't wait to see what."],
+	"vents": ["The water here is boiling. {n} keeps the sub steady.", "Giant tube worms sway around the vents.",
+		"{n} scraped rare minerals off a black smoker.", "Yeti crabs! {n} counts at least forty of them."],
+	"trench": ["Total darkness. Only the glow of the lure ahead...", "{n} hears singing through the hull. Whales? Something else?",
+		"A shape bigger than the colony passed under the sub.", "{n} found ruins with carvings of the trident symbol."],
+}
 const LOG_CALM := [
 	"{n} spotted a school of glowing fish.", "The bathyscaphe hums along quietly.",
 	"{n} hums an old sea shanty.", "A curious turtle follows the sub for a while.",
@@ -164,6 +184,94 @@ const SEASON_TIERS := [
 	{"free": {"crystals": 15}, "premium": {"crates": {"gold": 1}}},
 	{"free": {"crates": {"gold": 1}}, "premium": {"colonist": "legendary"}},
 ]
+
+## Зоны глубины. Каждые 5 рядов — новая зона: больше добычи, но и больше бед.
+const DEPTH_ZONES := [
+	{"name": "Twilight Shelf", "from": 0, "bonus": 0.0, "crystal_chance": 0.0, "danger": 1.0, "research": "",
+		"color": Color(0.3, 0.7, 0.9)},
+	{"name": "Midnight Zone", "from": 5, "bonus": 0.3, "crystal_chance": 0.06, "danger": 1.5, "research": "deep_drilling",
+		"color": Color(0.5, 0.4, 1.0)},
+	{"name": "The Abyss", "from": 10, "bonus": 0.7, "crystal_chance": 0.14, "danger": 2.2, "research": "abyssal_engineering",
+		"color": Color(1.0, 0.35, 0.5)},
+]
+
+## Дерево исследований. cost — наука, minutes — время, req — что нужно изучить раньше.
+const RESEARCH := [
+	{"id": "efficient_reactors", "tier": 1, "name": "Efficient Reactors", "desc": "+20% energy from reactors.", "cost": 40, "minutes": 2, "req": []},
+	{"id": "hydroponics", "tier": 1, "name": "Hydroponics", "desc": "+20% food from farms.", "cost": 40, "minutes": 2, "req": []},
+	{"id": "electrolysis", "tier": 1, "name": "Better Electrolysis", "desc": "+20% oxygen from generators.", "cost": 40, "minutes": 2, "req": []},
+	{"id": "reinforced_hull", "tier": 1, "name": "Reinforced Hull", "desc": "Incidents happen 30% less often.", "cost": 60, "minutes": 3, "req": []},
+	{"id": "training_programs", "tier": 2, "name": "Training Programs", "desc": "Colonists gain XP 50% faster.", "cost": 90, "minutes": 5, "req": ["hydroponics"]},
+	{"id": "sonar_mapping", "tier": 2, "name": "Sonar Mapping", "desc": "Expeditions bring 25% more loot.", "cost": 100, "minutes": 5, "req": ["electrolysis"]},
+	{"id": "fire_suppression", "tier": 2, "name": "Fire Suppression", "desc": "Incidents are handled twice as fast.", "cost": 100, "minutes": 5, "req": ["reinforced_hull"]},
+	{"id": "deep_drilling", "tier": 2, "name": "Deep Drilling", "desc": "Build in the Midnight Zone (rows 6-10).", "cost": 150, "minutes": 8, "req": ["efficient_reactors", "reinforced_hull"]},
+	{"id": "auto_collectors", "tier": 3, "name": "Auto-Collectors", "desc": "Rooms collect resources by themselves.", "cost": 250, "minutes": 15, "req": ["efficient_reactors", "hydroponics", "electrolysis"]},
+	{"id": "medical_ai", "tier": 3, "name": "Medical AI", "desc": "Colonists heal 3 times faster.", "cost": 200, "minutes": 10, "req": ["training_programs"]},
+	{"id": "bathyscaphe_engines", "tier": 3, "name": "Turbo Engines", "desc": "Expeditions are 30% shorter.", "cost": 220, "minutes": 12, "req": ["sonar_mapping"]},
+	{"id": "storage_compression", "tier": 3, "name": "Compressed Storage", "desc": "+50% storage for all resources.", "cost": 200, "minutes": 10, "req": ["deep_drilling"]},
+	{"id": "pearl_cultivation", "tier": 3, "name": "Pearl Cultivation", "desc": "+40% pearls from pearl farms.", "cost": 220, "minutes": 12, "req": ["hydroponics"]},
+	{"id": "trader_beacon", "tier": 3, "name": "Trader Beacon", "desc": "Wandering traders visit twice as often.", "cost": 180, "minutes": 10, "req": ["sonar_mapping"]},
+	{"id": "abyssal_engineering", "tier": 4, "name": "Abyssal Engineering", "desc": "Build in The Abyss (rows 11-14).", "cost": 400, "minutes": 25, "req": ["deep_drilling", "fire_suppression"]},
+	{"id": "legendary_signal", "tier": 4, "name": "Legendary Signal", "desc": "10% of new arrivals are Rare colonists.", "cost": 350, "minutes": 20, "req": ["training_programs", "sonar_mapping"]},
+	{"id": "fusion_core", "tier": 4, "name": "Fusion Core", "desc": "All rooms use 40% less energy.", "cost": 450, "minutes": 30, "req": ["auto_collectors", "storage_compression"]},
+]
+
+## Снаряжение: база предмета. stats — какие навыки усиливает.
+const ITEMS := [
+	{"id": "wrench", "kind": "tool", "name": "Wrench", "stats": ["str"]},
+	{"id": "harpoon", "kind": "tool", "name": "Harpoon", "stats": ["str"]},
+	{"id": "torch", "kind": "tool", "name": "Welding Torch", "stats": ["tech"]},
+	{"id": "scanner", "kind": "tool", "name": "Bio Scanner", "stats": ["bio"]},
+	{"id": "coral_knife", "kind": "tool", "name": "Coral Knife", "stats": ["bio"]},
+	{"id": "reactor_suit", "kind": "suit", "name": "Reactor Suit", "stats": ["str"]},
+	{"id": "engineer_suit", "kind": "suit", "name": "Engineer Suit", "stats": ["tech"]},
+	{"id": "medic_suit", "kind": "suit", "name": "Medic Suit", "stats": ["bio"]},
+	{"id": "explorer_suit", "kind": "suit", "name": "Explorer Suit", "stats": ["str", "tech", "bio"]},
+]
+const ITEM_RARITY := {
+	"common": {"name": "Common", "bonus": 1, "color": Color(0.8, 0.85, 0.9)},
+	"rare": {"name": "Rare", "bonus": 2, "color": Color(0.4, 0.75, 1.0)},
+	"legendary": {"name": "Legendary", "bonus": 4, "color": Color(1.0, 0.75, 0.25)},
+}
+
+## Сюжет: сообщения командира по рации. goal — [событие, сколько].
+const STORY := [
+	{"title": "Welcome, Overseer", "text": "Commander Reyes here. The surface is gone, and this colony is all we have. Collect what the reactor made to get started.", "goal": ["collect_energy", 10], "reward": {"pearls": 100}},
+	{"title": "A Place to Sleep", "text": "More survivors are coming. Build Living Quarters so they have somewhere to rest.", "goal": ["build_living", 1], "reward": {"pearls": 150}},
+	{"title": "Everyone Works", "text": "Idle hands won't keep us breathing. Drag a colonist into a room with free slots.", "goal": ["assign", 1], "reward": {"pearls": 100}},
+	{"title": "Growing Colony", "text": "The beacon is working. Reach 8 colonists.", "goal": ["population", 8], "reward": {"crystals": 10}},
+	{"title": "Into the Blue", "text": "Build a Sub Dock and send our first crew out. Who knows what's out there.", "goal": ["expedition", 1], "reward": {"crates": {"common": 1}}},
+	{"title": "Knowledge Is Power", "text": "We need science. Build a Research Lab and finish any research.", "goal": ["research", 1], "reward": {"crystals": 15}},
+	{"title": "Trouble Below", "text": "Fires, floods, things with teeth... Handle 3 incidents and keep everyone alive.", "goal": ["incident_resolved", 3], "reward": {"pearls": 400}},
+	{"title": "Deeper", "text": "Our scans show warm vents in the Midnight Zone. Research Deep Drilling and build a room below row 5.", "goal": ["depth", 6], "reward": {"crystals": 25}},
+	{"title": "The Wreck", "text": "Sonar found an old ship. Send an expedition to the Sunken Ship.", "goal": ["expedition_wreck", 1], "reward": {"crates": {"silver": 1}}},
+	{"title": "A Real Home", "text": "Merge rooms: build a room right next to one of the same type and level. Reach 15 colonists.", "goal": ["population", 15], "reward": {"crystals": 30}},
+	{"title": "Signal from the Abyss", "text": "Something is calling from the deep. Reach The Abyss (row 11).", "goal": ["depth", 11], "reward": {"crates": {"gold": 1}}},
+	{"title": "Legend of the Trench", "text": "Send a crew to the Abyssal Trench. Bring back whatever sings down there.", "goal": ["expedition_trench", 1], "reward": {"crystals": 60, "colonist": "legendary"}},
+]
+
+## Достижения: stat — счётчик в Game.stats, tiers — пороги.
+const ACHIEVEMENTS := [
+	{"id": "pop", "name": "Colony Founder", "desc": "Reach %d colonists", "stat": "population", "tiers": [10, 20, 35], "reward": [10, 25, 50]},
+	{"id": "builder", "name": "Master Builder", "desc": "Build %d rooms", "stat": "build", "tiers": [5, 15, 30], "reward": [10, 20, 40]},
+	{"id": "collector", "name": "Harvester", "desc": "Collect from rooms %d times", "stat": "collect", "tiers": [50, 300, 1000], "reward": [10, 25, 50]},
+	{"id": "explorer", "name": "Explorer", "desc": "Complete %d expeditions", "stat": "expedition_done", "tiers": [3, 15, 50], "reward": [15, 30, 60]},
+	{"id": "firefighter", "name": "First Responder", "desc": "Handle %d incidents", "stat": "incident_resolved", "tiers": [5, 25, 75], "reward": [10, 25, 50]},
+	{"id": "scientist", "name": "Scientist", "desc": "Finish %d research projects", "stat": "research", "tiers": [3, 8, 17], "reward": [15, 30, 60]},
+	{"id": "deep", "name": "Deep Diver", "desc": "Build on row %d", "stat": "depth", "tiers": [5, 10, 14], "reward": [15, 30, 60]},
+	{"id": "looter", "name": "Treasure Hunter", "desc": "Open %d crates", "stat": "crate", "tiers": [5, 20, 60], "reward": [10, 25, 50]},
+	{"id": "trainer", "name": "Coach", "desc": "Level up colonists %d times", "stat": "level_up", "tiers": [10, 50, 150], "reward": [10, 25, 50]},
+	{"id": "bubbles", "name": "Bubble Popper", "desc": "Pop %d treasure bubbles", "stat": "bubble", "tiers": [10, 50, 200], "reward": [10, 20, 40]},
+]
+
+## Еженедельные события: модификатор + цель с 3 наградами.
+const WEEKLY := [
+	{"name": "Pearl Week", "desc": "Pearl farms produce +50%. Collect pearls from rooms!", "mod": "pearl_week", "goal": "collect_pearls", "tiers": [300, 1200, 3000]},
+	{"name": "Abyssal Tide", "desc": "Creatures attack more often, but handling incidents gives double pearls.", "mod": "tide", "goal": "incident_resolved", "tiers": [5, 15, 30]},
+	{"name": "Harvest Festival", "desc": "Farms produce +50%. Collect food!", "mod": "harvest", "goal": "collect_food", "tiers": [500, 2000, 5000]},
+	{"name": "Explorer's Season", "desc": "Expeditions bring +50% loot. Send expeditions!", "mod": "explorers", "goal": "expedition", "tiers": [3, 8, 15]},
+]
+const WEEKLY_REWARDS := [{"crystals": 15}, {"crates": {"silver": 1}}, {"crystals": 40, "crates": {"gold": 1}}]
 
 const FIRST_NAMES := [
 	"Ava", "Ben", "Cora", "Dan", "Ella", "Finn", "Gina", "Hugo", "Iris", "Jack",

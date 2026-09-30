@@ -200,6 +200,70 @@ func _initialize() -> void:
 	check(cc.health == 100.0, "лечение")
 	hz.free()
 
+	# объединение, исследования, глубина, снаряжение, сюжет, достижения
+	var pg = load("res://scripts/game_state.gd").new()
+	pg.new_game()
+	pg.pearls = 5000
+	var n_before: int = pg.rooms.size()
+	pg.build("elevator", 5, 2)
+	pg.build("farm", 6, 2)
+	check(pg.build("farm", 3, 1), "ферма у лифта")
+	check(pg.build("farm", 1, 1), "вторая ферма рядом")
+	var farm1: Dictionary = pg.room_at(1, 1)
+	check(farm1.size == 2 and farm1.col == 1 and pg.room_w(farm1) == 4, "фермы объединились в 2×")
+	check(pg.slots(farm1) == 4, "у 2× отсека 4 места")
+	check(not pg.can_build_at("elevator", 5, 5), "зона Midnight закрыта без исследования")
+	pg.science = 1000
+	check(not pg.start_research("deep_drilling"), "нельзя без предыдущих исследований")
+	check(pg.start_research("efficient_reactors"), "исследование началось")
+	check(not pg.start_research("hydroponics"), "только одно исследование за раз")
+	pg.research_current.end = pg.now()
+	pg.simulate(0.1, false)
+	check(pg.has_research("efficient_reactors"), "исследование завершено")
+	pg.research_done.append("reinforced_hull")
+	check(pg.research_available("deep_drilling"), "Deep Drilling стало доступно")
+	pg.research_done.append("deep_drilling")
+	for r in range(3, 6):
+		pg.build("elevator", 5, r)
+	check(pg.can_build_at("elevator", 5, 6) or pg.room_at(5, 5).type == "elevator", "в Midnight можно строить")
+	var it: Dictionary = pg.add_item("rare", "torch")
+	var col0: Dictionary = pg.colonists[0]
+	var t0: int = pg.stat(col0, "tech")
+	pg.equip(col0, it.uid)
+	check(pg.stat(col0, "tech") == t0 + 2, "снаряжение даёт +2 к технике")
+	pg.equip(pg.colonists[1], it.uid)
+	check(col0.tool_item == -1 and pg.colonists[1].tool_item == it.uid, "предмет переходит к другому")
+	check(pg.story_index == 0 and not pg.story_ready(), "сюжет: глава 1")
+	pg.track("collect_energy", 20)
+	check(pg.story_ready(), "глава 1 выполнена")
+	pg.claim_story()
+	check(pg.story_index == 1 and pg.story_count == 0, "глава 2")
+	var ach: Dictionary = Defs.ACHIEVEMENTS[1]
+	pg.stats["build"] = 5
+	var cr0: int = pg.crystals
+	pg.claim_achievement(ach)
+	check(pg.crystals == cr0 + ach.reward[0] and pg.achievement_tier(ach) == 1, "достижение получено")
+	pg.refresh_daily_systems()
+	var ev: Dictionary = pg.weekly_event()
+	pg.track(ev.goal, ev.tiers[0])
+	pg.claim_weekly(0)
+	check(0 in pg.weekly_claimed, "награда недели")
+	pg._spawn_trader()
+	check(pg.trader.offers.size() == 3, "торговец с 3 предложениями")
+	pg.resources.food = 200
+	pg.resources.energy = 200
+	pg.crystals = 500
+	check(pg.trade(0), "сделка с торговцем")
+	check(not pg.trade(0), "повторно та же сделка нельзя")
+	var p1: int = pg.pearls
+	pg.pop_bubble(false)
+	check(pg.pearls > p1 and pg.stats.bubble == 1, "пузырь с жемчугом")
+	pg.save_game()
+	var pg2 = load("res://scripts/game_state.gd").new()
+	pg2.load_game()
+	check(pg2.room_at(1, 1).size == 2 and pg2.has_research("deep_drilling") and pg2.items.size() >= 1 and pg2.story_index == 1, "прогрессия сохраняется")
+	pg.free(); pg2.free()
+
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(g.SAVE_PATH))
 	g.free(); g2.free(); g3.free()
 	print("FAILURES: %d" % failures)

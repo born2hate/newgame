@@ -4,6 +4,7 @@ extends Node2D
 signal room_selected(room_id: int)
 signal build_finished
 signal colonist_selected(colonist_id: int)
+signal trader_tapped
 
 const CELL_W := 100.0
 const CELL_H := 130.0
@@ -60,6 +61,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	t += delta
 	_update_walkers(delta)
+	_update_treasure(delta)
 	for f in fish:
 		f.p.x += f.v * delta
 		if f.p.x > 1600: f.p.x = -800
@@ -73,7 +75,7 @@ func _process(delta: float) -> void:
 # ---------------------------------------------------------------- геометрия
 
 func room_rect(r: Dictionary) -> Rect2:
-	return Rect2(r.col * CELL_W, r.row * CELL_H, Defs.room_width(r.type) * CELL_W, CELL_H)
+	return Rect2(r.col * CELL_W, r.row * CELL_H, Game.room_w(r) * CELL_W, CELL_H)
 
 func cell_at(world: Vector2) -> Vector2i:
 	return Vector2i(floori(world.x / CELL_W), floori(world.y / CELL_H))
@@ -189,6 +191,7 @@ func _draw_seabed_procedural() -> void:
 	_draw_corals()
 
 func _draw_rest(depth_rows: int) -> void:
+	_draw_depth_zones(depth_rows)
 	if build_type != "":
 		_draw_build_slots(depth_rows)
 	for r in Game.rooms:
@@ -205,6 +208,8 @@ func _draw_rest(depth_rows: int) -> void:
 				draw_rect(room_rect(hover).grow(-2), Color(1, 1, 1, 0.8), false, 4.0)
 			_draw_colonist(drag_pos + Vector2(0, 30), c, true)
 	_draw_pet()
+	_draw_treasure()
+	_draw_trader()
 	for fl in floaters:
 		var a := clampf(fl.life, 0.0, 1.0)
 		_text(fl.pos, fl.text, 30, Color(fl.color, a), true)
@@ -299,6 +304,79 @@ func _draw_corals() -> void:
 		var blink := 0.5 + 0.5 * sin(t * 3.0)
 		draw_circle(c + Vector2(0, -74), 6, Color(1.0, 0.3, 0.3, blink))
 
+## Границы зон глубины и замок, если зона не исследована.
+func _draw_depth_zones(depth_rows: int) -> void:
+	for z in Defs.DEPTH_ZONES:
+		if z.from == 0 or z.from > depth_rows + 1:
+			continue
+		var y: float = z.from * CELL_H - 3
+		var open := Game.zone_unlocked_row(z.from)
+		var col: Color = z.color
+		for i in 40:
+			var x := -200.0 + i * 30.0
+			draw_line(Vector2(x, y), Vector2(x + 18, y), Color(col, 0.7), 3.0)
+		var label := tr(z.name)
+		if not open:
+			label = "🔒 " + label + " · " + tr(Game.research_def(z.research).name)
+		_text(Vector2(Defs.GRID_COLS * CELL_W * 0.5, y + 34), label, 22, Color(col.lightened(0.3), 0.9), true)
+		if not open:
+			draw_rect(Rect2(-200, y + 3, Defs.GRID_COLS * CELL_W + 400, CELL_H * 5), Color(0, 0, 0, 0.35))
+
+# пузыри с сокровищами: всплывают со дна, нажми — получишь награду
+var treasure: Array = []
+var treasure_timer := 25.0
+
+func _update_treasure(delta: float) -> void:
+	treasure_timer -= delta
+	if treasure_timer <= 0.0:
+		treasure_timer = randf_range(35.0, 80.0)
+		var rows := maxf(2.0, Game.max_row() + 1.0)
+		treasure.append({"p": Vector2(randf_range(40, Defs.GRID_COLS * CELL_W - 40), rows * CELL_H + 60),
+			"rich": randf() < 0.12, "ph": randf() * TAU})
+	for b in treasure:
+		b.p.y -= 38.0 * delta
+		b.p.x += sin(t * 1.5 + b.ph) * 20.0 * delta
+	treasure = treasure.filter(func(b): return b.p.y > -700)
+
+func _draw_treasure() -> void:
+	for b in treasure:
+		var col := Defs.RESOURCES.crystals.color if b.rich else Color(1.0, 0.8, 0.95)
+		var pulse := 1.0 + 0.08 * sin(t * 5.0 + b.ph)
+		draw_circle(b.p, 34 * pulse, Color(col, 0.18))
+		draw_circle(b.p, 26 * pulse, Color(0.85, 0.97, 1.0, 0.22))
+		draw_arc(b.p, 26 * pulse, 0, TAU, 32, Color(0.9, 1.0, 1.0, 0.85), 2.5)
+		draw_arc(b.p + Vector2(-9, -9), 8, PI, PI * 1.5, 10, Color(1, 1, 1, 0.9), 3.0)
+		Icons.draw(self, "crystals" if b.rich else "pearls", b.p, 12.0, col)
+
+func _try_pop_treasure(world: Vector2) -> bool:
+	for b in treasure:
+		if world.distance_to(b.p) < 44.0:
+			var r := Game.pop_bubble(b.rich)
+			floaters.append({"pos": b.p, "text": r.text, "color": r.color, "life": 1.4})
+			treasure.erase(b)
+			return true
+	return false
+
+func _trader_rect() -> Rect2:
+	var al := Game.find_room_of_type("airlock")
+	var cx := room_rect(al).get_center().x + 230 if not al.is_empty() else 600.0
+	return Rect2(cx - 90, -150 + sin(t * 1.2) * 6, 180, 80)
+
+func _draw_trader() -> void:
+	if Game.trader.is_empty():
+		return
+	var sub := Art.tex("res://art/creatures/bathyscaphe.png")
+	var r := _trader_rect()
+	if sub:
+		draw_set_transform(r.position + Vector2(r.size.x, 0), 0.0, Vector2(-1, 1))
+		draw_texture_rect(sub, Rect2(Vector2.ZERO, r.size), false, Color(0.75, 1.0, 0.8))
+		draw_set_transform(Vector2.ZERO)
+	var bp := r.position + Vector2(r.size.x * 0.5, -22 + sin(t * 3.0) * 4)
+	draw_circle(bp, 22, Color(0.1, 0.25, 0.15, 0.9))
+	draw_arc(bp, 22, 0, TAU, 24, Color(0.5, 1.0, 0.6), 3.0)
+	_text(bp + Vector2(0, 8), "$", 24, Color(0.6, 1.0, 0.7), true)
+	_text(r.position + Vector2(r.size.x * 0.5, r.size.y + 18), _short_time(float(Game.trader.until) - Game.now()), 16, Color(0.8, 1.0, 0.85), true)
+
 func _draw_bubbles() -> void:
 	var al := Game.find_room_of_type("airlock")
 	var origin := Vector2(400, -60)
@@ -323,7 +401,7 @@ func _draw_bubbles() -> void:
 func _draw_doors() -> void:
 	for r in Game.rooms:
 		var rect := room_rect(r)
-		var right := Game.room_at(r.col + Defs.room_width(r.type), r.row)
+		var right := Game.room_at(r.col + Game.room_w(r), r.row)
 		if right.is_empty():
 			continue
 		var x := rect.end.x
@@ -356,7 +434,16 @@ func _draw_room(r: Dictionary) -> void:
 	draw_rect(inner, dark.lerp(col.darkened(0.55), 0.55 * light))
 	var art := Art.room(r.type)
 	if art:
-		draw_texture_rect(art, inner, false, Color(light, light, light))
+		var n: int = r.get("size", 1)
+		var seg_w := inner.size.x / n
+		for i in n:
+			var seg := Rect2(inner.position.x + seg_w * i, inner.position.y, seg_w, inner.size.y)
+			if i % 2 == 1:
+				draw_set_transform(Vector2(seg.end.x, seg.position.y), 0.0, Vector2(-1, 1))
+				draw_texture_rect(art, Rect2(Vector2.ZERO, seg.size), false, Color(light, light, light))
+				draw_set_transform(Vector2.ZERO)
+			else:
+				draw_texture_rect(art, seg, false, Color(light, light, light))
 		if r.type == "reactor" and powered:
 			# пульсация ядра поверх картинки
 			var core := inner.get_center() + Vector2(0, 4)
@@ -695,6 +782,13 @@ func _on_press(p: Vector2) -> void:
 	if build_type != "":
 		return
 	var world := screen_to_world(p)
+	if _try_pop_treasure(world):
+		moved = true
+		return
+	if not Game.trader.is_empty() and _trader_rect().grow(20).has_point(world):
+		moved = true
+		trader_tapped.emit()
+		return
 	for c in Game.colonists:
 		if c.room == Game.ON_EXPEDITION:
 			continue

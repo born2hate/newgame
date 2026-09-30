@@ -54,6 +54,38 @@ func _dev_screenshot() -> void:
 		"colonists": hud._open_colonists()
 		"shop": hud._open_shop()
 		"tasks": hud._open_tasks()
+		"research":
+			Game.science = 180
+			Game.research_done = ["efficient_reactors", "hydroponics"]
+			Game.research_current = {"id": "electrolysis", "start": Game.now() - 60, "end": Game.now() + 60}
+			hud.more.open_research()
+		"achievements":
+			Game.stats["build"] = 6
+			hud.more.open_achievements()
+		"trader":
+			Game._spawn_trader()
+			hud._close_sheet()
+			await get_tree().create_timer(0.5).timeout
+			hud.more.open_trader()
+		"gear":
+			Game.add_item("rare", "torch")
+			Game.add_item("legendary", "explorer_suit")
+			Game.equip(Game.colonists[0], Game.items[1].uid)
+			hud._open_colonist(Game.colonists[0].id)
+		"deep":
+			Game.pearls = 5000
+			Game.research_done = ["deep_drilling"]
+			for r in range(2, 7):
+				Game.build("elevator", 5, r)
+			Game.build("farm", 3, 1)
+			Game.build("farm", 1, 1)
+			Game.build("reactor", 6, 5)
+			hud._close_sheet()
+			view.treasure.append({"p": Vector2(200, 300), "rich": false, "ph": 0.0})
+			view.treasure.append({"p": Vector2(560, 500), "rich": true, "ph": 1.0})
+			Game._spawn_trader()
+			camera.zoom = Vector2(0.7, 0.7)
+			camera.position = Vector2(400, 420)
 		"settings": hud._open_settings()
 		"settings_ru":
 			Audio.set_language("ru")
@@ -103,7 +135,6 @@ func _dev_screenshot() -> void:
 		"crate":
 			Game.crates.silver = 1
 			Game.open_crate("silver")
-		"deep": camera.position.y = 700
 		"zoom":
 			camera.zoom = Vector2(1.5, 1.5)
 			camera.position = Vector2(200, 120)
