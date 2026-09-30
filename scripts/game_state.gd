@@ -103,6 +103,7 @@ func new_game() -> void:
 	weekly_progress = 0
 	weekly_claimed = []
 	trader = {}
+	tutorial_done = false
 	rooms = []
 	colonists = []
 	next_id = 1
@@ -919,6 +920,7 @@ var weekly_progress := 0
 var weekly_claimed: Array = []
 var trader := {}
 var trader_timer := 300.0
+var tutorial_done := false
 
 func can_have_hazard(room: Dictionary) -> bool:
 	return not room.is_empty() and room.type != "elevator" and room.type != "airlock"
@@ -1431,6 +1433,7 @@ func save_game() -> void:
 			"items": items, "stats": stats, "achievements_claimed": achievements_claimed,
 			"story_index": story_index, "story_count": story_count, "weekly_week": weekly_week,
 			"weekly_progress": weekly_progress, "weekly_claimed": weekly_claimed, "trader": trader,
+			"tutorial_done": tutorial_done,
 		},
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -1504,6 +1507,7 @@ func load_game() -> bool:
 	weekly_progress = int(meta.get("weekly_progress", 0))
 	weekly_claimed = meta.get("weekly_claimed", []).map(func(v): return int(v))
 	trader = meta.get("trader", {})
+	tutorial_done = bool(meta.get("tutorial_done", true))
 	# JSON хранит числа как float — вернём целые поля
 	for r in rooms:
 		for k in ["id", "col", "row", "level"]:

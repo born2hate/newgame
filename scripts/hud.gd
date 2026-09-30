@@ -58,8 +58,20 @@ func _ready() -> void:
 	_build_popup()
 	_build_ad_overlay()
 	_refresh_top()
-	if Game.daily_available():
+	if not Game.tutorial_done:
+		start_tutorial.call_deferred()
+	elif Game.daily_available():
 		get_tree().create_timer(1.2).timeout.connect(_open_daily)
+
+var tutorial: CanvasLayer
+
+func start_tutorial() -> void:
+	if tutorial and is_instance_valid(tutorial):
+		return
+	tutorial = preload("res://scripts/tutorial.gd").new()
+	tutorial.hud = self
+	tutorial.view = view
+	get_parent().add_child(tutorial)
 
 func _process(delta: float) -> void:
 	refresh_timer += delta
@@ -772,11 +784,15 @@ func _open_settings() -> void:
 	var gap := Control.new()
 	gap.custom_minimum_size.y = 20
 	sheet_body.add_child(gap)
+	sheet_body.add_child(_button(tr("Replay tutorial"), func():
+		_close_sheet()
+		start_tutorial(), 60))
 	var reset := _button(tr("Start over"), func(): pass, 60)
 	reset.pressed.connect(func():
 		if reset.get_meta("armed", false):
 			Game.reset()
 			_close_sheet()
+			start_tutorial()
 		else:
 			reset.set_meta("armed", true)
 			reset.text = tr("Tap again to erase all progress"))

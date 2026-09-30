@@ -54,6 +54,13 @@ func _dev_screenshot() -> void:
 		"colonists": hud._open_colonists()
 		"shop": hud._open_shop()
 		"tasks": hud._open_tasks()
+		"tut1": pass
+		"tut2":
+			await get_tree().create_timer(4.0).timeout
+			Game.collect(Game.find_room_of_type("reactor"))
+			await get_tree().create_timer(0.3).timeout
+		"tut3":
+			hud.tutorial._show(6)
 		"research":
 			Game.science = 180
 			Game.research_done = ["efficient_reactors", "hydroponics"]
