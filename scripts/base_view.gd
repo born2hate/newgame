@@ -95,15 +95,27 @@ func colonist_world_pos(c: Dictionary) -> Vector2:
 	var rect := room_rect(room)
 	var w: Dictionary = walkers.get(c.id, {})
 	var x: float = w.get("x", 0.5)
-	# стоят на середине пола диорамы, а не на переднем краю
-	return Vector2(rect.position.x + 22 + x * (rect.size.x - 44), rect.end.y - WALL - 2 - CELL_H * DEPTH * 0.45)
+	# глубина: 0 — у передней стены, 1 — у задней (выше по экрану)
+	var z: float = w.get("z", 0.5)
+	return Vector2(rect.position.x + 22 + x * (rect.size.x - 44), rect.end.y - WALL - 4 - z * 16.0)
+
+## Масштаб по глубине: дальние меньше, ближние крупнее.
+func depth_scale(c: Dictionary) -> float:
+	var z: float = walkers.get(c.id, {}).get("z", 0.5)
+	return lerpf(1.08, 0.8, z)
 
 func _update_walkers(delta: float) -> void:
 	var alive := {}
 	for c in Game.colonists:
 		alive[c.id] = true
 		if not walkers.has(c.id):
-			walkers[c.id] = {"x": randf(), "target": randf(), "wait": randf() * 2.0, "facing": 1.0, "room": c.room}
+			walkers[c.id] = {"x": randf(), "target": randf(), "wait": randf() * 2.0, "facing": 1.0, "room": c.room,
+				"z": randf(), "zt": randf()}
+		var wz: Dictionary = walkers[c.id]
+		# плавно меняют глубину, когда ходят; у рабочих мест — чередуются ближе/дальше
+		if wz.has("station"):
+			wz.zt = 0.2 if int(wz.station * 10.0) % 2 == 0 else 0.8
+		wz.z = move_toward(wz.z, wz.zt, delta * 0.4)
 		var w: Dictionary = walkers[c.id]
 		var here: int = c.help if c.get("help", -1) != -1 else c.room
 		if w.room != here:
@@ -150,6 +162,7 @@ func _update_walkers(delta: float) -> void:
 			continue
 		var d: float = w.target - w.x
 		if absf(d) < 0.01:
+			w["zt"] = randf()
 			if job:
 				# пришёл к месту — работает 8–16 с, потом может сходить к соседнему месту
 				w["working"] = not room.ready and Game.room_power(room) > 0.0
@@ -241,9 +254,11 @@ func _draw_rest(depth_rows: int) -> void:
 	for r in Game.rooms:
 		_draw_room(r)
 	_draw_doors()
-	for c in Game.colonists:
-		if c.id != drag_colonist and c.room != Game.ON_EXPEDITION:
-			_draw_colonist(colonist_world_pos(c), c, false)
+	# дальние рисуем первыми, ближние — поверх
+	var order := Game.colonists.filter(func(c): return c.id != drag_colonist and c.room != Game.ON_EXPEDITION)
+	order.sort_custom(func(a, b): return walkers.get(a.id, {}).get("z", 0.5) > walkers.get(b.id, {}).get("z", 0.5))
+	for c in order:
+		_draw_colonist(colonist_world_pos(c), c, false)
 	if drag_colonist != -1:
 		var c := Game.get_colonist(drag_colonist)
 		if not c.is_empty():
@@ -819,7 +834,7 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 	var fighting: bool = w.get("fighting", false) and w.get("panic", false) and not lifted
 	if fighting:
 		walking = false
-	var h := 72.0 * (1.15 if lifted else 1.0)
+	var h := 72.0 * (1.15 if lifted else depth_scale(c))
 	var size := Vector2(h * sprite.get_width() / sprite.get_height(), h)
 	var bob := absf(sin(t * 10.0 + c.id)) * -3.0 if walking else sin(t * 2.0 + c.id) * 0.8
 	var facing: float = w.get("facing", 1.0)

@@ -229,6 +229,8 @@ func _dev_screenshot() -> void:
 			camera.zoom = Vector2(1.8, 1.8)
 			camera.position = Vector2(620, 300)
 			Game.assign(Game.colonists[3], Game.find_room_of_type("farm"))
+			Game.find_room_of_type("farm").level = 3
+			Game.assign(Game.colonists[1], Game.find_room_of_type("farm"))
 			await get_tree().create_timer(6.0).timeout
 		"fight":
 			hud._close_sheet()
