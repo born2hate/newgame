@@ -322,8 +322,11 @@ func set_cost_text(b: Button, text: String) -> void:
 
 # ---------------------------------------------------------------- верхняя панель
 
+var top_panel: PanelContainer
+
 func _build_top_bar() -> void:
 	var panel := PanelContainer.new()
+	top_panel = panel
 	panel.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	panel.offset_left = 12
 	panel.offset_right = -12

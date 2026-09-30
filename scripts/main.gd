@@ -133,6 +133,9 @@ func _dev_screenshot() -> void:
 			hud._close_sheet()
 			hud.open_mode_picker()
 		"tut1": pass
+		"tut_top":
+			hud.root.offset_top = 90
+			hud.tutorial._show(2)
 		"tut_reactor":
 			hud.tutorial._show(1)
 		"tut2":

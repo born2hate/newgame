@@ -164,7 +164,7 @@ func _target_rect() -> Rect2:
 		var b: Control = hud.bottom_bar.get_child(int(target.trim_prefix("button:")))
 		return b.get_global_rect().grow(6) if b.is_visible_in_tree() else Rect2()
 	if target == "top":
-		return Rect2(12, 12, overlay.size.x - 24, 130)
+		return hud.top_panel.get_global_rect().grow(6)
 	return Rect2()
 
 func _draw_overlay() -> void:
