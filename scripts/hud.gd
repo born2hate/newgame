@@ -1264,6 +1264,8 @@ func _on_colony_lost() -> void:
 		Game.reset()
 		open_mode_picker(), 70)))
 	popup_bg.visible = true
+
+func show_toast(text: String) -> void:
 	toast.text = text
 	toast_time = 3.0
 
