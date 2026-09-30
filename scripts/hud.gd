@@ -122,6 +122,14 @@ func _label(text: String, size := 24, color := Color(0.88, 0.96, 1.0)) -> Label:
 	l.add_theme_color_override("font_color", color)
 	return l
 
+func _with_icon(b: Button, name: String, size := 40) -> Button:
+	var tex := Art.tex("res://art/ui/icons/%s.png" % name)
+	if tex:
+		b.icon = tex
+		b.expand_icon = true
+		b.add_theme_constant_override("icon_max_width", size)
+	return b
+
 func _badge() -> Control:
 	var bd := Control.new()
 	bd.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -252,6 +260,11 @@ func _build_bottom_bar() -> void:
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		b.add_theme_font_size_override("font_size", 21)
 		bottom_bar.add_child(b)
+		if item[0] == "Tasks" or item[0] == "Shop":
+			_with_icon(b, item[0].to_lower(), 44)
+			b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			b.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+			b.add_theme_font_size_override("font_size", 17)
 		if item[0] == "Tasks":
 			tasks_badge = _badge()
 			b.add_child(tasks_badge)
@@ -464,6 +477,7 @@ func _open_room(id: int) -> void:
 			Game.rush_safe(r)
 			_open_room(id), 72)
 		safe.add_theme_color_override("font_color", Defs.RESOURCES.crystals.color)
+		_with_icon(safe, "speed", 40)
 		room_live_labels["safe"] = safe
 	if actions.get_child_count() > 0:
 		sheet_body.add_child(actions)
@@ -596,7 +610,9 @@ func _card(bg: Color, border: Color) -> HBoxContainer:
 	return hb
 
 func _banner(key: String) -> Control:
-	var tex := Art.tex("res://art/ui/shop/%s.png" % key)
+	var tex := Art.tex("res://art/ui/shop/%s_card.png" % key)
+	if tex == null:
+		tex = Art.tex("res://art/ui/shop/%s.png" % key)
 	if tex == null:
 		return null
 	var tr_ := TextureRect.new()
@@ -629,6 +645,7 @@ func _open_shop() -> void:
 		_open_shop(), 64)
 	db.disabled = not Game.daily_available()
 	db.custom_minimum_size.x = 170
+	_with_icon(db, "gift", 36)
 	daily.add_child(db)
 
 	var free := _card(Color(0.05, 0.14, 0.22, 0.9), Color(0.5, 0.8, 1.0, 0.7))
@@ -642,6 +659,7 @@ func _open_shop() -> void:
 		Game.claim_free_crate()
 		_open_shop()), 64)
 	fb.custom_minimum_size.x = 170
+	_with_icon(fb, "ad", 36)
 	free.add_child(fb)
 	shop_live["free"] = fb
 
@@ -651,9 +669,10 @@ func _open_shop() -> void:
 	binfo.add_child(_label(tr("Double collection"), 24))
 	binfo.add_child(_label(tr("x2 resources from rooms for 30 min"), 18, Color(0.9, 0.85, 0.7)))
 	boost.add_child(binfo)
-	var bb := _button(tr("▶ Watch"), func(): Store.show_rewarded(func():
+	var bb := _button(tr("Watch"), func(): Store.show_rewarded(func():
 		Game.start_boost()
 		_open_shop()), 64)
+	_with_icon(bb, "ad", 36)
 	bb.custom_minimum_size.x = 170
 	boost.add_child(bb)
 
@@ -735,9 +754,18 @@ func _open_shop() -> void:
 	for item in Store.CRYSTAL_ITEMS:
 		var row := _card(Color(0.05, 0.12, 0.2, 0.9), Color(0.55, 0.8, 1.0, 0.4))
 		if item.reward.has("crates"):
-			row.add_child(_crate_icon(item.reward.crates.keys()[0], 56))
+			row.add_child(_crate_icon(item.reward.crates.keys()[0], 64))
 		else:
-			row.add_child(_icon("pearls", 56))
+			var pile := Art.tex("res://art/ui/shop/pearls_%d.png" % (1 if item.reward.pearls < 1000 else 2))
+			if pile:
+				var pt := TextureRect.new()
+				pt.texture = pile
+				pt.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+				pt.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+				pt.custom_minimum_size = Vector2(64, 64)
+				row.add_child(pt)
+			else:
+				row.add_child(_icon("pearls", 56))
 		var l := _label(tr(item.title), 22)
 		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(l)
@@ -765,7 +793,7 @@ func _refresh_shop_live() -> void:
 	if shop_live.has("free"):
 		var fb: Button = shop_live.free
 		if Game.free_crate_ready():
-			fb.text = tr("▶ Free") if not Game.premium else tr("Claim")
+			fb.text = tr("Free") if not Game.premium else tr("Claim")
 			fb.disabled = false
 		else:
 			fb.text = _clock(Game.free_crate_left())
@@ -839,9 +867,9 @@ func _open_daily() -> void:
 		rw.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vb.add_child(rw)
 		grid.add_child(cell)
-	sheet_body.add_child(_button(tr("Claim"), func():
+	sheet_body.add_child(_with_icon(_button(tr("Claim"), func():
 		Game.claim_daily()
-		_close_sheet(), 72))
+		_close_sheet(), 72), "gift", 48))
 
 # ---------------------------------------------------------------- окно наград и реклама
 
@@ -944,10 +972,12 @@ func _dock_section(r: Dictionary) -> void:
 	fin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	fin.add_theme_color_override("font_color", Defs.RESOURCES.crystals.color)
 	actions.add_child(fin)
-	var ad := _button(tr("▶ -30 min"), func(): Store.show_rewarded(func():
+	var ad := _button(tr("-30 min"), func(): Store.show_rewarded(func():
 		Game.cut_expedition(e, 1800.0)
 		_open_room(r.id)), 70)
 	ad.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_with_icon(ad, "ad", 36)
+	_with_icon(fin, "speed", 36)
 	actions.add_child(ad)
 	sheet_body.add_child(actions)
 	var claim := _button(tr("Collect loot!"), func():

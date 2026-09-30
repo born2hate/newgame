@@ -54,6 +54,7 @@ func _dev_screenshot() -> void:
 		"colonists": hud._open_colonists()
 		"shop": hud._open_shop()
 		"tasks": hud._open_tasks()
+		"bar": hud._close_sheet()
 		"planner":
 			var d := Game._add_room("dock", 3, 1)
 			hud._open_planner(d.id, 1)
