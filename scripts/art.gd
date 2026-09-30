@@ -23,3 +23,6 @@ static func icon(res: String) -> Texture2D:
 static func diver(suit: int) -> Texture2D:
 	var t := tex("res://art/characters/diver_%d.png" % suit)
 	return t if t else tex("res://art/characters/diver.png")
+
+static func walk(suit: int, frame: int) -> Texture2D:
+	return tex("res://art/characters/walk/walk_%d_%d.png" % [suit, frame])

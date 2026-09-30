@@ -3,11 +3,14 @@ config_version=5
 
 [application]
 
-config/name="Глубина"
-config/description="Подводная колония: строй базу на дне океана"
+config/name="Deep Colony"
+config/description="Build an underwater colony on the ocean floor"
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.3", "Mobile")
-config/icon="res://icon.svg"
+config/icon="res://art/ui/app_icon.png"
+boot_splash/bg_color=Color(0.01, 0.07, 0.13, 1)
+boot_splash/image="res://art/ui/logo.png"
+boot_splash/fullsize=false
 
 [autoload]
 

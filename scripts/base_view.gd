@@ -125,7 +125,47 @@ func _on_floating_text(room_id: int, text: String, color: Color) -> void:
 func _draw() -> void:
 	var depth_rows := maxi(Game.max_row() + 4, 6)
 	_draw_water_life()
-	# морское дно (песок) и кораллы
+	if Art.tex("res://art/backgrounds/seabed.png"):
+		_draw_seabed_art()
+	else:
+		_draw_seabed_procedural()
+	_draw_bubbles()
+	# выдолбленная порода вокруг отсеков
+	for r in Game.rooms:
+		draw_rect(room_rect(r).grow(10), Color(0.02, 0.02, 0.03, 0.55))
+	for r in Game.rooms:
+		draw_rect(room_rect(r).grow(5), Color(0.05, 0.05, 0.07))
+	_draw_rest(depth_rows)
+
+func _draw_seabed_art() -> void:
+	var tex := Art.tex("res://art/backgrounds/seabed.png")
+	var h := 230.0
+	var w := h * tex.get_width() / tex.get_height()
+	var top := -185.0
+	var i := 0
+	var x := -1400.0
+	while x < 2200.0:
+		# каждую вторую полосу зеркалим, чтобы не было видно стыков
+		if i % 2 == 1:
+			draw_set_transform(Vector2(x + w, top), 0.0, Vector2(-1, 1))
+		else:
+			draw_set_transform(Vector2(x, top))
+		draw_texture_rect(tex, Rect2(0, 0, w, h), false)
+		x += w
+		i += 1
+	draw_set_transform(Vector2.ZERO)
+	# вход в колонию — купол над шлюзом
+	var dome := Art.tex("res://art/backgrounds/dome.png")
+	var al := Game.find_room_of_type("airlock")
+	if dome and not al.is_empty():
+		var dw := 300.0
+		var dh := dw * dome.get_height() / dome.get_width()
+		var cx := room_rect(al).get_center().x
+		draw_texture_rect(dome, Rect2(cx - dw / 2.0, 18.0 - dh, dw, dh), false)
+		var blink := 0.5 + 0.5 * sin(t * 3.0)
+		draw_circle(Vector2(cx - 2, 18.0 - dh + 12), 10, Color(1.0, 0.7, 0.2, 0.35 * blink))
+
+func _draw_seabed_procedural() -> void:
 	var sand := PackedVector2Array()
 	for i in 57:
 		var x := -1000.0 + i * 50.0
@@ -138,12 +178,8 @@ func _draw() -> void:
 		sand_top.append(sand[i])
 	draw_polyline(sand_top, Color(0.75, 0.66, 0.48), 4.0)
 	_draw_corals()
-	_draw_bubbles()
-	# выдолбленная порода вокруг отсеков
-	for r in Game.rooms:
-		draw_rect(room_rect(r).grow(10), Color(0.02, 0.02, 0.03, 0.55))
-	for r in Game.rooms:
-		draw_rect(room_rect(r).grow(5), Color(0.05, 0.05, 0.07))
+
+func _draw_rest(depth_rows: int) -> void:
 	if build_type != "":
 		_draw_build_slots(depth_rows)
 	for r in Game.rooms:
@@ -164,6 +200,12 @@ func _draw() -> void:
 		_text(fl.pos, fl.text, 30, Color(fl.color, a), true)
 
 func _draw_water_life() -> void:
+	var sub := Art.tex("res://art/creatures/bathyscaphe.png")
+	if sub:
+		var sw := 150.0
+		var sh := sw * sub.get_height() / sub.get_width()
+		var sx := fmod(t * 35.0, 2600.0) - 900.0
+		draw_texture_rect(sub, Rect2(sx, -470 + sin(t * 0.8) * 10, sw, sh), false, Color(0.85, 0.9, 1.0, 0.95))
 	for f in fish:
 		var p: Vector2 = f.p + Vector2(0, sin(t * 1.5 + f.ph) * 6)
 		var s: float = f.s
@@ -219,8 +261,9 @@ func _draw_corals() -> void:
 func _draw_bubbles() -> void:
 	var al := Game.find_room_of_type("airlock")
 	var origin := Vector2(400, -60)
+	var has_dome := Art.tex("res://art/backgrounds/dome.png") != null
 	if not al.is_empty():
-		origin = Vector2(room_rect(al).get_center().x, -70)
+		origin = Vector2(room_rect(al).get_center().x, -250.0 if has_dome else -70.0)
 	for i in 14:
 		var ph := fmod(t * 0.35 + i * 0.137, 1.0)
 		var x := origin.x + sin(t * 1.3 + i * 2.1) * 14 + (i % 5 - 2) * 18 * ph
@@ -228,6 +271,8 @@ func _draw_bubbles() -> void:
 		var rad := 3.0 + (i % 4) * 1.5 + ph * 3.0
 		draw_arc(Vector2(x, y), rad, 0, TAU, 12, Color(0.8, 0.95, 1.0, 0.55 * (1.0 - ph)), 1.5)
 		draw_circle(Vector2(x - rad * 0.3, y - rad * 0.3), rad * 0.25, Color(1, 1, 1, 0.5 * (1.0 - ph)))
+	if has_dome:
+		return
 	# прожекторы у купола
 	for dx in [-120.0, 120.0]:
 		var lp := Vector2(origin.x + dx, -10)
@@ -448,6 +493,12 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 	if lifted:
 		draw_circle(feet + Vector2(0, 2), 16, Color(0, 0, 0, 0.3))
 	var tint := Color.WHITE if c.health >= 50.0 else Color(0.75, 0.75, 0.75)
+	if walking:
+		var frame := Art.walk(c.suit, int(t * 9.0 + c.id) % 6)
+		if frame:
+			sprite = frame
+			size = Vector2(h * 0.95 * sprite.get_width() / sprite.get_height(), h * 0.95)
+			bob = 0.0
 	draw_set_transform(feet + Vector2(0, bob), 0.0, Vector2(facing, 1.0))
 	draw_texture_rect(sprite, Rect2(Vector2(-size.x / 2.0, -size.y), size), false, tint)
 	draw_set_transform(Vector2.ZERO)
