@@ -281,9 +281,12 @@ func _draw_room(r: Dictionary) -> void:
 			var bar0 := Rect2(inner.position.x + 8, inner.end.y - 14, inner.size.x - 16, 7)
 			draw_rect(bar0, Color(0, 0, 0, 0.55))
 			draw_rect(Rect2(bar0.position, Vector2(bar0.size.x * r.progress, bar0.size.y)), Defs.RESOURCES[def.produces].color)
-		_text(Vector2(inner.position.x + 8, inner.position.y + 20), def.name, 16, Color(1, 1, 1, 0.85))
-		for i in r.level:
-			_star(Vector2(inner.end.x - 12 - i * 16, inner.position.y + 14), 6.0)
+		if r.type != "elevator":
+			var label_w := font.get_string_size(def.name, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x
+			draw_rect(Rect2(inner.position + Vector2(4, 4), Vector2(label_w + 12, 20)), Color(0, 0, 0, 0.45))
+			_text(Vector2(inner.position.x + 10, inner.position.y + 19), def.name, 15, Color(1, 1, 1, 0.9))
+			for i in r.level:
+				_star(Vector2(inner.end.x - 12 - i * 16, inner.position.y + 14), 6.0)
 	elif r.type == "elevator":
 		_draw_elevator(inner)
 	else:

@@ -39,7 +39,9 @@ void fragment() {
 	float spark = step(0.992, hash(sc)) * smoothstep(5.0, 0.0, length(fract(world / 14.0) * 14.0 - 7.0));
 	col += vec3(0.3, 0.7, 0.8) * spark * (0.5 + 0.5 * sin(TIME * 2.0 + hash(sc + 1.0) * 6.28));
 	if (use_tex) {
-		col = texture(rock_tex, world / 512.0).rgb;
+		// текстура затемнена и смешана с шумом, чтобы не спорить с отсеками и скрыть повтор
+		vec3 tx = texture(rock_tex, world / 900.0).rgb;
+		col = mix(tx * 0.5, col, 0.35) * mix(0.8, 1.1, fbm(world * 0.002));
 	}
 	// темнее с глубиной, песок у поверхности
 	float depth = clamp(world.y / 1800.0, 0.0, 1.0);
