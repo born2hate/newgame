@@ -101,6 +101,8 @@ func _initialize() -> void:
 	var food0: float = eco.resources.food
 	eco.collect(farm)
 	check(eco.resources.food - food0 >= eco.production_amount(farm) * 2.0 - 0.01, "x2 сбор при бусте")
+	eco.grant({"pet": "clownfish"}, "test")
+	check(eco.pet == "clownfish", "питомец из стартового набора")
 	check(not eco.ads_removed(), "реклама есть по умолчанию")
 	eco.grant({"no_ads": true}, "test")
 	check(eco.ads_removed(), "покупка No Ads отключает рекламу")

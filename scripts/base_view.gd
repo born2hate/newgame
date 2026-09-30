@@ -195,9 +195,32 @@ func _draw_rest(depth_rows: int) -> void:
 			if not hover.is_empty():
 				draw_rect(room_rect(hover).grow(-2), Color(1, 1, 1, 0.8), false, 4.0)
 			_draw_colonist(drag_pos + Vector2(0, 30), c, true)
+	_draw_pet()
 	for fl in floaters:
 		var a := clampf(fl.life, 0.0, 1.0)
 		_text(fl.pos, fl.text, 30, Color(fl.color, a), true)
+
+## Питомец плавает восьмёркой перед отсеками верхних уровней.
+func _draw_pet() -> void:
+	if Game.pet == "":
+		return
+	var tex := Art.tex("res://art/creatures/%s.png" % Game.pet)
+	if tex == null:
+		return
+	var span := Defs.GRID_COLS * CELL_W
+	var rows := maxf(1.0, Game.max_row() + 1.0)
+	var px := span * 0.5 + sin(t * 0.25) * span * 0.42
+	var py := CELL_H * rows * 0.5 + sin(t * 0.5) * CELL_H * rows * 0.35
+	var dir := signf(cos(t * 0.25))
+	var fw := 64.0
+	var fh := fw * tex.get_height() / tex.get_width()
+	draw_set_transform(Vector2(px, py + sin(t * 3.0) * 4.0), sin(t * 3.0) * 0.08, Vector2(-dir, 1))
+	draw_texture_rect(tex, Rect2(-fw / 2.0, -fh / 2.0, fw, fh), false)
+	draw_set_transform(Vector2.ZERO)
+	# пузырьки за хвостом
+	for i in 3:
+		var ph := fmod(t * 0.8 + i * 0.33, 1.0)
+		draw_arc(Vector2(px - dir * (fw * 0.5 + ph * 10), py - ph * 40), 2.5 + ph * 2, 0, TAU, 10, Color(0.8, 0.95, 1.0, 0.7 * (1.0 - ph)), 1.2)
 
 func _draw_water_life() -> void:
 	var fishy := Art.tex("res://art/creatures/anglerfish.png")

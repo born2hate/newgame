@@ -30,6 +30,8 @@ var crystals := 0
 var crates := {"common": 0, "silver": 0, "gold": 0}
 var premium := false
 var no_ads := false
+var pet := ""
+const PET_BONUS := 0.1
 var owned_products: Array = []
 var boost_until := 0.0
 var free_crate_at := 0.0
@@ -74,6 +76,7 @@ func new_game() -> void:
 	crates = {"common": 1, "silver": 0, "gold": 0}
 	premium = false
 	no_ads = false
+	pet = ""
 	owned_products = []
 	boost_until = 0.0
 	free_crate_at = 0.0
@@ -347,7 +350,7 @@ func collect(room: Dictionary) -> void:
 	if not room.ready:
 		return
 	var def: Dictionary = Defs.ROOMS[room.type]
-	var amount := production_amount(room) * (2.0 if boost_active() else 1.0)
+	var amount := production_amount(room) * (2.0 if boost_active() else 1.0) * (1.0 + (PET_BONUS if pet != "" else 0.0))
 	var res: String = def.produces
 	if res == "pearls":
 		pearls += int(amount)
@@ -486,6 +489,9 @@ func grant(reward: Dictionary, title: String) -> void:
 		lines.append("+%d %s" % [int(reward.crates[k]), tr(Defs.CRATES[k].name)])
 	if reward.has("colonist"):
 		lines.append(_grant_colonist(reward.colonist))
+	if reward.has("pet"):
+		pet = reward.pet
+		lines.append(tr("Nemo the clownfish joined you! +10% to all collections"))
 	if reward.get("no_ads", false):
 		no_ads = true
 		lines.append(tr("Ads removed. Rewards are now instant!"))
@@ -840,7 +846,7 @@ func save_game() -> void:
 		"resources": resources, "pearls": pearls, "rooms": rooms,
 		"colonists": colonists, "next_id": next_id, "arrival_timer": arrival_timer,
 		"meta": {
-			"crystals": crystals, "crates": crates, "premium": premium, "no_ads": no_ads, "owned": owned_products,
+			"crystals": crystals, "crates": crates, "premium": premium, "no_ads": no_ads, "pet": pet, "owned": owned_products,
 			"boost_until": boost_until, "free_crate_at": free_crate_at,
 			"daily_day": daily_day, "daily_streak": daily_streak,
 			"expeditions": expeditions, "quests": quests, "quest_day": quest_day,
@@ -874,6 +880,7 @@ func load_game() -> bool:
 		crates[k] = int(meta.crates[k])
 	premium = bool(meta.get("premium", false))
 	no_ads = bool(meta.get("no_ads", false))
+	pet = str(meta.get("pet", ""))
 	owned_products = meta.get("owned", [])
 	boost_until = float(meta.get("boost_until", 0.0))
 	free_crate_at = float(meta.get("free_crate_at", 0.0))

@@ -16,8 +16,8 @@ const DEV_MODE := true
 ## Товары за реальные деньги. price — строка для показа; в релизе цену берём из стора.
 const IAP := [
 	{"id": "starter_pack", "title": "Starter Pack", "price": "$1.99", "one_time": true, "banner": "starter",
-		"desc": "150 crystals, 1000 pearls, 2 Silver Crates and a Rare colonist",
-		"reward": {"crystals": 150, "pearls": 1000, "crates": {"silver": 2}, "colonist": "rare"}},
+		"desc": "150 crystals, 1000 pearls, exclusive pet Nemo (+10% collections), 2 Silver Crates and a Rare colonist",
+		"reward": {"crystals": 150, "pearls": 1000, "pet": "clownfish", "crates": {"silver": 2}, "colonist": "rare"}},
 	{"id": "premium", "title": "Premium", "price": "$4.99", "one_time": true, "banner": "premium",
 		"desc": "Golden Captain colonist, rewards without ads, 16h offline income, free crate every 2h, +100 crystals",
 		"reward": {"premium": true, "crystals": 100}},

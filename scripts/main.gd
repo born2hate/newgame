@@ -72,6 +72,10 @@ func _dev_screenshot() -> void:
 			e.start = Game.now() - 1100.0
 			e.end = Game.now() + 700.0
 			view.room_selected.emit(d.id)
+		"pet":
+			hud._close_sheet()
+			Store.purchase("starter_pack")
+			hud.popup_bg.visible = false
 		"shop1":
 			hud._open_shop()
 			await get_tree().process_frame
