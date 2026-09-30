@@ -68,6 +68,11 @@ godot --headless --path . --script res://tests/run_tests.gd
 
 ## Сборка под телефоны
 
+Готовый пресет `export_presets.cfg` (Android, arm64, пакет `com.deepcolony.game`).
+`godot --headless --export-debug "Android" build/DeepColony.apk` — нужны шаблоны экспорта 4.3,
+Android SDK (build-tools) и JDK 17+; для релиза — свой keystore вместо отладочного.
+
+
 - **Android:** Editor → Manage Export Templates → установить; Project → Export → Android (нужен Android SDK и keystore).
 - **iOS:** Project → Export → iOS, затем собрать сгенерированный Xcode-проект на Mac.
 

@@ -41,5 +41,8 @@ environment/defaults/default_clear_color=Color(0.01, 0.05, 0.1, 1)
 [importer_defaults]
 
 texture={
-"mipmaps/generate": true
+"compress/mode": 1,
+"compress/lossy_quality": 0.85,
+"mipmaps/generate": true,
+"process/size_limit": 1024
 }
