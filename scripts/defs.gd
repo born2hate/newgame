@@ -13,12 +13,21 @@ const RESOURCES := {
 	"pearls": {"name": "Pearls", "short": "P", "color": Color(1.0, 0.75, 0.95)},
 	"crystals": {"name": "Crystals", "short": "C", "color": Color(0.55, 0.8, 1.0)},
 	"science": {"name": "Science", "short": "S", "color": Color(0.75, 0.6, 1.0)},
+	"gear": {"name": "Gear", "short": "G", "color": Color(1.0, 0.65, 0.35)},
 }
 
 const STATS := {
 	"str": "Strength",
 	"tech": "Tech",
 	"bio": "Biology",
+	"end": "Endurance",
+	"cha": "Charm",
+	"luck": "Luck",
+}
+const ALL_STATS := ["str", "tech", "bio", "end", "cha", "luck"]
+const STAT_COLORS := {
+	"str": Color(1.0, 0.72, 0.25), "tech": Color(0.35, 0.85, 1.0), "bio": Color(0.45, 0.95, 0.5),
+	"end": Color(1.0, 0.45, 0.4), "cha": Color(1.0, 0.55, 0.9), "luck": Color(0.75, 1.0, 0.35),
 }
 
 ## width — ширина в клетках; slots — рабочих мест на 1 уровне;
@@ -84,6 +93,60 @@ const ROOMS := {
 		"name": "Medbay", "width": 2, "cost": 200, "buildable": true, "slots": 2,
 		"stat": "bio", "heal": true, "energy": 0.15, "color": Color(1.0, 0.4, 0.45),
 		"icon": "✚", "unlock_pop": 12, "desc": "Heals all colonists. Needs Biology.",
+	},
+	## Вторая волна: открываются позже, чтобы стройка не заканчивалась быстро.
+	## train — какие характеристики качают работники; mood — прибавка к настроению всех;
+	## auto — работает без людей; min_row — строится не выше этого ряда.
+	"kitchen": {
+		"name": "Kitchen", "width": 2, "cost": 300, "buildable": true, "slots": 2,
+		"produces": "food", "stat": "bio", "amount": 30.0, "cycle": 40.0, "mood": 6,
+		"energy": 0.15, "color": Color(1.0, 0.75, 0.4), "icon": "♨", "unlock_pop": 14,
+		"desc": "Cooks hearty meals: lots of food and a better mood. Needs Biology.",
+	},
+	"gym": {
+		"name": "Gym", "width": 2, "cost": 350, "buildable": true, "slots": 2,
+		"stat": "end", "train": ["str", "end"], "energy": 0.1,
+		"color": Color(1.0, 0.45, 0.35), "icon": "✊", "unlock_pop": 16,
+		"desc": "Workers train Strength and Endurance.",
+	},
+	"school": {
+		"name": "School", "width": 2, "cost": 350, "buildable": true, "slots": 2,
+		"stat": "tech", "train": ["tech", "bio"], "energy": 0.1,
+		"color": Color(0.45, 0.7, 1.0), "icon": "✎", "unlock_pop": 18,
+		"desc": "Workers study Tech and Biology.",
+	},
+	"radio": {
+		"name": "Radio Room", "width": 2, "cost": 400, "buildable": true, "slots": 2,
+		"stat": "cha", "energy": 0.15, "color": Color(0.5, 1.0, 0.6), "icon": "☊",
+		"unlock_pop": 20, "desc": "Calls new colonists faster and attracts traders. Needs Charm.",
+	},
+	"lounge": {
+		"name": "Lounge", "width": 2, "cost": 400, "buildable": true, "slots": 2,
+		"stat": "cha", "train": ["cha", "luck"], "mood": 10, "energy": 0.1,
+		"color": Color(0.85, 0.5, 1.0), "icon": "♫", "unlock_pop": 22,
+		"desc": "Raises everyone's mood. Workers train Charm and Luck.",
+	},
+	"workshop": {
+		"name": "Workshop", "width": 2, "cost": 500, "buildable": true, "slots": 2,
+		"produces": "gear", "stat": "tech", "amount": 1.0, "cycle": 400.0,
+		"energy": 0.2, "color": Color(1.0, 0.6, 0.3), "icon": "⚒", "unlock_pop": 25,
+		"desc": "Crafts new gear for your colonists. Needs Tech.",
+	},
+	"armory": {
+		"name": "Armory", "width": 2, "cost": 450, "buildable": true, "slots": 2,
+		"stat": "end", "energy": 0.1, "color": Color(0.9, 0.3, 0.3), "icon": "⚔",
+		"unlock_pop": 28, "desc": "Everyone fights fires, floods and monsters harder. Needs Endurance.",
+	},
+	"aquarium": {
+		"name": "Aquarium", "width": 2, "cost": 600, "buildable": true, "slots": 0,
+		"mood": 8, "pearl_bonus": 0.1, "energy": 0.1, "color": Color(0.3, 0.9, 0.9), "icon": "✦",
+		"unlock_pop": 30, "desc": "Beautiful fish: better mood for all and +10% pearls per level.",
+	},
+	"turbine": {
+		"name": "Current Turbine", "width": 2, "cost": 700, "buildable": true, "slots": 0,
+		"produces": "energy", "auto": 5.0, "amount": 25.0, "cycle": 30.0, "min_row": 6,
+		"energy": 0.0, "color": Color(0.4, 0.8, 1.0), "icon": "✇", "unlock_pop": 35,
+		"desc": "Free energy from deep currents, no workers needed. Only from row 7 down.",
 	},
 }
 

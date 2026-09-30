@@ -124,6 +124,17 @@ func _dev_screenshot() -> void:
 		"colonist_ru":
 			Audio.set_language("ru")
 			hud._open_colonist(Game.colonists[0].id)
+		"gym_ru":
+			Audio.set_language("ru")
+			var gy := Game._add_room("gym", 7, 1)
+			Game.colonists[0].room = gy.id
+			Game.colonists[1].room = gy.id
+			view.room_selected.emit(gy.id)
+		"build2_ru":
+			Audio.set_language("ru")
+			hud._open_build()
+			await get_tree().process_frame
+			(hud.sheet.get_child(0) as ScrollContainer).scroll_vertical = 1400
 		"room_ru":
 			Audio.set_language("ru")
 			view.room_selected.emit(Game.find_room_of_type("reactor").id)

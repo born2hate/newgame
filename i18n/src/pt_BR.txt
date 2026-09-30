@@ -438,3 +438,41 @@
 437|Construa a mesma sala ao lado de outra para uni-las numa maior.
 438|Expedições trazem pérolas, cristais, equipamento e colonos raros.
 439|Volte todo dia para uma recompensa diária maior.
+440|Cozinha
+441|Prepara refeições fartas: muita comida e mais ânimo. Precisa de Biologia.
+442|Academia
+443|Os trabalhadores treinam Força e Resistência.
+444|Escola
+445|Os trabalhadores estudam Técnica e Biologia.
+446|Sala de rádio
+447|Chama novos colonos mais rápido e atrai comerciantes. Precisa de Carisma.
+448|Sala de lazer
+449|Melhora o ânimo de todos. Os trabalhadores treinam Carisma e Sorte.
+450|Oficina
+451|Fabrica equipamento para seus colonos. Precisa de Técnica.
+452|Arsenal
+453|Todos combatem melhor incêndios, inundações e monstros. Precisa de Resistência.
+454|Aquário
+455|Peixes lindos: mais ânimo para todos e +10% de pérolas por nível.
+456|Turbina de correntes
+457|Energia grátis das correntes profundas, sem trabalhadores. Só da fileira 7 para baixo.
+458|Resistência
+459|Carisma
+460|Sorte
+461|Sorte! ×2
+462|Novo equipamento pronto!
+463|Treina: %s · +1 a cada %s de trabalho
+464|Ânimo +%d para todos
+465|Pérolas +%d%%
+466|Novos colonos chegam %d%% mais rápido
+467|Combate a incidentes +%d%%
+468|Desconto por carisma: −%d%%
+469|Feliz
+470|Normal
+471|Infeliz
+472|Ânimo
+473|velocidade de trabalho
+474|Resistência: menos dano. Carisma: descontos com o comerciante. Sorte: chance de coletar em dobro. Ânimo: velocidade de trabalho.
+475|%d min
+476|Trabalhadores (%d/%d)
+477|treino

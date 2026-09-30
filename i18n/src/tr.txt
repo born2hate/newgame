@@ -438,3 +438,41 @@
 437|Aynı odayı yanına kurarak onları büyük bir odada birleştir.
 438|Keşifler inci, kristal, ekipman ve nadir sakin getirir.
 439|Daha büyük günlük ödül için her gün gel.
+440|Mutfak
+441|Doyurucu yemekler pişirir: bol yiyecek ve daha iyi moral. Biyoloji gerekir.
+442|Spor salonu
+443|Çalışanlar Güç ve Dayanıklılık çalışır.
+444|Okul
+445|Çalışanlar Teknik ve Biyoloji öğrenir.
+446|Telsiz odası
+447|Yeni sakinleri daha hızlı çağırır ve tüccar çeker. Karizma gerekir.
+448|Dinlenme odası
+449|Herkesin moralini yükseltir. Çalışanlar Karizma ve Şans çalışır.
+450|Atölye
+451|Sakinlerin için ekipman üretir. Teknik gerekir.
+452|Cephanelik
+453|Herkes yangın, su baskını ve canavarlarla daha güçlü savaşır. Dayanıklılık gerekir.
+454|Akvaryum
+455|Güzel balıklar: herkese daha iyi moral ve seviye başına +10% inci.
+456|Akıntı türbini
+457|Derin akıntılardan bedava enerji, çalışan gerekmez. Sadece 7. sıra ve altı.
+458|Dayanıklılık
+459|Karizma
+460|Şans
+461|Şans! ×2
+462|Yeni ekipman hazır!
+463|Çalıştırır: %s · her %s çalışmada +1
+464|Herkese moral +%d
+465|İnci +%d%%
+466|Yeni sakinler %d%% daha hızlı gelir
+467|Kazalarla mücadele +%d%%
+468|Karizma indirimi: −%d%%
+469|Mutlu
+470|İdare eder
+471|Mutsuz
+472|Moral
+473|çalışma hızı
+474|Dayanıklılık: daha az hasar. Karizma: tüccar indirimi. Şans: iki kat toplama şansı. Moral: çalışma hızı.
+475|%d dk
+476|Çalışanlar (%d/%d)
+477|antrenman

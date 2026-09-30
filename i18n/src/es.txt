@@ -439,3 +439,41 @@
 437|Construye la misma sala junto a otra para fusionarlas en una más grande.
 438|Las expediciones traen perlas, cristales, equipo y colonos raros.
 439|Vuelve cada día por una recompensa diaria mayor.
+440|Cocina
+441|Prepara comidas abundantes: mucha comida y mejor ánimo. Requiere Biología.
+442|Gimnasio
+443|Los trabajadores entrenan Fuerza y Resistencia.
+444|Escuela
+445|Los trabajadores estudian Técnica y Biología.
+446|Sala de radio
+447|Atrae nuevos colonos más rápido y también comerciantes. Requiere Carisma.
+448|Sala de ocio
+449|Mejora el ánimo de todos. Los trabajadores entrenan Carisma y Suerte.
+450|Taller
+451|Fabrica equipo para tus colonos. Requiere Técnica.
+452|Armería
+453|Todos combaten mejor incendios, inundaciones y monstruos. Requiere Resistencia.
+454|Acuario
+455|Peces preciosos: mejor ánimo para todos y +10% de perlas por nivel.
+456|Turbina de corrientes
+457|Energía gratis de las corrientes profundas, sin trabajadores. Solo desde la fila 7 hacia abajo.
+458|Resistencia
+459|Carisma
+460|Suerte
+461|¡Suerte! ×2
+462|¡Nuevo equipo fabricado!
+463|Entrena: %s · +1 cada %s de trabajo
+464|Ánimo +%d para todos
+465|Perlas +%d%%
+466|Los nuevos colonos llegan un %d%% más rápido
+467|Combate de incidentes +%d%%
+468|Descuento por carisma: −%d%%
+469|Contento
+470|Normal
+471|Descontento
+472|Ánimo
+473|velocidad de trabajo
+474|Resistencia: menos daño. Carisma: descuentos del comerciante. Suerte: probabilidad de recoger el doble. Ánimo: velocidad de trabajo.
+475|%d min
+476|Trabajadores (%d/%d)
+477|entrenando

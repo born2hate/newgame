@@ -236,7 +236,7 @@ func _initialize() -> void:
 	var arm: Dictionary = pg.add_item("rare", "diving_armor")
 	var hc: Dictionary = pg.colonists[2]
 	pg.equip(hc, arm.uid)
-	check(hc.armor_item == arm.uid and absf(pg.protection(hc) - 0.3) < 0.001, "броня надета, −30% урона")
+	check(hc.armor_item == arm.uid and absf(pg.protection(hc) - (0.3 + pg.stat(hc, "end") * 0.02)) < 0.001, "броня надета: −30% урона плюс выносливость")
 	check(pg.story_index == 0 and not pg.story_ready(), "сюжет: глава 1")
 	pg.track("collect_energy", 20)
 	check(pg.story_ready(), "глава 1 выполнена")
@@ -294,6 +294,40 @@ func _initialize() -> void:
 	cm.resources.food = 0.0
 	cm.simulate(5.0, false)
 	check(cm.colonists[0].health >= 50.0, "спокойный: голод не ранит")
+	# новые отсеки и характеристики
+	var nw = load("res://scripts/game_state.gd").new()
+	nw.new_game()
+	var nc: Dictionary = nw.colonists[0]
+	check(nc.has("end") and nc.has("cha") and nc.has("luck") and nc.has("mood"), "у колониста выносливость, обаяние, удача, настроение")
+	check(not nw.can_build_at("turbine", 7, 1), "турбина не строится выше 7-го ряда")
+	var gym: Dictionary = nw._add_room("gym", 8, 1)
+	nc.room = gym.id
+	nc.str = 1
+	nc.end = 1
+	for i in int(nw.train_time(gym) * 1.5) + 5:
+		nw.resources.energy = 100.0
+		nw.simulate(1.0, false)
+	check(nc.str + nc.end >= 3, "спортзал качает силу/выносливость")
+	var tb: Dictionary = nw._add_room("turbine", 10, 1)
+	check(nw.cycle_time(tb) < INF, "турбина работает без людей")
+	var ws: Dictionary = nw._add_room("workshop", 12, 1)
+	nw.colonists[1].room = ws.id
+	ws.ready = true
+	var ni: int = nw.items.size()
+	nw.collect(ws)
+	check(nw.items.size() == ni + 1, "мастерская делает снаряжение")
+	nc.room = -1
+	nc.cha = 10
+	check(absf(nw.trade_discount() - 0.3) < 0.001, "обаяние 10 → скидка 30%")
+	var mood0: float = nw.colonists[1].mood
+	nw._add_room("lounge", 0, 3)
+	for i in 300:
+		nw.resources.oxygen = 100.0
+		nw.resources.food = 100.0
+		nw.resources.energy = 100.0
+		nw.simulate(1.0, false)
+	check(nw.mood_bonus() >= 10.0 and nw.colonists[1].mood > 65.0, "комната отдыха поднимает настроение (%.0f → %.0f)" % [mood0, nw.colonists[1].mood])
+	nw.free()
 	sv.save_game()
 	var sv2 = load("res://scripts/game_state.gd").new()
 	sv2.load_game()

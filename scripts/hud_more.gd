@@ -191,6 +191,10 @@ func open_trader() -> void:
 	hud._open_sheet("trader", 560)
 	hud._header(tr("Wandering Trader"))
 	_body().add_child(hud._label(tr("Leaves in %s") % hud._clock(float(Game.trader.until) - Game.now()), 18, Color(0.7, 1.0, 0.8)))
+	if Game.trade_discount() > 0.0:
+		var dl: Label = hud._label(tr("Charm discount: −%d%%") % int(round(Game.trade_discount() * 100)), 18, Defs.STAT_COLORS.cha)
+		dl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_body().add_child(dl)
 	for i in Game.trader.offers.size():
 		var o: Dictionary = Game.trader.offers[i]
 		var bought: bool = i in Game.trader.bought
@@ -199,7 +203,10 @@ func open_trader() -> void:
 		var deal := HBoxContainer.new()
 		deal.add_theme_constant_override("separation", 10)
 		deal.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		deal.add_child(_offer_chip(o.give, 44))
+		var give := {}
+		for k in o.give:
+			give[k] = Game.trade_price(o, k)
+		deal.add_child(_offer_chip(give, 44))
 		deal.add_child(hud._label("→", 30, Color(0.7, 1.0, 0.75)))
 		deal.add_child(_offer_chip(o.get, 52))
 		row.add_child(deal)

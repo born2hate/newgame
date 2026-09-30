@@ -438,3 +438,41 @@
 437|Costruisci la stessa stanza accanto a un'altra per unirle in una più grande.
 438|Le spedizioni portano perle, cristalli, equipaggiamento e coloni rari.
 439|Torna ogni giorno per una ricompensa giornaliera più grande.
+440|Cucina
+441|Prepara pasti sostanziosi: tanto cibo e umore migliore. Serve Biologia.
+442|Palestra
+443|I lavoratori allenano Forza e Resistenza.
+444|Scuola
+445|I lavoratori studiano Tecnica e Biologia.
+446|Sala radio
+447|Richiama nuovi coloni più in fretta e attira mercanti. Serve Fascino.
+448|Sala relax
+449|Migliora l'umore di tutti. I lavoratori allenano Fascino e Fortuna.
+450|Officina
+451|Costruisce equipaggiamento per i tuoi coloni. Serve Tecnica.
+452|Armeria
+453|Tutti combattono meglio incendi, allagamenti e mostri. Serve Resistenza.
+454|Acquario
+455|Pesci bellissimi: umore migliore per tutti e +10% di perle per livello.
+456|Turbina delle correnti
+457|Energia gratis dalle correnti profonde, senza lavoratori. Solo dalla fila 7 in giù.
+458|Resistenza
+459|Fascino
+460|Fortuna
+461|Fortuna! ×2
+462|Nuovo equipaggiamento pronto!
+463|Allena: %s · +1 ogni %s di lavoro
+464|Umore +%d per tutti
+465|Perle +%d%%
+466|I nuovi coloni arrivano il %d%% più in fretta
+467|Lotta agli incidenti +%d%%
+468|Sconto fascino: −%d%%
+469|Felice
+470|Normale
+471|Scontento
+472|Umore
+473|velocità di lavoro
+474|Resistenza: meno danni. Fascino: sconti dal mercante. Fortuna: possibilità di raccolto doppio. Umore: velocità di lavoro.
+475|%d min
+476|Lavoratori (%d/%d)
+477|allenamento

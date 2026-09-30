@@ -438,3 +438,41 @@
 437|Construis la même salle juste à côté pour les fusionner en une plus grande.
 438|Les expéditions rapportent perles, cristaux, équipement et colons rares.
 439|Reviens chaque jour pour une plus grosse récompense quotidienne.
+440|Cuisine
+441|Prépare des repas copieux : beaucoup de nourriture et meilleur moral. Requiert Biologie.
+442|Salle de sport
+443|Les ouvriers entraînent Force et Endurance.
+444|École
+445|Les ouvriers étudient Technique et Biologie.
+446|Salle radio
+447|Appelle plus vite de nouveaux colons et attire les marchands. Requiert Charme.
+448|Salon
+449|Améliore le moral de tous. Les ouvriers entraînent Charme et Chance.
+450|Atelier
+451|Fabrique de l'équipement pour tes colons. Requiert Technique.
+452|Armurerie
+453|Tout le monde combat mieux incendies, inondations et monstres. Requiert Endurance.
+454|Aquarium
+455|De beaux poissons : meilleur moral pour tous et +10% de perles par niveau.
+456|Turbine à courants
+457|Énergie gratuite des courants profonds, sans ouvriers. Seulement à partir de la rangée 7.
+458|Endurance
+459|Charme
+460|Chance
+461|Chanceux ! ×2
+462|Nouvel équipement fabriqué !
+463|Entraîne : %s · +1 toutes les %s de travail
+464|Moral +%d pour tous
+465|Perles +%d%%
+466|Les nouveaux colons arrivent %d%% plus vite
+467|Lutte contre les incidents +%d%%
+468|Remise charme : −%d%%
+469|Heureux
+470|Correct
+471|Mécontent
+472|Moral
+473|vitesse de travail
+474|Endurance : moins de dégâts. Charme : remises chez le marchand. Chance : récolte double possible. Moral : vitesse de travail.
+475|%d min
+476|Ouvriers (%d/%d)
+477|entraînement

@@ -999,7 +999,7 @@ func _draw_work_fx(feet: Vector2, c: Dictionary, facing: float, h: float) -> voi
 	var hand := feet + Vector2(facing * 20.0, -h * 0.5)
 	var k := fmod(t * 1.8 + c.id * 0.37, 1.0)
 	match room.type:
-		"reactor", "dock", "storage":
+		"reactor", "dock", "storage", "workshop", "armory", "gym":
 			# искры от инструмента
 			for i in 4:
 				var a: float = (i * 1.7 + c.id) + t * 9.0
@@ -1010,17 +1010,18 @@ func _draw_work_fx(feet: Vector2, c: Dictionary, facing: float, h: float) -> voi
 			for i in 3:
 				var q := fmod(k + i * 0.33, 1.0)
 				draw_arc(hand + Vector2(sin(t * 3.0 + i) * 4.0, -q * 48.0), 4.5 + q * 3.0, 0, TAU, 10, Color(0.8, 1.0, 1.0, 0.95 * (1.0 - q)), 2.5)
-		"farm", "pearl", "medbay":
+		"farm", "pearl", "medbay", "kitchen":
 			for i in 3:
 				var q := fmod(k + i * 0.33, 1.0)
-				var col := Color(0.5, 1.0, 0.5) if room.type == "farm" else (Color(1.0, 0.8, 0.95) if room.type == "pearl" else Color(1.0, 0.5, 0.5))
+				var col: Color = {"farm": Color(0.5, 1.0, 0.5), "pearl": Color(1.0, 0.8, 0.95), "kitchen": Color(1.0, 0.9, 0.7)}.get(room.type, Color(1.0, 0.5, 0.5))
 				var p := hand + Vector2((i - 1) * 10.0, -q * 38.0)
 				draw_circle(p, 5.0 * (1.0 - q) + 1.5, Color(col, 1.0 - q))
-		"lab":
+		"lab", "school", "radio", "lounge":
 			for i in 4:
 				var q := fmod(k + i * 0.25, 1.0)
 				var a := i * TAU / 4.0 + t * 2.0
-				draw_circle(hand + Vector2(cos(a), sin(a)) * (6.0 + 16.0 * q), 3.2, Color(0.8, 0.6, 1.0, 1.0 - q))
+				var lc: Color = Defs.ROOMS[room.type].color.lightened(0.2)
+				draw_circle(hand + Vector2(cos(a), sin(a)) * (6.0 + 16.0 * q), 3.2, Color(lc, 1.0 - q))
 
 func _text(pos: Vector2, text: String, size: int, col: Color, centered := false) -> void:
 	var p := pos

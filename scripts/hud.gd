@@ -832,6 +832,11 @@ func _open_room(id: int) -> void:
 		var zl := _label(tr("%s: +%d%% production, more incidents") % [tr(zone.name), int(zone.bonus * 100)], 16, zone.color)
 		zl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		info.add_child(zl)
+	var eff := Game.room_effect(r)
+	if eff != "":
+		var el := _label(eff, 18, Color(0.7, 1.0, 0.8))
+		el.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		info.add_child(el)
 	top.add_child(info)
 	sheet_body.add_child(top)
 	room_live_labels = {}
@@ -863,12 +868,19 @@ func _open_room(id: int) -> void:
 	var slots := Game.slots(r)
 	if slots > 0:
 		var stat_name: String = Defs.STATS[def.stat]
-		sheet_body.add_child(_label(tr("Workers (%d/%d) · needs %s") % [Game.workers_in(r).size(), slots, tr(stat_name)], 22, ACCENT))
+		var training: bool = def.has("train")
+		if training:
+			sheet_body.add_child(_label(tr("Workers (%d/%d)") % [Game.workers_in(r).size(), slots], 22, ACCENT))
+		else:
+			sheet_body.add_child(_label(tr("Workers (%d/%d) · needs %s") % [Game.workers_in(r).size(), slots, tr(stat_name)], 22, ACCENT))
 		for c in Game.workers_in(r):
 			var row := HBoxContainer.new()
 			row.add_theme_constant_override("separation", 8)
 			row.add_child(_portrait(c, 56))
-			var l := _button("%s  ·  %s %d  ·  ♥ %d" % [c.name, tr(stat_name), Game.stat(c, def.stat), int(c.health)], _open_colonist.bind(c.id), 56)
+			var line := "%s  ·  %s %d  ·  ♥ %d" % [c.name, tr(stat_name), Game.stat(c, def.stat), int(c.health)]
+			if training:
+				line = "%s  ·  %s %d%%" % [c.name, tr("training"), int(100.0 * float(c.get("train", 0.0)) / Game.train_time(r))]
+			var l := _button(line, _open_colonist.bind(c.id), 56)
 			l.alignment = HORIZONTAL_ALIGNMENT_LEFT
 			l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			row.add_child(l)
@@ -1089,10 +1101,15 @@ func _open_colonist(id: int) -> void:
 	top.add_child(info)
 	sheet_body.add_child(top)
 
+	var mood := int(c.get("mood", 70.0))
+	var mood_txt := tr("Happy") if mood >= 70 else (tr("Okay") if mood >= 40 else tr("Unhappy"))
+	var mood_col := Color(0.5, 1.0, 0.55) if mood >= 70 else (Color(1.0, 0.85, 0.4) if mood >= 40 else Color(1.0, 0.45, 0.4))
+	var ml := _label("%s: %s %d%% · %s ×%.2f" % [tr("Mood"), mood_txt, mood, tr("work speed"), Game.mood_factor(c)], 18, mood_col)
+	ml.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	sheet_body.add_child(ml)
 	var best := Game.best_stat(c)
-	var cols := {"str": Color(1.0, 0.72, 0.25), "tech": Color(0.35, 0.85, 1.0), "bio": Color(0.45, 0.95, 0.5)}
-	for k in ["str", "tech", "bio"]:
-		var row := _stat_bar(Defs.STATS[k], mini(10, Game.stat(c, k)), cols[k], k == best)
+	for k in Defs.ALL_STATS:
+		var row := _stat_bar(Defs.STATS[k], mini(10, Game.stat(c, k)), Defs.STAT_COLORS[k], k == best)
 		if Game.stat(c, k) > c[k]:
 			row.get_child(2).text = "%d+%d" % [c[k], Game.stat(c, k) - c[k]]
 		var tb := _button(tr("Train ◆ %d") % Game.train_cost(c, k) if c[k] < 10 else "MAX", func():
@@ -1107,6 +1124,9 @@ func _open_colonist(id: int) -> void:
 
 	more.add_gear_section(c)
 	sheet_body.add_child(_label(tr("Best job: %s") % tr(Defs.ROOMS[Game.best_job_type(c)].name), 20, Color(1.0, 0.9, 0.6)))
+	var perks := _label(tr("Endurance: less damage. Charm: trader discounts. Luck: chance to collect double. Mood: work speed."), 17, Color(0.72, 0.82, 0.92))
+	perks.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	sheet_body.add_child(perks)
 	var how := _label(tr("How to grow") + ": " + tr("Colonists gain XP while working. Each level adds +1 to the skill their room needs, up to 10."), 17, Color(0.72, 0.82, 0.92))
 	how.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	sheet_body.add_child(how)

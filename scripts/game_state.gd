@@ -14,6 +14,8 @@ const MAX_OFFLINE_PREMIUM := 16.0 * 3600.0
 const PACE := 3.0
 const O2_PER_COLONIST := 0.07 / PACE
 const FOOD_PER_COLONIST := 0.05 / PACE
+## Сколько секунд нужно работнику спортзала/школы/комнаты отдыха на +1 к навыку (1 уровень).
+const TRAIN_TIME := 900.0
 
 var resources := {}
 var pearls := 0
@@ -141,6 +143,8 @@ func _make_colonist() -> Dictionary:
 		"id": next_id,
 		"name": "%s %s" % [Defs.FIRST_NAMES.pick_random(), Defs.LAST_NAMES.pick_random()],
 		"str": rng.randi_range(1, 4), "tech": rng.randi_range(1, 4), "bio": rng.randi_range(1, 4),
+		"end": rng.randi_range(1, 4), "cha": rng.randi_range(1, 4), "luck": rng.randi_range(1, 4),
+		"mood": 70.0, "train": 0.0,
 		"level": 1, "xp": 0.0, "health": 100.0, "room": -1, "help": -1, "suit_item": -1, "tool_item": -1, "armor_item": -1,
 		"suit": rng.randi_range(0, 5),
 	}
@@ -230,6 +234,8 @@ func can_build_at(type: String, col: int, row: int) -> bool:
 		return false
 	if not zone_unlocked_row(row):
 		return false
+	if row < int(Defs.ROOMS[type].get("min_row", 0)):
+		return false
 	for i in w:
 		if not room_at(col + i, row).is_empty():
 			return false
@@ -260,12 +266,83 @@ func room_power(room: Dictionary) -> float:
 		return 0.0
 	var total := 0.0
 	for c in workers_in(room):
-		total += stat(c, def.stat) * (0.4 + 0.6 * c.health / 100.0)
+		total += stat(c, def.stat) * (0.4 + 0.6 * c.health / 100.0) * mood_factor(c)
 	return total
+
+## Настроение 0..100 меняет скорость работы от ×0.7 до ×1.2.
+func mood_factor(c: Dictionary) -> float:
+	return 0.7 + 0.5 * float(c.get("mood", 70.0)) / 100.0
+
+## Общая прибавка к настроению от кухонь, комнат отдыха и аквариумов (до +40).
+func mood_bonus() -> float:
+	var b := 0.0
+	for r in rooms:
+		b += float(Defs.ROOMS[r.type].get("mood", 0)) * r.level * r.size
+	return minf(40.0, b)
+
+## Сила всех отсеков типа (для пассивных эффектов: радио, оружейная).
+func type_power(type: String) -> float:
+	var p := 0.0
+	for r in rooms:
+		if r.type == type and r.incident <= 0.0:
+			p += room_power(r) * (1.0 + 0.25 * (r.level - 1))
+	return p
+
+## Прибавка к жемчугу от аквариумов.
+func pearl_bonus() -> float:
+	var b := 0.0
+	for r in rooms:
+		b += float(Defs.ROOMS[r.type].get("pearl_bonus", 0.0)) * r.level * r.size
+	return b
+
+## Скидка у торговца за обаяние лучшего колониста (до 30%).
+func trade_discount() -> float:
+	var best := 0
+	for c in colonists:
+		if c.room != ON_EXPEDITION:
+			best = maxi(best, stat(c, "cha"))
+	return minf(0.3, best * 0.03)
+
+func arrival_speed() -> float:
+	return 1.0 + type_power("radio") * 0.04
+
+func armory_bonus() -> float:
+	return 1.0 + type_power("armory") * 0.04
+
+## Шанс удвоить сбор: удача работников отсека.
+func luck_chance(room: Dictionary) -> float:
+	var l := 0.0
+	for c in workers_in(room):
+		l += stat(c, "luck")
+	return minf(0.4, l * 0.015)
+
+## Время до следующего +1 в тренировочном отсеке (для этого уровня).
+func train_time(room: Dictionary) -> float:
+	return TRAIN_TIME / (1.0 + 0.5 * (room.level - 1))
+
+## Строка о пассивном эффекте отсека для карточки (пустая, если эффекта нет).
+func room_effect(r: Dictionary) -> String:
+	var def: Dictionary = Defs.ROOMS[r.type]
+	var parts := []
+	if def.has("train"):
+		var names: Array = def.train.map(func(k): return tr(Defs.STATS[k]))
+		parts.append(tr("Trains: %s · +1 every %s of work") % [", ".join(names), tr("%d min") % ceili(train_time(r) / 60.0)])
+	if def.get("mood", 0) > 0:
+		parts.append(tr("Mood +%d for everyone") % (int(def.mood) * r.level * r.size))
+	if def.get("pearl_bonus", 0.0) > 0.0:
+		parts.append(tr("Pearls +%d%%") % int(def.pearl_bonus * r.level * r.size * 100))
+	match r.type:
+		"radio":
+			parts.append(tr("New colonists arrive %d%% faster") % int((arrival_speed() - 1.0) * 100))
+		"armory":
+			parts.append(tr("Fighting incidents +%d%%") % int((armory_bonus() - 1.0) * 100))
+	return "\n".join(parts)
 
 func cycle_time(room: Dictionary) -> float:
 	var def: Dictionary = Defs.ROOMS[room.type]
 	var power := room_power(room)
+	if def.has("auto"):
+		power = float(def.auto)
 	# аварийный режим: без людей и без энергии реактор всё равно медленно работает
 	if power <= 0.0 and room.type == "reactor" and resources.get("energy", 0.0) < 10.0:
 		power = 2.0
@@ -287,7 +364,9 @@ func production_amount(room: Dictionary) -> float:
 			m *= 1.4 if has_research("pearl_cultivation") else 1.0
 			m *= 1.5 if weekly_mod() == "pearl_week" else 1.0
 	if res == "pearls":
-		m *= mode().reward
+		m *= mode().reward * (1.0 + pearl_bonus())
+	if res == "gear":
+		return 1.0
 	return def.amount * (1.0 + 0.6 * (room.level - 1)) * room.size * m
 
 func rush_chance(room: Dictionary) -> float:
@@ -335,7 +414,17 @@ func simulate(delta: float, offline: bool) -> void:
 	if has_research("medical_ai"):
 		heal_rate *= 3.0
 	var xp_mult := 1.5 if has_research("training_programs") else 1.0
+	var mood_target := 60.0 + mood_bonus() - (35.0 if starving else 0.0) - (15.0 if not powered else 0.0)
 	for c in colonists:
+		var mt := mood_target
+		var here := get_room(c.room) if c.room >= 0 else {}
+		if not here.is_empty() and here.incident > 0.0:
+			mt -= 20.0
+		if c.room == -1:
+			mt -= 10.0
+		c["mood"] = clampf(float(c.get("mood", 70.0)) + (clampf(mt, 0.0, 100.0) - float(c.get("mood", 70.0))) * minf(1.0, delta / 90.0), 0.0, 100.0)
+		if not here.is_empty() and here.incident <= 0.0 and powered and Defs.ROOMS[here.type].has("train"):
+			_tick_training(c, here, delta, offline)
 		if starving and not offline and mode().hunger:
 			c.health = maxf(health_floor(), c.health - 0.35 * delta * mode().damage)
 		elif not starving:
@@ -356,7 +445,7 @@ func simulate(delta: float, offline: bool) -> void:
 			incident_timer = rng.randf_range(300.0, 540.0) * mult * mode().incidents
 			_spawn_random_incident()
 	if not offline and colonists.size() >= 6:
-		trader_timer -= delta * (2.0 if has_research("trader_beacon") else 1.0)
+		trader_timer -= delta * (2.0 if has_research("trader_beacon") else 1.0) * (1.0 + type_power("radio") * 0.03)
 		if trader_timer <= 0.0:
 			trader_timer = rng.randf_range(420.0, 720.0)
 			_spawn_trader()
@@ -370,14 +459,14 @@ func simulate(delta: float, offline: bool) -> void:
 	if colonists.size() < population_cap():
 		# если на базе никого не осталось — помощь приходит быстрее
 		var at_base := colonists.filter(func(c): return c.room != ON_EXPEDITION).size()
-		arrival_timer += delta * (4.0 if at_base == 0 else (2.0 if at_base <= 2 else 1.0))
+		arrival_timer += delta * (4.0 if at_base == 0 else (2.0 if at_base <= 2 else 1.0)) * arrival_speed()
 		if arrival_timer >= ARRIVAL_INTERVAL:
 			arrival_timer = 0.0
 			var c := _make_colonist()
 			for k in ["oxygen", "food", "energy"]:
 				resources[k] = minf(storage_cap(), resources[k] + 25.0)
 			if has_research("legendary_signal") and rng.randf() < 0.1:
-				for k in ["str", "tech", "bio"]:
+				for k in Defs.ALL_STATS:
 					c[k] = rng.randi_range(4, 7)
 				c["rarity"] = "rare"
 			colonists.append(c)
@@ -388,6 +477,23 @@ func simulate(delta: float, offline: bool) -> void:
 	for k in resources:
 		resources[k] = minf(resources[k], cap)
 
+func _tick_training(c: Dictionary, room: Dictionary, delta: float, offline: bool) -> void:
+	var opts: Array = Defs.ROOMS[room.type].train.filter(func(k): return c[k] < 10)
+	if opts.is_empty():
+		return
+	c["train"] = float(c.get("train", 0.0)) + delta * mood_factor(c)
+	if c.train < train_time(room):
+		return
+	c.train = 0.0
+	opts.sort_custom(func(a, b): return c[a] < c[b])
+	var k: String = opts[0]
+	c[k] += 1
+	track("level_up")
+	if not offline:
+		floating_text.emit(room.id, "%s +1" % tr(Defs.STATS[k]), Defs.STAT_COLORS[k])
+		event.emit("level_up")
+	changed.emit()
+
 func _xp_needed(c: Dictionary) -> float:
 	return 200.0 * c.level
 
@@ -397,8 +503,10 @@ func _level_up(c: Dictionary) -> void:
 	track("level_up")
 	var room := get_room(c.room)
 	var stat: String = Defs.ROOMS[room.type].get("stat", "") if not room.is_empty() else ""
+	if not room.is_empty() and Defs.ROOMS[room.type].has("train"):
+		stat = Defs.ROOMS[room.type].train.pick_random()
 	if stat == "":
-		stat = ["str", "tech", "bio"].pick_random()
+		stat = Defs.ALL_STATS.pick_random()
 	c[stat] = mini(10, c[stat] + 1)
 	pearls += 15
 	banner.emit("suit_%d" % c.suit, tr("Level %d") % c.level, tr("%s reached level %d! %s +1") % [c.name, c.level, tr(Defs.STATS[stat])])
@@ -407,7 +515,7 @@ func _level_up(c: Dictionary) -> void:
 func seconds_until_arrival() -> float:
 	if colonists.size() >= population_cap():
 		return -1.0
-	return ARRIVAL_INTERVAL - arrival_timer
+	return (ARRIVAL_INTERVAL - arrival_timer) / arrival_speed()
 
 # ---------------------------------------------------------------- действия
 
@@ -464,8 +572,16 @@ func collect(room: Dictionary, silent := false) -> void:
 	if not room.ready:
 		return
 	var def: Dictionary = Defs.ROOMS[room.type]
-	var amount := production_amount(room) * (2.0 if boost_active() else 1.0) * (1.0 + (PET_BONUS if pet != "" else 0.0))
 	var res: String = def.produces
+	if res == "gear":
+		_collect_gear(room, silent)
+		return
+	var amount := production_amount(room) * (2.0 if boost_active() else 1.0) * (1.0 + (PET_BONUS if pet != "" else 0.0))
+	var lucky := rng.randf() < luck_chance(room)
+	if lucky:
+		amount *= 2.0
+		if not silent:
+			floating_text.emit(room.id, tr("Lucky! ×2"), Defs.STAT_COLORS.luck)
 	if res == "pearls":
 		pearls += int(amount)
 	elif res == "science":
@@ -488,6 +604,26 @@ func collect(room: Dictionary, silent := false) -> void:
 	floating_text.emit(room.id, "[%s]+%d" % [res, int(amount)], Defs.RESOURCES[res].color)
 	track("collect_" + res, int(amount))
 	track("collect")
+	changed.emit()
+
+func _collect_gear(room: Dictionary, silent: bool) -> void:
+	room.ready = false
+	room.progress = 0.0
+	var luck := 0.0
+	for c in workers_in(room):
+		luck += stat(c, "luck")
+	var roll := rng.randf()
+	var rarity := "common"
+	if roll < 0.04 + 0.005 * luck + 0.02 * (room.level - 1):
+		rarity = "legendary"
+	elif roll < 0.3 + 0.01 * luck + 0.1 * (room.level - 1):
+		rarity = "rare"
+	var it := add_item(rarity)
+	track("collect")
+	if not silent:
+		floating_text.emit(room.id, "[item_%s]+1" % it.base, Defs.ITEM_RARITY[rarity].color)
+		banner.emit("item_" + it.base, tr("New gear crafted!"), "%s (%s)" % [item_name(it), tr(rarity.capitalize())])
+		event.emit("collect_energy")
 	changed.emit()
 
 func collect_all() -> int:
@@ -643,7 +779,7 @@ func _grant_colonist(rarity: String) -> String:
 	var c := _make_colonist()
 	var lo := 4 if rarity == "rare" else 7
 	var hi := 7 if rarity == "rare" else 10
-	for k in ["str", "tech", "bio"]:
+	for k in Defs.ALL_STATS:
 		c[k] = rng.randi_range(lo, hi)
 	c["rarity"] = rarity
 	colonists.append(c)
@@ -655,7 +791,7 @@ func _grant_captain() -> String:
 	c.name = "Captain " + c.name.split(" ")[1]
 	c.suit = Art.CAPTAIN_SUIT
 	c["rarity"] = "legendary"
-	for k in ["str", "tech", "bio"]:
+	for k in Defs.ALL_STATS:
 		c[k] = rng.randi_range(6, 8)
 	colonists.append(c)
 	return tr("%s joined your colony!") % c.name
@@ -1005,7 +1141,7 @@ func hazard_power(room: Dictionary) -> float:
 	var p := 0.0
 	for c in responders(room):
 		p += (stat(c, "str") + stat(c, "tech") + stat(c, "bio")) / 3.0 * (0.4 + 0.6 * c.health / 100.0)
-	return p
+	return p * armory_bonus()
 
 func send_help(colonist: Dictionary, room: Dictionary) -> void:
 	if colonist.room == ON_EXPEDITION or room.incident <= 0.0:
@@ -1175,7 +1311,7 @@ func item_owner(uid: int) -> Dictionary:
 
 ## Навык с учётом снаряжения.
 func stat(c: Dictionary, k: String) -> int:
-	var v: int = c[k]
+	var v: int = c.get(k, 1)
 	for slot in ["suit_item", "tool_item"]:
 		var uid: int = c.get(slot, -1)
 		if uid != -1:
@@ -1188,11 +1324,13 @@ func stat(c: Dictionary, k: String) -> int:
 const ARMOR_PROTECTION := {"common": 0.15, "rare": 0.3, "legendary": 0.5}
 
 func protection(c: Dictionary) -> float:
+	var p := stat(c, "end") * 0.02
 	var uid: int = c.get("armor_item", -1)
-	if uid == -1:
-		return 0.0
-	var it := get_item(uid)
-	return 0.0 if it.is_empty() else ARMOR_PROTECTION[it.rarity]
+	if uid != -1:
+		var it := get_item(uid)
+		if not it.is_empty():
+			p += ARMOR_PROTECTION[it.rarity]
+	return minf(0.8, p)
 
 func equip(c: Dictionary, uid: int) -> void:
 	var it := get_item(uid)
@@ -1312,13 +1450,20 @@ func _spawn_trader() -> void:
 	event.emit("arrive")
 	changed.emit()
 
+## Цена предложения с учётом скидки за обаяние (скидка только на жемчуг и кристаллы).
+func trade_price(o: Dictionary, k: String) -> int:
+	var v: int = int(o.give[k])
+	if k in ["pearls", "crystals"]:
+		return maxi(1, int(round(v * (1.0 - trade_discount()))))
+	return v
+
 func can_trade(idx: int) -> bool:
 	if trader.is_empty() or idx in trader.bought:
 		return false
 	var o: Dictionary = trader.offers[idx]
 	for k in o.give:
 		var have: float = pearls if k == "pearls" else (crystals if k == "crystals" else resources.get(k, 0.0))
-		if have < o.give[k]:
+		if have < trade_price(o, k):
 			return false
 	return true
 
@@ -1328,15 +1473,15 @@ func trade(idx: int) -> bool:
 	var o: Dictionary = trader.offers[idx]
 	for k in o.give:
 		var have: float = pearls if k == "pearls" else (crystals if k == "crystals" else resources.get(k, 0.0))
-		if have < o.give[k]:
+		if have < trade_price(o, k):
 			message.emit(tr("Not enough resources"))
 			event.emit("error")
 			return false
 	for k in o.give:
 		if k == "pearls":
-			pearls -= o.give[k]
+			pearls -= trade_price(o, k)
 		elif k == "crystals":
-			crystals -= o.give[k]
+			crystals -= trade_price(o, k)
 		else:
 			resources[k] -= o.give[k]
 	trader.bought.append(idx)
@@ -1586,7 +1731,12 @@ func load_game() -> bool:
 		c["suit_item"] = c.get("suit_item", -1)
 		c["tool_item"] = c.get("tool_item", -1)
 		c["armor_item"] = c.get("armor_item", -1)
-		for k in ["id", "str", "tech", "bio", "level", "room", "suit", "help", "suit_item", "tool_item", "armor_item"]:
+		for k in ["end", "cha", "luck"]:
+			if not c.has(k):
+				c[k] = rng.randi_range(1, 4)
+		c["mood"] = float(c.get("mood", 70.0))
+		c["train"] = float(c.get("train", 0.0))
+		for k in ["id", "str", "tech", "bio", "end", "cha", "luck", "level", "room", "suit", "help", "suit_item", "tool_item", "armor_item"]:
 			c[k] = int(c[k])
 	_fix_orphans()
 	_apply_offline(Time.get_unix_time_from_system() - float(data.time))

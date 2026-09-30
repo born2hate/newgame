@@ -438,3 +438,41 @@
 437|Baue den gleichen Raum direkt daneben, um sie zu einem großen zu verbinden.
 438|Expeditionen bringen Perlen, Kristalle, Ausrüstung und seltene Kolonisten.
 439|Komm jeden Tag für eine größere Tagesbelohnung zurück.
+440|Küche
+441|Kocht deftige Mahlzeiten: viel Nahrung und bessere Laune. Braucht Biologie.
+442|Fitnessraum
+443|Arbeiter trainieren Stärke und Ausdauer.
+444|Schule
+445|Arbeiter lernen Technik und Biologie.
+446|Funkraum
+447|Ruft schneller neue Kolonisten und lockt Händler an. Braucht Charme.
+448|Lounge
+449|Hebt die Laune aller. Arbeiter trainieren Charme und Glück.
+450|Werkstatt
+451|Fertigt Ausrüstung für deine Kolonisten. Braucht Technik.
+452|Waffenkammer
+453|Alle bekämpfen Feuer, Fluten und Monster stärker. Braucht Ausdauer.
+454|Aquarium
+455|Schöne Fische: bessere Laune für alle und +10% Perlen pro Stufe.
+456|Strömungsturbine
+457|Gratis-Energie aus Tiefenströmungen, ohne Arbeiter. Erst ab Reihe 7 abwärts.
+458|Ausdauer
+459|Charme
+460|Glück
+461|Glück! ×2
+462|Neue Ausrüstung gefertigt!
+463|Trainiert: %s · +1 alle %s Arbeit
+464|Laune +%d für alle
+465|Perlen +%d%%
+466|Neue Kolonisten kommen %d%% schneller
+467|Kampf gegen Vorfälle +%d%%
+468|Charme-Rabatt: −%d%%
+469|Glücklich
+470|Okay
+471|Unzufrieden
+472|Laune
+473|Arbeitstempo
+474|Ausdauer: weniger Schaden. Charme: Händlerrabatte. Glück: Chance auf doppelte Ernte. Laune: Arbeitstempo.
+475|%d Min.
+476|Arbeiter (%d/%d)
+477|Training

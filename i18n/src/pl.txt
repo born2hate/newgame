@@ -438,3 +438,41 @@
 437|Buduj takie samo pomieszczenie obok, by połączyć je w większe.
 438|Wyprawy przynoszą perły, kryształy, sprzęt i rzadkich kolonistów.
 439|Wracaj codziennie po większą nagrodę dzienną.
+440|Kuchnia
+441|Gotuje sycące posiłki: dużo jedzenia i lepszy nastrój. Wymaga Biologii.
+442|Siłownia
+443|Pracownicy trenują Siłę i Wytrzymałość.
+444|Szkoła
+445|Pracownicy uczą się Techniki i Biologii.
+446|Radiostacja
+447|Szybciej wzywa nowych kolonistów i przyciąga kupców. Wymaga Uroku.
+448|Pokój relaksu
+449|Poprawia nastrój wszystkim. Pracownicy trenują Urok i Szczęście.
+450|Warsztat
+451|Wytwarza sprzęt dla kolonistów. Wymaga Techniki.
+452|Zbrojownia
+453|Wszyscy mocniej walczą z pożarami, zalaniami i potworami. Wymaga Wytrzymałości.
+454|Akwarium
+455|Piękne ryby: lepszy nastrój dla wszystkich i +10% pereł na poziom.
+456|Turbina prądów
+457|Darmowa energia z głębinowych prądów, bez pracowników. Tylko od 7. rzędu w dół.
+458|Wytrzymałość
+459|Urok
+460|Szczęście
+461|Szczęście! ×2
+462|Nowy sprzęt gotowy!
+463|Trenuje: %s · +1 co %s pracy
+464|Nastrój +%d dla wszystkich
+465|Perły +%d%%
+466|Nowi koloniści przybywają %d%% szybciej
+467|Walka z awariami +%d%%
+468|Rabat za urok: −%d%%
+469|Zadowolony
+470|W porządku
+471|Niezadowolony
+472|Nastrój
+473|tempo pracy
+474|Wytrzymałość: mniej obrażeń. Urok: rabaty u kupca. Szczęście: szansa na podwójny zbiór. Nastrój: tempo pracy.
+475|%d min
+476|Pracownicy (%d/%d)
+477|trening
