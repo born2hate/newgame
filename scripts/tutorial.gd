@@ -72,6 +72,12 @@ func _show(i: int) -> void:
 		return
 	var s: Dictionary = STEPS[step]
 	text_label.text = tr(s.text)
+	if s.wait == "event:collect_energy":
+		# реактор должен быть готов к сбору прямо сейчас
+		var r := Game.find_room_of_type("reactor")
+		if not r.is_empty():
+			r.progress = 1.0
+			r.ready = true
 	next_btn.visible = s.wait == "next"
 	bubble.modulate.a = 0.0
 	create_tween().tween_property(bubble, "modulate:a", 1.0, 0.25)

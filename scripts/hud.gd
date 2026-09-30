@@ -781,6 +781,17 @@ func _open_room(id: int) -> void:
 		_dock_section(r)
 	if r.type == "airlock":
 		_outside_section()
+	if def.has("produces") and r.ready:
+		var col := _button(tr("Collect"), func():
+			Game.collect(r)
+			_open_room(id), 72)
+		_gold(col)
+		var ic := Art.icon(def.produces)
+		if ic:
+			col.icon = ic
+			col.expand_icon = true
+			col.add_theme_constant_override("icon_max_width", 40)
+		sheet_body.add_child(col)
 	if def.has("produces"):
 		var st := _label("", 20, Color(1.0, 0.92, 0.6))
 		st.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -1612,9 +1623,12 @@ func _show_rewards(title: String, lines: Array) -> void:
 			tr_.custom_minimum_size = Vector2(52, 52)
 			row.add_child(tr_)
 		var l := _label(m[1], 24)
-		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		l.custom_minimum_size.x = 0
-		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL if ic == null else Control.SIZE_SHRINK_BEGIN
+		if ic == null:
+			l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		else:
+			# короткая строка рядом с иконкой — без переноса, иначе ширина схлопывается до буквы
+			l.autowrap_mode = TextServer.AUTOWRAP_OFF
 		if ic == null:
 			l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		row.add_child(l)

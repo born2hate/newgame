@@ -81,6 +81,8 @@ func check_sheet(name: String) -> void:
 		if not c.is_visible_in_tree() or c is ScrollBar:
 			continue
 		var r := c.get_global_rect()
+		if c is Label and (c as Label).text.length() > 4 and r.size.x < 30 and r.size.y > 60:
+			issue("%s: text broken into a column: %s" % [name, (c as Label).text.left(30)])
 		if r.size.x < 2:
 			continue
 		if r.end.x > sr.end.x + 2 or r.position.x < sr.position.x - 2:
@@ -113,8 +115,6 @@ func run() -> void:
 		await press(find_button(tut, tr("Next")), "tutorial next 0")
 		# шаг 1: реактор готов — нажать на него
 		var e0: float = Game.resources.energy
-		Game.find_room_of_type("reactor").progress = 1.0
-		Game.find_room_of_type("reactor").ready = true
 		await tap(room_screen("reactor"))
 		if Game.resources.energy <= e0:
 			issue("tutorial: tap on reactor did not collect")
@@ -260,13 +260,26 @@ func run() -> void:
 		hud._close_sheet()
 	else:
 		issue("trader button not visible")
-	# 6. ящик и окно награды закрывается
+	# 6. сюжетная награда (одна строка с иконкой)
+	Game.track("collect_energy", 50)
+	Game.claim_story()
+	await wait(0.5)
+	for n in hud.popup.find_children("*", "Label", true, false):
+		var lr2 := (n as Label).get_global_rect()
+		if (n as Label).text.length() > 3 and lr2.size.y > lr2.size.x * 1.5:
+			issue("story popup: text broken into a column: " + (n as Label).text)
+	hud.popup_bg.visible = false
+	# 7. ящик и окно награды закрывается
 	Game.crates.common = 1
 	Game.open_crate("common")
 	await wait(0.5)
 	if not hud.popup_bg.visible:
 		issue("reward popup not shown")
 	else:
+		for n in hud.popup.find_children("*", "Label", true, false):
+			var lr := (n as Label).get_global_rect()
+			if (n as Label).text.length() > 3 and lr.size.y > lr.size.x * 1.5:
+				issue("reward popup: text broken into a column: " + (n as Label).text)
 		await press(find_button(hud.popup, tr("Great!")), "reward great")
 		if hud.popup_bg.visible:
 			issue("reward popup did not close")
