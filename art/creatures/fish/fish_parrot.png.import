@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://huaota4aplc8"
-path="res://.godot/imported/fish_angel.png-47f976ac742d59d5895559a9dafcf769.ctex"
+uid="uid://dpkryor6x5yt5"
+path="res://.godot/imported/fish_parrot.png-243ad8476dcc541e6da913ab0addefdd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/creatures/fish/fish_angel.png"
-dest_files=["res://.godot/imported/fish_angel.png-47f976ac742d59d5895559a9dafcf769.ctex"]
+source_file="res://art/creatures/fish/fish_parrot.png"
+dest_files=["res://.godot/imported/fish_parrot.png-243ad8476dcc541e6da913ab0addefdd.ctex"]
 
 [params]
 

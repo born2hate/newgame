@@ -33,13 +33,16 @@ var walkers := {}
 # всплывающие надписи: {pos, text, color, life}
 var floaters: Array = []
 var fish: Array = []
+const FISH_W := {"fish_school": 90.0, "fish_grouper": 78.0, "fish_parrot": 66.0, "fish_lion": 62.0,
+	"fish_sardine": 46.0, "fish_clown2": 48.0, "fish_puffer": 46.0, "fish_striped": 50.0}
 var font: Font
 
 func _ready() -> void:
 	font = ThemeDB.fallback_font
 	var r := RandomNumberGenerator.new()
 	r.seed = 7
-	var kinds := ["fish_yellow", "fish_blue", "fish_clown", "fish_angel", "fish_school", "fish_yellow", "fish_blue", "fish_school"]
+	var kinds := ["fish_yellow_tang", "fish_blue_tang", "fish_clown2", "fish_angel2", "fish_school", "fish_sardine",
+		"fish_idol", "fish_lion", "fish_parrot", "fish_grouper", "fish_snapper", "fish_striped", "fish_puffer", "fish_school"]
 	for i in kinds.size():
 		fish.append({
 			"p": Vector2(r.randf_range(-600, 1400), r.randf_range(-560, -120)),
@@ -355,7 +358,7 @@ func _draw_water_life() -> void:
 		var dir := signf(f.v)
 		var spr := Art.tex("res://art/creatures/fish/%s.png" % f.kind)
 		if spr:
-			var fw := (90.0 if f.kind == "fish_school" else 60.0) * s
+			var fw: float = FISH_W.get(f.kind, 58.0) * s
 			var fh := fw * spr.get_height() / spr.get_width()
 			# спрайты смотрят вправо; лёгкое покачивание хвостом
 			# хвост: лёгкое сжатие по длине вместо раскачивания всей рыбы
