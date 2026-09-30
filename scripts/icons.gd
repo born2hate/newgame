@@ -3,6 +3,10 @@ extends RefCounted
 ## Векторные иконки ресурсов, рисуются на любом CanvasItem.
 
 static func draw(ci: CanvasItem, res: String, c: Vector2, s: float, col: Color) -> void:
+	var art := Art.icon(res)
+	if art:
+		ci.draw_texture_rect(art, Rect2(c - Vector2(s, s) * 1.2, Vector2(s, s) * 2.4), false)
+		return
 	match res:
 		"energy":
 			ci.draw_colored_polygon(PackedVector2Array([

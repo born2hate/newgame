@@ -3,6 +3,8 @@ shader_type canvas_item;
 
 uniform float depth = 0.0;       // 0 — у поверхности дна, 1 — глубоко
 uniform vec2 cam_offset = vec2(0.0);
+uniform bool use_tex = false;
+uniform sampler2D bg_tex : filter_linear, repeat_disable;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 
@@ -19,6 +21,10 @@ void fragment() {
 	vec3 top = mix(vec3(0.06, 0.45, 0.62), vec3(0.02, 0.12, 0.25), d);
 	vec3 bottom = mix(vec3(0.01, 0.12, 0.24), vec3(0.0, 0.02, 0.06), d);
 	vec3 col = mix(top, bottom, smoothstep(0.0, 1.0, uv.y));
+	if (use_tex) {
+		vec2 tuv = vec2(uv.x, clamp(uv.y * 0.8 + d * 0.2, 0.0, 1.0));
+		col = texture(bg_tex, tuv).rgb * mix(1.0, 0.35, d);
+	}
 
 	// лучи света
 	float x = uv.x + cam_offset.x * 0.0002;

@@ -2,6 +2,8 @@ shader_type canvas_item;
 // Скальная порода в мировых координатах: слои, трещины, темнеет с глубиной.
 
 varying vec2 world;
+uniform bool use_tex = false;
+uniform sampler2D rock_tex : filter_linear_mipmap, repeat_enable;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p) {
@@ -36,6 +38,9 @@ void fragment() {
 	vec2 sc = floor(world / 14.0);
 	float spark = step(0.992, hash(sc)) * smoothstep(5.0, 0.0, length(fract(world / 14.0) * 14.0 - 7.0));
 	col += vec3(0.3, 0.7, 0.8) * spark * (0.5 + 0.5 * sin(TIME * 2.0 + hash(sc + 1.0) * 6.28));
+	if (use_tex) {
+		col = texture(rock_tex, world / 512.0).rgb;
+	}
 	// темнее с глубиной, песок у поверхности
 	float depth = clamp(world.y / 1800.0, 0.0, 1.0);
 	col *= mix(1.0, 0.45, depth);

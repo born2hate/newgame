@@ -16,6 +16,10 @@ func _ready() -> void:
 	bg_material = ShaderMaterial.new()
 	bg_material.shader = load("res://shaders/ocean.gdshader")
 	bg.material = bg_material
+	var ocean := Art.tex("res://art/backgrounds/ocean.png")
+	if ocean:
+		bg_material.set_shader_parameter("bg_tex", ocean)
+		bg_material.set_shader_parameter("use_tex", true)
 	bg_layer.add_child(bg)
 
 	view = preload("res://scripts/base_view.gd").new()

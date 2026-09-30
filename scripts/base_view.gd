@@ -48,6 +48,10 @@ func _ready() -> void:
 	var mat := ShaderMaterial.new()
 	mat.shader = load("res://shaders/rock.gdshader")
 	rock.material = mat
+	var rock_tex := Art.tex("res://art/backgrounds/rock.png")
+	if rock_tex:
+		mat.set_shader_parameter("rock_tex", rock_tex)
+		mat.set_shader_parameter("use_tex", true)
 	rock.show_behind_parent = true
 	add_child(rock)
 
@@ -263,7 +267,17 @@ func _draw_room(r: Dictionary) -> void:
 	var inner := rect.grow(-WALL)
 	var dark := Color(0.05, 0.08, 0.12)
 	draw_rect(inner, dark.lerp(col.darkened(0.55), 0.55 * light))
-	if r.type == "elevator":
+	var art := Art.room(r.type)
+	if art:
+		draw_texture_rect(art, inner, false, Color(light, light, light))
+		if def.has("produces"):
+			var bar0 := Rect2(inner.position.x + 8, inner.end.y - 14, inner.size.x - 16, 7)
+			draw_rect(bar0, Color(0, 0, 0, 0.55))
+			draw_rect(Rect2(bar0.position, Vector2(bar0.size.x * r.progress, bar0.size.y)), Defs.RESOURCES[def.produces].color)
+		_text(Vector2(inner.position.x + 8, inner.position.y + 20), def.name, 16, Color(1, 1, 1, 0.85))
+		for i in r.level:
+			_star(Vector2(inner.end.x - 12 - i * 16, inner.position.y + 14), 6.0)
+	elif r.type == "elevator":
 		_draw_elevator(inner)
 	else:
 		# задняя стена: панели и окно
@@ -380,6 +394,10 @@ func _draw_room_props(r: Dictionary, inner: Rect2, col: Color, light: float) -> 
 				_text(Vector2(base.x, inner.position.y + 66), "новый через %d с" % ceili(arrival), 15, Color(0.7, 0.95, 1.0, 0.8), true)
 
 func _draw_colonist(feet: Vector2, c: Dictionary, lifted: bool) -> void:
+	var sprite := Art.diver(c.suit)
+	if sprite:
+		_draw_colonist_sprite(feet, c, lifted, sprite)
+		return
 	var w: Dictionary = walkers.get(c.id, {})
 	var walking: bool = w.get("wait", 1.0) <= 0.0 and not lifted
 	var bob := sin(t * 10.0 + c.id) * 2.0 if walking else 0.0
@@ -407,6 +425,24 @@ func _draw_colonist(feet: Vector2, c: Dictionary, lifted: bool) -> void:
 	# полоска здоровья, если ранен
 	if c.health < 99.0:
 		var hb := Rect2(p + Vector2(-12, -64) * s, Vector2(24, 4) * s)
+		draw_rect(hb, Color(0, 0, 0, 0.6))
+		draw_rect(Rect2(hb.position, Vector2(hb.size.x * c.health / 100.0, hb.size.y)), Color(1.0, 0.3, 0.3).lerp(Color(0.4, 1.0, 0.4), c.health / 100.0))
+
+func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: Texture2D) -> void:
+	var w: Dictionary = walkers.get(c.id, {})
+	var walking: bool = w.get("wait", 1.0) <= 0.0 and not lifted
+	var h := 72.0 * (1.15 if lifted else 1.0)
+	var size := Vector2(h * sprite.get_width() / sprite.get_height(), h)
+	var bob := absf(sin(t * 10.0 + c.id)) * -3.0 if walking else sin(t * 2.0 + c.id) * 0.8
+	var facing: float = w.get("facing", 1.0)
+	if lifted:
+		draw_circle(feet + Vector2(0, 2), 16, Color(0, 0, 0, 0.3))
+	var tint := Color.WHITE if c.health >= 50.0 else Color(0.75, 0.75, 0.75)
+	draw_set_transform(feet + Vector2(0, bob), 0.0, Vector2(facing, 1.0))
+	draw_texture_rect(sprite, Rect2(Vector2(-size.x / 2.0, -size.y), size), false, tint)
+	draw_set_transform(Vector2.ZERO)
+	if c.health < 99.0:
+		var hb := Rect2(feet + Vector2(-12, -h - 8), Vector2(24, 4))
 		draw_rect(hb, Color(0, 0, 0, 0.6))
 		draw_rect(Rect2(hb.position, Vector2(hb.size.x * c.health / 100.0, hb.size.y)), Color(1.0, 0.3, 0.3).lerp(Color(0.4, 1.0, 0.4), c.health / 100.0))
 
