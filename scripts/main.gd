@@ -253,6 +253,12 @@ func _dev_screenshot() -> void:
 		"outside":
 			Audio.set_language("ru")
 			view.room_selected.emit(Game.find_room_of_type("airlock").id)
+		"drag":
+			camera.zoom = Vector2(1.2, 1.2)
+			camera.position = Vector2(450, 250)
+			view.drag_colonist = Game.colonists[3].id
+			view.drag_pos = Vector2(620, 180)
+			await get_tree().create_timer(0.3).timeout
 		"zoom3d":
 			camera.zoom = Vector2(2.0, 2.0)
 			camera.position = Vector2(560, 150)

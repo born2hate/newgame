@@ -263,9 +263,31 @@ func _draw_rest(depth_rows: int) -> void:
 		var c := Game.get_colonist(drag_colonist)
 		if not c.is_empty():
 			var hover := Game.room_at(cell_at(drag_pos).x, cell_at(drag_pos).y)
-			if not hover.is_empty():
-				draw_rect(room_rect(hover).grow(-2), Color(1, 1, 1, 0.8), false, 4.0)
-			_draw_colonist(drag_pos + Vector2(0, 30), c, true)
+			var pulse := 0.5 + 0.5 * sin(t * 6.0)
+			# все отсеки: зелёные — есть место, красные — занято / нельзя работать
+			for r in Game.rooms:
+				if r.type in ["elevator", "airlock"]:
+					continue
+				var ok: bool = Game.slots(r) > 0 and (Game.workers_in(r).size() < Game.slots(r) or c.room == r.id)
+				if r.incident > 0.0:
+					ok = true
+				var col := Color(0.35, 1.0, 0.5) if ok else Color(1.0, 0.35, 0.35)
+				var rr := room_rect(r).grow(-3)
+				var strong: bool = not hover.is_empty() and hover.id == r.id
+				draw_rect(rr, Color(col, 0.28 if strong else 0.1))
+				draw_rect(rr, Color(col, 0.95 if strong else 0.5 + 0.2 * pulse), false, 6.0 if strong else 3.0)
+			# ореол и подпись над схваченным
+			var feet := drag_pos + Vector2(0, 30)
+			draw_circle(feet + Vector2(0, -40), 52 + 6 * pulse, Color(1.0, 0.9, 0.4, 0.22))
+			draw_arc(feet + Vector2(0, -40), 52 + 6 * pulse, 0, TAU, 40, Color(1.0, 0.9, 0.4, 0.9), 4.0)
+			_draw_colonist(feet, c, true)
+			var best: String = Defs.STATS[Game.best_stat(c)]
+			var tag: String = "%s · %s %d" % [c.name.split(" ")[0], tr(best), Game.stat(c, Game.best_stat(c))]
+			var tw := font.get_string_size(tag, HORIZONTAL_ALIGNMENT_LEFT, -1, 22).x
+			var tp := feet + Vector2(-tw / 2.0 - 10, -130)
+			draw_rect(Rect2(tp, Vector2(tw + 20, 32)), Color(0.05, 0.1, 0.18, 0.92))
+			draw_rect(Rect2(tp, Vector2(tw + 20, 32)), Color(1.0, 0.85, 0.35), false, 2.0)
+			_text(tp + Vector2(10, 24), tag, 22, Color(1.0, 0.92, 0.6))
 	_draw_pet()
 	_draw_treasure()
 	_draw_trader()
@@ -1054,6 +1076,8 @@ func _on_press(p: Vector2) -> void:
 		if world.distance_to(cp + Vector2(0, -28)) < 30.0:
 			drag_colonist = c.id
 			drag_pos = world
+			Input.vibrate_handheld(30)
+			Audio.play("tap", 1.4)
 			return
 
 func _on_release(p: Vector2) -> void:
