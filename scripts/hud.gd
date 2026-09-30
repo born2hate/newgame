@@ -1045,11 +1045,21 @@ func _open_colonists() -> void:
 
 # ---------------------------------------------------------------- карточка колониста
 
-func _stat_bar(name: String, value: int, col: Color, highlight: bool) -> Control:
+func _stat_bar(name: String, value: int, col: Color, highlight: bool, key := "") -> Control:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
 	var l := _label(tr(name), 21, Color(1.0, 0.9, 0.6) if highlight else Color(0.85, 0.92, 1.0))
 	l.custom_minimum_size.x = 150
+	var ic := Art.tex("res://art/ui/stats/%s.png" % key) if key != "" else null
+	if ic:
+		var tr_ := TextureRect.new()
+		tr_.texture = ic
+		tr_.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tr_.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		tr_.custom_minimum_size = Vector2(36, 36)
+		tr_.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(tr_)
+		l.custom_minimum_size.x = 120
 	row.add_child(l)
 	var bar := Control.new()
 	bar.custom_minimum_size = Vector2(0, 26)
@@ -1106,12 +1116,24 @@ func _open_colonist(id: int) -> void:
 	var mood_col := Color(0.5, 1.0, 0.55) if mood >= 70 else (Color(1.0, 0.85, 0.4) if mood >= 40 else Color(1.0, 0.45, 0.4))
 	var ml := _label("%s: %s %d%% · %s ×%.2f" % [tr("Mood"), mood_txt, mood, tr("work speed"), Game.mood_factor(c)], 18, mood_col)
 	ml.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	sheet_body.add_child(ml)
+	ml.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var mrow := HBoxContainer.new()
+	mrow.add_theme_constant_override("separation", 8)
+	var face := Art.tex("res://art/ui/stats/mood_%s.png" % ("happy" if mood >= 70 else ("okay" if mood >= 40 else "sad")))
+	if face:
+		var fr := TextureRect.new()
+		fr.texture = face
+		fr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		fr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		fr.custom_minimum_size = Vector2(40, 40)
+		mrow.add_child(fr)
+	mrow.add_child(ml)
+	sheet_body.add_child(mrow)
 	var best := Game.best_stat(c)
 	for k in Defs.ALL_STATS:
-		var row := _stat_bar(Defs.STATS[k], mini(10, Game.stat(c, k)), Defs.STAT_COLORS[k], k == best)
+		var row := _stat_bar(Defs.STATS[k], mini(10, Game.stat(c, k)), Defs.STAT_COLORS[k], k == best, k)
 		if Game.stat(c, k) > c[k]:
-			row.get_child(2).text = "%d+%d" % [c[k], Game.stat(c, k) - c[k]]
+			(row.get_child(row.get_child_count() - 1) as Label).text = "%d+%d" % [c[k], Game.stat(c, k) - c[k]]
 		var tb := _button(tr("Train ◆ %d") % Game.train_cost(c, k) if c[k] < 10 else "MAX", func():
 			Game.train(c, k)
 			_open_colonist(id), 50)

@@ -453,6 +453,14 @@ func _draw_treasure() -> void:
 	for b in treasure:
 		var col := Defs.RESOURCES.crystals.color if b.rich else Color(1.0, 0.8, 0.95)
 		var pulse := 1.0 + 0.08 * sin(t * 5.0 + b.ph)
+		var bt := Art.tex("res://art/creatures/treasure_bubble.png")
+		if bt:
+			var bs := 70.0 * pulse
+			draw_circle(b.p, 38 * pulse, Color(col, 0.15))
+			draw_texture_rect(bt, Rect2(b.p - Vector2(bs, bs) / 2.0, Vector2(bs, bs)), false)
+			if b.rich:
+				Icons.draw(self, "crystals", b.p + Vector2(18, 18), 11.0, col)
+			continue
 		draw_circle(b.p, 34 * pulse, Color(col, 0.18))
 		draw_circle(b.p, 26 * pulse, Color(0.85, 0.97, 1.0, 0.22))
 		draw_arc(b.p, 26 * pulse, 0, TAU, 32, Color(0.9, 1.0, 1.0, 0.85), 2.5)
@@ -664,6 +672,25 @@ func _draw_dock_overlay(r: Dictionary, rect: Rect2) -> void:
 func _draw_hazard(r: Dictionary, inner: Rect2) -> void:
 	var hp: float = r.incident / 100.0
 	match r.hazard:
+		"fire" when Art.tex("res://art/fx/fire_0.png") != null:
+			draw_rect(inner, Color(1.0, 0.35, 0.05, 0.16 + 0.06 * sin(t * 12.0)))
+			# дым поднимается к потолку
+			for i in 3:
+				var ph := fmod(t * 0.35 + i / 3.0, 1.0)
+				var sm := Art.tex("res://art/fx/smoke_%d.png" % i)
+				var sw := inner.size.y * (0.5 + 0.4 * ph)
+				var sp := Vector2(inner.position.x + inner.size.x * (0.25 + 0.25 * i), inner.end.y - inner.size.y * (0.3 + 0.6 * ph))
+				draw_texture_rect(sm, Rect2(sp - Vector2(sw, sw) / 2.0, Vector2(sw, sw * sm.get_height() / sm.get_width())), false, Color(1, 1, 1, 0.8 * (1.0 - ph) * minf(1.0, ph * 5.0)))
+			var n := maxi(3, int(inner.size.x / 45))
+			for i in n:
+				# кадры 2..5 туда-обратно, у каждого языка своя фаза
+				var seq := [2, 3, 4, 5, 4, 3]
+				var fr: int = seq[int(t * 12.0 + i * 2.7) % seq.size()]
+				var ft := Art.tex("res://art/fx/fire_%d.png" % fr)
+				var fh := inner.size.y * (0.45 + 0.45 * hp) * (0.8 + 0.2 * sin(t * 3.0 + i * 1.9))
+				var fw := fh * ft.get_width() / ft.get_height()
+				var fx := inner.position.x + (i + 0.5) * inner.size.x / n + sin(t * 1.3 + i) * 6.0
+				draw_texture_rect(ft, Rect2(fx - fw / 2.0, inner.end.y - fh + 2, fw, fh), false)
 		"fire":
 			draw_rect(inner, Color(1.0, 0.35, 0.05, 0.18 + 0.08 * sin(t * 12.0)))
 			var n := int(inner.size.x / 18)
@@ -677,6 +704,35 @@ func _draw_hazard(r: Dictionary, inner: Rect2) -> void:
 			for i in 5:
 				var ph := fmod(t * 0.5 + i * 0.2, 1.0)
 				draw_circle(Vector2(inner.position.x + inner.size.x * (0.2 + 0.15 * i), inner.end.y - 40 - ph * (inner.size.y - 40)), 8 + ph * 14, Color(0.15, 0.15, 0.15, 0.45 * (1.0 - ph)))
+		"flood" when Art.tex("res://art/fx/water.png") != null:
+			var level := inner.size.y * (0.15 + 0.6 * hp)
+			var wt := Art.tex("res://art/fx/water.png")
+			# полоса воды: высота волны пропорциональна картинке, плывёт вбок
+			var wh := level + 26.0
+			var tile_w := wh * wt.get_width() / wt.get_height() * 0.5
+			var off := fmod(t * 30.0, tile_w)
+			var x := inner.position.x - off
+			var top := inner.end.y - wh + sin(t * 2.0) * 3.0
+			while x < inner.end.x:
+				var x0 := maxf(x, inner.position.x)
+				var x1 := minf(x + tile_w, inner.end.x)
+				var u0 := (x0 - x) / tile_w * wt.get_width() * 0.5
+				var u1 := (x1 - x) / tile_w * wt.get_width() * 0.5
+				draw_texture_rect_region(wt, Rect2(x0, top, x1 - x0, inner.end.y - top), Rect2(u0, 0, u1 - u0, wt.get_height()), Color(1, 1, 1, 0.9))
+				x += tile_w
+			# струя из пробоины и брызги там, где она бьёт в воду
+			var jet := Vector2(inner.position.x + inner.size.x * 0.7, inner.position.y + 10)
+			var hit := Vector2(jet.x - 20, inner.end.y - level)
+			draw_line(jet, hit, Color(0.6, 0.9, 1.0, 0.75), 6.0)
+			draw_line(jet, hit, Color(1, 1, 1, 0.5), 2.0)
+			var spl := Art.tex("res://art/fx/splash_%d.png" % (int(t * 6.0) % 3))
+			var sw := 70.0
+			draw_texture_rect(spl, Rect2(hit - Vector2(sw / 2.0, sw * 0.6), Vector2(sw, sw * spl.get_height() / spl.get_width())), false, Color(1, 1, 1, 0.9))
+			var bub := Art.tex("res://art/fx/splash_3.png")
+			for i in 3:
+				var ph := fmod(t * 0.5 + i / 3.0, 1.0)
+				var bp := Vector2(inner.position.x + inner.size.x * (0.15 + 0.2 * i), inner.end.y - ph * level)
+				draw_texture_rect(bub, Rect2(bp - Vector2(12, 12), Vector2(24, 24)), false, Color(1, 1, 1, 0.8 * (1.0 - ph)))
 		"flood":
 			var level := inner.size.y * (0.15 + 0.6 * hp)
 			var pts := PackedVector2Array()
@@ -985,6 +1041,11 @@ func _draw_fight_fx(feet: Vector2, c: Dictionary, facing: float, h: float) -> vo
 				draw_circle(p, 3.0, Color(0.6, 0.9, 1.0, 1.0 - q))
 
 func _star_burst(c: Vector2, r: float, col: Color) -> void:
+	var sp := Art.tex("res://art/fx/spark_%d.png" % (int(t * 14.0 + c.x) % 3))
+	if sp:
+		var s := r * 3.2
+		draw_texture_rect(sp, Rect2(c - Vector2(s, s) / 2.0, Vector2(s, s)), false, Color(1, 1, 1, col.a))
+		return
 	var pts := PackedVector2Array()
 	for i in 16:
 		var a := i * TAU / 16.0

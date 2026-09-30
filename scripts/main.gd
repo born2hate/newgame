@@ -124,6 +124,14 @@ func _dev_screenshot() -> void:
 		"colonist_ru":
 			Audio.set_language("ru")
 			hud._open_colonist(Game.colonists[0].id)
+		"hazards":
+			var fr := Game.find_room_of_type("farm")
+			Game.start_hazard(fr, "fire")
+			var ox := Game.find_room_of_type("oxygen")
+			Game.start_hazard(ox, "flood")
+			camera.position = Vector2(700, 300)
+			view.treasure.append({"p": Vector2(500, -150), "rich": false, "ph": 0.0})
+			await get_tree().create_timer(0.8).timeout
 		"gym_ru":
 			Audio.set_language("ru")
 			var gy := Game._add_room("gym", 7, 1)
