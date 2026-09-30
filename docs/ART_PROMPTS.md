@@ -111,3 +111,19 @@ transparent background, no text: <объект>
 |---|---|
 | `art/rooms/dock.png` | отсек-док 16:10: `underwater submarine dock room, a water pool with an open hatch in the floor, mechanical crane arm, fuel pipes, tool racks, yellow warning stripes, no submarine, no people` |
 | `art/ui/shop/season.png` | баннер сезонного пропуска 16:9 |
+
+## Новые отсеки (волна 2) → `art/rooms/<имя>.png`
+
+Формат как у остальных отсеков: 1600×1000, блок стиля в начале, хвост отсека в конце.
+
+| Файл | Промт |
+|---|---|
+| `kitchen.png` | `Underwater colony kitchen and canteen: stainless steel counters, big cooking pots steaming, algae noodles hanging to dry, fridge with glowing green jars, a long dining table with benches, warm cozy yellow light.` |
+| `gym.png` | `Underwater colony gym: weight racks with dumbbells and barbells, a punching bag, a treadmill facing a round porthole with fish outside, rubber floor mats, energetic orange and red accent lights.` |
+| `workshop.png` | `Underwater colony workshop: a heavy workbench with a vise, welding torch sparks, tools hanging on a pegboard wall, half-built diving suit on a stand, metal scraps and gears, blue welding glow mixed with warm light.` |
+| `lounge.png` | `Underwater colony lounge bar: a curved bar counter with glowing bottles, cozy sofas, a jukebox, neon jellyfish decorations, a large round window onto the dark ocean, relaxed purple and pink lighting.` |
+| `radio.png` | `Underwater colony radio room: a big antenna console with dials and blinking lights, sonar screen with a green sweep, headphones on a hook, stacked radio equipment, cables running to the ceiling, dim green light.` |
+| `armory.png` | `Underwater colony armory: wall racks with harpoon guns and spears, lockers with armored diving suits, ammunition crates, a target board, red warning lights and yellow-black hazard stripes.` |
+| `school.png` | `Underwater colony classroom: a big glowing holographic board with a fish diagram, small desks with tablets, shelves with books and specimen jars, a globe of the ocean floor, friendly soft blue light.` |
+| `turbine.png` | `Underwater colony current turbine room: a huge spinning turbine propeller behind thick glass, water currents with swirling bubbles, big generators with glowing blue coils, heavy pipes, powerful cool blue lighting.` |
+| `aquarium.png` | `Underwater colony aquarium hall: large glass tanks with colorful tropical fish, glowing jellyfish and corals, decorative plants, a bench for visitors, calm turquoise lighting with light ripples on the walls.` |
