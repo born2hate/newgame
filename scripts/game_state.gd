@@ -1303,6 +1303,16 @@ func _spawn_trader() -> void:
 	event.emit("arrive")
 	changed.emit()
 
+func can_trade(idx: int) -> bool:
+	if trader.is_empty() or idx in trader.bought:
+		return false
+	var o: Dictionary = trader.offers[idx]
+	for k in o.give:
+		var have: float = pearls if k == "pearls" else (crystals if k == "crystals" else resources.get(k, 0.0))
+		if have < o.give[k]:
+			return false
+	return true
+
 func trade(idx: int) -> bool:
 	if trader.is_empty() or idx in trader.bought:
 		return false

@@ -583,18 +583,31 @@ func _on_node_added(n: Node) -> void:
 
 
 func _open_sheet(kind: String, height := 560) -> void:
+	# обновление того же меню (после нажатия кнопки) — без мигания и прыжка прокрутки наверх
+	var refresh := sheet.visible and kind == sheet_kind
+	var scroll := sheet.get_child(0) as ScrollContainer
+	var keep := scroll.scroll_vertical if refresh else 0
 	sheet_kind = kind
 	for ch in sheet_body.get_children():
+		sheet_body.remove_child(ch)
 		ch.queue_free()
-	(sheet.get_child(0) as Control).custom_minimum_size.y = height
+	scroll.custom_minimum_size.y = height
 	if not sheet.visible:
 		Audio.play("open")
 	sheet.visible = true
 	bottom_bar.visible = false
+	if refresh:
+		_restore_scroll.call_deferred(keep)
+		return
+	scroll.scroll_vertical = 0
 	sheet.pivot_offset = Vector2(sheet.size.x / 2.0, sheet.size.y)
 	sheet.modulate.a = 0.0
 	var tw := create_tween()
 	tw.tween_property(sheet, "modulate:a", 1.0, 0.15)
+
+func _restore_scroll(v: int) -> void:
+	await get_tree().process_frame
+	(sheet.get_child(0) as ScrollContainer).scroll_vertical = v
 
 func _close_sheet() -> void:
 	if sheet.visible:

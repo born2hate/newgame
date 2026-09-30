@@ -34,6 +34,21 @@ func _ready() -> void:
 	hud.view = view
 	add_child(hud)
 	_dev_screenshot()
+	_dev_selftest()
+
+func _dev_selftest() -> void:
+	var args := OS.get_cmdline_user_args()
+	if not "--selftest" in args:
+		return
+	for a in args:
+		if a.begins_with("--lang="):
+			Audio.set_language(a.trim_prefix("--lang="))
+	var st = preload("res://scripts/selftest.gd").new()
+	st.main = self
+	st.hud = hud
+	st.view = view
+	add_child(st)
+	st.run()
 
 ## Для разработки: godot -- --screenshot=out.png [--scene=build|room|colonists]
 func _dev_screenshot() -> void:

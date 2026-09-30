@@ -207,7 +207,11 @@ func open_trader() -> void:
 			Game.trade(i)
 			open_trader(), 60)
 		b.disabled = bought
-		b.custom_minimum_size.x = 130
+		if not bought and not Game.can_trade(i):
+			# не хватает — кнопка неактивна, а то, чего не хватает, подсвечено красным
+			b.disabled = true
+			deal.get_child(0).modulate = Color(1.0, 0.45, 0.45)
+		b.custom_minimum_size.x = 150
 		row.add_child(b)
 
 func _offer_chip(d: Dictionary, size: int) -> HBoxContainer:
