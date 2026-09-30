@@ -54,6 +54,20 @@ func _dev_screenshot() -> void:
 		"colonists": hud._open_colonists()
 		"shop": hud._open_shop()
 		"tasks": hud._open_tasks()
+		"settings": hud._open_settings()
+		"settings_ru":
+			Audio.set_language("ru")
+			hud._open_settings()
+		"colonist":
+			hud._close_sheet()
+			hud._open_colonist(Game.colonists[0].id)
+		"fire":
+			hud._close_sheet()
+			Game.start_hazard(Game.find_room_of_type("reactor"), "fire")
+			Game.start_hazard(Game.find_room_of_type("farm"), "flood", 70.0)
+			Game.start_hazard(Game.find_room_of_type("oxygen"), "creature")
+			Game.send_help(Game.colonists[3], Game.find_room_of_type("reactor"))
+			await get_tree().create_timer(1.5).timeout
 		"bar": hud._close_sheet()
 		"captain":
 			hud._close_sheet()

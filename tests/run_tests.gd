@@ -161,6 +161,45 @@ func _initialize() -> void:
 	check(ex2.season_xp == 250 and ex2.season_pass and ex2.quests.size() == 3, "сезон и задания сохраняются")
 	ex.free(); ex2.free()
 
+	# инциденты
+	var hz = load("res://scripts/game_state.gd").new()
+	hz.new_game()
+	var react: Dictionary = hz.find_room_of_type("reactor")
+	hz.start_hazard(react, "fire")
+	check(react.incident == 100.0 and react.hazard == "fire", "пожар начался")
+	var prog0: float = react.progress
+	hz.simulate(1.0, false)
+	check(react.progress == prog0, "производство стоит во время беды")
+	check(react.incident < 100.0, "рабочие тушат пожар")
+	var al: Dictionary = hz.find_room_of_type("airlock")
+	hz.start_hazard(al, "fire")
+	check(al.incident == 0.0, "в шлюзе беды не бывает")
+	var helper: Dictionary = hz.colonists[3]
+	hz.send_help(helper, react)
+	check(hz.responders(react).size() == 2, "помощник прибежал")
+	var pearls0: int = hz.pearls
+	for i in 60:
+		hz.simulate(1.0, false)
+	check(react.incident == 0.0 and react.hazard == "", "пожар потушен")
+	check(hz.pearls > pearls0 and helper.help == -1, "награда и помощник вернулся")
+	var farm2: Dictionary = hz.find_room_of_type("farm")
+	for c in hz.workers_in(farm2):
+		hz.assign(c, {})
+	hz.start_hazard(farm2, "flood", 70.0)
+	for i in 25:
+		hz.simulate(1.0, false)
+	check(farm2.incident > 70.0, "без людей беда растёт")
+	# прокачка
+	var cc: Dictionary = hz.colonists[0]
+	hz.crystals = 100
+	var s0: int = cc.tech
+	var tcost: int = hz.train_cost(cc, "tech")
+	check(hz.train(cc, "tech") and cc.tech == s0 + 1 and hz.crystals == 100 - tcost, "тренировка навыка")
+	cc.health = 50.0
+	hz.heal(cc)
+	check(cc.health == 100.0, "лечение")
+	hz.free()
+
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(g.SAVE_PATH))
 	g.free(); g2.free(); g3.free()
 	print("FAILURES: %d" % failures)

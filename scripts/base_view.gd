@@ -3,6 +3,7 @@ extends Node2D
 
 signal room_selected(room_id: int)
 signal build_finished
+signal colonist_selected(colonist_id: int)
 
 const CELL_W := 100.0
 const CELL_H := 130.0
@@ -81,7 +82,8 @@ func screen_to_world(p: Vector2) -> Vector2:
 	return get_viewport().get_canvas_transform().affine_inverse() * p
 
 func colonist_world_pos(c: Dictionary) -> Vector2:
-	var room: Dictionary = Game.get_room(c.room) if c.room != -1 else Game.find_room_of_type("airlock")
+	var rid: int = c.help if c.get("help", -1) != -1 else c.room
+	var room: Dictionary = Game.get_room(rid) if rid != -1 else Game.find_room_of_type("airlock")
 	if room.is_empty():
 		return Vector2.ZERO
 	var rect := room_rect(room)
@@ -96,9 +98,16 @@ func _update_walkers(delta: float) -> void:
 		if not walkers.has(c.id):
 			walkers[c.id] = {"x": randf(), "target": randf(), "wait": randf() * 2.0, "facing": 1.0, "room": c.room}
 		var w: Dictionary = walkers[c.id]
-		if w.room != c.room:
-			w.room = c.room
+		var here: int = c.help if c.get("help", -1) != -1 else c.room
+		if w.room != here:
+			w.room = here
 			w.x = randf()
+		var danger := false
+		if here >= 0:
+			danger = Game.get_room(here).get("incident", 0.0) > 0.0
+		w["panic"] = danger
+		if danger:
+			w.wait = 0.0
 		if w.wait > 0.0:
 			w.wait -= delta
 			continue
@@ -108,7 +117,7 @@ func _update_walkers(delta: float) -> void:
 			w.target = randf()
 		else:
 			w.facing = signf(d)
-			w.x += signf(d) * minf(absf(d), delta * 0.25)
+			w.x += signf(d) * minf(absf(d), delta * (0.9 if w.get("panic", false) else 0.25))
 	for id in walkers.keys():
 		if not alive.has(id):
 			walkers.erase(id)
@@ -359,9 +368,9 @@ func _draw_room(r: Dictionary) -> void:
 			draw_rect(bar0, Color(0, 0, 0, 0.55))
 			draw_rect(Rect2(bar0.position, Vector2(bar0.size.x * r.progress, bar0.size.y)), Defs.RESOURCES[def.produces].color)
 		if r.type != "elevator":
-			var label_w := font.get_string_size(def.name, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x
+			var label_w := font.get_string_size(tr(def.name), HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x
 			draw_rect(Rect2(inner.position + Vector2(4, 4), Vector2(label_w + 12, 20)), Color(0, 0, 0, 0.45))
-			_text(Vector2(inner.position.x + 10, inner.position.y + 19), def.name, 15, Color(1, 1, 1, 0.9))
+			_text(Vector2(inner.position.x + 10, inner.position.y + 19), tr(def.name), 15, Color(1, 1, 1, 0.9))
 			for i in r.level:
 				_star(Vector2(inner.end.x - 12 - i * 16, inner.position.y + 14), 6.0)
 	elif r.type == "elevator":
@@ -385,7 +394,7 @@ func _draw_room(r: Dictionary) -> void:
 		# пол
 		draw_rect(Rect2(inner.position.x, inner.end.y - 4, inner.size.x, 4), Color(0.3, 0.33, 0.4))
 		# название и уровень
-		_text(Vector2(inner.position.x + 8, inner.position.y + 40), def.name, 16, Color(1, 1, 1, 0.8))
+		_text(Vector2(inner.position.x + 8, inner.position.y + 40), tr(def.name), 16, Color(1, 1, 1, 0.8))
 		for i in r.level:
 			_star(Vector2(inner.end.x - 12 - i * 16, inner.position.y + 34), 6.0)
 		# прогресс производства
@@ -400,9 +409,7 @@ func _draw_room(r: Dictionary) -> void:
 		draw_rect(rect.grow(2), Color(0.5, 1.0, 1.0, 0.6 + 0.4 * sin(t * 5.0)), false, 4.0)
 	# авария
 	if r.incident > 0.0:
-		var a := 0.25 + 0.2 * sin(t * 10.0)
-		draw_rect(inner, Color(1.0, 0.1, 0.1, a))
-		_text(inner.get_center(), tr("BREACH %d") % ceili(r.incident), 26, Color(1, 0.9, 0.9), true)
+		_draw_hazard(r, inner)
 	if r.type == "dock":
 		_draw_dock_overlay(r, rect)
 	# готово — пузырь с ресурсом
@@ -445,6 +452,57 @@ func _draw_dock_overlay(r: Dictionary, rect: Rect2) -> void:
 		draw_circle(bp, 21, Color(0.05, 0.1, 0.15, 0.9))
 		draw_arc(bp, 21, 0, TAU, 32, Color(1.0, 0.8, 0.3), 3.0)
 		Icons.draw(self, "pearls", bp, 11.0, Color(1.0, 0.85, 0.95))
+
+func _draw_hazard(r: Dictionary, inner: Rect2) -> void:
+	var hp: float = r.incident / 100.0
+	match r.hazard:
+		"fire":
+			draw_rect(inner, Color(1.0, 0.35, 0.05, 0.18 + 0.08 * sin(t * 12.0)))
+			var n := int(inner.size.x / 18)
+			for i in n:
+				var x := inner.position.x + (i + 0.5) * inner.size.x / n
+				var h := (30.0 + 40.0 * hp) * (0.7 + 0.3 * sin(t * 9.0 + i * 1.7))
+				var base := inner.end.y - 4
+				var wob := sin(t * 7.0 + i) * 5.0
+				draw_colored_polygon(PackedVector2Array([Vector2(x - 11, base), Vector2(x + wob, base - h), Vector2(x + 11, base)]), Color(1.0, 0.45, 0.05, 0.9))
+				draw_colored_polygon(PackedVector2Array([Vector2(x - 6, base), Vector2(x + wob * 0.6, base - h * 0.6), Vector2(x + 6, base)]), Color(1.0, 0.9, 0.3, 0.95))
+			for i in 5:
+				var ph := fmod(t * 0.5 + i * 0.2, 1.0)
+				draw_circle(Vector2(inner.position.x + inner.size.x * (0.2 + 0.15 * i), inner.end.y - 40 - ph * (inner.size.y - 40)), 8 + ph * 14, Color(0.15, 0.15, 0.15, 0.45 * (1.0 - ph)))
+		"flood":
+			var level := inner.size.y * (0.15 + 0.6 * hp)
+			var pts := PackedVector2Array()
+			var steps := 16
+			for i in steps + 1:
+				var x := inner.position.x + inner.size.x * i / steps
+				pts.append(Vector2(x, inner.end.y - level + sin(t * 3.0 + i * 0.8) * 4.0))
+			pts.append(inner.end)
+			pts.append(Vector2(inner.position.x, inner.end.y))
+			draw_colored_polygon(pts, Color(0.1, 0.45, 0.75, 0.6))
+			draw_polyline(pts.slice(0, steps + 1), Color(0.7, 0.95, 1.0, 0.8), 2.0)
+			for i in 6:
+				var ph := fmod(t * 0.7 + i * 0.17, 1.0)
+				draw_arc(Vector2(inner.position.x + inner.size.x * (0.1 + 0.15 * i), inner.end.y - ph * level), 3.0, 0, TAU, 8, Color(0.85, 1.0, 1.0, 0.7), 1.2)
+			# струя из пробоины
+			var jet := Vector2(inner.position.x + inner.size.x * 0.7, inner.position.y + 10)
+			draw_line(jet, jet + Vector2(-20, inner.size.y - level - 10), Color(0.6, 0.9, 1.0, 0.7), 5.0)
+		"creature":
+			draw_rect(inner, Color(0.6, 0.0, 0.2, 0.15 + 0.1 * sin(t * 6.0)))
+			var fishy := Art.tex("res://art/creatures/anglerfish.png")
+			if fishy:
+				var fw := inner.size.x * 0.5
+				var fh := fw * fishy.get_height() / fishy.get_width()
+				var lunge := sin(t * 2.5) * inner.size.x * 0.2
+				var fx := inner.get_center().x + lunge
+				draw_set_transform(Vector2(fx, inner.get_center().y + sin(t * 5.0) * 4.0), sin(t * 5.0) * 0.1, Vector2(signf(cos(t * 2.5)) * -1.0, 1))
+				draw_texture_rect(fishy, Rect2(-fw / 2.0, -fh / 2.0, fw, fh), false)
+				draw_set_transform(Vector2.ZERO)
+	# полоса угрозы и подпись
+	var bar := Rect2(inner.position.x + 8, inner.position.y + 26, inner.size.x - 16, 10)
+	draw_rect(bar, Color(0, 0, 0, 0.6))
+	draw_rect(Rect2(bar.position, Vector2(bar.size.x * hp, bar.size.y)), Color(1.0, 0.3, 0.2))
+	var label: String = Game.HAZARDS[r.hazard].label
+	_text(Vector2(inner.get_center().x, bar.end.y + 26), tr(label), 22, Color(1.0, 0.9, 0.8, 0.7 + 0.3 * sin(t * 8.0)), true)
 
 static func _short_time(sec: float) -> String:
 	var s := maxi(0, int(sec))
@@ -574,6 +632,10 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 	draw_set_transform(feet + Vector2(0, bob), 0.0, Vector2(facing, 1.0))
 	draw_texture_rect(sprite, Rect2(Vector2(-size.x / 2.0, -size.y), size), false, tint)
 	draw_set_transform(Vector2.ZERO)
+	if w.get("panic", false):
+		var ex := feet + Vector2(0, -h - 22 + sin(t * 10.0 + c.id) * 3.0)
+		draw_circle(ex, 11, Color(1.0, 0.85, 0.2))
+		_text(ex + Vector2(0, 7), "!", 20, Color(0.2, 0.05, 0.0), true)
 	if c.health < 99.0:
 		var hb := Rect2(feet + Vector2(-12, -h - 8), Vector2(24, 4))
 		draw_rect(hb, Color(0, 0, 0, 0.6))
@@ -651,8 +713,13 @@ func _on_release(p: Vector2) -> void:
 		if moved:
 			var room := Game.room_at(cell.x, cell.y)
 			if not room.is_empty():
-				Game.assign(c, room)
+				if room.incident > 0.0 and c.room != room.id:
+					Game.send_help(c, room)
+				else:
+					Game.assign(c, room)
 			return
+		colonist_selected.emit(c.id)
+		return
 	if moved:
 		return
 	if build_type != "":

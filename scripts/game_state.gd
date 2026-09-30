@@ -24,6 +24,7 @@ var rng := RandomNumberGenerator.new()
 
 # премиум-экономика
 signal rewards_granted(title: String, lines: Array)
+signal event(name: String)               # игровое событие — для звука
 const FREE_CRATE_COOLDOWN := 4.0 * 3600.0
 const BOOST_DURATION := 30.0 * 60.0
 var crystals := 0
@@ -111,7 +112,7 @@ func new_game() -> void:
 func _add_room(type: String, col: int, row: int) -> Dictionary:
 	var r := {
 		"id": next_id, "type": type, "col": col, "row": row, "level": 1,
-		"progress": 0.0, "ready": false, "incident": 0.0, "heat": 0.0,
+		"progress": 0.0, "ready": false, "incident": 0.0, "heat": 0.0, "hazard": "", "spread": 0.0,
 	}
 	next_id += 1
 	rooms.append(r)
@@ -122,7 +123,7 @@ func _make_colonist() -> Dictionary:
 		"id": next_id,
 		"name": "%s %s" % [Defs.FIRST_NAMES.pick_random(), Defs.LAST_NAMES.pick_random()],
 		"str": rng.randi_range(1, 4), "tech": rng.randi_range(1, 4), "bio": rng.randi_range(1, 4),
-		"level": 1, "xp": 0.0, "health": 100.0, "room": -1,
+		"level": 1, "xp": 0.0, "health": 100.0, "room": -1, "help": -1,
 		"suit": rng.randi_range(0, 5),
 	}
 	next_id += 1
@@ -257,7 +258,7 @@ func simulate(delta: float, offline: bool) -> void:
 		var def: Dictionary = Defs.ROOMS[r.type]
 		r.heat = maxf(0.0, r.heat - delta / 60.0)
 		if r.incident > 0.0:
-			r.incident = maxf(0.0, r.incident - delta)
+			_tick_hazard(r, delta, offline)
 			continue
 		if def.has("produces") and not r.ready:
 			var t := cycle_time(r)
@@ -283,6 +284,13 @@ func simulate(delta: float, offline: bool) -> void:
 			if c.xp >= _xp_needed(c):
 				_level_up(c)
 
+	# случайные инциденты (только в игре, не офлайн)
+	if not offline and colonists.size() >= 5:
+		incident_timer -= delta
+		if incident_timer <= 0.0:
+			incident_timer = rng.randf_range(150.0, 300.0)
+			_spawn_random_incident()
+
 	# новые колонисты
 	if colonists.size() < population_cap():
 		arrival_timer += delta
@@ -292,6 +300,7 @@ func simulate(delta: float, offline: bool) -> void:
 			colonists.append(c)
 			if not offline:
 				message.emit(tr("New colonist arrived: %s") % c.name)
+				event.emit("arrive")
 			changed.emit()
 	for k in resources:
 		resources[k] = minf(resources[k], cap)
@@ -323,6 +332,7 @@ func build(type: String, col: int, row: int) -> bool:
 	var cost := build_cost(type)
 	if pearls < cost:
 		message.emit(tr("Not enough pearls"))
+		event.emit("error")
 		return false
 	if not can_build_at(type, col, row):
 		return false
@@ -389,14 +399,11 @@ func rush(room: Dictionary) -> void:
 		floating_text.emit(room.id, tr("Success! +10 P"), Color(0.6, 1.0, 0.7))
 	else:
 		room.progress = 0.0
-		room.incident = 12.0
-		for c in workers_in(room):
-			c.health = maxf(10.0, c.health - 25.0)
 		var res: String = Defs.ROOMS[room.type].produces
 		if resources.has(res):
 			resources[res] = maxf(0.0, resources[res] - 15.0)
 		floating_text.emit(room.id, tr("HULL BREACH!"), Color(1.0, 0.3, 0.3))
-		message.emit(tr("Breach in %s! Repairs take 12s") % Defs.ROOMS[room.type].name)
+		start_hazard(room, "flood")
 	changed.emit()
 
 func assign(colonist: Dictionary, room: Dictionary) -> bool:
@@ -417,6 +424,7 @@ func assign(colonist: Dictionary, room: Dictionary) -> bool:
 		message.emit(tr("All slots are taken"))
 		return false
 	colonist.room = room.id
+	colonist.help = -1
 	colonist.xp = 0.0
 	changed.emit()
 	return true
@@ -448,6 +456,7 @@ func start_boost() -> void:
 func spend_crystals(n: int) -> bool:
 	if crystals < n:
 		message.emit(tr("Not enough crystals"))
+		event.emit("error")
 		return false
 	crystals -= n
 	changed.emit()
@@ -706,6 +715,7 @@ func launch_expedition(dock_id: int, zone_idx: int, ids: Array) -> bool:
 		events.append({"at": (i + 1.0) / (n + 1.0), "text": tr(text).replace("{n}", who)})
 	for id in ids:
 		get_colonist(id).room = ON_EXPEDITION
+		get_colonist(id).help = -1
 	var start := now()
 	expeditions.append({
 		"id": next_id, "dock": dock_id, "zone": zone_idx, "crew": ids.duplicate(),
@@ -775,6 +785,156 @@ func claim_expedition(e: Dictionary) -> void:
 
 var _pending_lines: Array = []
 
+# ---------------------------------------------------------------- инциденты
+
+const HAZARDS := {
+	"fire": {"label": "FIRE", "msg": "Fire in %s!", "damage": 1.6},
+	"flood": {"label": "FLOOD", "msg": "Flooding in %s!", "damage": 1.2},
+	"creature": {"label": "ATTACK", "msg": "Creature attack in %s!", "damage": 2.4},
+}
+var incident_timer := 200.0
+
+func can_have_hazard(room: Dictionary) -> bool:
+	return not room.is_empty() and room.type != "elevator" and room.type != "airlock"
+
+func start_hazard(room: Dictionary, kind: String, hp := 100.0) -> void:
+	if not can_have_hazard(room) or room.incident > 0.0:
+		return
+	room.hazard = kind
+	room.incident = hp
+	room.spread = 0.0
+	message.emit(tr(HAZARDS[kind].msg) % tr(Defs.ROOMS[room.type].name))
+	event.emit("incident")
+	changed.emit()
+
+func _spawn_random_incident() -> void:
+	var candidates := rooms.filter(func(r): return can_have_hazard(r) and r.incident <= 0.0)
+	if candidates.is_empty():
+		return
+	var room: Dictionary = candidates.pick_random()
+	var kinds := ["fire", "flood"]
+	if room.row >= 1:
+		kinds.append("flood")
+	if colonists.size() >= 8 and (room.row >= 2 or room.type == "dock"):
+		kinds.append("creature")
+	start_hazard(room, kinds.pick_random())
+
+## Кто борется с бедой: рабочие отсека и прибежавшие на помощь.
+func responders(room: Dictionary) -> Array:
+	return colonists.filter(func(c): return (c.room == room.id or c.help == room.id) and c.room != ON_EXPEDITION)
+
+func hazard_power(room: Dictionary) -> float:
+	var p := 0.0
+	for c in responders(room):
+		p += (c.str + c.tech + c.bio) / 3.0 * (0.4 + 0.6 * c.health / 100.0)
+	return p
+
+func send_help(colonist: Dictionary, room: Dictionary) -> void:
+	if colonist.room == ON_EXPEDITION or room.incident <= 0.0:
+		return
+	colonist.help = room.id
+	changed.emit()
+
+func _tick_hazard(r: Dictionary, delta: float, offline: bool) -> void:
+	if offline:
+		r.incident = maxf(0.0, r.incident - 5.0 * delta)
+	else:
+		var crew := responders(r)
+		if crew.is_empty():
+			r.incident = minf(100.0, r.incident + 1.5 * delta)
+		else:
+			r.incident -= hazard_power(r) * 1.6 * delta
+			var dmg: float = HAZARDS[r.hazard].damage * delta
+			for c in crew:
+				c.health = maxf(10.0, c.health - dmg)
+		r.spread += delta
+		if r.spread > 20.0 and r.incident > 60.0:
+			r.spread = 0.0
+			_spread_hazard(r)
+	if r.incident <= 0.0:
+		_resolve_hazard(r, offline)
+
+func _spread_hazard(r: Dictionary) -> void:
+	var w := Defs.room_width(r.type)
+	var near := []
+	for n in [room_at(r.col - 1, r.row), room_at(r.col + w, r.row)]:
+		if can_have_hazard(n) and n.incident <= 0.0:
+			near.append(n)
+	if near.is_empty():
+		return
+	var target: Dictionary = near.pick_random()
+	start_hazard(target, r.hazard, 50.0)
+	message.emit(tr("Incident spread to %s!") % tr(Defs.ROOMS[target.type].name))
+
+func _resolve_hazard(r: Dictionary, offline: bool) -> void:
+	var crew := responders(r)
+	r.incident = 0.0
+	r.hazard = ""
+	for c in colonists:
+		if c.help == r.id:
+			c.help = -1
+	if offline:
+		return
+	var reward: int = 10 + 10 * r.level
+	pearls += reward
+	for c in crew:
+		c.xp += 20.0
+	floating_text.emit(r.id, tr("+%d pearls for handling it") % reward, Color(0.6, 1.0, 0.7))
+	message.emit(tr("%s is under control!") % tr(Defs.ROOMS[r.type].name))
+	track("incident_resolved")
+	changed.emit()
+
+# ---------------------------------------------------------------- прокачка колонистов
+
+func best_stat(c: Dictionary) -> String:
+	var best := "str"
+	for k in ["tech", "bio"]:
+		if c[k] > c[best]:
+			best = k
+	return best
+
+func best_job_type(c: Dictionary) -> String:
+	var stat := best_stat(c)
+	for type in ["reactor", "oxygen", "farm"]:
+		if Defs.ROOMS[type].stat == stat:
+			return type
+	return "farm"
+
+func best_room_for(c: Dictionary) -> Dictionary:
+	var stat := best_stat(c)
+	var best := {}
+	for r in rooms:
+		var def: Dictionary = Defs.ROOMS[r.type]
+		if def.get("stat", "") != stat or not def.has("produces"):
+			continue
+		if r.id != c.room and workers_in(r).size() >= Defs.room_slots(r.type, r.level):
+			continue
+		if best.is_empty() or r.level > best.level:
+			best = r
+	return best
+
+func train_cost(c: Dictionary, stat: String) -> int:
+	return 5 + c[stat] * 5
+
+func train(c: Dictionary, stat: String) -> bool:
+	if c[stat] >= 10 or not spend_crystals(train_cost(c, stat)):
+		return false
+	c[stat] += 1
+	message.emit(tr("Trained! %s +1") % tr(Defs.STATS[stat]))
+	event.emit("level_up")
+	changed.emit()
+	return true
+
+func heal_cost(c: Dictionary) -> int:
+	return maxi(1, ceili((100.0 - c.health) / 20.0))
+
+func heal(c: Dictionary) -> void:
+	if c.health >= 100.0 or not spend_crystals(heal_cost(c)):
+		return
+	c.health = 100.0
+	message.emit(tr("Fully healed"))
+	changed.emit()
+
 # ---------------------------------------------------------------- задания и сезон
 
 func refresh_daily_systems() -> void:
@@ -796,9 +956,10 @@ func refresh_daily_systems() -> void:
 		season_claimed_free = []
 		season_claimed_premium = []
 
-func track(event: String, amount := 1) -> void:
+func track(ev: String, amount := 1) -> void:
+	event.emit(ev)
 	for q in quests:
-		if q.event == event and not q.claimed and q.progress < q.target:
+		if q.event == ev and not q.claimed and q.progress < q.target:
 			q.progress = mini(q.target, q.progress + amount)
 			if q.progress >= q.target:
 				message.emit(tr("Task complete: %s") % (tr(q.text) % q.target))
@@ -909,8 +1070,12 @@ func load_game() -> bool:
 	for r in rooms:
 		for k in ["id", "col", "row", "level"]:
 			r[k] = int(r[k])
+		if not r.has("hazard"):
+			r["hazard"] = "flood" if r.incident > 0.0 else ""
+		r["spread"] = float(r.get("spread", 0.0))
 	for c in colonists:
-		for k in ["id", "str", "tech", "bio", "level", "room", "suit"]:
+		c["help"] = c.get("help", -1)
+		for k in ["id", "str", "tech", "bio", "level", "room", "suit", "help"]:
 			c[k] = int(c[k])
 	_apply_offline(Time.get_unix_time_from_system() - float(data.time))
 	return true

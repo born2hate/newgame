@@ -4,6 +4,7 @@ config_version=5
 [application]
 
 config/name="Deep Colony"
+config/version="0.5"
 config/description="Build an underwater colony on the ocean floor"
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.3", "Mobile")
@@ -16,6 +17,7 @@ boot_splash/fullsize=false
 
 Game="*res://scripts/game_state.gd"
 Store="*res://scripts/store.gd"
+Audio="*res://scripts/audio.gd"
 
 [display]
 

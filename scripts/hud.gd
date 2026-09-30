@@ -44,6 +44,7 @@ func _ready() -> void:
 	Game.message.connect(show_toast)
 	view.room_selected.connect(_on_room_selected)
 	view.build_finished.connect(_on_build_finished)
+	view.colonist_selected.connect(_open_colonist)
 	Game.rewards_granted.connect(_show_rewards)
 	Store.ad_started.connect(_on_ad_started)
 	Store.ad_finished.connect(func(): ad_overlay.visible = false)
@@ -159,6 +160,7 @@ func _button(text: String, cb: Callable, min_h := 72) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.custom_minimum_size = Vector2(0, min_h)
+	b.pressed.connect(func(): Audio.play("tap"))
 	b.pressed.connect(cb)
 	return b
 
@@ -193,6 +195,15 @@ func _build_top_bar() -> void:
 	row.add_child(_icon("people", 26, Color(0.85, 0.95, 1.0)))
 	pop_label = _label("", 24)
 	row.add_child(pop_label)
+	var gear := TextureButton.new()
+	gear.texture_normal = Art.tex("res://art/ui/icons/settings.png")
+	gear.ignore_texture_size = true
+	gear.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	gear.custom_minimum_size = Vector2(44, 44)
+	gear.pressed.connect(func():
+		Audio.play("tap")
+		_open_settings())
+	row.add_child(gear)
 	var bars := HBoxContainer.new()
 	bars.add_theme_constant_override("separation", 10)
 	vb.add_child(bars)
@@ -310,6 +321,8 @@ func _open_sheet(kind: String, height := 560) -> void:
 	for ch in sheet_body.get_children():
 		ch.queue_free()
 	(sheet.get_child(0) as Control).custom_minimum_size.y = height
+	if not sheet.visible:
+		Audio.play("open")
 	sheet.visible = true
 	bottom_bar.visible = false
 	sheet.pivot_offset = Vector2(sheet.size.x / 2.0, sheet.size.y)
@@ -318,6 +331,8 @@ func _open_sheet(kind: String, height := 560) -> void:
 	tw.tween_property(sheet, "modulate:a", 1.0, 0.15)
 
 func _close_sheet() -> void:
+	if sheet.visible:
+		Audio.play("close")
 	sheet.visible = false
 	sheet_kind = ""
 	sheet_room = -1
@@ -434,6 +449,11 @@ func _open_room(id: int) -> void:
 	d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	sheet_body.add_child(d)
 	room_live_labels = {}
+	if def.has("produces") == false and r.incident > 0.0:
+		var hz := _label("", 22, Color(1.0, 0.6, 0.5))
+		hz.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		hz.text = "%s · %s" % [tr(Game.HAZARDS[r.hazard].label), tr("Drag colonists here to help!")]
+		sheet_body.add_child(hz)
 	if r.type == "dock":
 		_dock_section(r)
 	if def.has("produces"):
@@ -446,7 +466,8 @@ func _open_room(id: int) -> void:
 		sheet_body.add_child(_label(tr("Workers (%d/%d) · needs %s") % [Game.workers_in(r).size(), slots, tr(stat_name)], 22, ACCENT))
 		for c in Game.workers_in(r):
 			var row := HBoxContainer.new()
-			var l := _label("%s  ·  %s %d  ·  ♥ %d" % [c.name, tr(stat_name), c[def.stat], int(c.health)], 21)
+			var l := _button("%s  ·  %s %d  ·  ♥ %d" % [c.name, tr(stat_name), c[def.stat], int(c.health)], _open_colonist.bind(c.id), 56)
+			l.alignment = HORIZONTAL_ALIGNMENT_LEFT
 			l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			row.add_child(l)
 			var out := _button("Remove", func():
@@ -497,7 +518,7 @@ func _refresh_room_live() -> void:
 		var res: String = def.produces
 		var txt := ""
 		if r.incident > 0.0:
-			txt = tr("Hull breach! Repairs: %ds") % ceili(r.incident)
+			txt = "%s %d%% · %s" % [tr(Game.HAZARDS[r.hazard].label), int(r.incident), tr("Drag colonists here to help!")]
 		elif r.ready:
 			txt = tr("Ready: +%d %s. Tap the room!") % [int(Game.production_amount(r)), tr(Defs.RESOURCES[res].name).to_lower()]
 		else:
@@ -539,35 +560,207 @@ func _open_pick(room_id: int) -> void:
 
 # ---------------------------------------------------------------- колонисты
 
+func _portrait(c: Dictionary, size: int) -> Control:
+	var tex := Art.diver(c.suit)
+	var t := TextureRect.new()
+	t.texture = tex
+	t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	t.custom_minimum_size = Vector2(size * 0.75, size)
+	return t
+
+func _where(c: Dictionary) -> String:
+	if c.room == Game.ON_EXPEDITION:
+		return tr("On expedition")
+	if c.get("help", -1) != -1:
+		var hr := Game.get_room(c.help)
+		if not hr.is_empty():
+			return "%s: %s" % [tr(Game.HAZARDS.get(hr.hazard, {"label": "FIRE"}).label), tr(Defs.ROOMS[hr.type].name)]
+	if c.room == -1:
+		return tr("Idle (in airlock)")
+	return tr(Defs.ROOMS[Game.get_room(c.room).type].name)
+
 func _open_colonists() -> void:
-	_open_sheet("colonists", 640)
+	_open_sheet("colonists", 700)
 	_header(tr("Colonists (%d/%d)") % [Game.colonists.size(), Game.population_cap()])
-	sheet_body.add_child(_label("Drag a colonist into a room to assign them", 19, Color(0.7, 0.82, 0.92)))
+	sheet_body.add_child(_label(tr("Tap a colonist to see their stats"), 19, Color(0.7, 0.82, 0.92)))
 	for c in Game.colonists:
 		var card := PanelContainer.new()
-		card.add_theme_stylebox_override("panel", _box(Color(0.06, 0.16, 0.24, 0.9), Color(ACCENT, 0.3), 14))
+		var gold: bool = c.get("rarity", "") == "legendary"
+		card.add_theme_stylebox_override("panel", _box(Color(0.06, 0.16, 0.24, 0.9), Color(1.0, 0.8, 0.3, 0.8) if gold else Color(ACCENT, 0.3), 14))
+		var hb := HBoxContainer.new()
+		hb.add_theme_constant_override("separation", 12)
+		card.add_child(hb)
+		hb.add_child(_portrait(c, 76))
 		var vb := VBoxContainer.new()
-		card.add_child(vb)
+		vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		hb.add_child(vb)
 		var top := HBoxContainer.new()
-		var n := _label(tr("%s · lvl %d") % [c.name, c.level], 24)
+		var n := _label(tr("%s · lvl %d") % [c.name, c.level], 23, Color(1.0, 0.88, 0.5) if gold else Color.WHITE)
 		n.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		top.add_child(n)
-		top.add_child(_label("♥ %d" % int(c.health), 22, Color(1.0, 0.5, 0.5)))
+		top.add_child(_label("♥ %d" % int(c.health), 21, Color(1.0, 0.5, 0.5)))
 		vb.add_child(top)
-		var where: String = tr("Idle (in airlock)") if c.room == -1 else tr(Defs.ROOMS[Game.get_room(c.room).type].name)
-		vb.add_child(_label(tr("Strength %d · Tech %d · Biology %d · %s") % [c.str, c.tech, c.bio, where], 19, Color(0.75, 0.85, 0.95)))
+		vb.add_child(_label(tr("Strength %d · Tech %d · Biology %d · %s") % [c.str, c.tech, c.bio, _where(c)], 17, Color(0.75, 0.85, 0.95)))
 		var xp := ProgressBar.new()
 		xp.show_percentage = false
 		xp.custom_minimum_size = Vector2(0, 8)
 		xp.max_value = 90.0 * c.level
 		xp.value = c.xp
 		vb.add_child(xp)
+		var open := Button.new()
+		open.flat = true
+		open.set_anchors_preset(Control.PRESET_FULL_RECT)
+		open.pressed.connect(func():
+			Audio.play("tap")
+			_open_colonist(c.id))
+		card.add_child(open)
 		sheet_body.add_child(card)
-	var reset := _button("Start over", func():
-		Game.reset()
-		_close_sheet(), 56)
+
+# ---------------------------------------------------------------- карточка колониста
+
+func _stat_bar(name: String, value: int, col: Color, highlight: bool) -> Control:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	var l := _label(tr(name), 21, Color(1.0, 0.9, 0.6) if highlight else Color(0.85, 0.92, 1.0))
+	l.custom_minimum_size.x = 150
+	row.add_child(l)
+	var bar := Control.new()
+	bar.custom_minimum_size = Vector2(0, 26)
+	bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bar.draw.connect(func():
+		var w := bar.size.x
+		for i in 10:
+			var seg := Rect2(i * w / 10.0 + 2, 2, w / 10.0 - 4, bar.size.y - 4)
+			bar.draw_rect(seg, col if i < value else Color(0, 0, 0, 0.45))
+			if i < value:
+				bar.draw_rect(Rect2(seg.position, Vector2(seg.size.x, 5)), Color(1, 1, 1, 0.25)))
+	row.add_child(bar)
+	row.add_child(_label("%d" % value, 22))
+	return row
+
+func _open_colonist(id: int) -> void:
+	var c := Game.get_colonist(id)
+	if c.is_empty():
+		return
+	_open_sheet("colonist", 900)
+	var rarity: String = c.get("rarity", "common")
+	_header(c.name)
+	var top := HBoxContainer.new()
+	top.add_theme_constant_override("separation", 16)
+	top.add_child(_portrait(c, 170))
+	var info := VBoxContainer.new()
+	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info.add_child(_label(tr("Level %d") % c.level, 28, Color(1.0, 0.88, 0.5)))
+	var rcol: Color = {"common": Color(0.8, 0.85, 0.9), "rare": Color(0.5, 0.8, 1.0), "legendary": Color(1.0, 0.8, 0.3)}[rarity]
+	info.add_child(_label(tr("Rarity: %s") % tr(rarity.capitalize()), 19, rcol))
+	info.add_child(_label(tr("Works in: %s") % _where(c), 19, Color(0.8, 0.88, 0.95)))
+	info.add_child(_label("XP %d / %d" % [int(c.xp), int(90.0 * c.level)], 17, Color(0.7, 0.8, 0.9)))
+	var xp := ProgressBar.new()
+	xp.show_percentage = false
+	xp.custom_minimum_size = Vector2(0, 12)
+	xp.max_value = 90.0 * c.level
+	xp.value = c.xp
+	info.add_child(xp)
+	info.add_child(_label("%s %d%%" % [tr("Health"), int(c.health)], 17, Color(1.0, 0.6, 0.6)))
+	var hp := ProgressBar.new()
+	hp.show_percentage = false
+	hp.custom_minimum_size = Vector2(0, 12)
+	hp.value = c.health
+	var hp_fill := StyleBoxFlat.new()
+	hp_fill.bg_color = Color(0.9, 0.3, 0.35)
+	hp_fill.set_corner_radius_all(6)
+	hp.add_theme_stylebox_override("fill", hp_fill)
+	info.add_child(hp)
+	top.add_child(info)
+	sheet_body.add_child(top)
+
+	var best := Game.best_stat(c)
+	var cols := {"str": Color(1.0, 0.72, 0.25), "tech": Color(0.35, 0.85, 1.0), "bio": Color(0.45, 0.95, 0.5)}
+	for k in ["str", "tech", "bio"]:
+		var row := _stat_bar(Defs.STATS[k], c[k], cols[k], k == best)
+		var tb := _button(tr("Train ◆ %d") % Game.train_cost(c, k) if c[k] < 10 else "MAX", func():
+			Game.train(c, k)
+			_open_colonist(id), 50)
+		tb.custom_minimum_size.x = 170
+		tb.add_theme_font_size_override("font_size", 18)
+		tb.add_theme_color_override("font_color", Defs.RESOURCES.crystals.color)
+		tb.disabled = c[k] >= 10 or c.room == Game.ON_EXPEDITION
+		row.add_child(tb)
+		sheet_body.add_child(row)
+
+	sheet_body.add_child(_label(tr("Best job: %s") % tr(Defs.ROOMS[Game.best_job_type(c)].name), 20, Color(1.0, 0.9, 0.6)))
+	var how := _label(tr("How to grow") + ": " + tr("Colonists gain XP while working. Each level adds +1 to the skill their room needs, up to 10."), 17, Color(0.72, 0.82, 0.92))
+	how.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	sheet_body.add_child(how)
+
+	var actions := HBoxContainer.new()
+	actions.add_theme_constant_override("separation", 10)
+	var best_room := Game.best_room_for(c)
+	var ab := _button(tr("Assign to best room"), func():
+		Game.assign(c, Game.best_room_for(c))
+		_open_colonist(id), 68)
+	ab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	ab.disabled = best_room.is_empty() or best_room.id == c.room or c.room == Game.ON_EXPEDITION
+	actions.add_child(ab)
+	if c.health < 100.0:
+		var hb := _button(tr("Heal ◆ %d") % Game.heal_cost(c), func():
+			Game.heal(c)
+			_open_colonist(id), 68)
+		hb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		hb.add_theme_color_override("font_color", Defs.RESOURCES.crystals.color)
+		actions.add_child(hb)
+	sheet_body.add_child(actions)
+	sheet_body.add_child(_button(tr("Crew"), _open_colonists, 56))
+
+# ---------------------------------------------------------------- настройки
+
+func _toggle_row(title: String, on: bool, cb: Callable) -> void:
+	var row := _card(Color(0.05, 0.12, 0.2, 0.9), Color(ACCENT, 0.4))
+	var l := _label(tr(title), 24)
+	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(l)
+	var b := _button(tr("On") if on else tr("Off"), func():
+		cb.call(not on)
+		_open_settings(), 60)
+	b.custom_minimum_size.x = 150
+	if not on:
+		b.add_theme_color_override("font_color", Color(0.6, 0.6, 0.65))
+	row.add_child(b)
+
+func _open_settings() -> void:
+	_open_sheet("settings", 640)
+	_header(tr("Settings"))
+	_toggle_row("Music", Audio.music_on, Audio.set_music)
+	_toggle_row("Sounds", Audio.sfx_on, Audio.set_sfx)
+	_section(tr("Language"))
+	var langs := HBoxContainer.new()
+	langs.add_theme_constant_override("separation", 10)
+	for pair in [["en", "English"], ["ru", "Русский"]]:
+		var code: String = pair[0]
+		var b := _button(pair[1], func():
+			Audio.set_language(code)
+			_open_settings(), 64)
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if Audio.language == code:
+			b.add_theme_color_override("font_color", Color(1.0, 0.88, 0.5))
+			b.add_theme_stylebox_override("normal", _box(Color(0.25, 0.18, 0.05), Color(1.0, 0.8, 0.3), 14))
+		langs.add_child(b)
+	sheet_body.add_child(langs)
+	var gap := Control.new()
+	gap.custom_minimum_size.y = 20
+	sheet_body.add_child(gap)
+	var reset := _button(tr("Start over"), func(): pass, 60)
+	reset.pressed.connect(func():
+		if reset.get_meta("armed", false):
+			Game.reset()
+			_close_sheet()
+		else:
+			reset.set_meta("armed", true)
+			reset.text = tr("Tap again to erase all progress"))
 	reset.modulate = Color(1, 0.7, 0.7)
 	sheet_body.add_child(reset)
+	sheet_body.add_child(_label(tr("Version %s") % ProjectSettings.get_setting("application/config/version", "0.1"), 16, Color(0.55, 0.65, 0.75)))
 
 # ---------------------------------------------------------------- сообщения
 
@@ -728,6 +921,14 @@ func _open_shop() -> void:
 		if banner:
 			sheet_body.add_child(banner)
 		var offer := _card(Color(0.25, 0.1, 0.3, 0.92) if id == "starter_pack" else Color(0.25, 0.2, 0.05, 0.92), Color(1.0, 0.8, 0.4, 0.9))
+		var thumb := Art.tex("res://art/creatures/clownfish.png") if id == "starter_pack" else Art.diver(Art.CAPTAIN_SUIT)
+		if thumb:
+			var ti := TextureRect.new()
+			ti.texture = thumb
+			ti.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			ti.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			ti.custom_minimum_size = Vector2(72, 72)
+			offer.add_child(ti)
 		var oinfo := VBoxContainer.new()
 		oinfo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		oinfo.add_child(_label(tr(p.title), 26, Color(1.0, 0.9, 0.6)))
