@@ -120,6 +120,21 @@ func _process(delta: float) -> void:
 		bubble.offset_top = 150
 	else:
 		bubble.offset_top = vp.y - 360
+	bubble.anchor_left = 0.0
+	bubble.anchor_right = 1.0
+	bubble.offset_left = 16
+	bubble.offset_right = -16
+	if hud.landscape:
+		# горизонтально: подсказка в половине экрана, противоположной цели
+		var right_side: bool = r.size != Vector2.ZERO and r.get_center().x < vp.x * 0.5 and not hud.sheet.visible
+		var half: float = minf(vp.x * 0.45, vp.x - hud.SHEET_W_LANDSCAPE - 40.0)
+		if right_side:
+			bubble.anchor_left = 1.0
+			bubble.offset_left = -half
+		else:
+			bubble.anchor_right = 0.0
+			bubble.offset_right = 16 + half
+		bubble.offset_top = vp.y - 310 if (hud.sheet.visible or not target_low) else 150
 	bubble.offset_top += hud.safe_top
 	bubble.offset_bottom = bubble.offset_top
 	overlay.queue_redraw()

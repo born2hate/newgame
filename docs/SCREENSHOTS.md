@@ -25,3 +25,9 @@
 6. **Корабль торговца** (сбоку, смотрит влево, прозрачный фон): `green merchant submarine with cargo nets, lanterns and a shop sign`.
 7. **Картинки 5 зон экспедиций** (16:9): kelp forest, coral reef, sunken ship, hydrothermal vents, abyssal trench.
 8. Пузырь с сокровищем, иконки отсеков для меню стройки — по желанию.
+
+## Горизонтальный экран
+
+| | | |
+|---|---|---|
+| ![](screenshots/landscape_main.png)<br>**База** | ![](screenshots/landscape_room.png)<br>**Меню справа** | ![](screenshots/landscape_tut3.png)<br>**Обучение** |

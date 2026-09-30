@@ -111,18 +111,70 @@ func open_mode_picker() -> void:
 ## Отступы от выреза камеры, скруглённых углов и системных панелей (например, Samsung S25).
 var safe_top := 0.0
 
+var landscape := false
+const SHEET_W_LANDSCAPE := 700.0
+
 func apply_safe_area() -> void:
 	var win := DisplayServer.window_get_size()
+	if win.x <= 0:
+		return
+	_apply_orientation(win.x > win.y)
 	var safe := DisplayServer.get_display_safe_area()
-	if win.x <= 0 or safe.size.x <= 0:
+	if safe.size.x <= 0:
 		return
 	var vp := get_viewport().get_visible_rect().size
 	var k := vp.y / float(win.y)
 	var top := maxf(0.0, safe.position.y) * k
 	var bottom := maxf(0.0, float(win.y) - float(safe.end.y)) * k
+	# в горизонтальном положении вырез камеры сбоку
+	var left := maxf(0.0, safe.position.x) * k
+	var right := maxf(0.0, float(win.x) - float(safe.end.x)) * k
 	safe_top = top
 	root.offset_top = top
 	root.offset_bottom = -bottom
+	root.offset_left = left
+	root.offset_right = -right
+
+## Телефон повернули: меняем логический размер экрана и раскладку панелей.
+## Вертикально — 720×1280, меню снизу; горизонтально — 1280×720, меню справа.
+func _apply_orientation(land: bool) -> void:
+	if land == landscape and top_panel.has_meta("oriented"):
+		return
+	top_panel.set_meta("oriented", true)
+	landscape = land
+	get_tree().root.content_scale_size = Vector2i(1280, 720) if land else Vector2i(720, 1280)
+	if land:
+		sheet.anchor_left = 1.0
+		sheet.anchor_right = 1.0
+		sheet.anchor_top = 0.0
+		sheet.anchor_bottom = 1.0
+		sheet.offset_left = -SHEET_W_LANDSCAPE
+		sheet.offset_right = -12
+		sheet.offset_top = 12
+		sheet.offset_bottom = -12
+		# верхняя панель — только слева, чтобы не растягиваться на весь широкий экран
+		var win := DisplayServer.window_get_size()
+		var vp_w := maxf(1280.0, 720.0 * win.x / maxf(1.0, win.y))
+		top_panel.anchor_right = 0.0
+		top_panel.offset_right = 12 + minf(700.0, vp_w - SHEET_W_LANDSCAPE - 48.0)
+	else:
+		sheet.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+		sheet.offset_left = 12
+		sheet.offset_right = -12
+		sheet.offset_top = 0
+		sheet.offset_bottom = -12
+		top_panel.anchor_right = 1.0
+		top_panel.offset_right = -12
+	if sheet.visible:
+		var scroll := sheet.get_child(0) as ScrollContainer
+		scroll.custom_minimum_size.y = _sheet_height(int(scroll.get_meta("want", 560)))
+
+## Высота прокручиваемой части меню: горизонтально — на всю высоту экрана.
+func _sheet_height(want: int) -> int:
+	if not landscape:
+		return want
+	var vp := get_viewport().get_visible_rect().size
+	return int(vp.y - safe_top - 24 - 36)
 
 func start_tutorial() -> void:
 	if tutorial and is_instance_valid(tutorial):
@@ -137,6 +189,10 @@ func _process(delta: float) -> void:
 	if refresh_timer > 0.2:
 		refresh_timer = 0.0
 		_refresh_top()
+		# поворот телефона: не на всех устройствах приходит size_changed, поэтому проверяем сами
+		var win := DisplayServer.window_get_size()
+		if win.x > 0 and (win.x > win.y) != landscape:
+			apply_safe_area()
 		if sheet_kind == "room":
 			_refresh_room_live()
 		elif sheet_kind == "shop":
@@ -638,7 +694,8 @@ func _open_sheet(kind: String, height := 560) -> void:
 	for ch in sheet_body.get_children():
 		sheet_body.remove_child(ch)
 		ch.queue_free()
-	scroll.custom_minimum_size.y = height
+	scroll.set_meta("want", height)
+	scroll.custom_minimum_size.y = _sheet_height(height)
 	if not sheet.visible:
 		Audio.play("open")
 	sheet.visible = true
@@ -1293,6 +1350,12 @@ func _next_banner() -> void:
 		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		vb.add_child(d)
 	hb.add_child(vb)
+	# уведомление не должно перехватывать нажатия на кнопки под ним
+	for n in banner_node.find_children("*", "Control", true, false):
+		(n as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if landscape:
+		banner_node.anchor_right = 0.0
+		banner_node.offset_right = top_panel.offset_right - 12
 	# выезжает сверху, подпрыгивает, держится и уезжает
 	banner_node.offset_top = -160
 	banner_node.offset_bottom = -160

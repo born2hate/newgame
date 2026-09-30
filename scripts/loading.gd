@@ -67,6 +67,17 @@ func _ready() -> void:
 	bar.add_theme_stylebox_override("background", st)
 	bar.add_theme_stylebox_override("fill", fill)
 	add_child(bar)
+	var win := DisplayServer.window_get_size()
+	if win.x > win.y:
+		# горизонтальный экран: логотип сверху, купол поменьше, полоса у низа
+		logo.offset_top = 20
+		logo.offset_bottom = 330
+		dome.offset_left = -170
+		dome.offset_right = 170
+		dome.offset_top = -380
+		dome.offset_bottom = -180
+		bar.offset_top = -150
+		bar.offset_bottom = -126
 	var tip := Label.new()
 	tip.text = tr(TIPS.pick_random())
 	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -80,6 +91,11 @@ func _ready() -> void:
 	tip.add_theme_color_override("font_color", Color(0.9, 0.97, 1.0))
 	tip.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.8))
 	tip.add_theme_constant_override("outline_size", 6)
+	if win.x > win.y:
+		tip.offset_left = -420
+		tip.offset_right = 420
+		tip.offset_top = -115
+		tip.offset_bottom = -30
 	add_child(tip)
 
 func _process(delta: float) -> void:
