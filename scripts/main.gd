@@ -204,22 +204,22 @@ func _dev_screenshot() -> void:
 		"tut1": pass
 		"tut_top":
 			hud.root.offset_top = 90
-			hud.tutorial._show(2)
+			hud.tutorial._show(5)
 		"tut_card":
 			hud._open_build()
-			hud.tutorial._show(4)
+			hud.tutorial._show(2)
 		"tut_slot":
-			hud.tutorial._show(5)
+			hud.tutorial._show(3)
 			hud._start_build("living")
 			await get_tree().create_timer(0.6).timeout
 		"tut_reactor":
-			hud.tutorial._show(1)
+			hud.tutorial._show(0)
 		"tut2":
 			await get_tree().create_timer(4.0).timeout
 			Game.collect(Game.find_room_of_type("reactor"))
 			await get_tree().create_timer(0.3).timeout
 		"tut3":
-			hud.tutorial._show(6)
+			hud.tutorial._show(4)
 		"research":
 			Game.science = 180
 			Game.research_done = ["efficient_reactors", "hydroponics"]

@@ -663,3 +663,10 @@
 662|Üretilen ekipman
 663|Açılan sandıklar
 664|Kaybedilen / diriltilen sakinler
+665|Hoş geldin, gözetmen! Reaktör enerjiyle dolu — toplamak için dokun!
+666|Güzel! Yeni hayatta kalanlar geliyor. İnşa'ya dokun.
+667|Yaşam Alanı'nı seç.
+668|Yeşil alana dokun.
+669|Boştaki sakini boş yeri olan bir odaya sürükle.
+670|Yeteneklisin! Görevler'deki görevlerimi takip et. Bol şans!
+671|Hadi!

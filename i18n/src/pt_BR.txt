@@ -663,3 +663,10 @@
 662|Equipamento fabricado
 663|Baús abertos
 664|Colonos perdidos / revividos
+665|Bem-vindo, supervisor! O reator está cheio de energia — toque nele para coletar!
+666|Ótimo! Mais sobreviventes estão chegando. Toque em Construir.
+667|Escolha Alojamentos.
+668|Toque no espaço verde.
+669|Arraste o colono livre para uma sala com vaga.
+670|Você leva jeito! Siga minhas missões em Tarefas. Boa sorte!
+671|Vamos!

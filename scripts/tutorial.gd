@@ -13,17 +13,12 @@ var t := 0.0
 
 ## target: "room:<type>" | "button:<index>" | "top" | "" ; wait: как понять, что шаг выполнен.
 const STEPS := [
-	{"text": "Welcome, Overseer! I'm Commander Reyes. This colony at the bottom of the ocean is our last home. Let me show you around.", "target": "", "wait": "next"},
-	{"text": "The reactor has produced energy. Tap the reactor to collect it!", "target": "room:reactor", "wait": "event:collect_energy"},
-	{"text": "Great! Keep an eye on energy, oxygen and food up here. If they run out, colonists get hurt.", "target": "top", "wait": "next"},
-	{"text": "We need room for new survivors. Tap Build.", "target": "button:0", "wait": "sheet:build"},
-	{"text": "Choose Living Quarters from the list.", "target": "card:living", "wait": "build_mode"},
-	{"text": "Tap a glowing green slot to build it there.", "target": "slot", "wait": "event:build"},
-	{"text": "One colonist is idle in the airlock. Drag them with your finger into a room with free slots, like the Algae Farm.", "target": "drag", "wait": "event:assign"},
-	{"text": "Tap any colonist to see their skills, level and gear.", "target": "", "wait": "sheet:colonist"},
-	{"text": "Colonists level up while working. Put strong ones in the Reactor, techies in the O₂ Generator, biologists on the Farm.", "target": "", "wait": "next"},
-	{"text": "Story missions, daily tasks, research and achievements are in Tasks. Follow my missions and the colony will grow.", "target": "button:2", "wait": "sheet:tasks"},
-	{"text": "Watch out for fires, floods and sea creatures. Drag colonists into trouble to fix it. Good luck, Overseer!", "target": "", "wait": "next"},
+	{"text": "Welcome, Overseer! The reactor is full of energy — tap it to collect!", "target": "room:reactor", "wait": "event:collect_energy"},
+	{"text": "Nice! More survivors are coming. Tap Build.", "target": "button:0", "wait": "sheet:build"},
+	{"text": "Pick Living Quarters.", "target": "card:living", "wait": "build_mode"},
+	{"text": "Tap the green slot.", "target": "slot", "wait": "event:build"},
+	{"text": "Drag the idle colonist into a room with a free slot.", "target": "drag", "wait": "event:assign"},
+	{"text": "You're a natural! Follow my missions in Tasks. Good luck!", "target": "button:2", "wait": "next"},
 ]
 
 func _ready() -> void:
@@ -58,7 +53,7 @@ func _ready() -> void:
 	skip.add_theme_font_size_override("font_size", 16)
 	skip.modulate = Color(1, 1, 1, 0.7)
 	btns.add_child(skip)
-	next_btn = hud._button(tr("Next"), _advance, 52)
+	next_btn = hud._button(tr("Let's go!"), _advance, 52)
 	next_btn.custom_minimum_size.x = 140
 	btns.add_child(next_btn)
 	vb.add_child(btns)

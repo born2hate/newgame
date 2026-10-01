@@ -663,3 +663,10 @@
 662|Hergestellte Ausrüstung
 663|Geöffnete Kisten
 664|Verlorene / wiederbelebte Kolonisten
+665|Willkommen, Aufseher! Der Reaktor ist voller Energie – tippe ihn an, um sie einzusammeln!
+666|Gut! Weitere Überlebende kommen. Tippe auf Bauen.
+667|Wähle Wohnquartier.
+668|Tippe auf den grünen Platz.
+669|Zieh den freien Kolonisten in einen Raum mit freiem Platz.
+670|Du bist ein Naturtalent! Folge meinen Aufträgen unter Aufgaben. Viel Glück!
+671|Los geht's!

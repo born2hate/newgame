@@ -669,6 +669,13 @@ const T := {
 	"Gear crafted": "Hergestellte Ausrüstung",
 	"Crates opened": "Geöffnete Kisten",
 	"Colonists lost / revived": "Verlorene / wiederbelebte Kolonisten",
+	"Welcome, Overseer! The reactor is full of energy — tap it to collect!": "Willkommen, Aufseher! Der Reaktor ist voller Energie – tippe ihn an, um sie einzusammeln!",
+	"Nice! More survivors are coming. Tap Build.": "Gut! Weitere Überlebende kommen. Tippe auf Bauen.",
+	"Pick Living Quarters.": "Wähle Wohnquartier.",
+	"Tap the green slot.": "Tippe auf den grünen Platz.",
+	"Drag the idle colonist into a room with a free slot.": "Zieh den freien Kolonisten in einen Raum mit freiem Platz.",
+	"You're a natural! Follow my missions in Tasks. Good luck!": "Du bist ein Naturtalent! Folge meinen Aufträgen unter Aufgaben. Viel Glück!",
+	"Let's go!": "Los geht's!",
 }
 
 static func make() -> Translation:

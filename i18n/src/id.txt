@@ -663,3 +663,10 @@
 662|Perlengkapan dibuat
 663|Peti dibuka
 664|Kolonis gugur / dihidupkan
+665|Selamat datang, pengawas! Reaktor penuh energi — ketuk untuk mengumpulkannya!
+666|Bagus! Penyintas lain akan datang. Ketuk Bangun.
+667|Pilih Tempat Tinggal.
+668|Ketuk slot hijau.
+669|Seret kolonis yang menganggur ke ruangan dengan slot kosong.
+670|Kamu berbakat! Ikuti misiku di Tugas. Semoga berhasil!
+671|Ayo!

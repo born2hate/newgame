@@ -663,3 +663,10 @@
 662|Equipaggiamento creato
 663|Casse aperte
 664|Coloni persi / rianimati
+665|Benvenuto, supervisore! Il reattore è pieno di energia: toccalo per raccoglierla!
+666|Ottimo! Arrivano altri sopravvissuti. Tocca Costruisci.
+667|Scegli gli Alloggi.
+668|Tocca lo spazio verde.
+669|Trascina il colono libero in una stanza con un posto libero.
+670|Hai talento! Segui le mie missioni in Compiti. Buona fortuna!
+671|Andiamo!

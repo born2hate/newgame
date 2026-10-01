@@ -663,3 +663,10 @@
 662|Wytworzony sprzęt
 663|Otwarte skrzynie
 664|Straceni / ożywieni koloniści
+665|Witaj, nadzorco! Reaktor jest pełen energii — dotknij go, by ją zebrać!
+666|Świetnie! Nadciągają kolejni ocaleni. Dotknij Budowa.
+667|Wybierz kwatery mieszkalne.
+668|Dotknij zielonego miejsca.
+669|Przeciągnij wolnego kolonistę do pomieszczenia z wolnym miejscem.
+670|Masz talent! Wykonuj moje misje w Zadaniach. Powodzenia!
+671|Do dzieła!

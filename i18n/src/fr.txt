@@ -663,3 +663,10 @@
 662|Équipement fabriqué
 663|Caisses ouvertes
 664|Colons perdus / ranimés
+665|Bienvenue, superviseur ! Le réacteur est plein d'énergie — touche-le pour la récolter !
+666|Bien ! D'autres survivants arrivent. Touche Construire.
+667|Choisis les Quartiers.
+668|Touche l'emplacement vert.
+669|Glisse le colon libre dans une salle avec une place libre.
+670|Tu es doué ! Suis mes missions dans Tâches. Bonne chance !
+671|C'est parti !

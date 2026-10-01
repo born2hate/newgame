@@ -111,16 +111,13 @@ func run() -> void:
 	if tut == null or not is_instance_valid(tut):
 		issue("tutorial did not start")
 	else:
-		# шаг 0: далее
-		await press(find_button(tut, tr("Next")), "tutorial next 0")
-		# шаг 1: реактор готов — нажать на него
+		# шаг 0: реактор готов — нажать на него
 		var e0: float = Game.resources.energy
 		await tap(room_screen("reactor"))
 		if Game.resources.energy <= e0:
 			issue("tutorial: tap on reactor did not collect")
 		await wait(0.4)
-		await press(find_button(tut, tr("Next")), "tutorial next 2")
-		# шаг 3: кнопка «Стройка»
+		# шаг 1: кнопка «Стройка»
 		await tap(hud.bottom_bar.get_child(0).get_global_rect().get_center())
 		if hud.sheet_kind != "build":
 			issue("tutorial: build sheet did not open")
@@ -159,15 +156,18 @@ func run() -> void:
 			if idle.room == -1:
 				issue("drag colonist into room did not assign")
 		await wait(0.4)
-		# шаг 7: нажать на колониста
+		# последний шаг: «Вперёд!»
+		await press(find_button(tut, tr("Let's go!")), "tutorial finish")
+		await wait(0.3)
+		if is_instance_valid(tut) and not tut.is_queued_for_deletion():
+			issue("tutorial did not finish")
+		# нажать на колониста — открывается карточка
 		var cc: Dictionary = Game.colonists[0]
 		await tap(world_to_screen(view.colonist_world_pos(cc) + Vector2(0, -28)), Vector2.ZERO)
 		if hud.sheet_kind != "colonist":
 			issue("tap on colonist did not open card (" + hud.sheet_kind + ")")
 		await wait(0.4)
 		await close_sheet("colonist card")
-		if is_instance_valid(tut):
-			tut.finish()
 	await wait(0.5)
 	# 2. все меню: открыть, проверить края, закрыть крестиком
 	Game.pearls = 5000

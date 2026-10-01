@@ -664,3 +664,10 @@
 662|Equipo fabricado
 663|Cofres abiertos
 664|Colonos perdidos / revividos
+665|¡Bienvenido, supervisor! El reactor está lleno de energía: ¡tócalo para recogerla!
+666|¡Bien! Llegan más supervivientes. Toca Construir.
+667|Elige Viviendas.
+668|Toca el hueco verde.
+669|Arrastra al colono libre a una sala con hueco.
+670|¡Tienes talento! Sigue mis misiones en Tareas. ¡Suerte!
+671|¡Vamos!
