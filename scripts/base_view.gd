@@ -343,7 +343,7 @@ func _draw_pet() -> void:
 	var dir := signf(cos(t * 0.25))
 	var fw := 64.0
 	var fh := fw * tex.get_height() / tex.get_width()
-	draw_set_transform(Vector2(px, py + sin(t * 3.0) * 4.0), sin(t * 3.0) * 0.08, Vector2(-dir, 1))
+	draw_set_transform(Vector2(px, py + sin(t * 3.0) * 4.0), sin(t * 3.0) * 0.08, Vector2(dir, 1))
 	draw_texture_rect(tex, Rect2(-fw / 2.0, -fh / 2.0, fw, fh), false)
 	draw_set_transform(Vector2.ZERO)
 	# пузырьки за хвостом

@@ -380,6 +380,7 @@ func _dev_screenshot() -> void:
 			Audio.set_language("ru")
 			Game.grant_pet("puffer")
 			Game.grant_pet("lion")
+			Game.grant_pet("angel")
 			hud.open_pets()
 		"weapons_ru":
 			Audio.set_language("ru")
