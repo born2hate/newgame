@@ -1420,21 +1420,29 @@ func _stat_bar(name: String, value: int, col: Color, highlight: bool, key := "")
 ## Значок черты характера: картинка art/ui/traits/<id>.png или цветной кружок; нажатие — описание.
 func _trait_chip(t: String) -> Control:
 	var d: Dictionary = Defs.TRAITS[t]
-	var b := Button.new()
-	b.text = tr(d.name)
-	b.add_theme_font_size_override("font_size", 17)
-	b.add_theme_color_override("font_color", d.color)
-	b.custom_minimum_size = Vector2(0, 40)
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", _box(Color(0.06, 0.1, 0.16, 0.9), Color(d.color, 0.7), 18, 2))
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	var hb := HBoxContainer.new()
+	hb.add_theme_constant_override("separation", 4)
+	hb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(hb)
 	var tex := Art.tex("res://art/ui/traits/%s.png" % t)
 	if tex:
-		b.icon = tex
-		b.expand_icon = true
-		b.add_theme_constant_override("icon_max_width", 30)
-	var sb := _box(Color(0.06, 0.1, 0.16, 0.9), Color(d.color, 0.7), 18, 2)
-	for st in ["normal", "hover", "pressed", "focus"]:
-		b.add_theme_stylebox_override(st, sb)
-	b.pressed.connect(func(): show_toast("%s: %s" % [tr(d.name), tr(d.desc)]))
-	return b
+		var ti := TextureRect.new()
+		ti.texture = tex
+		ti.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		ti.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		ti.custom_minimum_size = Vector2(34, 34)
+		ti.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		hb.add_child(ti)
+	var l := _label(tr(d.name), 17, d.color)
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hb.add_child(l)
+	panel.gui_input.connect(func(ev: InputEvent):
+		if (ev is InputEventMouseButton and ev.pressed) or (ev is InputEventScreenTouch and ev.pressed):
+			show_toast("%s: %s" % [tr(d.name), tr(d.desc)]))
+	return panel
 
 func _open_colonist(id: int) -> void:
 	var c := Game.get_colonist(id)

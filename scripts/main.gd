@@ -144,6 +144,7 @@ func _dev_screenshot() -> void:
 			hud._open_shop()
 		"colonist_ru":
 			Audio.set_language("ru")
+			Game.colonists[0].traits = ["brave", "night_owl"]
 			hud._open_colonist(Game.colonists[0].id)
 		"hazards":
 			var fr := Game.find_room_of_type("farm")
