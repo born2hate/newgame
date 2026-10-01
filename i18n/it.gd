@@ -650,6 +650,7 @@ const T := {
 	"Need to dig deeper": "Bisogna scavare più a fondo",
 	"Research %s to build in the next depth zone.": "Ricerca %s per costruire nella zona di profondità successiva.",
 	"Highlighted: what to research, step by step.": "Evidenziato: cosa ricercare, passo dopo passo.",
+	"%s attacks the %s!": "%s attacca: %s!",
 }
 
 static func make() -> Translation:

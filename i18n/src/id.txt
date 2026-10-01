@@ -644,3 +644,4 @@
 643|Perlu menggali lebih dalam
 644|Teliti %s untuk membangun di zona kedalaman berikutnya.
 645|Disorot: apa yang perlu diteliti, langkah demi langkah.
+646|%s menyerang: %s!

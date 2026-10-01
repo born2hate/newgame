@@ -644,3 +644,4 @@
 643|Trzeba kopać głębiej
 644|Zbadaj %s, by budować w następnej strefie głębokości.
 645|Podświetlone: co badać, krok po kroku.
+646|%s atakuje: %s!

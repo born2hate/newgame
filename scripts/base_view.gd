@@ -909,22 +909,57 @@ func _draw_hazard(r: Dictionary, inner: Rect2) -> void:
 			draw_rect(inner, Color(0.5, 0.0, 0.0, 0.12 + 0.06 * sin(t * 5.0)))
 			_draw_raiders(r, inner)
 		"creature":
-			draw_rect(inner, Color(0.6, 0.0, 0.2, 0.15 + 0.1 * sin(t * 6.0)))
-			var fishy := Art.tex("res://art/creatures/anglerfish.png")
+			draw_rect(inner, Color(0.6, 0.0, 0.2, 0.12 + 0.08 * sin(t * 6.0)))
+			var cid: String = r.get("creature", "angler")
+			var fishy := Art.tex("res://art/creatures/boss_%s.png" % cid)
+			if fishy == null:
+				fishy = Art.tex("res://art/creatures/anglerfish.png")
 			if fishy:
-				var fw := inner.size.x * 0.5
-				var fh := fw * fishy.get_height() / fishy.get_width()
-				var lunge := sin(t * 2.5) * inner.size.x * 0.2
-				var fx := inner.get_center().x + lunge
-				draw_set_transform(Vector2(fx, inner.get_center().y + sin(t * 5.0) * 4.0), sin(t * 5.0) * 0.1, Vector2(signf(cos(t * 2.5)) * -1.0, 1))
+				var fh := inner.size.y * 0.72
+				var fw := minf(inner.size.x * 0.55, fh * fishy.get_width() / fishy.get_height())
+				fh = fw * fishy.get_height() / fishy.get_width()
+				var lunge := sin(t * 2.5) * inner.size.x * 0.18
+				var fc := Vector2(inner.get_center().x + lunge, inner.end.y - fh / 2.0 - 4 + sin(t * 5.0) * 3.0)
+				var face := -signf(cos(t * 2.5))
+				# красное свечение, чтобы монстр читался издалека
+				draw_circle(fc, fh * 0.55, Color(1.0, 0.15, 0.1, 0.18 + 0.08 * sin(t * 8.0)))
+				draw_set_transform(fc, sin(t * 5.0) * 0.08, Vector2(face, 1))
 				draw_texture_rect(fishy, Rect2(-fw / 2.0, -fh / 2.0, fw, fh), false)
 				draw_set_transform(Vector2.ZERO)
 	# полоса угрозы и подпись
 	var bar := Rect2(inner.position.x + 8, inner.position.y + 26, inner.size.x - 16, 10)
 	draw_rect(bar, Color(0, 0, 0, 0.6))
 	draw_rect(Rect2(bar.position, Vector2(bar.size.x * hp, bar.size.y)), Color(1.0, 0.3, 0.2))
-	var label: String = Game.HAZARDS[r.hazard].label
-	_text(Vector2(inner.get_center().x, bar.end.y + 26), tr(label), 22, Color(1.0, 0.9, 0.8, 0.7 + 0.3 * sin(t * 8.0)), true)
+	var label: String = tr(Game.HAZARDS[r.hazard].label)
+	if r.hazard == "creature":
+		# кто напал — имя монстра вместо общего «НАПАДЕНИЕ»
+		label = tr(Game.CREATURE_NAMES.get(r.get("creature", "angler"), "Anglerfish")).to_upper()
+	# подпись над полосой, чтобы не закрывать то, что происходит в отсеке; не шире отсека
+	var fs := 17
+	while fs > 11 and font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > inner.size.x - 20:
+		fs -= 1
+	var lw := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	draw_rect(Rect2(Vector2(inner.get_center().x - lw / 2.0 - 8, bar.end.y + 3), Vector2(lw + 16, 22)), Color(0.35, 0.0, 0.0, 0.75))
+	_text(Vector2(inner.get_center().x, bar.end.y + 20), label, fs, Color(1.0, 0.9, 0.8, 0.75 + 0.25 * sin(t * 8.0)), true)
+	# издалека (камера отдалена) — большой мигающий значок над отсеком
+	if camera and camera.zoom.x < 0.95:
+		var ip := Vector2(inner.get_center().x, inner.position.y - 34)
+		var s := 30.0 / camera.zoom.x * 0.6
+		draw_circle(ip, s, Color(0.85, 0.1, 0.1, 0.75 + 0.25 * sin(t * 6.0)))
+		draw_arc(ip, s, 0, TAU, 24, Color(1, 1, 1, 0.9), 3.0)
+		var icon_tex: Texture2D = null
+		match r.hazard:
+			"creature": icon_tex = Art.tex("res://art/creatures/boss_%s.png" % r.get("creature", "angler"))
+			"fire": icon_tex = Art.tex("res://art/fx/fire_4.png")
+			"flood": icon_tex = Art.tex("res://art/fx/splash_0.png")
+			"raid": icon_tex = Art.tex("res://art/creatures/raider_1.png")
+		if icon_tex:
+			var iw := s * 1.5
+			var ih := iw * icon_tex.get_height() / icon_tex.get_width()
+			if ih > iw:
+				ih = iw
+				iw = ih * icon_tex.get_width() / icon_tex.get_height()
+			draw_texture_rect(icon_tex, Rect2(ip - Vector2(iw, ih) / 2.0, Vector2(iw, ih)), false)
 
 static func _short_time(sec: float) -> String:
 	var s := maxi(0, int(sec))

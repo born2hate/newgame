@@ -398,6 +398,20 @@ func _dev_screenshot() -> void:
 			Audio.set_language("ru")
 			hud.more.open_research(Game.next_depth_research())
 			await get_tree().create_timer(0.5).timeout
+		"creature_ru":
+			Audio.set_language("ru")
+			Game.start_hazard(Game.find_room_of_type("farm"), "creature")
+			Game.start_hazard(Game.find_room_of_type("oxygen"), "creature")
+			camera.position = Vector2(700, 200)
+			camera.zoom = Vector2(1.3, 1.3)
+			await get_tree().create_timer(0.8).timeout
+		"creature_far":
+			Audio.set_language("ru")
+			Game.start_hazard(Game.find_room_of_type("farm"), "creature")
+			Game.start_hazard(Game.find_room_of_type("oxygen"), "fire")
+			camera.position = Vector2(700, 300)
+			camera.zoom = Vector2(0.5, 0.5)
+			await get_tree().create_timer(0.8).timeout
 		"expedition_ru":
 			Audio.set_language("ru")
 			var d2 := Game._add_room("dock", 3, 1)

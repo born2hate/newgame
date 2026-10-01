@@ -644,3 +644,4 @@
 643|Bisogna scavare più a fondo
 644|Ricerca %s per costruire nella zona di profondità successiva.
 645|Evidenziato: cosa ricercare, passo dopo passo.
+646|%s attacca: %s!

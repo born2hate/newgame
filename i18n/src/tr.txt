@@ -644,3 +644,4 @@
 643|Daha derine kazmak gerek
 644|Bir sonraki derinlik bölgesinde inşa etmek için %s araştır.
 645|Vurgulananlar: adım adım ne araştırılmalı.
+646|%s saldırıyor: %s!

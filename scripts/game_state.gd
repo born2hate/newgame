@@ -1795,6 +1795,8 @@ func _end_raid(won: bool) -> void:
 		banner.emit("raid", tr("The pirates got away"), tr("They escaped with %d pearls.") % stolen)
 	changed.emit()
 var incident_timer := 200.0
+## Кто нападает на отсеки (картинки — art/creatures/boss_<id>.png в уменьшенном виде).
+const CREATURE_NAMES := {"angler": "Anglerfish", "crab": "Giant Crab", "squid": "Giant Squid", "serpent": "Sea Serpent"}
 ## Без людей: сколько секунд беда разгорается, как быстро потом гаснет и как часто перекидывается.
 const BURN_PEAK := 40.0
 const BURN_OUT_RATE := 0.6
@@ -1835,7 +1837,13 @@ func start_hazard(room: Dictionary, kind: String, hp := 100.0) -> void:
 	room.incident = hp
 	room.spread = 0.0
 	room["burn"] = 0.0
-	message.emit(tr(HAZARDS[kind].msg) % tr(Defs.ROOMS[room.type].name))
+	if kind == "creature":
+		# кто именно напал: чем глубже, тем страшнее
+		var pool := ["angler", "crab"] if room.row < 5 else (["angler", "crab", "squid"] if room.row < 10 else ["squid", "serpent", "crab"])
+		room["creature"] = pool.pick_random()
+		message.emit(tr("%s attacks the %s!") % [tr(CREATURE_NAMES[room.creature]), tr(Defs.ROOMS[room.type].name)])
+	else:
+		message.emit(tr(HAZARDS[kind].msg) % tr(Defs.ROOMS[room.type].name))
 	event.emit("incident")
 	changed.emit()
 
