@@ -792,3 +792,24 @@
 791|Powitaj %d dzieci
 792|Złap nieznajomego %d razy
 793|Zbuduj %d etapy projektów
+794|Skarbonka skarbów
+795|Wszystkie kryształy zebrane podczas gry.
+796|Pakiet bohatera
+797|Legendarny trójząb, 300 kryształów i złota skrzynia. Następnym razem potwór nie ucieknie!
+798|Pakiet budowniczego
+799|15 000 pereł, 30 złomu i 15 drutu miedzianego na wielkie budowy.
+800|Pakiet medyka
+801|Zwierzak-uzdrowiciel Tang, 80 kryształów i srebrna skrzynia. Utrzymaj wszystkich przy życiu.
+802|Oferta specjalna!
+803|W sklepie przez 24 godziny czeka limitowany pakiet.
+804|Koło fortuny
+805|Jeden darmowy obrót dziennie!
+806|Darmowy obrót wykorzystany. Wróć jutro!
+807|Kręć!
+808|Kryształy zbierają się, gdy zbierasz zasoby. Rozbij skarbonkę i weź wszystko!
+809|Napełnia się podczas zbierania. Można otworzyć od %d kryształów.
+810|Darmowy obrót
+811|Obrót za wideo
+812|Kręć ◆ %d
+813|Płatne obroty dziś: %d / %d
+814|Dziś −40%!

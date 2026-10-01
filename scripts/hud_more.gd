@@ -705,3 +705,163 @@ func open_projects() -> void:
 		if not b.disabled:
 			hud._gold(b)
 		vb.add_child(b)
+
+
+# ---------------------------------------------------------------- магазин: наборы, копилка, колесо
+
+func add_shop_extras() -> void:
+	# наборы по поводу (живут 24 часа)
+	for oid in Game.active_offers():
+		var p: Dictionary = Store.product(oid)
+		if p.is_empty() or not Store.can_buy(oid):
+			continue
+		hud._section(tr("Special offer") + " · " + hud._clock(Game.offer_left(oid)))
+		var row: HBoxContainer = hud._card(Color(0.3, 0.1, 0.25, 0.95), Color(1.0, 0.8, 0.4, 0.95))
+		var info := VBoxContainer.new()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info.add_child(hud._label(tr(p.title), 24, Color(1.0, 0.9, 0.6)))
+		var d: Label = hud._label(tr(p.desc), 17, Color(0.92, 0.9, 0.95))
+		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		info.add_child(d)
+		info.add_child(hud._reward_chips(p.reward, 28, 17))
+		row.add_child(info)
+		var pid: String = oid
+		var b: Button = hud._button(p.price, func():
+			Store.purchase(pid)
+			hud._open_shop(), 72)
+		hud._gold(b)
+		b.custom_minimum_size.x = 140
+		row.add_child(b)
+	# колесо удачи
+	var wrow: HBoxContainer = hud._card(Color(0.12, 0.08, 0.25, 0.92), Color(0.75, 0.55, 1.0, 0.8))
+	var wi := VBoxContainer.new()
+	wi.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	wi.add_child(hud._label(tr("Lucky wheel"), 24, Color(0.9, 0.8, 1.0)))
+	wi.add_child(hud._label(tr("One free spin every day!") if Game.wheel_free_ready() else tr("Free spin used. Come back tomorrow!"), 17, Color(0.8, 0.85, 0.95)))
+	wrow.add_child(wi)
+	var wb: Button = hud._button(tr("Spin!") if Game.wheel_free_ready() else tr("Open"), open_wheel, 64)
+	if Game.wheel_free_ready():
+		hud._gold(wb)
+	wb.custom_minimum_size.x = 150
+	wrow.add_child(wb)
+	# копилка
+	var prow: HBoxContainer = hud._card(Color(0.25, 0.15, 0.05, 0.92), Color(1.0, 0.75, 0.35, 0.8))
+	var pi := VBoxContainer.new()
+	pi.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	pi.add_child(hud._label(tr("Treasure Piggy Bank"), 24, Color(1.0, 0.85, 0.5)))
+	var pr := HBoxContainer.new()
+	pr.add_theme_constant_override("separation", 6)
+	pr.add_child(hud._icon("crystals", 26))
+	pr.add_child(hud._label("%d / %d" % [int(Game.piggy), int(Game.PIGGY_CAP)], 20, Defs.RESOURCES.crystals.color))
+	pi.add_child(pr)
+	var pbar := ProgressBar.new()
+	pbar.show_percentage = false
+	pbar.custom_minimum_size = Vector2(0, 12)
+	pbar.max_value = Game.PIGGY_CAP
+	pbar.value = Game.piggy
+	pi.add_child(pbar)
+	var hint: Label = hud._label(tr("Crystals pile up as you collect. Break it to take them all!") if Game.piggy_can_break() else tr("Fills up as you collect. Can be opened from %d crystals.") % int(Game.PIGGY_MIN), 15, Color(0.85, 0.8, 0.7))
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	pi.add_child(hint)
+	prow.add_child(pi)
+	var pb: Button = hud._button(Store.product("piggy_bank").price, func():
+		Store.purchase("piggy_bank")
+		hud._open_shop(), 64)
+	pb.disabled = not Game.piggy_can_break()
+	pb.custom_minimum_size.x = 140
+	prow.add_child(pb)
+
+## Колесо удачи: сектора с призами, стрелка сверху; крутится и останавливается на призе.
+var wheel_ctrl: Control
+var wheel_angle := 0.0
+var wheel_busy := false
+
+func open_wheel() -> void:
+	hud._open_sheet("wheel", 860)
+	hud._header(tr("Lucky wheel"))
+	wheel_ctrl = Control.new()
+	wheel_ctrl.custom_minimum_size = Vector2(0, 460)
+	wheel_ctrl.draw.connect(_draw_wheel)
+	hud.sheet_body.add_child(wheel_ctrl)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	hud.sheet_body.add_child(row)
+	if Game.wheel_free_ready():
+		var fb: Button = hud._button(tr("Free spin"), func(): _spin("free"), 70)
+		hud._gold(fb)
+		fb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(fb)
+	else:
+		if Game.wheel_ad_ready():
+			var ab: Button = hud._button(tr("Spin for a video"), func(): Store.show_rewarded(func(): _spin("ad")), 70)
+			hud._with_icon(ab, "ad", 34)
+			ab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			row.add_child(ab)
+		var cb: Button = hud._button("", func(): _spin("paid"), 70)
+		hud.set_cost_text(cb, tr("Spin ◆ %d") % Defs.WHEEL_CRYSTAL_COST)
+		cb.disabled = not Game.wheel_paid_ready()
+		cb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(cb)
+	hud.sheet_body.add_child(hud._label(tr("Paid spins today: %d / %d") % [Game.wheel_paid, Defs.WHEEL_PAID_PER_DAY], 16, Color(0.7, 0.8, 0.9)))
+
+func _spin(kind: String) -> void:
+	if wheel_busy:
+		return
+	var idx := Game.spin_wheel(kind)
+	if idx < 0:
+		return
+	wheel_busy = true
+	var n := Defs.WHEEL.size()
+	var sector := TAU / n
+	# стрелка сверху: сектор idx должен встать под неё
+	var target := -PI / 2.0 - (idx + 0.5) * sector
+	var base := wheel_angle - fmod(wheel_angle, TAU)
+	var final_angle := base + TAU * 5.0 + fposmod(target, TAU)
+	var tw: Tween = hud.create_tween()
+	tw.tween_method(func(a):
+		wheel_angle = a
+		if is_instance_valid(wheel_ctrl):
+			wheel_ctrl.queue_redraw(), wheel_angle, final_angle, 3.2).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
+	tw.tween_callback(func():
+		wheel_busy = false
+		Game.grant_wheel(idx)
+		Audio.play("crate")
+		open_wheel())
+
+func _draw_wheel() -> void:
+	var c := wheel_ctrl.size / 2.0
+	var r := minf(c.x, c.y) - 16.0
+	var n := Defs.WHEEL.size()
+	var sector := TAU / n
+	wheel_ctrl.draw_circle(c, r + 12, Color(0.8, 0.6, 0.25))
+	wheel_ctrl.draw_circle(c, r + 6, Color(0.25, 0.15, 0.08))
+	for i in n:
+		var a0 := wheel_angle + i * sector
+		var pts := PackedVector2Array([c])
+		for k in 17:
+			var a := a0 + sector * k / 16.0
+			pts.append(c + Vector2(cos(a), sin(a)) * r)
+		var col: Color = Defs.WHEEL[i].color
+		wheel_ctrl.draw_colored_polygon(pts, col.darkened(0.15 if i % 2 == 0 else 0.35))
+		wheel_ctrl.draw_line(c, c + Vector2(cos(a0), sin(a0)) * r, Color(0.2, 0.12, 0.06), 3.0)
+		var am := a0 + sector / 2.0
+		var ip := c + Vector2(cos(am), sin(am)) * r * 0.68
+		var rw: Dictionary = Defs.WHEEL[i].reward
+		var items: Array = hud._reward_items(rw) if not rw.has("blueprint") else [["blueprint", ""]]
+		if not items.is_empty():
+			var tex := Art.marker_icon(items[0][0])
+			if tex:
+				wheel_ctrl.draw_texture_rect(tex, Rect2(ip - Vector2(24, 24), Vector2(48, 48)), false)
+			var txt: String = str(items[0][1]) if not rw.has("blueprint") else ""
+			if txt != "" and not txt.begins_with("×"):
+				var f := ThemeDB.fallback_font
+				var tw := f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 18).x
+				var tp := ip + Vector2(-tw / 2.0, 40)
+				wheel_ctrl.draw_string_outline(f, tp, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 18, 4, Color(0, 0, 0, 0.8))
+				wheel_ctrl.draw_string(f, tp, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color.WHITE)
+	wheel_ctrl.draw_circle(c, 34, Color(0.8, 0.6, 0.25))
+	wheel_ctrl.draw_circle(c, 26, Color(0.35, 0.2, 0.08))
+	# стрелка сверху
+	var tip := c + Vector2(0, -r + 18)
+	wheel_ctrl.draw_colored_polygon(PackedVector2Array([tip, tip + Vector2(-20, -40), tip + Vector2(20, -40)]), Color(1.0, 0.3, 0.3))
+	wheel_ctrl.draw_polyline(PackedVector2Array([tip, tip + Vector2(-20, -40), tip + Vector2(20, -40), tip]), Color(1, 1, 1, 0.9), 2.0)

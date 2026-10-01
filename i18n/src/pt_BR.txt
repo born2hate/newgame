@@ -792,3 +792,24 @@
 791|Receba %d crianças
 792|Pegue o estranho %d vezes
 793|Construa %d etapas de projetos
+794|Cofrinho do tesouro
+795|Todos os cristais guardados enquanto você joga.
+796|Pacote do herói
+797|Tridente lendário, 300 cristais e um baú de ouro. Da próxima vez o monstro não escapa!
+798|Pacote do construtor
+799|15.000 pérolas, 30 sucatas e 15 fios de cobre para as grandes obras.
+800|Pacote do médico
+801|O mascote curador Tang, 80 cristais e um baú de prata. Mantenha todos vivos.
+802|Oferta especial!
+803|Um pacote limitado está na loja por 24 horas.
+804|Roda da sorte
+805|Um giro grátis todo dia!
+806|Giro grátis usado. Volte amanhã!
+807|Girar!
+808|Os cristais se acumulam enquanto você coleta. Quebre e pegue todos!
+809|Enche enquanto você coleta. Pode ser aberto a partir de %d cristais.
+810|Giro grátis
+811|Girar por um vídeo
+812|Girar ◆ %d
+813|Giros pagos hoje: %d / %d
+814|−40% hoje!

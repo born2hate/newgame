@@ -27,6 +27,19 @@ const IAP := [
 	{"id": "season_pass", "title": "Season Pass", "price": "$4.99", "banner": "season",
 		"desc": "Unlock premium rewards on every season tier: crystals, gold crates and a Legendary colonist",
 		"reward": {"season_pass": true}},
+	# копилка: кристаллы копятся во время игры, разбить — за деньги (награда считается при покупке)
+	{"id": "piggy_bank", "title": "Treasure Piggy Bank", "price": "$2.99", "banner": "piggy",
+		"desc": "All the crystals saved up while you play.", "reward": {}},
+	# наборы по поводу: появляются после события и действуют 24 часа
+	{"id": "offer_hero", "title": "Hero Bundle", "price": "$4.99", "one_time": true,
+		"desc": "Legendary Trident, 300 crystals and a Gold Crate. Next time the monster won't get away!",
+		"reward": {"item": "legendary", "item_base": "trident", "crystals": 300, "crates": {"gold": 1}}},
+	{"id": "offer_builder", "title": "Builder Bundle", "price": "$3.99", "one_time": true,
+		"desc": "15,000 pearls, 30 scrap and 15 copper wire for the big builds ahead.",
+		"reward": {"pearls": 15000, "materials": {"scrap": 30, "copper": 15}}},
+	{"id": "offer_medic", "title": "Medic Bundle", "price": "$1.99", "one_time": true,
+		"desc": "The healer pet Tang, 80 crystals and a Silver Crate. Keep everyone alive.",
+		"reward": {"pet": "tang", "crystals": 80, "crates": {"silver": 1}}},
 	{"id": "crystals_60", "title": "Handful of Crystals", "price": "$0.99", "reward": {"crystals": 60}, "pack": 0},
 	{"id": "crystals_330", "title": "Pouch of Crystals", "price": "$4.99", "reward": {"crystals": 330}, "pack": 1},
 	{"id": "crystals_700", "title": "Chest of Crystals", "price": "$9.99", "reward": {"crystals": 700}, "pack": 2},
@@ -55,6 +68,10 @@ func is_owned(id: String) -> bool:
 	return id in Game.owned_products
 
 func can_buy(id: String) -> bool:
+	if id == "piggy_bank":
+		return Game.piggy_can_break()
+	if id.begins_with("offer_") and not Game.offer_active(id):
+		return false
 	if id == "season_pass":
 		return not Game.season_pass
 	if id == "no_ads" and Game.ads_removed():
@@ -75,7 +92,12 @@ func _deliver(id: String) -> void:
 	var p := product(id)
 	if p.get("one_time", false):
 		Game.owned_products.append(id)
-	Game.grant(p.reward, tr(p.title))
+	var reward: Dictionary = p.reward
+	if id == "piggy_bank":
+		reward = {"crystals": Game.break_piggy()}
+	if id.begins_with("offer_"):
+		Game.close_offer(id)
+	Game.grant(reward, tr(p.title))
 	Game.save_game()
 	purchase_finished.emit(id, true)
 
@@ -99,9 +121,16 @@ func buy_with_pearls(id: String) -> void:
 			Game.grant(item.reward, tr(item.title))
 			Game.save_game()
 
+## Скидка дня: каждый день один товар за кристаллы дешевле на 40%.
+func daily_deal_id() -> String:
+	return CRYSTAL_ITEMS[Game.today() % CRYSTAL_ITEMS.size()].id
+
+func crystal_price(item: Dictionary) -> int:
+	return int(round(item.cost * 0.6)) if item.id == daily_deal_id() else int(item.cost)
+
 func buy_with_crystals(id: String) -> void:
 	for item in CRYSTAL_ITEMS:
-		if item.id == id and Game.spend_crystals(item.cost):
+		if item.id == id and Game.spend_crystals(crystal_price(item)):
 			Game.grant(item.reward, tr(item.title))
 			Game.save_game()
 

@@ -792,3 +792,24 @@
 791|Sambut %d anak
 792|Tangkap orang asing %d kali
 793|Bangun %d tahap proyek
+794|Celengan Harta
+795|Semua kristal yang terkumpul selama bermain.
+796|Paket Pahlawan
+797|Trisula legendaris, 300 kristal, dan peti emas. Lain kali monster takkan lolos!
+798|Paket Pembangun
+799|15.000 mutiara, 30 rongsok, dan 15 kawat tembaga untuk proyek besar.
+800|Paket Medis
+801|Peliharaan penyembuh Tang, 80 kristal, dan peti perak. Jaga semua tetap hidup.
+802|Penawaran khusus!
+803|Paket terbatas menunggu di Toko selama 24 jam.
+804|Roda keberuntungan
+805|Satu putaran gratis setiap hari!
+806|Putaran gratis sudah dipakai. Kembali besok!
+807|Putar!
+808|Kristal menumpuk saat kamu mengumpulkan. Pecahkan dan ambil semuanya!
+809|Terisi saat kamu mengumpulkan. Bisa dibuka mulai %d kristal.
+810|Putar gratis
+811|Putar dengan video
+812|Putar ◆ %d
+813|Putaran berbayar hari ini: %d / %d
+814|−40% hari ini!

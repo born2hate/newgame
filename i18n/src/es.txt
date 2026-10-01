@@ -793,3 +793,24 @@
 791|Da la bienvenida a %d niños
 792|Atrapa al desconocido %d veces
 793|Construye %d etapas de proyectos
+794|Hucha del tesoro
+795|Todos los cristales ahorrados mientras juegas.
+796|Pack de héroe
+797|Tridente legendario, 300 cristales y un cofre de oro. ¡La próxima vez el monstruo no escapará!
+798|Pack de constructor
+799|15.000 perlas, 30 de chatarra y 15 de cable de cobre para las grandes obras.
+800|Pack de médico
+801|La mascota sanadora Tang, 80 cristales y un cofre de plata. Mantén a todos con vida.
+802|¡Oferta especial!
+803|Un pack limitado te espera en la tienda durante 24 horas.
+804|Rueda de la suerte
+805|¡Un giro gratis cada día!
+806|Giro gratis usado. ¡Vuelve mañana!
+807|¡Girar!
+808|Los cristales se acumulan al recolectar. ¡Rómpela y llévatelos todos!
+809|Se llena al recolectar. Se puede abrir desde %d cristales.
+810|Giro gratis
+811|Girar por un vídeo
+812|Girar ◆ %d
+813|Giros de pago hoy: %d / %d
+814|¡−40% hoy!

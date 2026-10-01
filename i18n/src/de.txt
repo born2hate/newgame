@@ -792,3 +792,24 @@
 791|Begrüße %d Kinder
 792|Erwische den Fremden %d Mal
 793|Baue %d Projektstufen
+794|Schatz-Sparschwein
+795|Alle Kristalle, die sich beim Spielen angesammelt haben.
+796|Heldenpaket
+797|Legendärer Dreizack, 300 Kristalle und eine Goldkiste. Nächstes Mal entkommt das Monster nicht!
+798|Baumeisterpaket
+799|15.000 Perlen, 30 Schrott und 15 Kupferdraht für die großen Bauten.
+800|Sanitäterpaket
+801|Das Heiler-Haustier Tang, 80 Kristalle und eine Silberkiste. Halte alle am Leben.
+802|Sonderangebot!
+803|Ein limitiertes Paket wartet 24 Stunden im Shop.
+804|Glücksrad
+805|Jeden Tag ein Gratis-Dreh!
+806|Gratis-Dreh verbraucht. Komm morgen wieder!
+807|Drehen!
+808|Kristalle sammeln sich beim Einsammeln an. Zerbrich es und nimm alle!
+809|Füllt sich beim Einsammeln. Ab %d Kristallen zu öffnen.
+810|Gratis drehen
+811|Für ein Video drehen
+812|Drehen ◆ %d
+813|Bezahlte Drehungen heute: %d / %d
+814|Heute −40%!

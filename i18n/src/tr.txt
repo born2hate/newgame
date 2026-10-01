@@ -792,3 +792,24 @@
 791|%d çocuğu karşıla
 792|Yabancıyı %d kez yakala
 793|%d proje aşaması inşa et
+794|Hazine kumbarası
+795|Oynarken biriken tüm kristaller.
+796|Kahraman paketi
+797|Efsanevi zıpkın, 300 kristal ve altın sandık. Bir dahaki sefere canavar kaçamayacak!
+798|İnşaatçı paketi
+799|Büyük yapılar için 15.000 inci, 30 hurda ve 15 bakır tel.
+800|Doktor paketi
+801|Şifacı evcil hayvan Tang, 80 kristal ve gümüş sandık. Herkesi hayatta tut.
+802|Özel teklif!
+803|Mağazada 24 saatliğine sınırlı bir paket seni bekliyor.
+804|Şans çarkı
+805|Her gün bir bedava çevirme!
+806|Bedava çevirme kullanıldı. Yarın gel!
+807|Çevir!
+808|Topladıkça kristaller birikir. Kır ve hepsini al!
+809|Topladıkça dolar. %d kristalden itibaren açılabilir.
+810|Bedava çevir
+811|Video karşılığı çevir
+812|Çevir ◆ %d
+813|Bugünkü ücretli çevirmeler: %d / %d
+814|Bugün −%40!

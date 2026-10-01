@@ -458,6 +458,20 @@ const CHAINS := [
 		{"goal": ["project", 1], "reward": {"crystals": 15}}]},
 ]
 
+## Колесо удачи: призы и веса (шансы показываются игроку).
+const WHEEL := [
+	{"w": 30, "reward": {"pearls": 150}, "color": Color(1.0, 0.75, 0.9)},
+	{"w": 15, "reward": {"pearls": 400}, "color": Color(1.0, 0.6, 0.85)},
+	{"w": 20, "reward": {"materials": {"scrap": 6}}, "color": Color(0.7, 0.72, 0.8)},
+	{"w": 10, "reward": {"materials": {"copper": 4}}, "color": Color(0.95, 0.6, 0.3)},
+	{"w": 12, "reward": {"crystals": 5}, "color": Color(0.5, 0.8, 1.0)},
+	{"w": 8, "reward": {"crates": {"silver": 1}}, "color": Color(0.85, 0.9, 1.0)},
+	{"w": 4, "reward": {"blueprint": "rare"}, "color": Color(0.3, 0.55, 1.0)},
+	{"w": 1, "reward": {"crates": {"gold": 1}}, "color": Color(1.0, 0.8, 0.3)},
+]
+const WHEEL_CRYSTAL_COST := 20
+const WHEEL_PAID_PER_DAY := 5
+
 const PROJECT_STAGES := 3
 const PROJECT_STAGE_MULT := [1.0, 2.5, 6.0]
 

@@ -792,3 +792,24 @@
 791|Accueille %d enfants
 792|Attrape l'inconnu %d fois
 793|Construis %d étapes de projets
+794|Tirelire au trésor
+795|Tous les cristaux mis de côté pendant que tu joues.
+796|Pack du héros
+797|Trident légendaire, 300 cristaux et une caisse en or. La prochaine fois, le monstre ne s'échappera pas !
+798|Pack du bâtisseur
+799|15 000 perles, 30 ferrailles et 15 fils de cuivre pour les grands chantiers.
+800|Pack du médecin
+801|Le familier soigneur Tang, 80 cristaux et une caisse en argent. Garde tout le monde en vie.
+802|Offre spéciale !
+803|Un pack limité t'attend à la boutique pendant 24 heures.
+804|Roue de la fortune
+805|Un tour gratuit chaque jour !
+806|Tour gratuit utilisé. Reviens demain !
+807|Tourner !
+808|Les cristaux s'accumulent quand tu récoltes. Casse-la pour tout prendre !
+809|Se remplit quand tu récoltes. S'ouvre à partir de %d cristaux.
+810|Tour gratuit
+811|Tourner contre une vidéo
+812|Tourner ◆ %d
+813|Tours payants aujourd'hui : %d / %d
+814|−40 % aujourd'hui !

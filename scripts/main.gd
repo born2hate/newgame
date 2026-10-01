@@ -535,6 +535,14 @@ func _dev_screenshot() -> void:
 			camera.position = Vector2(650, 200)
 			camera.zoom = Vector2(1.6, 1.6)
 			await get_tree().create_timer(1.0).timeout
+		"wheel_ru":
+			Audio.set_language("ru")
+			hud.more.open_wheel()
+		"shopx_ru":
+			Audio.set_language("ru")
+			Game.piggy = 132.0
+			Game.offer_trigger("offer_hero")
+			hud._open_shop()
 		"projects_ru":
 			Audio.set_language("ru")
 			Game.colony_level = 10

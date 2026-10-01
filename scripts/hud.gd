@@ -697,7 +697,7 @@ func _refresh_top() -> void:
 		tasks_badge.visible = Game.quests_ready() > 0 or Game.season_claimable() > 0 or Game.story_ready() or Game.achievements_ready() > 0 or Game.chains_ready() > 0
 		tasks_badge.queue_redraw()
 	if shop_badge:
-		shop_badge.visible = Game.daily_available() or Game.free_crate_ready()
+		shop_badge.visible = Game.daily_available() or Game.free_crate_ready() or Game.wheel_free_ready() or not Game.active_offers().is_empty()
 		shop_badge.queue_redraw()
 	for k in res_bars:
 		res_bars[k].queue_redraw()
@@ -1748,6 +1748,7 @@ func _open_shop() -> void:
 	wallet.add_child(_icon("crystals", 28))
 	wallet.add_child(_label(str(Game.crystals), 22, Defs.RESOURCES.crystals.color))
 	sheet_body.add_child(wallet)
+	more.add_shop_extras()
 
 	_section(tr("Free"))
 	var daily := _card(Color(0.2, 0.12, 0.05, 0.9), Color(1.0, 0.75, 0.3, 0.8))
@@ -1920,11 +1921,15 @@ func _open_shop() -> void:
 		var l := _label(tr(item.title), 22)
 		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(l)
-		var cb := _button("◆ %d" % item.cost, func():
+		var cprice := Store.crystal_price(item)
+		if item.id == Store.daily_deal_id():
+			l.text = tr(item.title) + "  " + tr("−40% today!")
+			l.add_theme_color_override("font_color", Color(1.0, 0.85, 0.35))
+		var cb := _button("◆ %d" % cprice, func():
 			Store.buy_with_crystals(item.id)
 			_open_shop(), 60)
 		cb.add_theme_color_override("font_color", Defs.RESOURCES.crystals.color)
-		cb.disabled = Game.crystals < item.cost
+		cb.disabled = Game.crystals < cprice
 		cb.custom_minimum_size.x = 140
 		row.add_child(cb)
 
@@ -1956,6 +1961,20 @@ func _open_shop() -> void:
 		var l := _label("%s: %s" % [tr(Defs.CRATES[type].name), ", ".join(parts)], 16, Color(0.65, 0.75, 0.85))
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		sheet_body.add_child(l)
+	var wparts := []
+	var wodds := Game.wheel_odds()
+	for i in Defs.WHEEL.size():
+		var it: Array = _reward_items(Defs.WHEEL[i].reward) if not Defs.WHEEL[i].reward.has("blueprint") else [["blueprint", tr("Blueprint")]]
+		var nm: String = it[0][1] if not it.is_empty() else "?"
+		var key: String = it[0][0] if not it.is_empty() else ""
+		if key == "pearls": nm = tr("%d pearls") % int(Defs.WHEEL[i].reward.pearls)
+		elif key == "crystals": nm = tr("%d crystals") % int(Defs.WHEEL[i].reward.crystals)
+		elif key.begins_with("crate_"): nm = tr(Defs.CRATES[key.trim_prefix("crate_")].name)
+		elif key.begins_with("mat_"): nm = "%s ×%s" % [tr(Defs.MATERIALS[key.trim_prefix("mat_")].name), nm]
+		wparts.append("%s %d%%" % [nm, roundi(wodds[i] * 100.0)])
+	var wl := _label("%s: %s" % [tr("Lucky wheel"), ", ".join(wparts)], 16, Color(0.65, 0.75, 0.85))
+	wl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	sheet_body.add_child(wl)
 	if Store.DEV_MODE:
 		sheet_body.add_child(_label(tr("Test mode: purchases are free and no money is charged."), 16, Color(1.0, 0.6, 0.6)))
 	_refresh_shop_live()

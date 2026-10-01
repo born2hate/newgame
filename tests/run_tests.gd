@@ -571,6 +571,32 @@ func _initialize() -> void:
 	check(ul.arrival_speed() > 0.0, "пустое радио слабо, но вещает")
 	ul.free()
 
+	# копилка, колесо удачи, наборы по поводу
+	var mg = load("res://scripts/game_state.gd").new()
+	mg.new_game()
+	check(not mg.piggy_can_break(), "копилка пуста")
+	for i in 2000:
+		mg._piggy_add(mg.PIGGY_PER_COLLECT)
+	check(mg.piggy_can_break() and mg.piggy <= mg.PIGGY_CAP, "копилка наполнилась (не больше предела)")
+	var pig: int = mg.break_piggy()
+	check(pig >= 60 and mg.piggy == 0.0, "копилку разбили")
+	var wsum := 0.0
+	for o in mg.wheel_odds():
+		wsum += o
+	check(absf(wsum - 1.0) < 0.001, "шансы колеса в сумме 100%")
+	var widx: int = mg.spin_wheel("free")
+	check(widx >= 0 and widx < Defs.WHEEL.size(), "бесплатное вращение")
+	check(mg.spin_wheel("free") == -1, "второе бесплатное — только завтра")
+	mg.crystals = 100
+	check(mg.spin_wheel("paid") >= 0 and mg.crystals == 80, "платное вращение за кристаллы")
+	mg.grant_wheel(widx)
+	mg.offer_trigger("offer_hero")
+	check(mg.offer_active("offer_hero") and mg.offer_left("offer_hero") > 86000.0, "набор героя на 24 часа")
+	mg.close_offer("offer_hero")
+	mg.offer_trigger("offer_hero")
+	check(not mg.offer_active("offer_hero"), "набор показывается только один раз")
+	mg.free()
+
 	# цепочки заданий
 	var ch = load("res://scripts/game_state.gd").new()
 	ch.new_game()

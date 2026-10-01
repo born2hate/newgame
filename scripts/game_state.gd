@@ -62,6 +62,14 @@ var blueprints: Array = []
 var craft_jobs: Dictionary = {}
 ## Проекты колонии: id → построенных этапов.
 var projects: Dictionary = {}
+## Копилка: кристаллы, накопленные за игру; колесо удачи; наборы по поводу.
+var piggy := 0.0
+var wheel_day := -1
+var wheel_free_used := false
+var wheel_ad_used := false
+var wheel_paid := 0
+var offers: Dictionary = {}
+var offers_seen: Array = []
 ## Цепочки заданий: id → {"step": номер шага, "count": прогресс шага}.
 var chains: Dictionary = {}
 
@@ -170,6 +178,13 @@ func new_game() -> void:
 	projects = {}
 	pet_xp = {}
 	chains = {}
+	piggy = 0.0
+	wheel_day = -1
+	wheel_free_used = false
+	wheel_ad_used = false
+	wheel_paid = 0
+	offers = {}
+	offers_seen = []
 	storm_until = 0.0
 	storm_next = 0.0
 	owned_products = []
@@ -893,6 +908,7 @@ func collect(room: Dictionary, silent := false, combo_ok := true) -> void:
 	track("collect_" + res, int(amount))
 	track("collect")
 	_pet_gain(1)
+	_piggy_add(PIGGY_PER_COLLECT)
 	changed.emit()
 
 func _collect_gear(room: Dictionary, silent: bool) -> void:
@@ -983,6 +999,106 @@ func claim_craft(room: Dictionary) -> Dictionary:
 	event.emit("upgrade")
 	changed.emit()
 	return it
+
+# ---------------------------------------------------------------- копилка, колесо, наборы
+
+const PIGGY_CAP := 250.0
+const PIGGY_MIN := 60.0
+const PIGGY_PER_COLLECT := 0.04
+
+func _piggy_add(x: float) -> void:
+	piggy = minf(PIGGY_CAP, piggy + x)
+
+func piggy_can_break() -> bool:
+	return piggy >= PIGGY_MIN
+
+func break_piggy() -> int:
+	var n := int(piggy)
+	piggy = 0.0
+	return n
+
+func _wheel_refresh() -> void:
+	if wheel_day != today():
+		wheel_day = today()
+		wheel_free_used = false
+		wheel_ad_used = false
+		wheel_paid = 0
+
+func wheel_free_ready() -> bool:
+	_wheel_refresh()
+	return not wheel_free_used
+
+func wheel_ad_ready() -> bool:
+	_wheel_refresh()
+	return wheel_free_used and not wheel_ad_used and ads_left() > 0
+
+func wheel_paid_ready() -> bool:
+	_wheel_refresh()
+	return wheel_paid < Defs.WHEEL_PAID_PER_DAY and crystals >= Defs.WHEEL_CRYSTAL_COST
+
+## Шансы призов колеса (для показа игроку).
+func wheel_odds() -> Array:
+	var total := 0.0
+	for w in Defs.WHEEL:
+		total += float(w.w)
+	return Defs.WHEEL.map(func(w): return float(w.w) / total)
+
+## Крутить колесо: kind = free / ad / paid. Возвращает номер сектора (или -1).
+func spin_wheel(kind: String) -> int:
+	_wheel_refresh()
+	match kind:
+		"free":
+			if wheel_free_used:
+				return -1
+			wheel_free_used = true
+		"ad":
+			if wheel_ad_used:
+				return -1
+			wheel_ad_used = true
+		"paid":
+			if wheel_paid >= Defs.WHEEL_PAID_PER_DAY or not spend_crystals(Defs.WHEEL_CRYSTAL_COST):
+				return -1
+			wheel_paid += 1
+	var total := 0
+	for w in Defs.WHEEL:
+		total += int(w.w)
+	var roll := rng.randi_range(1, total)
+	var idx := 0
+	for i in Defs.WHEEL.size():
+		roll -= int(Defs.WHEEL[i].w)
+		if roll <= 0:
+			idx = i
+			break
+	track("wheel")
+	return idx
+
+## Выдать приз колеса (после анимации).
+func grant_wheel(idx: int) -> void:
+	var r: Dictionary = Defs.WHEEL[idx].reward.duplicate(true)
+	if r.has("blueprint"):
+		r.blueprint = random_blueprint(str(r.blueprint))
+	grant(r, tr("Lucky wheel"))
+
+## Набор по поводу: показывается один раз за игру и живёт 24 часа.
+func offer_trigger(id: String) -> void:
+	if id in offers_seen or id in owned_products:
+		return
+	offers_seen.append(id)
+	offers[id] = now() + 86400.0
+	banner.emit("shop", tr("Special offer!"), tr("A limited bundle is waiting in the Shop for 24 hours."))
+	changed.emit()
+
+func offer_active(id: String) -> bool:
+	return offers.has(id) and now() < float(offers[id])
+
+func offer_left(id: String) -> float:
+	return maxf(0.0, float(offers.get(id, 0.0)) - now())
+
+func close_offer(id: String) -> void:
+	offers.erase(id)
+
+func active_offers() -> Array:
+	return offers.keys().filter(func(k): return offer_active(k))
 
 # ---------------------------------------------------------------- цепочки заданий
 
@@ -2257,6 +2373,7 @@ func _end_boss(won: bool) -> void:
 		grant(r, tr("%s defeated!") % bname)
 	else:
 		banner.emit("leviathan", tr("%s swam away") % bname, tr("It will be back. Get stronger!"))
+		offer_trigger("offer_hero")
 	changed.emit()
 
 # ---------------------------------------------------------------- налёты пиратов
@@ -3107,6 +3224,8 @@ func colony_xp_needed() -> int:
 
 func add_colony_xp(x: int) -> void:
 	colony_xp += int(x * project_bonus("pearl_monument", 0.1))
+	if colony_level >= 10:
+		offer_trigger("offer_builder")
 	while colony_xp >= colony_xp_needed():
 		colony_xp -= colony_xp_needed()
 		colony_level += 1
@@ -3187,7 +3306,7 @@ func save_game() -> void:
 		"colonists": colonists, "next_id": next_id, "arrival_timer": arrival_timer,
 		"meta": {
 			"crystals": crystals, "crates": crates, "premium": premium, "no_ads": no_ads, "pet": pet, "pets_owned": pets_owned, "owned": owned_products,
-			"materials": materials, "blueprints": blueprints, "craft_jobs": craft_jobs, "projects": projects, "pet_xp": pet_xp, "chains": chains, "storm_until": storm_until, "storm_next": storm_next,
+			"materials": materials, "blueprints": blueprints, "craft_jobs": craft_jobs, "projects": projects, "pet_xp": pet_xp, "chains": chains, "piggy": piggy, "wheel": [wheel_day, wheel_free_used, wheel_ad_used, wheel_paid], "offers": offers, "offers_seen": offers_seen, "storm_until": storm_until, "storm_next": storm_next,
 			"boost_until": boost_until, "free_crate_at": free_crate_at,
 			"daily_day": daily_day, "daily_streak": daily_streak,
 			"expeditions": expeditions, "quests": quests, "quest_day": quest_day,
@@ -3259,6 +3378,11 @@ func load_game() -> bool:
 	craft_jobs = meta.get("craft_jobs", {})
 	pet_xp = meta.get("pet_xp", {})
 	chains = meta.get("chains", {})
+	piggy = float(meta.get("piggy", 0.0))
+	var wl: Array = meta.get("wheel", [-1, false, false, 0])
+	wheel_day = int(wl[0]); wheel_free_used = bool(wl[1]); wheel_ad_used = bool(wl[2]); wheel_paid = int(wl[3])
+	offers = meta.get("offers", {})
+	offers_seen = meta.get("offers_seen", [])
 	storm_until = float(meta.get("storm_until", 0.0))
 	storm_next = float(meta.get("storm_next", 0.0))
 	projects = {}
@@ -3415,6 +3539,7 @@ func _check_deaths() -> void:
 			c.health = 0.0
 			fallen.append({"c": c, "room": where, "until": now() + float(mode().revive_window)})
 			stats["deaths"] = stats.get("deaths", 0) + 1
+			offer_trigger("offer_medic")
 			var cause: String = c.get("last_hit", "other")
 			stats["death_" + cause] = stats.get("death_" + cause, 0) + 1
 			banner.emit("suit_%d" % c.suit, tr("Colonist lost"), tr("%s has died. Revive within %s for %d pearls.") % [c.name, (tr("%d h") % int(float(mode().revive_window) / 3600.0) if float(mode().revive_window) >= 3600.0 else tr("%d min") % int(float(mode().revive_window) / 60.0)), revive_cost(fallen[-1])])

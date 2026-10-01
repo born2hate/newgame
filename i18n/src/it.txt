@@ -792,3 +792,24 @@
 791|Accogli %d bambini
 792|Prendi lo sconosciuto %d volte
 793|Costruisci %d fasi di progetti
+794|Salvadanaio del tesoro
+795|Tutti i cristalli messi da parte mentre giochi.
+796|Pacchetto eroe
+797|Tridente leggendario, 300 cristalli e una cassa d'oro. La prossima volta il mostro non scappa!
+798|Pacchetto costruttore
+799|15.000 perle, 30 rottami e 15 fili di rame per le grandi opere.
+800|Pacchetto medico
+801|L'animale guaritore Tang, 80 cristalli e una cassa d'argento. Tieni tutti in vita.
+802|Offerta speciale!
+803|Un pacchetto limitato ti aspetta nel negozio per 24 ore.
+804|Ruota della fortuna
+805|Un giro gratis ogni giorno!
+806|Giro gratis usato. Torna domani!
+807|Gira!
+808|I cristalli si accumulano mentre raccogli. Rompilo e prendili tutti!
+809|Si riempie mentre raccogli. Si apre da %d cristalli.
+810|Giro gratis
+811|Gira per un video
+812|Gira ◆ %d
+813|Giri a pagamento oggi: %d / %d
+814|−40% oggi!
