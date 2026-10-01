@@ -505,9 +505,9 @@ func _initialize() -> void:
 	var ws: Dictionary = nw._add_room("workshop", 12, 1)
 	nw.colonists[1].room = ws.id
 	ws.ready = true
-	var ni: int = nw.items.size()
+	var nscrap: int = int(nw.materials.get("scrap", 0))
 	nw.collect(ws)
-	check(nw.items.size() == ni + 1, "мастерская делает снаряжение")
+	check(int(nw.materials.get("scrap", 0)) > nscrap, "мастерская без заказа делает металлолом")
 	nc.room = -1
 	nc.cha = 10
 	check(absf(nw.trade_discount() - 0.3) < 0.001, "обаяние 10 → скидка 30%")
@@ -568,6 +568,31 @@ func _initialize() -> void:
 	ul._add_room("radio", 1, 1)
 	check(ul.arrival_speed() > 0.0, "пустое радио слабо, но вещает")
 	ul.free()
+
+	# крафт по чертежам
+	var cg = load("res://scripts/game_state.gd").new()
+	cg.new_game()
+	var cws: Dictionary = cg._add_room("workshop", 3, 1)
+	cg.colonists[0].room = cws.id
+	check("spear:common" in cg.blueprints, "стартовые чертежи есть")
+	check(not cg.can_craft(cws, "spear:common"), "без материалов крафт нельзя")
+	for m in Defs.recipe("spear:common"):
+		cg.add_material(m, int(Defs.recipe("spear:common")[m]))
+	cg.pearls = 1000
+	check(cg.start_craft(cws, "spear:common"), "крафт начался")
+	check(cg.pearls == 700 and int(cg.materials.get("shell", 0)) == 0, "материалы и жемчуг списаны")
+	check(not cg.start_craft(cws, "spear:common"), "мастерская занята")
+	var items_n: int = cg.items.size()
+	cg.clock_offset += 3600.0
+	check(cg.craft_ready(cws), "вещь готова")
+	var made: Dictionary = cg.claim_craft(cws)
+	check(cg.items.size() == items_n + 1 and made.base == "spear" and made.rarity == "common", "получили костяное копьё")
+	check(not cg.can_craft(cws, "trident:rare"), "без чертежа нельзя")
+	check("Blueprint" in cg.learn_blueprint("trident:rare") or "trident:rare" in cg.blueprints, "чертёж выучен")
+	var lg := Defs.recipe("abyss_armor:legendary")
+	check(lg.has("abyss_pearl") and lg.has("kraken_ink"), "легендарный рецепт требует глубинных материалов")
+	cg.clock_offset -= 3600.0
+	cg.free()
 
 	# исследование как в Fallout: без таймера, игрок сам отзывает
 	var xg = load("res://scripts/game_state.gd").new()

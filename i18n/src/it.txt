@@ -717,3 +717,31 @@
 716|I tuoi esploratori sono ancora fuori
 717|Controlla la squadra in %s e richiamala prima che sia tardi.
 718|Grafica migliore
+719|Rottami
+720|Fibra d'alga
+721|Conchiglia perlata
+722|Ramo di corallo
+723|Filo di rame
+724|Cristallo di sorgente
+725|Inchiostro di kraken
+726|Perla abissale
+727|Progetto già noto: +3 rottami
+728|Nuovo progetto: %s
+729|Lavorazione avviata: %s
+730|L'equipaggiamento è pronto!
+731|%s ti aspetta in officina.
+732|Progetto
+733|Materiali
+734|Ancora nessun materiale. Trovali in spedizione; l'officina produce anche rottami.
+735|Progetti
+736|Crea
+737|Materiali o perle insufficienti
+738|L'officina è occupata
+739|Scegli un progetto qui sotto per iniziare.
+740|In lavorazione: %s
+741|Pronto!
+742|Ritira l'equipaggiamento
+743|Pronto tra %s
+744|{n} ha raccolto {v}.
+745|{n} ha trovato un progetto: {v}!
+746|Crea equipaggiamento da progetti e materiali, e produce rottami da sola. Serve Tecnica.

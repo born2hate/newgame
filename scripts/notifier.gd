@@ -43,6 +43,11 @@ func plan() -> Array:
 	var g = Game
 	var out := []
 	var tnow: float = g.now()
+	for rid in g.craft_jobs:
+		var cj: Dictionary = g.craft_jobs[rid]
+		var cl: float = float(cj.end) - tnow
+		if cl > 60.0:
+			out.append([cl, tr("Gear is ready!"), tr("%s is waiting in the Workshop.") % g.blueprint_name(cj.key)])
 	for e in g.expeditions:
 		if g.is_exploring(e):
 			# исследование без таймера — напомним заглянуть через пару часов

@@ -525,6 +525,20 @@ func _dev_screenshot() -> void:
 		"zoom":
 			camera.zoom = Vector2(1.5, 1.5)
 			camera.position = Vector2(200, 120)
+		"workshop_ru":
+			Audio.set_language("ru")
+			var wsr := Game._add_room("workshop", 7, 1)
+			Game.colonists[3].room = wsr.id
+			for m in ["scrap", "shell", "kelp_fiber", "coral", "copper"]:
+				Game.add_material(m, 6)
+			Game.add_material("vent_crystal", 2)
+			Game.pearls = 2500
+			Game.learn_blueprint("trident:rare")
+			Game.learn_blueprint("sonic_blaster:legendary")
+			Game.start_craft(wsr, "wrench:common")
+			view.room_selected.emit(wsr.id)
+			await get_tree().create_timer(0.4).timeout
+			(hud.sheet.get_child(0) as ScrollContainer).scroll_vertical = 230
 		"plan_explore_ru":
 			Audio.set_language("ru")
 			var dkp := Game._add_room("dock", 3, 1)

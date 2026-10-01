@@ -717,3 +717,31 @@
 716|Tes explorateurs sont toujours dehors
 717|Va voir l'équipe à %s et rappelle-la avant qu'il ne soit trop tard.
 718|Meilleurs graphismes
+719|Ferraille
+720|Fibre de varech
+721|Coquille nacrée
+722|Branche de corail
+723|Fil de cuivre
+724|Cristal de cheminée
+725|Encre de kraken
+726|Perle abyssale
+727|Plan déjà connu : +3 ferraille
+728|Nouveau plan : %s
+729|Fabrication lancée : %s
+730|L'équipement est prêt !
+731|%s t'attend à l'atelier.
+732|Plan
+733|Matériaux
+734|Pas encore de matériaux. Trouve-les en expédition ; l'atelier fait aussi de la ferraille.
+735|Plans
+736|Fabriquer
+737|Pas assez de matériaux ou de perles
+738|L'atelier est occupé
+739|Choisis un plan ci-dessous pour commencer.
+740|En fabrication : %s
+741|Prêt !
+742|Récupérer l'équipement
+743|Prêt dans %s
+744|{n} a ramassé {v}.
+745|{n} a trouvé un plan : {v} !
+746|Fabrique de l'équipement à partir de plans et de matériaux, et produit de la ferraille. Demande de la Technique.

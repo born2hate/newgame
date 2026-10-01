@@ -133,9 +133,9 @@ const ROOMS := {
 	},
 	"workshop": {
 		"name": "Workshop", "width": 2, "cost": 500, "buildable": true, "slots": 2,
-		"produces": "gear", "stat": "tech", "amount": 1.0, "cycle": 1200.0,
+		"produces": "gear", "stat": "tech", "amount": 1.0, "cycle": 600.0,
 		"energy": 0.2, "color": Color(1.0, 0.6, 0.3), "icon": "⚒", "unlock_pop": 25,
-		"desc": "Crafts new gear for your colonists. Needs Tech.",
+		"desc": "Crafts gear from blueprints and materials, and makes scrap on its own. Needs Tech.",
 	},
 	"armory": {
 		"name": "Armory", "width": 2, "cost": 450, "buildable": true, "slots": 2,
@@ -386,6 +386,64 @@ const ITEMS := [
 	{"id": "plasma_cutter", "kind": "weapon", "name": "Plasma Cutter", "stats": [], "atk": 5, "anim": "torch"},
 	{"id": "sonic_blaster", "kind": "weapon", "name": "Sonic Blaster", "stats": [], "atk": 5, "anim": "sonic"},
 ]
+## Материалы для крафта: находят в исследованиях и заданиях, снимают с пиратов,
+## мастерская сама понемногу делает металлолом.
+const MATERIALS := {
+	"scrap": {"name": "Scrap Metal", "color": Color(0.72, 0.74, 0.8)},
+	"kelp_fiber": {"name": "Kelp Fiber", "color": Color(0.45, 0.85, 0.4)},
+	"shell": {"name": "Pearl Shell", "color": Color(1.0, 0.82, 0.9)},
+	"coral": {"name": "Coral Branch", "color": Color(1.0, 0.5, 0.45)},
+	"copper": {"name": "Copper Wire", "color": Color(0.95, 0.6, 0.3)},
+	"vent_crystal": {"name": "Vent Crystal", "color": Color(0.4, 0.9, 1.0)},
+	"kraken_ink": {"name": "Kraken Ink", "color": Color(0.6, 0.35, 0.9)},
+	"abyss_pearl": {"name": "Abyss Pearl", "color": Color(0.95, 0.95, 1.0)},
+}
+## Что встречается в каждой зоне (первое — чаще всего).
+const ZONE_MATERIALS := {
+	"kelp": ["kelp_fiber", "shell", "scrap"],
+	"reef": ["coral", "shell", "kelp_fiber"],
+	"wreck": ["scrap", "copper", "coral"],
+	"vents": ["vent_crystal", "copper", "scrap"],
+	"trench": ["kraken_ink", "vent_crystal", "abyss_pearl"],
+}
+## Главный материал каждой вещи (кроме металлолома).
+const ITEM_MATERIAL := {
+	"wrench": "scrap", "harpoon": "copper", "torch": "vent_crystal", "scanner": "copper", "coral_knife": "coral",
+	"reactor_suit": "kelp_fiber", "engineer_suit": "copper", "medic_suit": "shell", "explorer_suit": "kelp_fiber",
+	"diving_armor": "scrap", "shark_mesh": "copper", "heat_plate": "vent_crystal", "kelp_vest": "kelp_fiber",
+	"coral_plate": "coral", "titan_suit": "copper", "abyss_armor": "kraken_ink",
+	"spear": "shell", "harpoon_gun": "copper", "shock_baton": "vent_crystal", "trident": "coral",
+	"plasma_cutter": "vent_crystal", "sonic_blaster": "kraken_ink",
+}
+const RARITIES := ["common", "rare", "legendary"]
+const CRAFT_PEARLS := [300, 1200, 4000]
+const CRAFT_MINUTES := [20, 60, 240]
+## Чертежи, известные с начала игры.
+const START_BLUEPRINTS := ["spear:common", "kelp_vest:common", "wrench:common", "reactor_suit:common"]
+
+## Рецепт: «вещь:редкость» → материалы.
+static func recipe(key: String) -> Dictionary:
+	var parts := key.split(":")
+	var base: String = parts[0]
+	var r: int = RARITIES.find(parts[1])
+	var mats := {}
+	var main: String = ITEM_MATERIAL.get(base, "scrap")
+	mats["scrap"] = [2, 4, 6][r]
+	mats[main] = int(mats.get(main, 0)) + [2, 4, 6][r]
+	if r >= 1:
+		var extra := "coral" if main == "copper" else "copper"
+		mats[extra] = int(mats.get(extra, 0)) + 2
+	if r >= 2:
+		mats["abyss_pearl"] = int(mats.get("abyss_pearl", 0)) + 1
+		mats["kraken_ink"] = int(mats.get("kraken_ink", 0)) + 2
+	return mats
+
+static func item_def(id: String) -> Dictionary:
+	for b in ITEMS:
+		if b.id == id:
+			return b
+	return {}
+
 const ITEM_RARITY := {
 	"common": {"name": "Common", "bonus": 1, "color": Color(0.8, 0.85, 0.9)},
 	"rare": {"name": "Rare", "bonus": 2, "color": Color(0.4, 0.75, 1.0)},

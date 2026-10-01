@@ -717,3 +717,31 @@
 716|Twoi odkrywcy wciąż są na zewnątrz
 717|Sprawdź drużynę w: %s i wezwij ją, zanim będzie za późno.
 718|Najlepsza grafika
+719|Złom
+720|Włókno wodorostów
+721|Muszla perłowa
+722|Gałąź koralu
+723|Drut miedziany
+724|Kryształ komina
+725|Atrament krakena
+726|Perła otchłani
+727|Plan już znany: +3 złomu
+728|Nowy plan: %s
+729|Rozpoczęto wytwarzanie: %s
+730|Sprzęt gotowy!
+731|%s czeka w warsztacie.
+732|Plan
+733|Materiały
+734|Brak materiałów. Znajdź je na wyprawach; warsztat sam robi złom.
+735|Plany
+736|Wytwórz
+737|Za mało materiałów lub pereł
+738|Warsztat jest zajęty
+739|Wybierz plan poniżej, aby zacząć.
+740|W produkcji: %s
+741|Gotowe!
+742|Odbierz sprzęt
+743|Gotowe za %s
+744|{n} podniósł: {v}.
+745|{n} znalazł plan: {v}!
+746|Wytwarza sprzęt z planów i materiałów, a sam robi złom. Wymaga Techniki.

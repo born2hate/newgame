@@ -56,6 +56,10 @@ var no_ads := false
 var pet := ""
 const PET_BONUS := 0.1
 var pets_owned: Array = []
+## Крафт: материалы, известные чертежи «вещь:редкость», работы мастерских (id отсека → работа).
+var materials: Dictionary = {}
+var blueprints: Array = []
+var craft_jobs: Dictionary = {}
 
 func has_pet(id: String) -> bool:
 	return pet == id
@@ -131,6 +135,9 @@ func new_game() -> void:
 	no_ads = false
 	pet = ""
 	pets_owned = []
+	materials = {}
+	blueprints = Defs.START_BLUEPRINTS.duplicate()
+	craft_jobs = {}
 	owned_products = []
 	boost_until = 0.0
 	free_crate_at = 0.0
@@ -462,6 +469,7 @@ func rush_chance(room: Dictionary) -> float:
 
 func simulate(delta: float, offline: bool) -> void:
 	_tick_explorations()
+	_tick_crafts()
 	var cap := storage_cap()
 	# расход
 	var energy_use := 0.0
@@ -808,25 +816,112 @@ func collect(room: Dictionary, silent := false, combo_ok := true) -> void:
 	changed.emit()
 
 func _collect_gear(room: Dictionary, silent: bool) -> void:
+	# мастерская без заказа сама разбирает хлам на металлолом (иногда — медь)
 	room.ready = false
 	room.progress = 0.0
-	var luck := 0.0
-	for c in workers_in(room):
-		luck += stat(c, "luck")
-	var roll := rng.randf()
-	var rarity := "common"
-	if roll < 0.04 + 0.005 * luck + 0.02 * (room.level - 1):
-		rarity = "legendary"
-	elif roll < 0.3 + 0.01 * luck + 0.1 * (room.level - 1):
-		rarity = "rare"
-	var it := add_item(rarity)
+	var n: int = 1 + room.level / 2
+	add_material("scrap", n)
+	var extra: bool = rng.randf() < 0.2 + 0.05 * room.level
+	if extra:
+		add_material("copper", 1)
 	track("collect")
-	track("craft")
 	if not silent:
-		floating_text.emit(room.id, "[item_%s]+1" % it.base, Defs.ITEM_RARITY[rarity].color)
-		banner.emit("item_" + it.base, tr("New gear crafted!"), "%s (%s)" % [item_name(it), tr(rarity.capitalize())])
-		event.emit("collect_energy")
+		floating_text.emit(room.id, "[mat_scrap]+%d" % n, Defs.MATERIALS.scrap.color)
 	changed.emit()
+
+# ---------------------------------------------------------------- крафт по чертежам
+
+func add_material(id: String, n: int) -> void:
+	materials[id] = int(materials.get(id, 0)) + n
+
+func has_materials(mats: Dictionary) -> bool:
+	for k in mats:
+		if int(materials.get(k, 0)) < int(mats[k]):
+			return false
+	return true
+
+func blueprint_name(key: String) -> String:
+	var parts := key.split(":")
+	var d := Defs.item_def(parts[0])
+	return "%s (%s)" % [tr(d.get("name", parts[0])), tr(Defs.ITEM_RARITY[parts[1]].name)]
+
+## Выучить чертёж; если уже есть — немного материалов взамен.
+func learn_blueprint(key: String) -> String:
+	if key in blueprints:
+		add_material("scrap", 3)
+		return tr("Blueprint already known: +3 scrap")
+	blueprints.append(key)
+	track("blueprint")
+	return tr("New blueprint: %s") % blueprint_name(key)
+
+## Случайный чертёж редкости, которого ещё нет (или любой).
+func random_blueprint(rarity: String) -> String:
+	var pool: Array = Defs.ITEMS.map(func(b): return "%s:%s" % [b.id, rarity]).filter(func(k): return not k in blueprints)
+	if pool.is_empty():
+		pool = Defs.ITEMS.map(func(b): return "%s:%s" % [b.id, rarity])
+	return pool.pick_random()
+
+func craft_cost(key: String) -> int:
+	return Defs.CRAFT_PEARLS[Defs.RARITIES.find(key.split(":")[1])]
+
+func craft_time(room: Dictionary, key: String) -> float:
+	var mins: float = Defs.CRAFT_MINUTES[Defs.RARITIES.find(key.split(":")[1])]
+	var speed: float = 1.0 + 0.04 * room_power(room) + 0.15 * (room.level - 1)
+	return mins * 60.0 / speed
+
+func craft_job(room: Dictionary) -> Dictionary:
+	return craft_jobs.get(str(room.id), {})
+
+func can_craft(room: Dictionary, key: String) -> bool:
+	return key in blueprints and craft_job(room).is_empty() and has_materials(Defs.recipe(key)) and pearls >= craft_cost(key)
+
+func start_craft(room: Dictionary, key: String) -> bool:
+	if not can_craft(room, key):
+		return false
+	var mats := Defs.recipe(key)
+	for k in mats:
+		materials[k] = int(materials[k]) - int(mats[k])
+	pearls -= craft_cost(key)
+	craft_jobs[str(room.id)] = {"key": key, "start": now(), "end": now() + craft_time(room, key)}
+	message.emit(tr("Crafting started: %s") % blueprint_name(key))
+	changed.emit()
+	return true
+
+func craft_ready(room: Dictionary) -> bool:
+	var j := craft_job(room)
+	return not j.is_empty() and now() >= float(j.end)
+
+func claim_craft(room: Dictionary) -> Dictionary:
+	if not craft_ready(room):
+		return {}
+	var j := craft_job(room)
+	craft_jobs.erase(str(room.id))
+	var parts: PackedStringArray = str(j.key).split(":")
+	var it := add_item(parts[1], parts[0])
+	track("craft")
+	banner.emit("item_" + it.base, tr("New gear crafted!"), "%s (%s)" % [item_name(it), tr(parts[1].capitalize())])
+	event.emit("upgrade")
+	changed.emit()
+	return it
+
+## Вещь доделана — сообщим один раз.
+func _tick_crafts() -> void:
+	for rid in craft_jobs:
+		var j: Dictionary = craft_jobs[rid]
+		if not j.get("told", false) and now() >= float(j.end):
+			j["told"] = true
+			banner.emit("item_" + str(j.key).split(":")[0], tr("Gear is ready!"), tr("%s is waiting in the Workshop.") % blueprint_name(j.key))
+
+func craft_finish_cost(room: Dictionary) -> int:
+	var j := craft_job(room)
+	return 0 if j.is_empty() else maxi(1, ceili((float(j.end) - now()) / 240.0))
+
+func finish_craft_now(room: Dictionary) -> void:
+	if not crystal_rush_allowed() or craft_job(room).is_empty() or craft_ready(room):
+		return
+	if spend_crystals(craft_finish_cost(room)):
+		craft_jobs[str(room.id)].end = now()
+		changed.emit()
 
 func collect_all() -> int:
 	var n := 0
@@ -995,6 +1090,11 @@ func grant(reward: Dictionary, title: String) -> void:
 		lines.append("[item_%s]" % it.base + tr("New gear: %s") % item_name(it))
 	if reward.has("pet"):
 		lines.append("[pet]" + grant_pet(str(reward.pet)))
+	for m in reward.get("materials", {}):
+		add_material(m, int(reward.materials[m]))
+		lines.append("[mat_%s]+%d %s" % [m, int(reward.materials[m]), tr(Defs.MATERIALS[m].name)])
+	if reward.has("blueprint"):
+		lines.append("[blueprint]" + learn_blueprint(str(reward.blueprint)))
 	if reward.get("no_ads", false):
 		no_ads = true
 		lines.append(tr("Ads removed. Rewards are now instant!"))
@@ -1084,6 +1184,15 @@ func open_crate(type: String) -> void:
 	if reward.has("crystals"):
 		crystals += reward.crystals
 		lines.append("[crystals]" + tr("+%d crystals") % reward.crystals)
+	# материалы, а в серебряном/золотом ещё и шанс на чертёж
+	var zm: Array = Defs.ZONE_MATERIALS.values()[mini(Defs.ZONE_MATERIALS.size() - 1, {"common": 1, "silver": 2, "gold": 3}[type])]
+	var mk: String = zm.pick_random()
+	var mn := rng.randi_range(1, 2) * (1 + ["common", "silver", "gold"].find(type))
+	add_material(mk, mn)
+	extra.append("[mat_%s]+%d %s" % [mk, mn, tr(Defs.MATERIALS[mk].name)])
+	if type != "common" and rng.randf() < (0.25 if type == "silver" else 0.5):
+		var bkey := random_blueprint("rare" if type == "silver" or rng.randf() < 0.8 else "legendary")
+		extra.append("[blueprint]" + learn_blueprint(bkey))
 	if type != "common" or rng.randf() < 0.3:
 		var rar := "common"
 		if type == "gold":
@@ -1282,7 +1391,9 @@ func _explore_event(e: Dictionary, t: float) -> void:
 		var p_item := p_crate + 0.07 + 0.02 * zone_idx
 		var p_surv := p_item + (0.02 if L.has("survivor") else 0.0)
 		var p_cr := p_surv + (0.06 if L.has("crystals") else 0.0)
-		var p_res := p_cr + (0.2 if L.has("resources") else 0.0)
+		var p_bp := p_cr + 0.02
+		var p_mat := p_bp + 0.25
+		var p_res := p_mat + (0.15 if L.has("resources") else 0.0)
 		if lr < p_crate:
 			got.crates = {L.crate: 1}
 		elif lr < p_item:
@@ -1293,6 +1404,12 @@ func _explore_event(e: Dictionary, t: float) -> void:
 			got.colonist = "rare"
 		elif lr < p_cr:
 			got.crystals = maxi(1, int(L.crystals[1] * 0.5))
+		elif lr < p_bp:
+			got.blueprint = random_blueprint("rare" if rng.randf() < 0.15 + 0.1 * zone_idx else "common")
+		elif lr < p_mat:
+			var zl: Array = Defs.ZONE_MATERIALS[zone.id]
+			var mid: String = zl[0] if rng.randf() < 0.55 else (zl[1] if rng.randf() < 0.7 else zl[2])
+			got.materials = {mid: rng.randi_range(1, 2) + (1 if hours > 2.0 else 0)}
 		elif lr < p_res:
 			got.resources = int(rng.randi_range(L.resources[0], L.resources[1]) * 0.5 * mult)
 		else:
@@ -1314,6 +1431,15 @@ func _explore_event(e: Dictionary, t: float) -> void:
 				e.loot["items"] = its
 			elif k == "colonist":
 				e.loot["colonists"] = int(e.loot.get("colonists", 0)) + 1
+			elif k == "materials":
+				var lm: Dictionary = e.loot.get("materials", {})
+				for m in got.materials:
+					lm[m] = int(lm.get(m, 0)) + int(got.materials[m])
+				e.loot["materials"] = lm
+			elif k == "blueprint":
+				var lb: Array = e.loot.get("blueprints", [])
+				lb.append(got.blueprint)
+				e.loot["blueprints"] = lb
 		var lines := []
 		for k in got:
 			var v := ""
@@ -1324,6 +1450,13 @@ func _explore_event(e: Dictionary, t: float) -> void:
 					v = item_name(base)
 				"item_base": continue
 				"crates": v = tr(Defs.CRATES[got[k].keys()[0]].name)
+				"materials":
+					var mm: String = got.materials.keys()[0]
+					lines.append(tr("{n} picked up {v}.").replace("{n}", who).replace("{v}", "%d× %s" % [got.materials[mm], tr(Defs.MATERIALS[mm].name)]))
+					continue
+				"blueprint":
+					lines.append(tr("{n} found a blueprint: {v}!").replace("{n}", who).replace("{v}", blueprint_name(got.blueprint)))
+					continue
 			var key: String = "crate" if k == "crates" else k
 			lines.append(tr(Defs.LOG_LOOT[key]).replace("{n}", who).replace("{v}", v))
 		ev.text = " ".join(lines)
@@ -1444,6 +1577,14 @@ func launch_expedition(dock_id: int, zone_idx: int, ids: Array) -> bool:
 	if L.has("survivor") and rng.randf() < L.survivor * f:
 		loot.colonist = "rare"
 	var events := _plan_expedition(zone_idx, ids, f, loot)
+	# материалы зоны — главная причина ходить в разные места (выдаются по возвращении)
+	var zmats: Array = Defs.ZONE_MATERIALS[zone.id]
+	var mats := {zmats[0]: rng.randi_range(1, 3) + zone_idx / 2}
+	if rng.randf() < 0.5:
+		mats[zmats[1]] = int(mats.get(zmats[1], 0)) + rng.randi_range(1, 2)
+	if rng.randf() < 0.2:
+		mats[zmats[2]] = int(mats.get(zmats[2], 0)) + 1
+	loot["materials"] = mats
 	var damage := {}
 	for ev in events:
 		for k in ev.get("hp", {}):
@@ -1732,6 +1873,9 @@ func claim_expedition(e: Dictionary) -> void:
 		for i in int(loot.get("colonists", 0)):
 			lines.append(_grant_colonist("rare"))
 		loot.erase("colonists")
+		for bk in loot.get("blueprints", []):
+			lines.append("[blueprint]" + learn_blueprint(bk))
+		loot.erase("blueprints")
 	if loot.get("resources", 0) > 0:
 		for r in resources:
 			resources[r] = minf(storage_cap(), resources[r] + loot.resources)
@@ -1865,7 +2009,16 @@ func _end_boss(won: bool) -> void:
 	boss = {}
 	if won:
 		var r := {"pearls": 300 + 120 * tier, "crystals": 3 + tier / 2}
-		if rng.randf() < 0.35:
+		# боссы — главный источник редких и легендарных чертежей
+		var br := rng.randf()
+		if br < 0.12 + 0.02 * tier:
+			r["blueprint"] = random_blueprint("legendary")
+		elif br < 0.6:
+			r["blueprint"] = random_blueprint("rare")
+		r["materials"] = {"kraken_ink": rng.randi_range(1, 2) + tier / 3, "abyss_pearl": 1 if rng.randf() < 0.3 + 0.05 * tier else 0}
+		if r.materials.abyss_pearl == 0:
+			r.materials.erase("abyss_pearl")
+		if rng.randf() < 0.2:
 			r["item"] = "legendary" if rng.randf() < 0.2 else "rare"
 		if rng.randf() < 0.25:
 			r["crates"] = {"silver": 1}
@@ -1916,6 +2069,9 @@ func loot_raider(body: Dictionary) -> Dictionary:
 	raider_bodies.erase(body)
 	var tier: int = body.get("tier", 0)
 	var r := {"pearls": rng.randi_range(4, 10) * (1 + tier)}
+	if rng.randf() < 0.6:
+		r["materials"] = {"scrap": rng.randi_range(1, 2 + tier)}
+		add_material("scrap", int(r.materials.scrap))
 	var roll := rng.randf()
 	if roll < 0.04 + 0.02 * tier:
 		r["item"] = "rare" if rng.randf() < 0.15 + 0.05 * tier else "common"
@@ -2790,6 +2946,7 @@ func save_game() -> void:
 		"colonists": colonists, "next_id": next_id, "arrival_timer": arrival_timer,
 		"meta": {
 			"crystals": crystals, "crates": crates, "premium": premium, "no_ads": no_ads, "pet": pet, "pets_owned": pets_owned, "owned": owned_products,
+			"materials": materials, "blueprints": blueprints, "craft_jobs": craft_jobs,
 			"boost_until": boost_until, "free_crate_at": free_crate_at,
 			"daily_day": daily_day, "daily_streak": daily_streak,
 			"expeditions": expeditions, "quests": quests, "quest_day": quest_day,
@@ -2854,6 +3011,11 @@ func load_game() -> bool:
 	if pet != "" and not pet in pets_owned:
 		pets_owned.append(pet)
 	owned_products = meta.get("owned", [])
+	materials = {}
+	for k in meta.get("materials", {}):
+		materials[k] = int(meta.materials[k])
+	blueprints = meta.get("blueprints", Defs.START_BLUEPRINTS.duplicate())
+	craft_jobs = meta.get("craft_jobs", {})
 	boost_until = float(meta.get("boost_until", 0.0))
 	free_crate_at = float(meta.get("free_crate_at", 0.0))
 	daily_day = int(meta.get("daily_day", -1))

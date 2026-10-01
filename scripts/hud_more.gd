@@ -470,3 +470,131 @@ func open_gear_picker(cid: int, kind: String) -> void:
 		b.disabled = owner.get("id", -1) == cid
 		_body().add_child(b)
 	_body().add_child(hud._button(tr("Back"), hud._open_colonist.bind(cid), 56))
+
+
+# ---------------------------------------------------------------- мастерская: крафт по чертежам
+
+## Строка материалов картинками; need — сколько нужно (красным, если не хватает).
+func materials_row(mats: Dictionary, need := false, size := 28) -> HBoxContainer:
+	var hb := HBoxContainer.new()
+	hb.add_theme_constant_override("separation", 4)
+	for m in mats:
+		var t := TextureRect.new()
+		t.texture = Art.material(m)
+		t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		t.custom_minimum_size = Vector2(size, size)
+		t.tooltip_text = tr(Defs.MATERIALS[m].name)
+		hb.add_child(t)
+		var have := int(Game.materials.get(m, 0))
+		var txt := "%d/%d" % [have, int(mats[m])] if need else str(int(mats[m]))
+		var col := Color(1, 1, 1) if not need or have >= int(mats[m]) else Color(1.0, 0.45, 0.4)
+		hb.add_child(hud._label(txt, 17, col))
+		var gap := Control.new()
+		gap.custom_minimum_size.x = 6
+		hb.add_child(gap)
+	return hb
+
+func workshop_section(r: Dictionary) -> void:
+	hud._section(tr("Materials"))
+	var have := {}
+	for m in Defs.MATERIALS:
+		if int(Game.materials.get(m, 0)) > 0:
+			have[m] = Game.materials[m]
+	if have.is_empty():
+		hud.sheet_body.add_child(hud._label(tr("No materials yet. Find them on expeditions; the workshop also makes scrap."), 17, Color(0.75, 0.85, 0.95)))
+	else:
+		var flow := HFlowContainer.new()
+		flow.add_theme_constant_override("h_separation", 6)
+		flow.add_child(materials_row(have, false, 30))
+		hud.sheet_body.add_child(flow)
+	# текущий заказ
+	var job := Game.craft_job(r)
+	var job_box := VBoxContainer.new()
+	job_box.add_theme_constant_override("separation", 8)
+	hud.sheet_body.add_child(job_box)
+	hud.room_live_labels["craft"] = {"box": job_box, "key": str(job.get("key", "")), "ready": Game.craft_ready(r)}
+	_fill_job(job_box, r)
+	hud._section(tr("Blueprints"))
+	var keys: Array = Game.blueprints.duplicate()
+	keys.sort_custom(func(a, b):
+		var ra := Defs.RARITIES.find(a.split(":")[1])
+		var rb := Defs.RARITIES.find(b.split(":")[1])
+		return ra > rb if ra != rb else a < b)
+	for key in keys:
+		var parts: PackedStringArray = key.split(":")
+		var d := Defs.item_def(parts[0])
+		var rcol: Color = Defs.ITEM_RARITY[parts[1]].color
+		var row: HBoxContainer = hud._card(Color(0.05, 0.12, 0.2, 0.92), Color(rcol, 0.6))
+		var ic := TextureRect.new()
+		ic.texture = Art.tex("res://art/items/%s.png" % parts[0])
+		ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		ic.custom_minimum_size = Vector2(64, 64)
+		row.add_child(ic)
+		var info := VBoxContainer.new()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info.add_child(hud._label(Game.blueprint_name(key), 20, rcol))
+		info.add_child(materials_row(Defs.recipe(key), true, 24))
+		var cost_row := HBoxContainer.new()
+		cost_row.add_theme_constant_override("separation", 4)
+		cost_row.add_child(hud._icon("pearls", 22))
+		cost_row.add_child(hud._label("%d · %s" % [Game.craft_cost(key), hud._clock(Game.craft_time(r, key))], 16, Color(1.0, 0.85, 0.95) if Game.pearls >= Game.craft_cost(key) else Color(1.0, 0.45, 0.4)))
+		info.add_child(cost_row)
+		row.add_child(info)
+		var b: Button = hud._button(tr("Craft"), func():
+			if Game.start_craft(r, key):
+				hud._open_room(r.id)
+			else:
+				hud.show_toast(tr("Not enough materials or pearls") if Game.craft_job(r).is_empty() else tr("The workshop is busy")), 56)
+		b.custom_minimum_size.x = 120
+		b.disabled = not Game.can_craft(r, key)
+		row.add_child(b)
+
+func _fill_job(box: VBoxContainer, r: Dictionary) -> void:
+	for ch in box.get_children():
+		ch.queue_free()
+	var job := Game.craft_job(r)
+	if job.is_empty():
+		box.add_child(hud._label(tr("Pick a blueprint below to start crafting."), 18, Color(0.75, 0.9, 1.0)))
+		return
+	box.add_child(hud._label(tr("Crafting: %s") % Game.blueprint_name(job.key), 21, Color(1.0, 0.88, 0.5)))
+	var pb := ProgressBar.new()
+	pb.custom_minimum_size = Vector2(0, 22)
+	pb.show_percentage = false
+	pb.max_value = 1.0
+	pb.step = 0.001
+	pb.value = clampf((Game.now() - float(job.start)) / maxf(1.0, float(job.end) - float(job.start)), 0.0, 1.0)
+	box.add_child(pb)
+	var st: Label = hud._label("", 18)
+	box.add_child(st)
+	hud.room_live_labels.craft["bar"] = pb
+	hud.room_live_labels.craft["status"] = st
+	if Game.craft_ready(r):
+		st.text = tr("Ready!")
+		var cb: Button = hud._button(tr("Take the gear"), func():
+			Game.claim_craft(r)
+			hud._open_room(r.id), 70)
+		hud._gold(cb)
+		box.add_child(cb)
+	else:
+		st.text = tr("Ready in %s") % hud._clock(float(job.end) - Game.now())
+		if Game.crystal_rush_allowed():
+			var fb: Button = hud._button("", func():
+				Game.finish_craft_now(r)
+				hud._open_room(r.id), 60)
+			hud.set_cost_text(fb, tr("Finish ◆ %d") % Game.craft_finish_cost(r))
+			box.add_child(fb)
+
+func refresh_workshop_live(r: Dictionary) -> void:
+	var d: Dictionary = hud.room_live_labels.craft
+	var job := Game.craft_job(r)
+	if str(job.get("key", "")) != d.key or Game.craft_ready(r) != d.ready:
+		d.key = str(job.get("key", ""))
+		d.ready = Game.craft_ready(r)
+		_fill_job(d.box, r)
+		return
+	if d.has("bar") and not job.is_empty():
+		d.bar.value = clampf((Game.now() - float(job.start)) / maxf(1.0, float(job.end) - float(job.start)), 0.0, 1.0)
+		if not Game.craft_ready(r):
+			d.status.text = tr("Ready in %s") % hud._clock(float(job.end) - Game.now())

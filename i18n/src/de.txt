@@ -717,3 +717,31 @@
 716|Deine Erkunder sind noch draußen
 717|Sieh nach dem Trupp in %s und ruf ihn zurück, bevor es zu spät ist.
 718|Beste Grafik
+719|Schrott
+720|Kelpfaser
+721|Perlmuschel
+722|Korallenzweig
+723|Kupferdraht
+724|Schlotkristall
+725|Krakentinte
+726|Abgrundperle
+727|Bauplan schon bekannt: +3 Schrott
+728|Neuer Bauplan: %s
+729|Herstellung begonnen: %s
+730|Die Ausrüstung ist fertig!
+731|%s wartet in der Werkstatt.
+732|Bauplan
+733|Materialien
+734|Noch keine Materialien. Finde sie auf Expeditionen; die Werkstatt macht auch Schrott.
+735|Baupläne
+736|Herstellen
+737|Nicht genug Materialien oder Perlen
+738|Die Werkstatt ist beschäftigt
+739|Wähle unten einen Bauplan, um loszulegen.
+740|In Arbeit: %s
+741|Fertig!
+742|Ausrüstung abholen
+743|Fertig in %s
+744|{n} sammelte {v} ein.
+745|{n} fand einen Bauplan: {v}!
+746|Stellt Ausrüstung aus Bauplänen und Materialien her und macht nebenbei Schrott. Braucht Technik.

@@ -69,7 +69,60 @@ static func walk_frame(suit: int, t: float) -> Texture2D:
 
 ## Иконка по ключу маркера: pearls, crystals, science, energy, oxygen, food,
 ## crate_<тип>, item_<предмет>, colonist, captain, pet.
+## Иконка материала: картинка art/materials/<id>.png, а пока её нет — нарисованный самоцвет.
+static func material(id: String) -> Texture2D:
+	var t := tex("res://art/materials/%s.png" % id)
+	if t:
+		return t
+	var key := "gen_mat_" + id
+	if _cache.has(key):
+		return _cache[key]
+	var col: Color = Defs.MATERIALS.get(id, {}).get("color", Color.WHITE)
+	var img := Image.create(64, 64, false, Image.FORMAT_RGBA8)
+	for y in 64:
+		for x in 64:
+			var p := Vector2(x - 32, y - 34) / 26.0
+			# огранённый камень: ромб с бликом и тенью
+			var d := absf(p.x) * 0.9 + absf(p.y)
+			if d < 1.0:
+				var shade := 1.0 - 0.45 * clampf(p.y + 0.3 * p.x, -1.0, 1.0)
+				var c := col * shade
+				if p.x < -0.1 and p.y < -0.1 and d < 0.55:
+					c = c.lerp(Color.WHITE, 0.45)
+				c.a = clampf((1.0 - d) * 12.0, 0.0, 1.0)
+				img.set_pixel(x, y, c)
+			elif d < 1.08:
+				img.set_pixel(x, y, Color(0.05, 0.06, 0.1, 0.9))
+	var it := ImageTexture.create_from_image(img)
+	_cache[key] = it
+	return it
+
+## Чертёж: картинка art/ui/blueprint.png или нарисованный синий лист.
+static func blueprint() -> Texture2D:
+	var t := tex("res://art/ui/blueprint.png")
+	if t:
+		return t
+	if _cache.has("gen_blueprint"):
+		return _cache["gen_blueprint"]
+	var img := Image.create(64, 64, false, Image.FORMAT_RGBA8)
+	for y in 64:
+		for x in 64:
+			if x >= 8 and x < 56 and y >= 6 and y < 58:
+				var c := Color(0.12, 0.35, 0.75)
+				if (x - 8) % 8 == 0 or (y - 6) % 8 == 0:
+					c = Color(0.35, 0.6, 0.95)
+				if (x > 18 and x < 46 and (y == 20 or y == 40)) or (y > 20 and y < 40 and (x == 19 or x == 45)):
+					c = Color(0.95, 0.97, 1.0)
+				img.set_pixel(x, y, c)
+	var it := ImageTexture.create_from_image(img)
+	_cache["gen_blueprint"] = it
+	return it
+
 static func marker_icon(key: String) -> Texture2D:
+	if key.begins_with("mat_"):
+		return material(key.trim_prefix("mat_"))
+	if key == "blueprint":
+		return blueprint()
 	if key.begins_with("crate_"):
 		return tex("res://art/ui/shop/%s.png" % key)
 	if key.begins_with("item_"):

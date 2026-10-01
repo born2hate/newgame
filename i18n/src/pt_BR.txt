@@ -717,3 +717,31 @@
 716|Seus exploradores ainda estão fora
 717|Veja a equipe em %s e chame-a antes que seja tarde.
 718|Melhores gráficos
+719|Sucata
+720|Fibra de alga
+721|Concha perolada
+722|Galho de coral
+723|Fio de cobre
+724|Cristal de fonte
+725|Tinta de kraken
+726|Pérola abissal
+727|Projeto já conhecido: +3 sucata
+728|Novo projeto: %s
+729|Fabricação iniciada: %s
+730|O equipamento está pronto!
+731|%s está esperando na oficina.
+732|Projeto
+733|Materiais
+734|Ainda sem materiais. Ache-os em expedições; a oficina também faz sucata.
+735|Projetos
+736|Fabricar
+737|Faltam materiais ou pérolas
+738|A oficina está ocupada
+739|Escolha um projeto abaixo para começar.
+740|Fabricando: %s
+741|Pronto!
+742|Pegar o equipamento
+743|Pronto em %s
+744|{n} pegou {v}.
+745|{n} achou um projeto: {v}!
+746|Fabrica equipamento com projetos e materiais, e faz sucata sozinha. Precisa de Técnica.

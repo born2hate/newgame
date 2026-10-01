@@ -717,3 +717,31 @@
 716|Kaşiflerin hâlâ dışarıda
 717|%s bölgesindeki ekibe bak ve çok geç olmadan geri çağır.
 718|En iyi grafik
+719|Hurda
+720|Yosun lifi
+721|İnci kabuğu
+722|Mercan dalı
+723|Bakır tel
+724|Baca kristali
+725|Kraken mürekkebi
+726|Uçurum incisi
+727|Bu plan zaten var: +3 hurda
+728|Yeni plan: %s
+729|Üretim başladı: %s
+730|Ekipman hazır!
+731|%s atölyede seni bekliyor.
+732|Plan
+733|Malzemeler
+734|Henüz malzeme yok. Keşiflerde bul; atölye hurdayı kendisi yapar.
+735|Planlar
+736|Üret
+737|Malzeme veya inci yetersiz
+738|Atölye meşgul
+739|Başlamak için aşağıdan bir plan seç.
+740|Üretiliyor: %s
+741|Hazır!
+742|Ekipmanı al
+743|%s sonra hazır
+744|{n} şunu topladı: {v}.
+745|{n} bir plan buldu: {v}!
+746|Planlardan ve malzemelerden ekipman üretir, boşta hurda yapar. Teknik gerekir.

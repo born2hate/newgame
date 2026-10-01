@@ -812,6 +812,16 @@ func _draw_room(r: Dictionary) -> void:
 		_draw_hazard(r, inner)
 	if r.type == "dock":
 		_draw_dock_overlay(r, rect)
+	# мастерская: готовая вещь ждёт — пузырь с её картинкой
+	if r.type == "workshop" and Game.craft_ready(r):
+		var job: Dictionary = Game.craft_job(r)
+		var cp := Vector2(rect.get_center().x + 40, rect.position.y + 30 + sin(t * 3.0 + r.id + 1.0) * 5)
+		draw_circle(cp, 30, Color(1.0, 0.8, 0.3, 0.3))
+		draw_circle(cp, 24, Color(0.05, 0.1, 0.15, 0.92))
+		draw_arc(cp, 24, 0, TAU, 32, Color(1.0, 0.8, 0.3), 3.0)
+		var itx := Art.tex("res://art/items/%s.png" % str(job.key).split(":")[0])
+		if itx:
+			draw_texture_rect(itx, Rect2(cp - Vector2(17, 17), Vector2(34, 34)), false)
 	# готово — пузырь с ресурсом
 	if r.ready:
 		var rc2: Color = Defs.RESOURCES[def.produces].color
@@ -1700,6 +1710,9 @@ func _on_release(p: Vector2) -> void:
 		if not e.is_empty() and Game.expedition_done(e):
 			Game.claim_expedition(e)
 			return
+	if room.type == "workshop" and Game.craft_ready(room):
+		Game.claim_craft(room)
+		return
 	selected_room = room.id
 	room_selected.emit(room.id)
 

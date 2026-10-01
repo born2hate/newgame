@@ -718,3 +718,31 @@
 716|Tus exploradores siguen fuera
 717|Revisa al equipo en %s y llámalo antes de que sea tarde.
 718|Mejores gráficos
+719|Chatarra
+720|Fibra de alga
+721|Concha perlada
+722|Rama de coral
+723|Cable de cobre
+724|Cristal de fumarola
+725|Tinta de kraken
+726|Perla abisal
+727|Plano ya conocido: +3 chatarra
+728|Nuevo plano: %s
+729|Fabricación iniciada: %s
+730|¡El equipo está listo!
+731|%s te espera en el taller.
+732|Plano
+733|Materiales
+734|Aún no hay materiales. Encuéntralos en expediciones; el taller también hace chatarra.
+735|Planos
+736|Fabricar
+737|Faltan materiales o perlas
+738|El taller está ocupado
+739|Elige un plano abajo para empezar a fabricar.
+740|Fabricando: %s
+741|¡Listo!
+742|Recoger el equipo
+743|Listo en %s
+744|{n} recogió {v}.
+745|¡{n} encontró un plano: {v}!
+746|Fabrica equipo con planos y materiales, y hace chatarra por su cuenta. Necesita Técnica.

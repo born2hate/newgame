@@ -1074,6 +1074,8 @@ func _open_room(id: int) -> void:
 		sheet_body.add_child(hz)
 	if r.type == "dock":
 		_dock_section(r)
+	if r.type == "workshop":
+		more.workshop_section(r)
 	if r.type == "airlock":
 		_outside_section()
 	if def.has("produces") and r.ready:
@@ -1170,6 +1172,8 @@ func _refresh_room_live() -> void:
 	var def: Dictionary = Defs.ROOMS[r.type]
 	if room_live_labels.has("exp"):
 		_refresh_dock_live(r)
+	if room_live_labels.has("craft"):
+		more.refresh_workshop_live(r)
 	if room_live_labels.has("status"):
 		var res: String = def.produces
 		var txt := ""
@@ -1958,6 +1962,9 @@ func _reward_items(r: Dictionary) -> Array:
 		out.append(["crate_" + k, "×%d" % r.crates[k]])
 	if r.has("colonist"): out.append(["colonist" if r.colonist != "legendary" else "captain", tr(r.colonist.capitalize())])
 	if r.has("item"): out.append(["item_" + str(r.get("item_base", "diving_armor")), tr(r.item.capitalize())])
+	for m in r.get("materials", {}):
+		out.append(["mat_" + m, str(r.materials[m])])
+	if r.has("blueprint"): out.append(["blueprint", tr("Blueprint")])
 	return out
 
 ## Награда картинками: [иконка] 100  [иконка] ×1

@@ -157,6 +157,7 @@ func _initialize() -> void:
 	print("pearl sources: ", src)
 	print("pearl by source: ", psrc)
 	print("pearl spent on: ", spend)
+	print("materials: ", g.materials, " blueprints: ", g.blueprints.size(), " crafted: ", g.stats.get("craft", 0))
 	var dc := {}
 	for k in g.stats:
 		if String(k).begins_with("death_"):
@@ -319,6 +320,21 @@ func _manage(ads: bool) -> void:
 				if g.zone_unlocked(z) and g.expedition_chance(z, [crew[0].id, crew[1].id]) >= 0.8 and g.expedition_at_risk(z, [crew[0].id, crew[1].id]).is_empty():
 					zone = z
 			g.launch_expedition(r.id, zone, [crew[0].id, crew[1].id])
+	# мастерская: забрать готовое и начать лучшее, на что хватает
+	for r in g.rooms:
+		if r.type != "workshop":
+			continue
+		if g.craft_ready(r):
+			g.claim_craft(r)
+		if g.craft_job(r).is_empty():
+			var best := ""
+			for key in g.blueprints:
+				if g.can_craft(r, key) and (best == "" or Defs.RARITIES.find(key.split(":")[1]) > Defs.RARITIES.find(best.split(":")[1])):
+					best = key
+			if best != "":
+				var pc0: int = g.pearls
+				g.start_craft(r, best)
+				_spend("craft", pc0)
 	_staff()
 	var pb2: int = g.pearls
 	var nb: int = int(g.stats.get("build", 0))

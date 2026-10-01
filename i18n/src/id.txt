@@ -717,3 +717,31 @@
 716|Penjelajahmu masih di luar
 717|Periksa tim di %s dan panggil pulang sebelum terlambat.
 718|Grafis terbaik
+719|Besi Rongsok
+720|Serat Kelp
+721|Cangkang Mutiara
+722|Cabang Karang
+723|Kawat Tembaga
+724|Kristal Ventilasi
+725|Tinta Kraken
+726|Mutiara Jurang
+727|Cetak biru sudah ada: +3 rongsok
+728|Cetak biru baru: %s
+729|Mulai membuat: %s
+730|Perlengkapan siap!
+731|%s menunggu di bengkel.
+732|Cetak biru
+733|Bahan
+734|Belum ada bahan. Cari di ekspedisi; bengkel juga membuat rongsok.
+735|Cetak biru
+736|Buat
+737|Bahan atau mutiara kurang
+738|Bengkel sedang sibuk
+739|Pilih cetak biru di bawah untuk mulai.
+740|Sedang dibuat: %s
+741|Siap!
+742|Ambil perlengkapan
+743|Siap dalam %s
+744|{n} memungut {v}.
+745|{n} menemukan cetak biru: {v}!
+746|Membuat perlengkapan dari cetak biru dan bahan, dan membuat rongsok sendiri. Butuh Teknik.
