@@ -571,6 +571,47 @@ func _initialize() -> void:
 	check(ul.arrival_speed() > 0.0, "пустое радио слабо, но вещает")
 	ul.free()
 
+	# сохранение и загрузка новых систем + старые сохранения без них
+	var sv_a = load("res://scripts/game_state.gd").new()
+	sv_a.new_game()
+	sv_a.add_material("coral", 7)
+	sv_a.learn_blueprint("trident:rare")
+	sv_a.projects = {"garden_dome": 2}
+	sv_a.chains = {"lost_diver": {"step": 1, "count": 0}}
+	sv_a.pet_xp = {"clownfish": 120}
+	sv_a.piggy = 77.5
+	sv_a.colonists[0].traits = ["genius"]
+	var sv_dock: Dictionary = sv_a._add_room("dock", 3, 1)
+	sv_a.launch_exploration(sv_dock.id, 0, [sv_a.colonists[1].id], true)
+	var sv_ws: Dictionary = sv_a._add_room("workshop", 7, 1)
+	sv_a.colonists[2].room = sv_ws.id
+	sv_a.add_material("scrap", 10); sv_a.add_material("shell", 10); sv_a.pearls = 5000
+	sv_a.start_craft(sv_ws, "spear:common")
+	sv_a.save_game()
+	var sv_b = load("res://scripts/game_state.gd").new()
+	check(sv_b.load_game(), "сохранение с новыми системами загружается")
+	check(int(sv_b.materials.get("coral", 0)) == 7 and "trident:rare" in sv_b.blueprints, "материалы и чертежи сохранились")
+	check(sv_b.project_stage("garden_dome") == 2 and int(sv_b.chain_state("lost_diver").step) == 1, "проекты и цепочки сохранились")
+	check(sv_b.pet_level("clownfish") == 2 and absf(sv_b.piggy - 77.5) < 0.01, "питомец и копилка сохранились")
+	check("genius" in sv_b.colonists[0].traits, "черты сохранились")
+	check(not sv_b.expeditions.is_empty() and sv_b.is_exploring(sv_b.expeditions[0]), "исследование продолжается после загрузки")
+	check(not sv_b.craft_job(sv_b.get_room(sv_ws.id)).is_empty(), "заказ мастерской сохранился")
+	# старое сохранение: убираем новые поля
+	var raw = JSON.parse_string(FileAccess.get_file_as_string(sv_a.SAVE_PATH))
+	for k in ["materials", "blueprints", "craft_jobs", "projects", "pet_xp", "chains", "piggy", "wheel", "offers", "offers_seen", "storm_until", "storm_next"]:
+		raw.meta.erase(k)
+	for sv_col in raw.colonists:
+		sv_col.erase("traits")
+	var fw := FileAccess.open(sv_a.SAVE_PATH, FileAccess.WRITE)
+	fw.store_string(JSON.stringify(raw))
+	fw.close()
+	var sv_c = load("res://scripts/game_state.gd").new()
+	check(sv_c.load_game(), "старое сохранение загружается")
+	check(sv_c.blueprints.size() == Defs.START_BLUEPRINTS.size() and sv_c.materials.is_empty() and sv_c.projects.is_empty(), "старое сохранение: стартовые чертежи, пустые материалы")
+	sv_c.simulate(1.0, false)
+	check(true, "старое сохранение: симуляция без ошибок")
+	sv_a.free(); sv_b.free(); sv_c.free()
+
 	# копилка, колесо удачи, наборы по поводу
 	var mg = load("res://scripts/game_state.gd").new()
 	mg.new_game()
