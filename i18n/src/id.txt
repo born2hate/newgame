@@ -698,3 +698,21 @@
 697|Hanya sedikit yang akan menemukan kita sendiri. Bangun Ruang Radio: siarannya akan menuntun penyintas baru ke koloni.
 698|Keraskan radio dan penuhi lorong. Capai 30 kolonis.
 699|atau %d kolonis
+700|Bahaya: %s mungkin tidak kembali! Bawa kolonis yang lebih kuat atau sehat, zirah lebih baik, atau zona lebih aman.
+701|Misi
+702|Jelajah
+703|Perjalanan berwaktu: tim pulang sendiri.
+704|Tanpa batas waktu: makin lama di luar, makin banyak temuan dan makin berbahaya. Kamu yang memutuskan kapan memanggil pulang; perjalanan pulang butuh separuh waktu.
+705|Pulang jika ada yang terluka parah
+706|Mulai menjelajah!
+707|Panggil tim pulang
+708|Menjelajah selama %s
+709|Tim berangkat menjelajahi %s!
+710|Tim sedang pulang
+711|Tim berbalik: ada yang terluka parah.
+712|%s terluka parah!
+713|Panggil tim sebelum terlambat.
+714|Tim hilang
+715|Tak ada yang kembali dari %s. Rampasan hilang.
+716|Penjelajahmu masih di luar
+717|Periksa tim di %s dan panggil pulang sebelum terlambat.

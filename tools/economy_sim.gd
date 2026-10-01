@@ -3,8 +3,15 @@ extends SceneTree
 ## godot --headless --path . --script res://tools/economy_sim.gd -- [free|ads|starter] [дни]
 ## Режим игры: сессии по SESSION_MIN минут SESSIONS_PER_DAY раз в день, остальное — офлайн.
 
-const SESSION_MIN := 12
-const SESSIONS_PER_DAY := 4
+var session_left := 9999
+var SESSION_MIN := 12
+var SESSIONS_PER_DAY := 4
+var spend := {}
+var starve_res := {"oxygen": 0, "food": 0, "energy0": 0}
+
+func _spend(key: String, before: int) -> void:
+	if g.pearls < before:
+		spend[key] = spend.get(key, 0) + before - g.pearls
 
 var g
 var profile := "free"
@@ -93,6 +100,12 @@ func _initialize() -> void:
 	var args := OS.get_cmdline_user_args()
 	profile = args[0] if args.size() > 0 else "free"
 	var days := int(args[1]) if args.size() > 1 else 7
+	for a in args:
+		# s=2x5 — 2 захода по 5 минут в день
+		if a.begins_with("s="):
+			var parts: PackedStringArray = a.trim_prefix("s=").split("x")
+			SESSIONS_PER_DAY = int(parts[0])
+			SESSION_MIN = int(parts[1])
 	g = load("res://scripts/game_state.gd").new()
 	g.rng.seed = 42
 	seed(42)
@@ -143,6 +156,12 @@ func _initialize() -> void:
 	print("room levels: ", lv)
 	print("pearl sources: ", src)
 	print("pearl by source: ", psrc)
+	print("pearl spent on: ", spend)
+	var dc := {}
+	for k in g.stats:
+		if String(k).begins_with("death_"):
+			dc[k] = g.stats[k]
+	print("deaths: ", g.stats.get("deaths", 0), " ", dc, "  starve secs: ", starve_res)
 	print("crystal sources: ", csrc)
 	print("item sources: ", isrc)
 	print("crate sources: ", ksrc)
@@ -177,7 +196,12 @@ func _session() -> void:
 	if OS.get_cmdline_user_args().has("debug") and g.pearls - pc > 1000:
 		print("  crates/daily +%d" % (g.pearls - pc))
 	var steps: int = SESSION_MIN * 60
+	# вернулись в игру — отзываем исследователей
+	for e in g.expeditions.duplicate():
+		if g.is_exploring(e):
+			g.recall_exploration(e)
 	for i in steps:
+		session_left = steps - i
 		var p0: int = g.pearls
 		var n0: int = g.colonists.size()
 		g.clock_offset += 1.0
@@ -202,6 +226,12 @@ func _session() -> void:
 		var p1: int = g.pearls
 		if g.resources.oxygen <= 0.0 or g.resources.food <= 0.0:
 			starve += 1
+			if g.resources.oxygen <= 0.0:
+				starve_res.oxygen += 1
+			if g.resources.food <= 0.0:
+				starve_res.food += 1
+		if g.resources.energy <= 0.0:
+			starve_res.energy0 += 1
 		# игрок нажимает на готовые отсеки примерно раз в 4 секунды
 		if i % 4 == 0:
 			_cs()
@@ -240,8 +270,10 @@ func _manage(ads: bool) -> void:
 		g.claim_season(t, false)
 	_ce("season")
 	_cs()
+	var pb: int = g.pearls
 	for i in range(g.fallen.size() - 1, -1, -1):
 		g.revive(g.fallen[i])
+	_spend("revive", pb)
 	for b in g.raider_bodies.duplicate():
 		g.loot_raider(b)
 	_ce("raider_bodies")
@@ -270,16 +302,28 @@ func _manage(ads: bool) -> void:
 				g.cut_expedition(e, 1800.0)
 				ads_watched += 1
 			continue
-		var crew: Array = g.available_crew().filter(func(c): return c.room == -1 or c.health > 70.0)
+		var crew: Array = g.available_crew().filter(func(c): return c.health > 70.0)
+		# перед уходом из игры — отправить исследовать до следующего захода
+		if session_left < 60 and crew.size() >= 4 and not OS.get_cmdline_user_args().has("noexplore"):
+			crew.sort_custom(func(a, b): return g.stat(a, "str") > g.stat(b, "str"))
+			var ez := 0
+			for z in Defs.ZONES.size():
+				if g.zone_unlocked(z) and g.expedition_chance(z, [crew[0].id, crew[1].id]) >= 1.0:
+					ez = z
+			g.launch_exploration(r.id, ez, [crew[0].id, crew[1].id], true)
+			continue
 		if crew.size() >= 4:
 			crew.sort_custom(func(a, b): return g.stat(a, "str") > g.stat(b, "str"))
 			var zone := 0
 			for z in Defs.ZONES.size():
-				if g.zone_unlocked(z) and g.expedition_chance(z, [crew[0].id, crew[1].id]) >= 0.8:
+				if g.zone_unlocked(z) and g.expedition_chance(z, [crew[0].id, crew[1].id]) >= 0.8 and g.expedition_at_risk(z, [crew[0].id, crew[1].id]).is_empty():
 					zone = z
 			g.launch_expedition(r.id, zone, [crew[0].id, crew[1].id])
 	_staff()
+	var pb2: int = g.pearls
+	var nb: int = int(g.stats.get("build", 0))
 	_build()
+	_spend("build" if int(g.stats.get("build", 0)) > nb else "upgrade", pb2)
 
 const STAFF_ORDER := ["reactor", "oxygen", "farm", "pearl", "lab", "radio", "living", "medbay", "kitchen", "workshop", "gym", "school", "lounge", "armory"]
 

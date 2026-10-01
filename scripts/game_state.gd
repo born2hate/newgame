@@ -461,6 +461,7 @@ func rush_chance(room: Dictionary) -> float:
 # ---------------------------------------------------------------- симуляция
 
 func simulate(delta: float, offline: bool) -> void:
+	_tick_explorations()
 	var cap := storage_cap()
 	# расход
 	var energy_use := 0.0
@@ -527,6 +528,7 @@ func simulate(delta: float, offline: bool) -> void:
 			_tick_training(c, here, delta, offline)
 		if starving and not offline and mode().hunger:
 			c.health = maxf(health_floor(), c.health - 0.35 * delta * mode().damage)
+			c["last_hit"] = "hunger"
 		elif not starving and c.health > 0.0:
 			c.health = minf(100.0, c.health + heal_rate * delta)
 		if c.room >= 0:
@@ -1154,10 +1156,212 @@ func expedition_at(dock_id: int) -> Dictionary:
 	return {}
 
 func expedition_done(e: Dictionary) -> bool:
+	if is_exploring(e):
+		return false
 	return now() >= float(e.end)
 
 func expedition_progress(e: Dictionary) -> float:
+	if e.get("mode", "") == "explore":
+		if e.get("state", "") == "out":
+			return 0.0
+		var r0 := float(e.get("recall_at", e.start))
+		return clampf((now() - r0) / maxf(1.0, float(e.end) - r0), 0.0, 1.0)
 	return clampf((now() - float(e.start)) / maxf(1.0, float(e.end) - float(e.start)), 0.0, 1.0)
+
+# ---------------------------------------------------------------- исследование (как в Fallout)
+## Отряд уходит без таймера: события идут по ходу времени (и пока игра закрыта),
+## урон сразу снимает здоровье, добыча копится. Игрок сам отзывает отряд —
+## обратный путь занимает половину проведённого снаружи времени. Можно не вернуться.
+
+## Интервал между событиями в зоне (с): чем глубже, тем реже, но богаче.
+const EXPLORE_INTERVAL := [150.0, 300.0, 450.0, 600.0, 900.0]
+const EXPLORE_HURT := 25.0
+const EXPLORE_MAX_HIT := 30
+const EXPLORE_MAX_EVENTS := 120
+
+## Порог автовозврата: чтобы один удар (с запасом) не добил раненого.
+func explore_turn_back_hp() -> float:
+	return EXPLORE_MAX_HIT * float(mode().damage) + 5.0
+
+func is_exploring(e: Dictionary) -> bool:
+	return e.get("mode", "") == "explore" and e.get("state", "") == "out"
+
+func explore_elapsed(e: Dictionary) -> float:
+	var until := float(e.get("recall_at", now())) if e.get("state", "") == "return" else now()
+	return maxf(0.0, until - float(e.start))
+
+func launch_exploration(dock_id: int, zone_idx: int, ids: Array, retreat := true) -> bool:
+	if not expedition_at(dock_id).is_empty() or ids.is_empty() or ids.size() > 3:
+		return false
+	for id in ids:
+		get_colonist(id).room = ON_EXPEDITION
+		get_colonist(id).help = -1
+	var start := now()
+	expeditions.append({
+		"id": next_id, "dock": dock_id, "zone": zone_idx, "crew": ids.duplicate(), "mode": "explore", "state": "out",
+		"start": start, "end": 1.0e12, "next_ev": start + EXPLORE_INTERVAL[zone_idx] * rng.randf_range(0.5, 1.0),
+		"events": [], "loot": {}, "damage": {}, "choice": {}, "retreat": retreat, "lost": [],
+	})
+	next_id += 1
+	track("expedition")
+	track("expedition_" + Defs.ZONES[zone_idx].id)
+	message.emit(tr("The crew sets out to explore %s!") % tr(Defs.ZONES[zone_idx].name))
+	changed.emit()
+	save_game()
+	return true
+
+## Отозвать отряд: обратный путь — половина времени снаружи.
+func recall_exploration(e: Dictionary, auto := false) -> void:
+	if not is_exploring(e):
+		return
+	var ch: Dictionary = e.get("choice", {})
+	if not ch.is_empty() and ch.pick == "":
+		resolve_choice(e, false)
+	e.state = "return"
+	e.recall_at = now()
+	var back := explore_elapsed(e) * 0.5 * (0.7 if has_research("bathyscaphe_engines") else 1.0) * (0.6 if e.get("shortcut", false) else 1.0)
+	e.end = now() + maxf(60.0, back)
+	if auto:
+		banner.emit("expedition", tr("The crew is coming back"), tr("The crew turned back: someone is badly hurt."))
+	changed.emit()
+	save_game()
+
+func _tick_explorations() -> void:
+	for e in expeditions.duplicate():
+		if not is_exploring(e):
+			continue
+		var guard := 0
+		while is_exploring(e) and float(e.next_ev) <= now() and guard < 40:
+			guard += 1
+			var t := float(e.next_ev)
+			e.next_ev = t + EXPLORE_INTERVAL[e.zone] * rng.randf_range(0.7, 1.3)
+			_explore_event(e, t)
+
+## Одно событие исследования: бой, находка или спокойная запись.
+func _explore_event(e: Dictionary, t: float) -> void:
+	var zone_idx: int = e.zone
+	var zone: Dictionary = Defs.ZONES[zone_idx]
+	var alive: Array = e.crew.filter(func(id): return not get_colonist(id).is_empty())
+	if alive.is_empty():
+		return
+	var hours := (t - float(e.start)) / 3600.0
+	# чем дольше снаружи, тем дальше заходят: опаснее, но и добыча богаче
+	var risk := 1.0 + hours * 0.15
+	var richer := 1.0 + hours * 0.25
+	var f := expedition_chance(zone_idx, alive)
+	var who_id: int = alive.pick_random()
+	var c := get_colonist(who_id)
+	var who: String = c.name.split(" ")[0]
+	var ev := {"at": t, "t": t, "kind": "calm", "xp": 3, "hp": {}, "loot": {}}
+	var fight_p := minf(0.6, zone.danger * 0.9 + 0.1) * minf(1.6, risk)
+	var roll := rng.randf()
+	if e.get("events", []).size() < EXPLORE_MAX_EVENTS and e.get("choice", {}).is_empty() and rng.randf() < 0.06:
+		var chd: Dictionary = Defs.EXP_CHOICES.pick_random()
+		e.choice = {"id": chd.id, "at": t, "pick": ""}
+	if roll < fight_p:
+		var foe: String = tr(Defs.ENEMIES[zone.id].pick_random())
+		var win := rng.randf() < _fight_win_chance(zone_idx, f)
+		# один бой не убивает здорового: удар не больше EXPLORE_MAX_HIT
+		var dmg := mini(EXPLORE_MAX_HIT, int(rng.randi_range(4, 10) * _fight_dmg_mult(zone_idx, f, win) * risk))
+		var xp := (12 + zone_idx * 8) if win else (5 + zone_idx * 4)
+		ev.kind = "fight"
+		ev.won = win
+		ev.xp = xp
+		ev.hp = {str(who_id): dmg}
+		_explore_hurt(e, c, dmg)
+		var tpl: String = (Defs.LOG_FIGHT_WIN if win else Defs.LOG_FIGHT_LOSE).pick_random()
+		ev.text = tr(tpl).replace("{n}", who).replace("{e}", foe).replace("{h}", str(dmg)).replace("{x}", str(xp))
+	elif roll < fight_p + 0.45:
+		ev.kind = "find"
+		var L: Dictionary = zone.loot
+		var got := {}
+		var lr := rng.randf()
+		var mult: float = richer * (1.2 if has_pet("lion") else 1.0) * (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * mode().reward
+		# шансы складываются по очереди: ящик, снаряжение, выживший, кристалл, запасы, иначе жемчуг
+		var p_crate := (0.03 + 0.01 * zone_idx) if L.has("crate") else 0.0
+		var p_item := p_crate + 0.07 + 0.02 * zone_idx
+		var p_surv := p_item + (0.02 if L.has("survivor") else 0.0)
+		var p_cr := p_surv + (0.06 if L.has("crystals") else 0.0)
+		var p_res := p_cr + (0.2 if L.has("resources") else 0.0)
+		if lr < p_crate:
+			got.crates = {L.crate: 1}
+		elif lr < p_item:
+			var rr := rng.randf()
+			got.item = "legendary" if rr < 0.02 * zone_idx else ("rare" if rr < 0.08 + 0.08 * zone_idx else "common")
+			got.item_base = Defs.ITEMS.pick_random().id
+		elif lr < p_surv:
+			got.colonist = "rare"
+		elif lr < p_cr:
+			got.crystals = maxi(1, int(L.crystals[1] * 0.5))
+		elif lr < p_res:
+			got.resources = int(rng.randi_range(L.resources[0], L.resources[1]) * 0.5 * mult)
+		else:
+			got.pearls = maxi(1, int(rng.randi_range(L.pearls[0], L.pearls[1]) * 0.8 * mult))
+		ev.loot = got
+		for k in got:
+			if k == "item_base":
+				continue
+			if got[k] is int or got[k] is float:
+				e.loot[k] = int(e.loot.get(k, 0)) + int(got[k])
+			elif k == "crates":
+				var cr: Dictionary = e.loot.get("crates", {})
+				for ct in got.crates:
+					cr[ct] = int(cr.get(ct, 0)) + int(got.crates[ct])
+				e.loot["crates"] = cr
+			elif k == "item":
+				var its: Array = e.loot.get("items", [])
+				its.append([got.item, got.item_base])
+				e.loot["items"] = its
+			elif k == "colonist":
+				e.loot["colonists"] = int(e.loot.get("colonists", 0)) + 1
+		var lines := []
+		for k in got:
+			var v := ""
+			match k:
+				"pearls", "crystals", "resources": v = str(got[k])
+				"item":
+					var base := {"id": got.item_base, "rarity": got[k], "uid": -1, "base": got.item_base}
+					v = item_name(base)
+				"item_base": continue
+				"crates": v = tr(Defs.CRATES[got[k].keys()[0]].name)
+			var key: String = "crate" if k == "crates" else k
+			lines.append(tr(Defs.LOG_LOOT[key]).replace("{n}", who).replace("{v}", v))
+		ev.text = " ".join(lines)
+	else:
+		var pool: Array = Defs.LOG_ZONE[zone.id] if rng.randf() < 0.6 else Defs.LOG_CALM
+		ev.text = tr(pool.pick_random()).replace("{n}", who)
+	e.events.append(ev)
+	if e.events.size() > EXPLORE_MAX_EVENTS:
+		e.events.pop_front()
+	# кто-то тяжело ранен — отряд поворачивает домой (если игрок это разрешил)
+	if is_exploring(e) and e.get("retreat", true):
+		for id in e.crew:
+			var cc := get_colonist(id)
+			if not cc.is_empty() and cc.health <= explore_turn_back_hp():
+				recall_exploration(e, true)
+				break
+
+## Урон снаружи — сразу по здоровью. Упал до нуля — погиб, тело везут домой.
+func _explore_hurt(e: Dictionary, c: Dictionary, dmg: int) -> void:
+	var before: float = c.health
+	c.health = maxf(health_floor(), c.health - dmg * (1.0 - protection(c)) * float(mode().damage))
+	c["last_hit"] = "expedition"
+	e.damage[str(c.id)] = int(e.damage.get(str(c.id), 0)) + dmg
+	var warn := explore_turn_back_hp() + 15.0
+	if before > warn and c.health <= warn and c.health > 0.0:
+		banner.emit("suit_%d" % c.suit, tr("%s is badly hurt!") % c.name, tr("Recall the crew before it's too late."))
+		event.emit("breach")
+	if c.health <= 0.0 and mode().get("death", mode().permadeath):
+		e.crew.erase(c.id)
+		e.lost.append(c.name)
+		c["died_in"] = e.dock
+		c.room = -1
+		_check_deaths()
+		if e.crew.is_empty():
+			# отряд погиб целиком — добыча пропала
+			expeditions.erase(e)
+			banner.emit("expedition", tr("The crew is lost"), tr("Nobody came back from %s. The loot is gone.") % tr(Defs.ZONES[e.zone].name))
+			changed.emit()
 
 func available_crew() -> Array:
 	return colonists.filter(func(c): return c.room != ON_EXPEDITION and not c.get("child", false))
@@ -1169,6 +1373,36 @@ func crew_power(ids: Array) -> float:
 		if not c.is_empty():
 			p += (stat(c, "str") + stat(c, "tech") + stat(c, "bio")) * (0.5 + 0.5 * c.health / 100.0)
 	return p
+
+## Урон в бою зависит от того, насколько отряд сильнее зоны: сильный отряд
+## возвращается побитым, но живым; слабый в глубине может не вернуться.
+func _fight_dmg_mult(zone_idx: int, f: float, win: bool) -> float:
+	return (1.0 + zone_idx * 0.15) * (1.0 if win else 1.6) / clampf(f, 0.5, 1.5)
+
+func _fight_win_chance(zone_idx: int, f: float) -> float:
+	return clampf(0.15 + f * 0.85 - Defs.ZONES[zone_idx].danger * 0.25, 0.2, 0.95)
+
+## Сколько здоровья в среднем потеряет каждый член отряда (до брони).
+func expedition_expected_damage(zone_idx: int, ids: Array) -> float:
+	if ids.is_empty():
+		return 0.0
+	var zone: Dictionary = Defs.ZONES[zone_idx]
+	var f := expedition_chance(zone_idx, ids)
+	var n := clampi(4 + zone.minutes / 15, 4, 14)
+	var fights: float = n * minf(1.0, zone.danger * 1.1 + 0.12)
+	var p := _fight_win_chance(zone_idx, f)
+	var per_fight: float = 7.0 * (p * _fight_dmg_mult(zone_idx, f, true) + (1.0 - p) * _fight_dmg_mult(zone_idx, f, false))
+	return fights * per_fight / ids.size()
+
+## Кто из отряда может погибнуть (ожидаемый урон с запасом больше здоровья).
+func expedition_at_risk(zone_idx: int, ids: Array) -> Array:
+	var d := expedition_expected_damage(zone_idx, ids)
+	var out := []
+	for id in ids:
+		var c := get_colonist(id)
+		if not c.is_empty() and c.health - d * 1.3 * (1.0 - protection(c)) * float(mode().damage) <= 0.0:
+			out.append(c)
+	return out
 
 func expedition_chance(zone_idx: int, ids: Array) -> float:
 	var zone: Dictionary = Defs.ZONES[zone_idx]
@@ -1307,8 +1541,8 @@ func _plan_expedition(zone_idx: int, ids: Array, f: float, loot: Dictionary) -> 
 		match kinds[i]:
 			"fight":
 				var foe: String = tr(Defs.ENEMIES[zone.id].pick_random())
-				var win := rng.randf() < clampf(0.15 + f * 0.85 - zone.danger * 0.25, 0.2, 0.95)
-				var dmg := int(rng.randi_range(5, 14) * (1.0 + zone_idx * 0.4) * (1.0 if win else 1.8))
+				var win := rng.randf() < _fight_win_chance(zone_idx, f)
+				var dmg := int(rng.randi_range(4, 10) * _fight_dmg_mult(zone_idx, f, win))
 				var xp := (12 + zone_idx * 8) if win else (5 + zone_idx * 4)
 				ev.hp = {str(who_id): dmg}
 				ev.xp = xp
@@ -1351,7 +1585,12 @@ func _plan_expedition(zone_idx: int, ids: Array, f: float, loot: Dictionary) -> 
 ## Событие с выбором, которое сейчас ждёт решения игрока (или пусто).
 func pending_choice(e: Dictionary) -> Dictionary:
 	var ch: Dictionary = e.get("choice", {})
-	if ch.is_empty() or ch.pick != "" or expedition_progress(e) < float(ch.at):
+	if ch.is_empty() or ch.pick != "":
+		return {}
+	if e.get("mode", "") == "explore":
+		if not is_exploring(e):
+			return {}
+	elif expedition_progress(e) < float(ch.at):
 		return {}
 	for d in Defs.EXP_CHOICES:
 		if d.id == ch.id:
@@ -1367,7 +1606,8 @@ func resolve_choice(e: Dictionary, risk: bool) -> String:
 	var who_id: int = e.crew.pick_random()
 	var who: String = get_colonist(who_id).get("name", "?").split(" ")[0]
 	var text := tr("The crew decided to move on.")
-	var ev := {"at": expedition_progress(e), "kind": "choice", "xp": 5, "hp": {}, "loot": {}}
+	var explore: bool = e.get("mode", "") == "explore"
+	var ev := {"at": now() if explore else expedition_progress(e), "kind": "choice", "xp": 5, "hp": {}, "loot": {}}
 	if risk:
 		var luck := 0.0
 		for id in e.crew:
@@ -1382,27 +1622,42 @@ func resolve_choice(e: Dictionary, risk: bool) -> String:
 					text = tr("{n} took the risk and found {v} crystals!").replace("{n}", who).replace("{v}", str(cr))
 				else:
 					var dmg := 15 + zone_idx * 6
-					e.damage[str(who_id)] = int(e.damage.get(str(who_id), 0)) + dmg
+					if explore:
+						_explore_hurt(e, get_colonist(who_id), dmg)
+					else:
+						e.damage[str(who_id)] = int(e.damage.get(str(who_id), 0)) + dmg
 					ev.hp = {str(who_id): dmg}
 					text = tr("It was a trap! {n} got hurt. −{h} HP").replace("{n}", who).replace("{h}", str(dmg))
 			"stranger":
 				if ok:
-					e.loot["colonist"] = "rare"
+					if explore:
+						e.loot["colonists"] = int(e.loot.get("colonists", 0)) + 1
+					else:
+						e.loot["colonist"] = "rare"
 					ev.loot = {"colonist": "rare"}
 					text = tr("{n} rescued the stranger — they will join the colony!").replace("{n}", who)
 				else:
 					var dmg := 18 + zone_idx * 6
-					e.damage[str(who_id)] = int(e.damage.get(str(who_id), 0)) + dmg
+					if explore:
+						_explore_hurt(e, get_colonist(who_id), dmg)
+					else:
+						e.damage[str(who_id)] = int(e.damage.get(str(who_id), 0)) + dmg
 					ev.hp = {str(who_id): dmg}
 					text = tr("It was an ambush! {n} fought free. −{h} HP").replace("{n}", who).replace("{h}", str(dmg))
 			"cave":
 				if ok:
-					var left := float(e.end) - now()
-					e.end = now() + left * 0.6
+					if explore:
+						e["shortcut"] = true
+					else:
+						var left := float(e.end) - now()
+						e.end = now() + left * 0.6
 					text = tr("The shortcut worked! The sub will be home sooner.")
 				else:
 					var dmg := 20 + zone_idx * 6
-					e.damage[str(who_id)] = int(e.damage.get(str(who_id), 0)) + dmg
+					if explore:
+						_explore_hurt(e, get_colonist(who_id), dmg)
+					else:
+						e.damage[str(who_id)] = int(e.damage.get(str(who_id), 0)) + dmg
 					ev.hp = {str(who_id): dmg}
 					text = tr("Something attacked in the cave! {n} was hurt. −{h} HP").replace("{n}", who).replace("{h}", str(dmg))
 	ev["text"] = text
@@ -1412,6 +1667,8 @@ func resolve_choice(e: Dictionary, risk: bool) -> String:
 	return text
 
 func visible_events(e: Dictionary) -> Array:
+	if e.get("mode", "") == "explore":
+		return e.events
 	var p := expedition_progress(e)
 	return e.events.filter(func(ev): return ev.at <= p)
 
@@ -1464,6 +1721,17 @@ func claim_expedition(e: Dictionary) -> void:
 	var zone: Dictionary = Defs.ZONES[e.zone]
 	var lines := []
 	var loot: Dictionary = e.loot
+	var explore: bool = e.get("mode", "") == "explore"
+	if explore:
+		# у исследования добыча копится списками — разложим в обычную награду
+		loot = loot.duplicate(true)
+		for it in loot.get("items", []):
+			add_item(it[0], it[1])
+			lines.append("[item_%s]" % it[1] + tr("New gear: %s") % item_name({"id": it[1], "base": it[1], "rarity": it[0], "uid": -1}))
+		loot.erase("items")
+		for i in int(loot.get("colonists", 0)):
+			lines.append(_grant_colonist("rare"))
+		loot.erase("colonists")
 	if loot.get("resources", 0) > 0:
 		for r in resources:
 			resources[r] = minf(storage_cap(), resources[r] + loot.resources)
@@ -1473,12 +1741,15 @@ func claim_expedition(e: Dictionary) -> void:
 		if c.is_empty():
 			continue
 		c.room = -1
-		c.health = maxf(health_floor(), c.health - e.damage.get(str(id), 0) * (1.0 - protection(c)) * mode().damage)
-		if c.health <= 0.0:
-			# погиб в походе — тело привозят в док
-			c["died_in"] = e.dock
+		if not explore:
+			c.health = maxf(health_floor(), c.health - e.damage.get(str(id), 0) * (1.0 - protection(c)) * mode().damage)
+			c["last_hit"] = "expedition"
+			if c.health <= 0.0:
+				# погиб в походе — тело привозят в док
+				c["died_in"] = e.dock
 		# опыт: за время в пути и за всё, что случилось в журнале
-		c.xp += zone.minutes * 1.0 + expedition_so_far_all(e)
+		var mins: float = explore_elapsed(e) / 60.0 * 0.5 if explore else float(zone.minutes)
+		c.xp += mins + expedition_so_far_all(e)
 		while c.xp >= _xp_needed(c):
 			c.xp -= _xp_needed(c)
 			var keep: float = c.xp
@@ -1717,6 +1988,7 @@ func _tick_raid(delta: float) -> void:
 			return
 		var victim: Dictionary = crew.pick_random()
 		victim.health = maxf(health_floor(), victim.health - float(raid.atk) * alive.size() * delta * (1.0 - protection(victim)) * mode().damage)
+		victim["last_hit"] = "raid"
 		raid.stay = 0.0
 	elif raid.door > 0.0:
 		pass
@@ -1947,6 +2219,7 @@ func _tick_hazard(r: Dictionary, delta: float, offline: bool) -> void:
 			var dmg: float = HAZARDS[r.hazard].damage * delta
 			for c in crew:
 				c.health = maxf(health_floor(), c.health - dmg * (1.0 - protection(c)) * mode().damage)
+				c["last_hit"] = r.hazard
 		r.spread += delta
 		if r.spread > 20.0 and r.incident > 60.0:
 			r.spread = 0.0
@@ -2732,6 +3005,8 @@ func _check_deaths() -> void:
 			c.health = 0.0
 			fallen.append({"c": c, "room": where, "until": now() + float(mode().revive_window)})
 			stats["deaths"] = stats.get("deaths", 0) + 1
+			var cause: String = c.get("last_hit", "other")
+			stats["death_" + cause] = stats.get("death_" + cause, 0) + 1
 			banner.emit("suit_%d" % c.suit, tr("Colonist lost"), tr("%s has died. Revive within %s for %d pearls.") % [c.name, (tr("%d h") % int(float(mode().revive_window) / 3600.0) if float(mode().revive_window) >= 3600.0 else tr("%d min") % int(float(mode().revive_window) / 60.0)), revive_cost(fallen[-1])])
 			event.emit("breach")
 			changed.emit()

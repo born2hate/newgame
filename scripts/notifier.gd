@@ -44,6 +44,12 @@ func plan() -> Array:
 	var out := []
 	var tnow: float = g.now()
 	for e in g.expeditions:
+		if g.is_exploring(e):
+			# исследование без таймера — напомним заглянуть через пару часов
+			var out_for: float = g.explore_elapsed(e)
+			var when := maxf(1800.0, 7200.0 - out_for)
+			out.append([when, tr("Your explorers are still out"), tr("Check on the crew in %s and recall them before it's too late.") % tr(Defs.ZONES[e.zone].name)])
+			continue
 		var left: float = float(e.end) - tnow
 		if left > 60.0:
 			out.append([left, tr("The bathyscaphe is back!"), tr("Your crew returned from %s with loot.") % tr(Defs.ZONES[e.zone].name)])

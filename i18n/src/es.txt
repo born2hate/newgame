@@ -699,3 +699,21 @@
 697|Pocos nos encontrarán por su cuenta. Construye una sala de radio: su señal guiará a nuevos supervivientes hasta la colonia.
 698|Sube el volumen de la radio y llena los pasillos. Llega a 30 colonos.
 699|o %d colonos
+700|¡Peligro: %s podría no volver! Lleva colonos más fuertes o sanos, mejor armadura o una zona más segura.
+701|Misión
+702|Explorar
+703|Viaje con tiempo: el equipo vuelve solo.
+704|Sin tiempo: cuanto más tiempo fuera, más encuentran y más peligroso es. Tú decides cuándo llamarlos; la vuelta dura la mitad.
+705|Volver si alguien está muy herido
+706|¡A explorar!
+707|Llamar al equipo
+708|Explorando desde hace %s
+709|¡El equipo sale a explorar %s!
+710|El equipo vuelve
+711|El equipo dio la vuelta: alguien está muy herido.
+712|¡%s está muy herido!
+713|Llama al equipo antes de que sea tarde.
+714|El equipo se ha perdido
+715|Nadie volvió de %s. El botín se perdió.
+716|Tus exploradores siguen fuera
+717|Revisa al equipo en %s y llámalo antes de que sea tarde.

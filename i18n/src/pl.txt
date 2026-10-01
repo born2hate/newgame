@@ -698,3 +698,21 @@
 697|Niewielu znajdzie nas samych. Zbuduj radiostację: jej sygnał doprowadzi nowych ocalałych do kolonii.
 698|Podkręć radio i zapełnij korytarze. Osiągnij 30 kolonistów.
 699|lub %d kolonistów
+700|Uwaga: %s może nie wrócić! Weź silniejszych lub zdrowszych kolonistów, lepszy pancerz albo bezpieczniejszą strefę.
+701|Misja
+702|Eksploracja
+703|Wyprawa z czasem: drużyna wróci sama.
+704|Bez limitu: im dłużej na zewnątrz, tym więcej znajdą i tym groźniej. Ty decydujesz, kiedy ich wezwać; powrót trwa o połowę krócej.
+705|Wracaj, jeśli ktoś jest ciężko ranny
+706|Ruszamy!
+707|Wezwij drużynę
+708|Eksploruje od %s
+709|Drużyna rusza na eksplorację: %s!
+710|Drużyna wraca
+711|Drużyna zawróciła: ktoś jest ciężko ranny.
+712|%s jest ciężko ranny!
+713|Wezwij drużynę, zanim będzie za późno.
+714|Drużyna zginęła
+715|Nikt nie wrócił z: %s. Łup przepadł.
+716|Twoi odkrywcy wciąż są na zewnątrz
+717|Sprawdź drużynę w: %s i wezwij ją, zanim będzie za późno.

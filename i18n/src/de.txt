@@ -698,3 +698,21 @@
 697|Nur wenige finden uns von allein. Baue einen Funkraum: Sein Signal führt neue Überlebende zur Kolonie.
 698|Dreh das Funkgerät auf und füll die Hallen. Erreiche 30 Kolonisten.
 699|oder %d Kolonisten
+700|Gefahr: %s kommt vielleicht nicht zurück! Nimm stärkere oder gesündere Kolonisten, bessere Rüstung oder eine sicherere Zone.
+701|Mission
+702|Erkunden
+703|Mit Timer: Der Trupp kommt von selbst zurück.
+704|Ohne Timer: Je länger draußen, desto mehr Funde und desto gefährlicher. Du entscheidest, wann du ihn zurückrufst; der Rückweg dauert halb so lange.
+705|Umkehren, wenn jemand schwer verletzt ist
+706|Los geht's!
+707|Trupp zurückrufen
+708|Erkundet seit %s
+709|Der Trupp erkundet jetzt %s!
+710|Der Trupp kehrt zurück
+711|Der Trupp kehrt um: Jemand ist schwer verletzt.
+712|%s ist schwer verletzt!
+713|Ruf den Trupp zurück, bevor es zu spät ist.
+714|Der Trupp ist verloren
+715|Niemand kam aus %s zurück. Die Beute ist weg.
+716|Deine Erkunder sind noch draußen
+717|Sieh nach dem Trupp in %s und ruf ihn zurück, bevor es zu spät ist.

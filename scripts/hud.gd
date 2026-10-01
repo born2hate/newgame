@@ -746,6 +746,14 @@ func _refresh_expedition_button() -> void:
 		exp_btn.text = tr("Collect loot!")
 		_gold(exp_btn)
 		exp_btn.scale = Vector2.ONE * (1.0 + 0.04 * sin(Time.get_ticks_msec() / 150.0))
+	elif Game.is_exploring(e):
+		var hurt := false
+		for id in e.crew:
+			if float(Game.get_colonist(id).get("health", 100.0)) <= 35.0:
+				hurt = true
+		exp_btn.text = "%s ⏱%s%s" % [tr(Defs.ZONES[e.zone].name), _clock(Game.explore_elapsed(e)), "  ♥!" if hurt else ""]
+		exp_btn.add_theme_color_override("font_color", Color(1.0, 0.45, 0.4) if hurt and int(Time.get_ticks_msec() / 400) % 2 == 0 else Color.WHITE)
+		exp_btn.scale = Vector2.ONE
 	else:
 		exp_btn.text = "%s %s" % [tr(Defs.ZONES[e.zone].name), _clock(float(e.end) - Game.now())]
 		exp_btn.scale = Vector2.ONE
@@ -2105,6 +2113,9 @@ func _on_ad_started() -> void:
 
 var plan_zone := 0
 var plan_crew: Array = []
+## «mission» — поход с таймером (как задания в Fallout), «explore» — исследование без таймера.
+var plan_mode := "mission"
+var plan_retreat := true
 
 ## Выход наружу: экспедиции идут через док батискафа.
 func open_outside() -> void:
@@ -2202,21 +2213,35 @@ func _dock_section(r: Dictionary) -> void:
 	_with_icon(fin, "speed", 36)
 	actions.add_child(ad)
 	sheet_body.add_child(actions)
+	var recall := _button(tr("Recall the crew"), func():
+		Game.recall_exploration(e)
+		_open_room(r.id), 76)
+	_gold(recall)
+	sheet_body.add_child(recall)
 	var claim := _button(tr("Collect loot!"), func():
 		Game.claim_expedition(e)
 		_close_sheet(), 76)
 	sheet_body.add_child(claim)
-	room_live_labels["exp"] = {"e": e, "bar": pb, "status": st, "log": logbox, "summary": summary, "choice": choice_box, "choice_on": false, "scroll": logscroll, "fin": fin, "ad": ad, "claim": claim, "shown": -1}
+	room_live_labels["exp"] = {"e": e, "bar": pb, "status": st, "log": logbox, "summary": summary, "choice": choice_box, "choice_on": false, "scroll": logscroll, "fin": fin, "ad": ad, "claim": claim, "recall": recall, "shown": -1}
 	_refresh_dock_live(r)
 
 func _refresh_dock_live(_r: Dictionary) -> void:
 	var d: Dictionary = room_live_labels.exp
 	var e: Dictionary = d.e
+	if not e in Game.expeditions:
+		# отряд вернулся или погиб — окно больше не актуально
+		_close_sheet()
+		return
 	var done := Game.expedition_done(e)
-	d.bar.value = Game.expedition_progress(e)
-	d.status.text = tr("Back home! Collect the loot.") if done else tr("Returns in %s") % _clock(float(e.end) - Game.now())
-	d.fin.visible = not done and Game.crystal_rush_allowed()
-	d.ad.visible = not done and not e.get("ad_used", false) and Game.ads_left() > 0
+	var out := Game.is_exploring(e)
+	d.bar.value = fmod(Time.get_ticks_msec() / 2500.0, 1.0) if out else Game.expedition_progress(e)
+	if out:
+		d.status.text = tr("Exploring for %s") % _clock(Game.explore_elapsed(e))
+	else:
+		d.status.text = tr("Back home! Collect the loot.") if done else tr("Returns in %s") % _clock(float(e.end) - Game.now())
+	d.recall.visible = out
+	d.fin.visible = not done and not out and Game.crystal_rush_allowed()
+	d.ad.visible = not done and not out and not e.get("ad_used", false) and Game.ads_left() > 0
 	d.claim.visible = done
 	set_cost_text(d.fin, tr("Finish ◆ %d") % Game.finish_cost(e) if not done else "")
 	var pc := Game.pending_choice(e)
@@ -2250,8 +2275,9 @@ func _refresh_dock_live(_r: Dictionary) -> void:
 			cv.add_child(hb)
 			d.choice.add_child(card)
 	var evs := Game.visible_events(e)
-	if evs.size() != d.shown:
-		d.shown = evs.size()
+	var key := evs.size() * 100000 + (int(float(evs[-1].at)) % 100000 if not evs.is_empty() else 0)
+	if key != d.shown:
+		d.shown = key
 		_fill_expedition_summary(d.summary, e)
 		for ch in d.log.get_children():
 			ch.queue_free()
@@ -2303,8 +2329,10 @@ func _fill_expedition_summary(box: VBoxContainer, e: Dictionary) -> void:
 		var c := Game.get_colonist(id)
 		if c.is_empty():
 			continue
-		var dmg: float = so.hp.get(str(id), 0) * (1.0 - Game.protection(c)) * Game.mode().damage
+		var dmg: float = 0.0 if e.get("mode", "") == "explore" else so.hp.get(str(id), 0) * (1.0 - Game.protection(c)) * Game.mode().damage
 		hp_parts.append("%s ♥ %d" % [c.name.split(" ")[0], maxi(1, int(c.health - dmg))])
+	for nm in e.get("lost", []):
+		hp_parts.append("%s ✝" % String(nm).split(" ")[0])
 	var hl := _label(", ".join(hp_parts), 18, Color(1.0, 0.7, 0.7))
 	hl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(hl)
@@ -2322,6 +2350,20 @@ func _open_planner(dock_id: int, zone_idx: int) -> void:
 	plan_crew = plan_crew.filter(func(id): return not Game.get_colonist(id).is_empty() and Game.get_colonist(id).room != Game.ON_EXPEDITION)
 	_open_sheet("planner", 900)
 	_header(tr("Expedition"))
+	var modes := HBoxContainer.new()
+	modes.add_theme_constant_override("separation", 10)
+	for m in [["mission", tr("Mission")], ["explore", tr("Explore")]]:
+		var mb := _button(m[1], func():
+			plan_mode = m[0]
+			_open_planner(dock_id, plan_zone), 60)
+		mb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if plan_mode == m[0]:
+			_gold(mb)
+		modes.add_child(mb)
+	sheet_body.add_child(modes)
+	var mdesc := _label(tr("Timed trip: the crew comes back on its own.") if plan_mode == "mission" else tr("No timer: the longer the crew stays out, the more they find and the more dangerous it gets. You decide when to recall them; the way back takes half the time."), 17, Color(0.8, 0.9, 1.0))
+	mdesc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	sheet_body.add_child(mdesc)
 	sheet_body.add_child(_label(tr("1. Choose a destination"), 22, ACCENT))
 	for i in Defs.ZONES.size():
 		var z: Dictionary = Defs.ZONES[i]
@@ -2340,7 +2382,7 @@ func _open_planner(dock_id: int, zone_idx: int) -> void:
 			row.add_child(zt)
 		var info := VBoxContainer.new()
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		info.add_child(_label("%s · %s" % [tr(z.name), _clock(z.minutes * 60.0)], 22, Color(1.0, 0.9, 0.6) if sel else Color.WHITE))
+		info.add_child(_label("%s · %s" % [tr(z.name), _clock(z.minutes * 60.0)] if plan_mode == "mission" else tr(z.name), 22, Color(1.0, 0.9, 0.6) if sel else Color.WHITE))
 		var dl := _label(tr(z.desc) if unlocked else tr("Needs %d colonists") % z.unlock_pop, 17, Color(0.75, 0.85, 0.95))
 		dl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		info.add_child(dl)
@@ -2369,15 +2411,29 @@ func _open_planner(dock_id: int, zone_idx: int) -> void:
 	var summary := tr("Crew power: %d / %d recommended") % [int(Game.crew_power(plan_crew)), Defs.ZONES[plan_zone].power]
 	var col := Color(0.5, 1.0, 0.6) if chance >= 1.0 else (Color(1.0, 0.85, 0.4) if chance >= 0.7 else Color(1.0, 0.5, 0.5))
 	sheet_body.add_child(_label(summary, 20, col))
+	var risky: Array = Game.expedition_at_risk(plan_zone, plan_crew) if plan_mode == "mission" else []
+	if plan_mode == "explore":
+		var rt := CheckButton.new()
+		rt.text = tr("Turn back when someone is badly hurt")
+		rt.button_pressed = plan_retreat
+		rt.add_theme_font_size_override("font_size", 19)
+		rt.toggled.connect(func(on): plan_retreat = on)
+		sheet_body.add_child(rt)
+	if not risky.is_empty():
+		var names: Array = risky.map(func(c): return c.name.split(" ")[0])
+		var rl := _label(tr("Danger: %s may not come back! Take stronger or healthier colonists, better armor, or a safer zone.") % ", ".join(names), 18, Color(1.0, 0.45, 0.4))
+		rl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		sheet_body.add_child(rl)
 	var left := Game.colonists.filter(func(c): return c.room != Game.ON_EXPEDITION and not c.id in plan_crew).size()
 	if not plan_crew.is_empty() and left == 0:
 		var wl := _label(tr("Warning: nobody will stay at the base! Rooms will stop working until the crew returns."), 18, Color(1.0, 0.5, 0.45))
 		wl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		sheet_body.add_child(wl)
-	var go := _button(tr("Launch the bathyscaphe!"), func():
+	var go := _button(tr("Launch the bathyscaphe!") if plan_mode == "mission" else tr("Start exploring!"), func():
 		if plan_crew.is_empty():
 			return
-		if Game.launch_expedition(dock_id, plan_zone, plan_crew):
+		var ok := Game.launch_expedition(dock_id, plan_zone, plan_crew) if plan_mode == "mission" else Game.launch_exploration(dock_id, plan_zone, plan_crew, plan_retreat)
+		if ok:
 			plan_crew = []
 			_close_sheet(), 80)
 	go.disabled = plan_crew.is_empty()

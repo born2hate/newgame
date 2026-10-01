@@ -508,6 +508,23 @@ func _dev_screenshot() -> void:
 		"zoom":
 			camera.zoom = Vector2(1.5, 1.5)
 			camera.position = Vector2(200, 120)
+		"plan_explore_ru":
+			Audio.set_language("ru")
+			var dkp := Game._add_room("dock", 3, 1)
+			hud.plan_mode = "explore"
+			hud.plan_crew = [Game.colonists[0].id, Game.colonists[1].id]
+			hud._open_planner(dkp.id, 1)
+			await get_tree().process_frame
+			(hud.sheet.get_child(0) as ScrollContainer).scroll_vertical = 600
+		"exploring_ru":
+			Audio.set_language("ru")
+			var dkx := Game._add_room("dock", 3, 1)
+			Game.launch_exploration(dkx.id, 2, [Game.colonists[0].id, Game.colonists[3].id], true)
+			Game.clock_offset += 5400.0
+			Game._tick_explorations()
+			view.room_selected.emit(dkx.id)
+			await get_tree().create_timer(0.4).timeout
+			(hud.sheet.get_child(0) as ScrollContainer).scroll_vertical = 250
 		"store_base":
 			_showcase()
 		"store_boss":

@@ -698,3 +698,21 @@
 697|Peu nous trouveront seuls. Construis une salle radio : son signal guidera de nouveaux survivants jusqu'à la colonie.
 698|Monte le son de la radio et remplis les couloirs. Atteins 30 colons.
 699|ou %d colons
+700|Danger : %s risque de ne pas revenir ! Prends des colons plus forts ou en meilleure santé, une meilleure armure ou une zone plus sûre.
+701|Mission
+702|Explorer
+703|Sortie minutée : l'équipe revient seule.
+704|Sans minuteur : plus l'équipe reste dehors, plus elle trouve et plus c'est dangereux. Tu décides quand la rappeler ; le retour prend moitié moins de temps.
+705|Rentrer si quelqu'un est gravement blessé
+706|En exploration !
+707|Rappeler l'équipe
+708|Exploration depuis %s
+709|L'équipe part explorer %s !
+710|L'équipe rentre
+711|L'équipe fait demi-tour : quelqu'un est gravement blessé.
+712|%s est gravement blessé !
+713|Rappelle l'équipe avant qu'il ne soit trop tard.
+714|L'équipe est perdue
+715|Personne n'est revenu de %s. Le butin est perdu.
+716|Tes explorateurs sont toujours dehors
+717|Va voir l'équipe à %s et rappelle-la avant qu'il ne soit trop tard.

@@ -569,6 +569,54 @@ func _initialize() -> void:
 	check(ul.arrival_speed() > 0.0, "пустое радио слабо, но вещает")
 	ul.free()
 
+	# исследование как в Fallout: без таймера, игрок сам отзывает
+	var xg = load("res://scripts/game_state.gd").new()
+	xg.new_game()
+	xg.set_difficulty("normal")
+	var x_exd: Dictionary = xg._add_room("dock", 3, 1)
+	var x_c0: Dictionary = xg.colonists[0]
+	var x_c1: Dictionary = xg.colonists[1]
+	x_c0.health = 100.0
+	x_c1.health = 100.0
+	check(xg.launch_exploration(x_exd.id, 0, [x_c0.id, x_c1.id], true), "исследование началось")
+	var x_xe: Dictionary = xg.expedition_at(x_exd.id)
+	check(xg.is_exploring(x_xe) and not xg.expedition_done(x_xe), "отряд снаружи, таймера нет")
+	var x_off0: float = xg.clock_offset
+	xg.clock_offset += 3600.0
+	xg._tick_explorations()
+	check(x_xe.events.size() >= 10, "за час в лесу водорослей ~20 событий (%d)" % x_xe.events.size())
+	xg.recall_exploration(x_xe)
+	check(x_xe.state == "return" and absf(float(x_xe.end) - xg.now() - 1800.0) < 1.0, "обратный путь — половина времени")
+	var x_ev_n: int = x_xe.events.size()
+	xg.clock_offset += 600.0
+	xg._tick_explorations()
+	check(x_xe.events.size() == x_ev_n, "на обратном пути событий нет")
+	xg.clock_offset += 1300.0
+	check(xg.expedition_done(x_xe), "отряд вернулся")
+	var x_pearls0: int = xg.pearls
+	xg.claim_expedition(x_xe)
+	check(xg.expeditions.is_empty() and x_c0.room == -1, "добыча забрана, отряд дома")
+	check(xg.pearls >= x_pearls0, "жемчуг из исследования")
+	# автовозврат при тяжёлом ранении
+	x_c0.health = 30.0
+	xg.launch_exploration(x_exd.id, 4, [x_c0.id], true)
+	var x_xe2: Dictionary = xg.expedition_at(x_exd.id)
+	xg.clock_offset += 6 * 3600.0
+	xg._tick_explorations()
+	check(not x_xe2 in xg.expeditions or x_xe2.state == "return", "раненый — отряд сам повернул домой")
+	if x_xe2 in xg.expeditions:
+		xg.expeditions.erase(x_xe2)
+	# без автовозврата в глубине можно погибнуть
+	var x_c2: Dictionary = xg.colonists[2]
+	x_c2.health = 20.0
+	x_c2.room = -1
+	xg.launch_exploration(x_exd.id, 4, [x_c2.id], false)
+	xg.clock_offset += 12 * 3600.0
+	xg._tick_explorations()
+	check(xg.expedition_at(x_exd.id).is_empty() and xg.fallen.size() >= 1, "отряд погиб снаружи, тело можно оживить")
+	xg.clock_offset = x_off0
+	xg.free()
+
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(g.SAVE_PATH))
 	g.free(); g2.free(); g3.free()
 	print("FAILURES: %d" % failures)

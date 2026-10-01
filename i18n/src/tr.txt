@@ -698,3 +698,21 @@
 697|Bizi kendi başına bulan az olur. Bir telsiz odası kur: yayını yeni hayatta kalanları koloniye getirecek.
 698|Telsizin sesini aç ve salonları doldur. 30 koloniste ulaş.
 699|veya %d kolonist
+700|Tehlike: %s geri dönmeyebilir! Daha güçlü ya da sağlıklı kolonistler, daha iyi zırh veya daha güvenli bir bölge seç.
+701|Görev
+702|Keşif
+703|Süreli sefer: ekip kendiliğinden döner.
+704|Süresiz: ekip dışarıda ne kadar kalırsa o kadar çok bulur ve o kadar tehlikeli olur. Ne zaman geri çağıracağına sen karar verirsin; dönüş yarı süre sürer.
+705|Biri ağır yaralanırsa geri dön
+706|Keşfe çık!
+707|Ekibi geri çağır
+708|%s süredir keşifte
+709|Ekip %s bölgesini keşfe çıktı!
+710|Ekip geri dönüyor
+711|Ekip geri döndü: biri ağır yaralı.
+712|%s ağır yaralı!
+713|Çok geç olmadan ekibi geri çağır.
+714|Ekip kayboldu
+715|%s bölgesinden kimse dönmedi. Ganimet kayıp.
+716|Kaşiflerin hâlâ dışarıda
+717|%s bölgesindeki ekibe bak ve çok geç olmadan geri çağır.

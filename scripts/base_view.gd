@@ -813,6 +813,11 @@ func _draw_dock_overlay(r: Dictionary, rect: Rect2) -> void:
 		draw_rect(bar, Color(0, 0, 0, 0.6))
 		draw_rect(Rect2(bar.position, Vector2(bar.size.x * p, bar.size.y)), Color(1.0, 0.8, 0.3))
 		var left := float(e.end) - Game.now()
+		if Game.is_exploring(e):
+			# исследует: бегущая полоска и сколько уже снаружи
+			var seg := fmod(t * 0.4, 1.0)
+			draw_rect(Rect2(bar.position + Vector2(bar.size.x * seg * 0.75, 0), Vector2(bar.size.x * 0.25, bar.size.y)), Color(0.5, 1.0, 0.8))
+			left = Game.explore_elapsed(e)
 		_text(inner.get_center() + Vector2(0, 8), tr("%s: %s") % [tr(Defs.ZONES[e.zone].name), _short_time(left)], 15, Color(1, 0.95, 0.8), true)
 	elif not e.is_empty():
 		var bp := Vector2(rect.get_center().x, rect.position.y + 30 + sin(t * 3.0 + r.id) * 5)
