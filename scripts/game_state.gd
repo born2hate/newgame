@@ -415,7 +415,8 @@ func cycle_time(room: Dictionary) -> float:
 		return INF
 	# убывающая отдача: вдвое сильнее команда — примерно в 1.5 раза быстрее
 	# и потолок ×3 — иначе прокачанные отсеки печатают ресурсы без меры
-	return def.cycle * PACE / minf(3.0, pow(power / 5.0, 0.6))
+	var t: float = def.cycle * PACE / minf(3.0, pow(power / 5.0, 0.6))
+	return t * (2.0 if room.get("damaged", false) else 1.0)
 
 func production_amount(room: Dictionary) -> float:
 	var def: Dictionary = Defs.ROOMS[room.type]
@@ -684,6 +685,29 @@ func _try_merge(r: Dictionary) -> Dictionary:
 		return n
 	return r
 
+## Ремонт сломанного отсека: четверть цены стройки, мастерская делает вдвое дешевле.
+func repair_cost(room: Dictionary) -> int:
+	var c := int(Defs.ROOMS[room.type].cost * 0.25 * room.level * room.size)
+	if count_of("workshop") > 0:
+		c = c / 2
+	return maxi(10, c)
+
+func repair(room: Dictionary) -> bool:
+	if not room.get("damaged", false):
+		return false
+	var c := repair_cost(room)
+	if pearls < c:
+		message.emit(tr("Not enough pearls"))
+		event.emit("error")
+		return false
+	pearls -= c
+	room.erase("damaged")
+	track("repair")
+	message.emit(tr("%s repaired!") % tr(Defs.ROOMS[room.type].name))
+	event.emit("upgrade")
+	changed.emit()
+	return true
+
 func upgrade_cost(room: Dictionary) -> int:
 	return Defs.upgrade_cost(room.type, room.level) * int(room.size)
 
@@ -700,7 +724,8 @@ func upgrade(room: Dictionary) -> void:
 	message.emit(tr("%s upgraded to level %d") % [Defs.ROOMS[room.type].name, room.level])
 	changed.emit()
 
-func collect(room: Dictionary, silent := false) -> void:
+## combo_ok — сбор нажатием на отсек (растит комбо); «Собрать всё» комбо не даёт.
+func collect(room: Dictionary, silent := false, combo_ok := true) -> void:
 	if not room.ready:
 		return
 	var def: Dictionary = Defs.ROOMS[room.type]
@@ -711,7 +736,7 @@ func collect(room: Dictionary, silent := false) -> void:
 	# ×2 за рекламу — только на базовые ресурсы, валюту (жемчуг, наука) не удваивает
 	var boosted: bool = boost_active() and res in ["energy", "oxygen", "food"]
 	var amount := production_amount(room) * (2.0 if boosted else 1.0) * (1.0 + (PET_BONUS if has_pet("clownfish") else 0.0))
-	if not silent:
+	if not silent and combo_ok:
 		# собираешь подряд — растёт множитель (до +50%), на жемчуг не действует
 		var tnow := Time.get_ticks_msec() / 1000.0
 		combo = combo + 1 if tnow < combo_until else 1
@@ -774,7 +799,7 @@ func collect_all() -> int:
 	var n := 0
 	for r in rooms:
 		if r.ready:
-			collect(r)
+			collect(r, false, false)
 			n += 1
 	return n
 
@@ -1916,9 +1941,10 @@ func _resolve_hazard(r: Dictionary, offline: bool, burned := false) -> void:
 	if offline:
 		return
 	if burned:
-		# выгорело само: отсек цел, но запасы пострадали
+		# выгорело само: запасы пострадали, а отсек сломан — работает вдвое медленнее до ремонта
 		for k in ["energy", "oxygen", "food"]:
 			resources[k] = maxf(0.0, resources[k] - 10.0)
+		r["damaged"] = true
 		message.emit(tr(BURNED_MSG.get(kind, "%s: the danger has passed.")) % tr(Defs.ROOMS[r.type].name))
 		changed.emit()
 		return

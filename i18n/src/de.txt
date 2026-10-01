@@ -624,3 +624,6 @@
 623|+20% Expeditionsbeute
 624|+15% Chance auf erfolgreiches Beschleunigen
 625|Kolonisten heilen 50% schneller
+626|Beschädigt: arbeitet halb so schnell bis zur Reparatur.
+627|Reparieren ◉%d
+628|%s repariert!

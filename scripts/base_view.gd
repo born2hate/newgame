@@ -333,7 +333,7 @@ func _draw_rest(depth_rows: int) -> void:
 func _draw_pet() -> void:
 	if Game.pet == "":
 		return
-	var tex := Art.tex(Defs.PETS[Game.pet].art) if Defs.PETS.has(Game.pet) else null
+	var tex := Art.pet(Game.pet)
 	if tex == null:
 		return
 	var span := Defs.GRID_COLS * CELL_W
@@ -707,8 +707,10 @@ func _draw_room(r: Dictionary) -> void:
 				var dh := back.size.y * 0.78
 				var dw := dh * door.get_width() / door.get_height()
 				draw_texture_rect(door, Rect2(back.get_center() - Vector2(dw / 2.0, dh / 2.0 - back.size.y * 0.04), Vector2(dw, dh)), false)
-		if powered and r.incident <= 0.0:
+		if powered and r.incident <= 0.0 and not r.get("damaged", false):
 			_draw_room_ambient(r, back)
+		if r.get("damaged", false) and r.incident <= 0.0:
+			_draw_damage(r, inner)
 		if r.type == "reactor" and powered:
 			# пульсация ядра поверх картинки
 			var core := inner.get_center() + Vector2(0, 4)
@@ -1052,6 +1054,30 @@ func _draw_room_ambient(r: Dictionary, a: Rect2) -> void:
 		"living":
 			# тёплый свет торшера
 			draw_circle(Vector2(x.call(0.3), y.call(0.7)), a.size.y * 0.25, Color(1.0, 0.75, 0.4, 0.05 + 0.02 * sin(t * 1.3 + seed_f)))
+
+## Сломанный отсек: копоть, трещины, искрящий провод и значок ремонта.
+func _draw_damage(r: Dictionary, a: Rect2) -> void:
+	draw_rect(a, Color(0.05, 0.03, 0.02, 0.35))
+	var rng := RandomNumberGenerator.new()
+	rng.seed = int(r.id) * 7 + 3
+	for i in 3:
+		var p := Vector2(a.position.x + a.size.x * rng.randf_range(0.15, 0.85), a.position.y + a.size.y * rng.randf_range(0.2, 0.6))
+		var pts := PackedVector2Array([p])
+		for k in 4:
+			p += Vector2(rng.randf_range(-14, 14), rng.randf_range(6, 14))
+			pts.append(p)
+		draw_polyline(pts, Color(0.05, 0.05, 0.05, 0.8), 2.0)
+	# искрит
+	if fmod(t + r.id, 1.6) < 0.25:
+		var sp := Art.tex("res://art/fx/spark_%d.png" % (int(t * 12.0) % 3))
+		if sp:
+			var s := a.size.y * 0.3
+			draw_texture_rect(sp, Rect2(Vector2(a.position.x + a.size.x * 0.7, a.position.y + 6) - Vector2(s, 0) / 2.0, Vector2(s, s)), false)
+	var wp := Vector2(a.end.x - 22, a.position.y + 40)
+	draw_circle(wp, 15, Color(0.25, 0.12, 0.02, 0.9))
+	draw_arc(wp, 15, 0, TAU, 20, Color(1.0, 0.65, 0.3, 0.6 + 0.4 * sin(t * 4.0)), 2.5)
+	draw_line(wp + Vector2(-6, 6), wp + Vector2(5, -5), Color(1.0, 0.85, 0.6), 3.0)
+	draw_circle(wp + Vector2(6, -6), 3.5, Color(1.0, 0.85, 0.6))
 
 func _draw_elevator(inner: Rect2) -> void:
 	draw_rect(inner, Color(0.07, 0.09, 0.12))

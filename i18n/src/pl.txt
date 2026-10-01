@@ -624,3 +624,6 @@
 623|+20% łupu z wypraw
 624|+15% szansy na udane przyspieszenie
 625|Koloniści leczą się 50% szybciej
+626|Uszkodzony: działa o połowę wolniej do naprawy.
+627|Napraw ◉%d
+628|%s naprawiony!

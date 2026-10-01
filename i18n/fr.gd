@@ -630,6 +630,9 @@ const T := {
 	"+20% expedition loot": "+20% de butin d'expédition",
 	"+15% chance for a successful rush": "+15% de chances de réussir une accélération",
 	"Colonists heal 50% faster": "Les colons guérissent 50% plus vite",
+	"Damaged: works at half speed until repaired.": "Endommagé : fonctionne à mi-vitesse jusqu'à réparation.",
+	"Repair ◉%d": "Réparer ◉%d",
+	"%s repaired!": "%s réparé !",
 }
 
 static func make() -> Translation:

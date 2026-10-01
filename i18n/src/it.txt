@@ -624,3 +624,6 @@
 623|+20% di bottino delle spedizioni
 624|+15% di probabilità di accelerazione riuscita
 625|I coloni guariscono il 50% più in fretta
+626|Danneggiato: funziona a metà velocità finché non viene riparato.
+627|Ripara ◉%d
+628|%s riparato!

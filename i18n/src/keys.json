@@ -624,5 +624,8 @@
 "+10 mood for everyone",
 "+20% expedition loot",
 "+15% chance for a successful rush",
-"Colonists heal 50% faster"
+"Colonists heal 50% faster",
+"Damaged: works at half speed until repaired.",
+"Repair ◉%d",
+"%s repaired!"
 ]

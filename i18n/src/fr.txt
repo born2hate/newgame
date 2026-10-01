@@ -624,3 +624,6 @@
 623|+20% de butin d'expédition
 624|+15% de chances de réussir une accélération
 625|Les colons guérissent 50% plus vite
+626|Endommagé : fonctionne à mi-vitesse jusqu'à réparation.
+627|Réparer ◉%d
+628|%s réparé !

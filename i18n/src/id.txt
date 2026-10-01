@@ -624,3 +624,6 @@
 623|+20% rampasan ekspedisi
 624|+15% peluang percepatan berhasil
 625|Kolonis sembuh 50% lebih cepat
+626|Rusak: bekerja setengah kecepatan sampai diperbaiki.
+627|Perbaiki ◉%d
+628|%s diperbaiki!

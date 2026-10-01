@@ -33,6 +33,13 @@ static func colonist(c: Dictionary) -> Texture2D:
 			return k
 	return diver(int(c.suit))
 
+## Картинка питомца: своя pet_<id>.png, если нарисована, иначе рыба из аквариума.
+static func pet(id: String) -> Texture2D:
+	var own := tex("res://art/creatures/pet_%s.png" % id)
+	if own:
+		return own
+	return tex(Defs.PETS[id].art) if Defs.PETS.has(id) else null
+
 static func icon(res: String) -> Texture2D:
 	return tex("res://art/icons/%s.png" % res)
 
@@ -69,7 +76,7 @@ static func marker_icon(key: String) -> Texture2D:
 		"pet":
 			var gs = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("Game")
 			var pid: String = str(gs.pet) if gs and str(gs.pet) != "" else "clownfish"
-			return tex(Defs.PETS[pid].art) if Defs.PETS.has(pid) else tex("res://art/creatures/clownfish.png")
+			return pet(pid)
 		"trader": return tex("res://art/creatures/trader_sub.png")
 		"leviathan": return tex("res://art/creatures/boss_angler.png")
 		"raid":

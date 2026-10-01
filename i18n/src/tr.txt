@@ -624,3 +624,6 @@
 623|Keşif ganimetine +%20
 624|Başarılı hızlandırma şansına +%15
 625|Sakinler %50 daha hızlı iyileşir
+626|Hasarlı: onarılana kadar yarı hızda çalışır.
+627|Onar ◉%d
+628|%s onarıldı!

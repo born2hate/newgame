@@ -468,6 +468,10 @@ func _initialize() -> void:
 			burned_out = true
 	check(spread_seen, "пожар без людей перекинулся на соседний отсек")
 	check(burned_out, "пожар без людей в отсеке выгорел сам")
+	check(oxr.get("damaged", false), "выгоревший отсек сломан")
+	var ct_bad: float = bz.cycle_time(bz.find_room_of_type("reactor"))
+	bz.pearls = 1000
+	check(bz.repair(oxr) and not oxr.get("damaged", false), "ремонт за жемчуг")
 	bz.free()
 	# новые отсеки и характеристики
 	var nw = load("res://scripts/game_state.gd").new()

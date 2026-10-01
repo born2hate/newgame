@@ -147,3 +147,16 @@ transparent background, no text: <объект>
 | `boss_squid.png` | `giant kraken squid boss with long tentacles and glowing eyes, purple and pink, side view facing left, cartoon mobile game boss, transparent background` |
 | `boss_serpent.png` | `huge sea serpent boss, long coiled body, green scales with glowing spines, open jaws, side view facing left, cartoon mobile game boss, transparent background` |
 | `boss_crab.png` | `titan crab boss with enormous claws and armored barnacle shell, orange and rust colors, side view facing left, cartoon mobile game boss, transparent background` |
+
+## Питомцы → `art/creatures/pet_<id>.png`
+
+Милые, круглые, в стиле детей-колонистов, вид сбоку, смотрят вправо, прозрачный фон.
+
+| Файл | Промт |
+|---|---|
+| `pet_clownfish.png` | `cute chibi clownfish pet with big sparkly eyes and a tiny diving helmet bubble, side view facing right, glossy cartoon mobile game style, transparent background` |
+| `pet_puffer.png` | `cute chibi pufferfish pet, half puffed with tiny spikes, brave expression, side view facing right, glossy cartoon mobile game style, transparent background` |
+| `pet_angel.png` | `cute chibi angelfish pet with flowing fins and a little halo of bubbles, side view facing right, glossy cartoon mobile game style, transparent background` |
+| `pet_lion.png` | `cute chibi lionfish pet wearing a tiny explorer hat, side view facing right, glossy cartoon mobile game style, transparent background` |
+| `pet_parrot.png` | `cute chibi parrotfish pet, rainbow scales, cheeky smile, side view facing right, glossy cartoon mobile game style, transparent background` |
+| `pet_tang.png` | `cute chibi yellow tang fish pet with a tiny red cross medic badge, side view facing right, glossy cartoon mobile game style, transparent background` |

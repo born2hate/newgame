@@ -624,3 +624,6 @@
 623|+20% de saque das expedições
 624|+15% de chance de acelerar com sucesso
 625|Os colonos se curam 50% mais rápido
+626|Danificado: funciona na metade da velocidade até ser reparado.
+627|Reparar ◉%d
+628|%s reparado!

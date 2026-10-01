@@ -1020,6 +1020,18 @@ func _open_room(id: int) -> void:
 			sheet_body.add_child(row)
 		if Game.workers_in(r).size() < slots:
 			sheet_body.add_child(_button("+ Assign colonist", _open_pick.bind(id), 64))
+	if r.get("damaged", false):
+		var dmg := _label(tr("Damaged: works at half speed until repaired."), 19, Color(1.0, 0.6, 0.45))
+		dmg.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		sheet_body.add_child(dmg)
+		var rc := Game.repair_cost(r)
+		var rb := _button("", func():
+			Game.repair(r)
+			_open_room(id), 68)
+		set_cost_text(rb, tr("Repair ◉%d") % rc)
+		_gold(rb)
+		rb.disabled = Game.pearls < rc
+		sheet_body.add_child(rb)
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 10)
 	if r.level < Defs.MAX_LEVEL and (def.get("buildable", false) or def.get("upgradable", false)):
@@ -1191,7 +1203,7 @@ func open_pets() -> void:
 		var active: bool = Game.pet == id
 		var row := _card(Color(0.08, 0.2, 0.18, 0.92) if active else Color(0.05, 0.12, 0.2, 0.9), Color(1.0, 0.85, 0.35) if active else Color(ACCENT, 0.3))
 		var t := TextureRect.new()
-		t.texture = Art.tex(d.art)
+		t.texture = Art.pet(id)
 		t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		t.custom_minimum_size = Vector2(80, 64)
@@ -1227,7 +1239,7 @@ func _open_colonists() -> void:
 			_fallen_card(f, false)
 	var pb := _button(tr("Pets (%d/%d)") % [Game.pets_owned.size(), Defs.PETS.size()], open_pets, 60)
 	if Game.pet != "":
-		pb.icon = Art.tex(Defs.PETS[Game.pet].art)
+		pb.icon = Art.pet(Game.pet)
 		pb.expand_icon = true
 		pb.add_theme_constant_override("icon_max_width", 48)
 	sheet_body.add_child(pb)
