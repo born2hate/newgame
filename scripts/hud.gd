@@ -2580,6 +2580,10 @@ func _open_tasks() -> void:
 	nav.add_child(ab)
 	sheet_body.add_child(nav)
 	sheet_body.add_child(_with_icon(_button(tr("Colony stats"), open_stats, 60), "crew", 34))
+	var pjb := _with_icon(_button(tr("Colony projects"), more.open_projects, 60), "build", 34)
+	if Defs.PROJECTS.any(func(p): return Game.can_build_project(p.id)):
+		pjb.add_child(_badge())
+	sheet_body.add_child(pjb)
 	more.add_story_section()
 	more.add_weekly_section()
 	_section(tr("Daily tasks"))

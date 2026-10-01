@@ -763,3 +763,16 @@
 762|Bekerja 25% lebih lambat, tapi tidak pernah sedih.
 763|Ceroboh
 764|Lebih buruk melawan kebakaran, banjir, dan monster.
+765|Proyek koloni
+766|Bangunan besar untuk koloni yang tumbuh. Setiap tahap memberi bonus permanen dan peti.
+767|Selesai!
+768|Bangun tahap %d
+769|%s: tahap %d selesai!
+770|Kubah Taman
+771|Taman kaca di dasar laut. Tiap tahap: +10% makanan dan +5 suasana hati untuk semua.
+772|Mercusuar Penyintas
+773|Menara suar yang menuntun penyintas pulang. Tiap tahap: Ruang Radio mendatangkan orang 25% lebih cepat.
+774|Batiskaf Dalam
+775|Kapal selam lapis baja. Tiap tahap: +10% rampasan ekspedisi dan jalan pulang 15% lebih singkat.
+776|Monumen Mutiara
+777|Monumen untuk koloni. Tiap tahap: +5% mutiara dan +10% pengalaman koloni.

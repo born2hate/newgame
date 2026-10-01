@@ -769,6 +769,19 @@ const T := {
 	"Works 25% slower, but never gets sad.": "Arbeitet 25% langsamer, wird aber nie traurig.",
 	"Clumsy": "Tollpatsch",
 	"Worse at fighting fires, floods and monsters.": "Schlechter gegen Brände, Fluten und Monster.",
+	"Colony projects": "Kolonieprojekte",
+	"Big builds for a grown colony. Each stage gives a permanent bonus and a crate.": "Große Bauten für eine gewachsene Kolonie. Jede Stufe gibt einen dauerhaften Bonus und eine Kiste.",
+	"Complete!": "Fertig!",
+	"Build stage %d": "Stufe %d bauen",
+	"%s: stage %d complete!": "%s: Stufe %d fertig!",
+	"Garden Dome": "Gartenkuppel",
+	"A glass garden on the sea floor. Each stage: +10% food and +5 mood for everyone.": "Ein Glasgarten am Meeresgrund. Jede Stufe: +10% Nahrung und +5 Laune für alle.",
+	"Survivor Beacon": "Überlebenden-Leuchtfeuer",
+	"A beacon tower that guides survivors home. Each stage: the Radio Room brings people 25% faster.": "Ein Leuchtturm, der Überlebende heimführt. Jede Stufe: Der Funkraum bringt 25% schneller Leute.",
+	"Deep Bathyscaphe": "Tiefsee-Bathyskaph",
+	"A heavy armored sub. Each stage: +10% expedition loot and a 15% shorter way home.": "Ein schwer gepanzertes U-Boot. Jede Stufe: +10% Expeditionsbeute und 15% kürzerer Heimweg.",
+	"Pearl Monument": "Perlendenkmal",
+	"A monument to the colony. Each stage: +5% pearls and +10% colony experience.": "Ein Denkmal der Kolonie. Jede Stufe: +5% Perlen und +10% Kolonie-Erfahrung.",
 }
 
 static func make() -> Translation:

@@ -763,3 +763,16 @@
 762|Travaille 25% moins vite, mais n'est jamais triste.
 763|Maladroit
 764|Moins doué contre les incendies, inondations et monstres.
+765|Projets de la colonie
+766|De grands chantiers pour une colonie développée. Chaque étape donne un bonus permanent et une caisse.
+767|Terminé !
+768|Construire l'étape %d
+769|%s : étape %d terminée !
+770|Dôme jardin
+771|Un jardin de verre au fond de la mer. Chaque étape : +10% de nourriture et +5 d'humeur pour tous.
+772|Phare des survivants
+773|Une tour phare qui guide les survivants. Chaque étape : la salle radio attire du monde 25% plus vite.
+774|Bathyscaphe des abysses
+775|Un sous-marin blindé. Chaque étape : +10% de butin d'expédition et retour 15% plus court.
+776|Monument de perle
+777|Un monument à la colonie. Chaque étape : +5% de perles et +10% d'expérience de colonie.

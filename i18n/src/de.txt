@@ -763,3 +763,16 @@
 762|Arbeitet 25% langsamer, wird aber nie traurig.
 763|Tollpatsch
 764|Schlechter gegen Brände, Fluten und Monster.
+765|Kolonieprojekte
+766|Große Bauten für eine gewachsene Kolonie. Jede Stufe gibt einen dauerhaften Bonus und eine Kiste.
+767|Fertig!
+768|Stufe %d bauen
+769|%s: Stufe %d fertig!
+770|Gartenkuppel
+771|Ein Glasgarten am Meeresgrund. Jede Stufe: +10% Nahrung und +5 Laune für alle.
+772|Überlebenden-Leuchtfeuer
+773|Ein Leuchtturm, der Überlebende heimführt. Jede Stufe: Der Funkraum bringt 25% schneller Leute.
+774|Tiefsee-Bathyskaph
+775|Ein schwer gepanzertes U-Boot. Jede Stufe: +10% Expeditionsbeute und 15% kürzerer Heimweg.
+776|Perlendenkmal
+777|Ein Denkmal der Kolonie. Jede Stufe: +5% Perlen und +10% Kolonie-Erfahrung.

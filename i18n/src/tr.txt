@@ -763,3 +763,16 @@
 762|%25 daha yavaş çalışır ama hiç üzülmez.
 763|Sakar
 764|Yangın, sel ve canavarlarla daha kötü başa çıkar.
+765|Koloni projeleri
+766|Büyümüş bir koloni için büyük yapılar. Her aşama kalıcı bir bonus ve bir sandık verir.
+767|Tamamlandı!
+768|%d. aşamayı inşa et
+769|%s: %d. aşama tamam!
+770|Bahçe kubbesi
+771|Deniz dibinde cam bir bahçe. Her aşama: +%10 yiyecek ve herkese +5 moral.
+772|Hayatta kalan feneri
+773|Hayatta kalanları eve getiren bir fener kulesi. Her aşama: telsiz odası insanları %25 daha hızlı getirir.
+774|Derin batiskaf
+775|Ağır zırhlı bir denizaltı. Her aşama: +%10 keşif ganimeti ve %15 daha kısa dönüş.
+776|İnci anıtı
+777|Koloniye bir anıt. Her aşama: +%5 inci ve +%10 koloni deneyimi.

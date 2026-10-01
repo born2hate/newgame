@@ -769,6 +769,19 @@ const T := {
 	"Works 25% slower, but never gets sad.": "Работает на 25% медленнее, зато никогда не грустит.",
 	"Clumsy": "Растяпа",
 	"Worse at fighting fires, floods and monsters.": "Хуже тушит пожары, откачивает воду и отбивается от чудовищ.",
+	"Colony projects": "Проекты колонии",
+	"Big builds for a grown colony. Each stage gives a permanent bonus and a crate.": "Большие стройки для взрослой колонии. Каждый этап — постоянный бонус и ящик.",
+	"Complete!": "Готово!",
+	"Build stage %d": "Построить этап %d",
+	"%s: stage %d complete!": "%s: этап %d готов!",
+	"Garden Dome": "Сад под куполом",
+	"A glass garden on the sea floor. Each stage: +10% food and +5 mood for everyone.": "Стеклянный сад на дне. Каждый этап: +10% еды и +5 к настроению у всех.",
+	"Survivor Beacon": "Маяк для выживших",
+	"A beacon tower that guides survivors home. Each stage: the Radio Room brings people 25% faster.": "Башня-маяк, что ведёт выживших домой. Каждый этап: радио приводит людей на 25% быстрее.",
+	"Deep Bathyscaphe": "Глубинный батискаф",
+	"A heavy armored sub. Each stage: +10% expedition loot and a 15% shorter way home.": "Тяжёлая бронированная подлодка. Каждый этап: +10% добычи в экспедициях и на 15% короче путь домой.",
+	"Pearl Monument": "Жемчужный монумент",
+	"A monument to the colony. Each stage: +5% pearls and +10% colony experience.": "Памятник колонии. Каждый этап: +5% жемчуга и +10% опыта колонии.",
 }
 
 static func make() -> Translation:

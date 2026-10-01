@@ -571,6 +571,21 @@ func _initialize() -> void:
 	check(ul.arrival_speed() > 0.0, "пустое радио слабо, но вещает")
 	ul.free()
 
+	# проекты колонии
+	var pj = load("res://scripts/game_state.gd").new()
+	pj.new_game()
+	check(not pj.can_build_project("garden_dome"), "проект закрыт до нужного уровня колонии")
+	pj.colony_level = 6
+	pj.pearls = 100000
+	var pjc: Dictionary = pj.project_cost("garden_dome")
+	for m in pjc.materials:
+		pj.add_material(m, int(pjc.materials[m]))
+	var pj_food0: float = pj.production_amount(pj.find_room_of_type("farm"))
+	check(pj.build_project_stage("garden_dome") and pj.project_stage("garden_dome") == 1, "этап проекта построен")
+	check(pj.production_amount(pj.find_room_of_type("farm")) > pj_food0, "сад даёт больше еды")
+	check(int(pj.project_cost("garden_dome").pearls) > int(pjc.pearls), "следующий этап дороже")
+	pj.free()
+
 	# черты характера
 	var tr_tg = load("res://scripts/game_state.gd").new()
 	tr_tg.traits_enabled = true

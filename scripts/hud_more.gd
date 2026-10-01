@@ -598,3 +598,64 @@ func refresh_workshop_live(r: Dictionary) -> void:
 		d.bar.value = clampf((Game.now() - float(job.start)) / maxf(1.0, float(job.end) - float(job.start)), 0.0, 1.0)
 		if not Game.craft_ready(r):
 			d.status.text = tr("Ready in %s") % hud._clock(float(job.end) - Game.now())
+
+
+# ---------------------------------------------------------------- проекты колонии
+
+func open_projects() -> void:
+	hud._open_sheet("projects", 900)
+	hud._header(tr("Colony projects"))
+	var intro: Label = hud._label(tr("Big builds for a grown colony. Each stage gives a permanent bonus and a crate."), 18, Color(0.8, 0.9, 1.0))
+	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hud.sheet_body.add_child(intro)
+	for p in Defs.PROJECTS:
+		var st := Game.project_stage(p.id)
+		var card := PanelContainer.new()
+		card.add_theme_stylebox_override("panel", hud._box(Color(0.05, 0.11, 0.19, 0.95), Color(p.color, 0.7), 16, 2))
+		var vb := VBoxContainer.new()
+		vb.add_theme_constant_override("separation", 8)
+		card.add_child(vb)
+		hud.sheet_body.add_child(card)
+		var pic := Art.tex("res://art/projects/%s.png" % p.id)
+		if pic:
+			var tr_pic := TextureRect.new()
+			tr_pic.texture = pic
+			tr_pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			tr_pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+			tr_pic.custom_minimum_size = Vector2(0, 150)
+			if not Game.project_unlocked(p.id):
+				tr_pic.modulate = Color(0.4, 0.4, 0.45)
+			vb.add_child(tr_pic)
+		var head := HBoxContainer.new()
+		var nl: Label = hud._label(tr(p.name), 24, p.color)
+		nl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		head.add_child(nl)
+		var pips := ""
+		for i in Defs.PROJECT_STAGES:
+			pips += "●" if i < st else "○"
+		head.add_child(hud._label(pips, 24, p.color))
+		vb.add_child(head)
+		var dl: Label = hud._label(tr(p.desc), 17, Color(0.8, 0.88, 0.95))
+		dl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(dl)
+		if st >= Defs.PROJECT_STAGES:
+			vb.add_child(hud._label(tr("Complete!"), 20, Color(0.6, 1.0, 0.6)))
+			continue
+		if not Game.project_unlocked(p.id):
+			vb.add_child(hud._label(tr("Needs colony level %d") % p.level, 19, Color(1.0, 0.7, 0.5)))
+			continue
+		var cost := Game.project_cost(p.id)
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 6)
+		row.add_child(hud._icon("pearls", 24))
+		row.add_child(hud._label(str(cost.pearls), 18, Color(1.0, 0.85, 0.95) if Game.pearls >= int(cost.pearls) else Color(1.0, 0.45, 0.4)))
+		row.add_child(materials_row(cost.materials, true, 24))
+		vb.add_child(row)
+		var pid: String = p.id
+		var b: Button = hud._button(tr("Build stage %d") % (st + 1), func():
+			if Game.build_project_stage(pid):
+				open_projects(), 64)
+		b.disabled = not Game.can_build_project(p.id)
+		if not b.disabled:
+			hud._gold(b)
+		vb.add_child(b)

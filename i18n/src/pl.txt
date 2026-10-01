@@ -763,3 +763,16 @@
 762|Pracuje o 25% wolniej, ale nigdy się nie smuci.
 763|Niezdara
 764|Gorzej radzi sobie z pożarami, powodziami i potworami.
+765|Projekty kolonii
+766|Wielkie budowy dla rozwiniętej kolonii. Każdy etap daje stały bonus i skrzynię.
+767|Ukończono!
+768|Zbuduj etap %d
+769|%s: etap %d ukończony!
+770|Kopuła ogrodu
+771|Szklany ogród na dnie. Każdy etap: +10% jedzenia i +5 nastroju dla wszystkich.
+772|Latarnia ocalałych
+773|Wieża latarni prowadząca ocalałych. Każdy etap: radiostacja ściąga ludzi o 25% szybciej.
+774|Batyskaf głębinowy
+775|Ciężko opancerzona łódź. Każdy etap: +10% łupu z wypraw i o 15% krótszy powrót.
+776|Pomnik perły
+777|Pomnik kolonii. Każdy etap: +5% pereł i +10% doświadczenia kolonii.

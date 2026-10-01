@@ -763,5 +763,18 @@
 "Lazy",
 "Works 25% slower, but never gets sad.",
 "Clumsy",
-"Worse at fighting fires, floods and monsters."
+"Worse at fighting fires, floods and monsters.",
+"Colony projects",
+"Big builds for a grown colony. Each stage gives a permanent bonus and a crate.",
+"Complete!",
+"Build stage %d",
+"%s: stage %d complete!",
+"Garden Dome",
+"A glass garden on the sea floor. Each stage: +10% food and +5 mood for everyone.",
+"Survivor Beacon",
+"A beacon tower that guides survivors home. Each stage: the Radio Room brings people 25% faster.",
+"Deep Bathyscaphe",
+"A heavy armored sub. Each stage: +10% expedition loot and a 15% shorter way home.",
+"Pearl Monument",
+"A monument to the colony. Each stage: +5% pearls and +10% colony experience."
 ]

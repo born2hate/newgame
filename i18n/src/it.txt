@@ -763,3 +763,16 @@
 762|Lavora il 25% più lentamente, ma non è mai triste.
 763|Imbranato
 764|Peggiore contro incendi, allagamenti e mostri.
+765|Progetti della colonia
+766|Grandi opere per una colonia cresciuta. Ogni fase dà un bonus permanente e una cassa.
+767|Completato!
+768|Costruisci fase %d
+769|%s: fase %d completata!
+770|Cupola giardino
+771|Un giardino di vetro sul fondale. Ogni fase: +10% cibo e +5 umore per tutti.
+772|Faro dei sopravvissuti
+773|Una torre faro che guida i sopravvissuti. Ogni fase: la sala radio porta gente il 25% più in fretta.
+774|Batiscafo abissale
+775|Un sottomarino corazzato. Ogni fase: +10% bottino e ritorno più breve del 15%.
+776|Monumento della perla
+777|Un monumento alla colonia. Ogni fase: +5% perle e +10% esperienza della colonia.

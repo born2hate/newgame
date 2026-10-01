@@ -769,6 +769,19 @@ const T := {
 	"Works 25% slower, but never gets sad.": "Bekerja 25% lebih lambat, tapi tidak pernah sedih.",
 	"Clumsy": "Ceroboh",
 	"Worse at fighting fires, floods and monsters.": "Lebih buruk melawan kebakaran, banjir, dan monster.",
+	"Colony projects": "Proyek koloni",
+	"Big builds for a grown colony. Each stage gives a permanent bonus and a crate.": "Bangunan besar untuk koloni yang tumbuh. Setiap tahap memberi bonus permanen dan peti.",
+	"Complete!": "Selesai!",
+	"Build stage %d": "Bangun tahap %d",
+	"%s: stage %d complete!": "%s: tahap %d selesai!",
+	"Garden Dome": "Kubah Taman",
+	"A glass garden on the sea floor. Each stage: +10% food and +5 mood for everyone.": "Taman kaca di dasar laut. Tiap tahap: +10% makanan dan +5 suasana hati untuk semua.",
+	"Survivor Beacon": "Mercusuar Penyintas",
+	"A beacon tower that guides survivors home. Each stage: the Radio Room brings people 25% faster.": "Menara suar yang menuntun penyintas pulang. Tiap tahap: Ruang Radio mendatangkan orang 25% lebih cepat.",
+	"Deep Bathyscaphe": "Batiskaf Dalam",
+	"A heavy armored sub. Each stage: +10% expedition loot and a 15% shorter way home.": "Kapal selam lapis baja. Tiap tahap: +10% rampasan ekspedisi dan jalan pulang 15% lebih singkat.",
+	"Pearl Monument": "Monumen Mutiara",
+	"A monument to the colony. Each stage: +5% pearls and +10% colony experience.": "Monumen untuk koloni. Tiap tahap: +5% mutiara dan +10% pengalaman koloni.",
 }
 
 static func make() -> Translation:

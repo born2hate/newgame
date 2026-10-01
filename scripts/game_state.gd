@@ -60,6 +60,8 @@ var pets_owned: Array = []
 var materials: Dictionary = {}
 var blueprints: Array = []
 var craft_jobs: Dictionary = {}
+## Проекты колонии: id → построенных этапов.
+var projects: Dictionary = {}
 
 func has_pet(id: String) -> bool:
 	return pet == id
@@ -138,6 +140,7 @@ func new_game() -> void:
 	materials = {}
 	blueprints = Defs.START_BLUEPRINTS.duplicate()
 	craft_jobs = {}
+	projects = {}
 	owned_products = []
 	boost_until = 0.0
 	free_crate_at = 0.0
@@ -370,7 +373,8 @@ func mood_bonus() -> float:
 		b += float(Defs.ROOMS[r.type].get("mood", 0)) * r.level * r.size
 	if has_pet("angel"):
 		b += 10.0
-	return minf(40.0, b)
+	b += 5.0 * project_stage("garden_dome")
+	return minf(50.0, b)
 
 ## Сила всех отсеков типа (для пассивных эффектов: радио, оружейная).
 func type_power(type: String) -> float:
@@ -405,7 +409,7 @@ func arrival_speed() -> float:
 		# радио вещает и само, слабо; люди внутри усиливают сигнал
 		rp = maxf(rp, 3.0)
 	# сила 10 при 8 колонистах ≈ один человек в 10 часов; с ростом колонии — реже
-	var per_hour := 0.1 * pow(rp / 10.0, 0.5) * 15.0 / (colonists.size() + 7.0) if rp > 0.0 else 0.0
+	var per_hour := 0.1 * pow(rp / 10.0, 0.5) * 15.0 / (colonists.size() + 7.0) * project_bonus("survivor_beacon", 0.25) if rp > 0.0 else 0.0
 	return base + per_hour * ARRIVAL_INTERVAL / 3600.0
 
 func armory_bonus() -> float:
@@ -474,10 +478,12 @@ func production_amount(room: Dictionary) -> float:
 		"energy": m *= 1.2 if has_research("efficient_reactors") else 1.0
 		"food":
 			m *= 1.2 if has_research("hydroponics") else 1.0
+			m *= project_bonus("garden_dome", 0.1)
 			m *= 1.5 if weekly_mod() == "harvest" else 1.0
 		"oxygen": m *= 1.2 if has_research("electrolysis") else 1.0
 		"pearls":
 			m *= 1.4 if has_research("pearl_cultivation") else 1.0
+			m *= project_bonus("pearl_monument", 0.05)
 			m *= 1.5 if weekly_mod() == "pearl_week" else 1.0
 	if res == "pearls":
 		m *= mode().reward * (1.0 + pearl_bonus())
@@ -944,6 +950,57 @@ func claim_craft(room: Dictionary) -> Dictionary:
 	event.emit("upgrade")
 	changed.emit()
 	return it
+
+# ---------------------------------------------------------------- проекты колонии
+
+func project_def(id: String) -> Dictionary:
+	for p in Defs.PROJECTS:
+		if p.id == id:
+			return p
+	return {}
+
+func project_stage(id: String) -> int:
+	return int(projects.get(id, 0))
+
+## Цена следующего этапа: жемчуг и материалы.
+func project_cost(id: String) -> Dictionary:
+	var d := project_def(id)
+	var st := project_stage(id)
+	if st >= Defs.PROJECT_STAGES:
+		return {}
+	var m: float = Defs.PROJECT_STAGE_MULT[st]
+	var mats := {}
+	for k in d.materials:
+		mats[k] = int(ceil(int(d.materials[k]) * m))
+	return {"pearls": int(int(d.pearls) * m), "materials": mats}
+
+func project_unlocked(id: String) -> bool:
+	return colony_level >= int(project_def(id).level)
+
+func can_build_project(id: String) -> bool:
+	var c := project_cost(id)
+	return not c.is_empty() and project_unlocked(id) and pearls >= int(c.pearls) and has_materials(c.materials)
+
+func build_project_stage(id: String) -> bool:
+	if not can_build_project(id):
+		return false
+	var c := project_cost(id)
+	pearls -= int(c.pearls)
+	for k in c.materials:
+		materials[k] = int(materials[k]) - int(c.materials[k])
+	projects[id] = project_stage(id) + 1
+	track("project")
+	add_colony_xp(150 * project_stage(id))
+	var st := project_stage(id)
+	var reward := {"crates": {"gold" if st >= Defs.PROJECT_STAGES else "silver": 1}}
+	if st >= Defs.PROJECT_STAGES:
+		reward["crystals"] = 20
+	grant(reward, tr("%s: stage %d complete!") % [tr(project_def(id).name), st])
+	return true
+
+## Бонус проекта: множитель вида 1 + шаг × этапы.
+func project_bonus(id: String, step: float) -> float:
+	return 1.0 + step * project_stage(id)
 
 # ---------------------------------------------------------------- таинственный незнакомец
 ## Как в Fallout Shelter: иногда в случайном отсеке на несколько секунд появляется
@@ -1417,7 +1474,7 @@ func recall_exploration(e: Dictionary, auto := false) -> void:
 		resolve_choice(e, false)
 	e.state = "return"
 	e.recall_at = now()
-	var back := explore_elapsed(e) * 0.5 * (0.7 if has_research("bathyscaphe_engines") else 1.0) * (0.6 if e.get("shortcut", false) else 1.0)
+	var back := explore_elapsed(e) * 0.5 * (1.0 - 0.15 * project_stage("deep_bathyscaphe")) * (0.7 if has_research("bathyscaphe_engines") else 1.0) * (0.6 if e.get("shortcut", false) else 1.0)
 	e.end = now() + maxf(60.0, back)
 	if auto:
 		banner.emit("expedition", tr("The crew is coming back"), tr("The crew turned back: someone is badly hurt."))
@@ -1474,7 +1531,7 @@ func _explore_event(e: Dictionary, t: float) -> void:
 		var L: Dictionary = zone.loot
 		var got := {}
 		var lr := rng.randf()
-		var mult: float = richer * (1.2 if has_pet("lion") else 1.0) * (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * mode().reward
+		var mult: float = richer * project_bonus("deep_bathyscaphe", 0.1) * (1.2 if has_pet("lion") else 1.0) * (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * mode().reward
 		# шансы складываются по очереди: ящик, снаряжение, выживший, кристалл, запасы, иначе жемчуг
 		var p_crate := (0.03 + 0.01 * zone_idx) if L.has("crate") else 0.0
 		var p_item := p_crate + 0.07 + 0.02 * zone_idx
@@ -1638,7 +1695,7 @@ func launch_expedition(dock_id: int, zone_idx: int, ids: Array) -> bool:
 		return false
 	var zone: Dictionary = Defs.ZONES[zone_idx]
 	var f := expedition_chance(zone_idx, ids)
-	var loot_mult: float = (1.2 if has_pet("lion") else 1.0) * (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * mode().reward
+	var loot_mult: float = project_bonus("deep_bathyscaphe", 0.1) * (1.2 if has_pet("lion") else 1.0) * (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * mode().reward
 	var names := []
 	for id in ids:
 		names.append(get_colonist(id).name.split(" ")[0])
@@ -1689,7 +1746,7 @@ func launch_expedition(dock_id: int, zone_idx: int, ids: Array) -> bool:
 	var start := now()
 	expeditions.append({
 		"id": next_id, "dock": dock_id, "zone": zone_idx, "crew": ids.duplicate(),
-		"start": start, "end": start + zone.minutes * 60.0 * (0.7 if has_research("bathyscaphe_engines") else 1.0),
+		"start": start, "end": start + zone.minutes * 60.0 * (1.0 - 0.15 * project_stage("deep_bathyscaphe")) * (0.7 if has_research("bathyscaphe_engines") else 1.0),
 		"events": events, "loot": loot, "damage": damage, "choice": choice,
 	})
 	next_id += 1
@@ -2965,7 +3022,7 @@ func colony_xp_needed() -> int:
 	return int(120 * pow(colony_level, 1.4))
 
 func add_colony_xp(x: int) -> void:
-	colony_xp += x
+	colony_xp += int(x * project_bonus("pearl_monument", 0.1))
 	while colony_xp >= colony_xp_needed():
 		colony_xp -= colony_xp_needed()
 		colony_level += 1
@@ -3041,7 +3098,7 @@ func save_game() -> void:
 		"colonists": colonists, "next_id": next_id, "arrival_timer": arrival_timer,
 		"meta": {
 			"crystals": crystals, "crates": crates, "premium": premium, "no_ads": no_ads, "pet": pet, "pets_owned": pets_owned, "owned": owned_products,
-			"materials": materials, "blueprints": blueprints, "craft_jobs": craft_jobs,
+			"materials": materials, "blueprints": blueprints, "craft_jobs": craft_jobs, "projects": projects,
 			"boost_until": boost_until, "free_crate_at": free_crate_at,
 			"daily_day": daily_day, "daily_streak": daily_streak,
 			"expeditions": expeditions, "quests": quests, "quest_day": quest_day,
@@ -3111,6 +3168,9 @@ func load_game() -> bool:
 		materials[k] = int(meta.materials[k])
 	blueprints = meta.get("blueprints", Defs.START_BLUEPRINTS.duplicate())
 	craft_jobs = meta.get("craft_jobs", {})
+	projects = {}
+	for k in meta.get("projects", {}):
+		projects[k] = int(meta.projects[k])
 	boost_until = float(meta.get("boost_until", 0.0))
 	free_crate_at = float(meta.get("free_crate_at", 0.0))
 	daily_day = int(meta.get("daily_day", -1))

@@ -763,3 +763,16 @@
 762|Trabalha 25% mais devagar, mas nunca fica triste.
 763|Desajeitado
 764|Pior contra incêndios, inundações e monstros.
+765|Projetos da colônia
+766|Grandes obras para uma colônia crescida. Cada etapa dá um bônus permanente e um baú.
+767|Concluído!
+768|Construir etapa %d
+769|%s: etapa %d concluída!
+770|Cúpula jardim
+771|Um jardim de vidro no fundo do mar. Cada etapa: +10% comida e +5 de humor para todos.
+772|Farol dos sobreviventes
+773|Uma torre-farol que guia os sobreviventes. Cada etapa: a sala de rádio traz pessoas 25% mais rápido.
+774|Batiscafo abissal
+775|Um submarino blindado. Cada etapa: +10% de saque e volta 15% mais curta.
+776|Monumento da pérola
+777|Um monumento à colônia. Cada etapa: +5% pérolas e +10% de experiência da colônia.

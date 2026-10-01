@@ -769,6 +769,19 @@ const T := {
 	"Works 25% slower, but never gets sad.": "%25 daha yavaş çalışır ama hiç üzülmez.",
 	"Clumsy": "Sakar",
 	"Worse at fighting fires, floods and monsters.": "Yangın, sel ve canavarlarla daha kötü başa çıkar.",
+	"Colony projects": "Koloni projeleri",
+	"Big builds for a grown colony. Each stage gives a permanent bonus and a crate.": "Büyümüş bir koloni için büyük yapılar. Her aşama kalıcı bir bonus ve bir sandık verir.",
+	"Complete!": "Tamamlandı!",
+	"Build stage %d": "%d. aşamayı inşa et",
+	"%s: stage %d complete!": "%s: %d. aşama tamam!",
+	"Garden Dome": "Bahçe kubbesi",
+	"A glass garden on the sea floor. Each stage: +10% food and +5 mood for everyone.": "Deniz dibinde cam bir bahçe. Her aşama: +%10 yiyecek ve herkese +5 moral.",
+	"Survivor Beacon": "Hayatta kalan feneri",
+	"A beacon tower that guides survivors home. Each stage: the Radio Room brings people 25% faster.": "Hayatta kalanları eve getiren bir fener kulesi. Her aşama: telsiz odası insanları %25 daha hızlı getirir.",
+	"Deep Bathyscaphe": "Derin batiskaf",
+	"A heavy armored sub. Each stage: +10% expedition loot and a 15% shorter way home.": "Ağır zırhlı bir denizaltı. Her aşama: +%10 keşif ganimeti ve %15 daha kısa dönüş.",
+	"Pearl Monument": "İnci anıtı",
+	"A monument to the colony. Each stage: +5% pearls and +10% colony experience.": "Koloniye bir anıt. Her aşama: +%5 inci ve +%10 koloni deneyimi.",
 }
 
 static func make() -> Translation:

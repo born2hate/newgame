@@ -157,7 +157,7 @@ func _initialize() -> void:
 	print("pearl sources: ", src)
 	print("pearl by source: ", psrc)
 	print("pearl spent on: ", spend)
-	print("materials: ", g.materials, " blueprints: ", g.blueprints.size(), " crafted: ", g.stats.get("craft", 0))
+	print("projects: ", g.projects, " materials: ", g.materials, " blueprints: ", g.blueprints.size(), " crafted: ", g.stats.get("craft", 0))
 	var dc := {}
 	for k in g.stats:
 		if String(k).begins_with("death_"):
@@ -499,7 +499,14 @@ func _build() -> void:
 	if g.is_unlocked("pearl") and g.count_of("pearl") < mini(3, 1 + g.colonists.size() / 8):
 		_try_build("pearl")
 		return
-	# 4) иначе улучшаем самое дешёвое
+	# 4) проекты колонии, если хватает
+	for pd in Defs.PROJECTS:
+		if g.can_build_project(pd.id):
+			var pp0: int = g.pearls
+			g.build_project_stage(pd.id)
+			_spend("project", pp0)
+			return
+	# 5) иначе улучшаем самое дешёвое
 	var cheapest2 := {}
 	for r in g.rooms:
 		if _can_up(r) and (cheapest2.is_empty() or g.upgrade_cost(r) < g.upgrade_cost(cheapest2)):

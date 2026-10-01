@@ -535,6 +535,14 @@ func _dev_screenshot() -> void:
 			camera.position = Vector2(650, 200)
 			camera.zoom = Vector2(1.6, 1.6)
 			await get_tree().create_timer(1.0).timeout
+		"projects_ru":
+			Audio.set_language("ru")
+			Game.colony_level = 10
+			Game.projects = {"garden_dome": 2}
+			Game.pearls = 9000
+			Game.add_material("copper", 20)
+			Game.add_material("vent_crystal", 3)
+			hud.more.open_projects()
 		"workshop_ru":
 			Audio.set_language("ru")
 			var wsr := Game._add_room("workshop", 7, 1)

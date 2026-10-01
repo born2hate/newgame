@@ -769,6 +769,19 @@ const T := {
 	"Works 25% slower, but never gets sad.": "Pracuje o 25% wolniej, ale nigdy się nie smuci.",
 	"Clumsy": "Niezdara",
 	"Worse at fighting fires, floods and monsters.": "Gorzej radzi sobie z pożarami, powodziami i potworami.",
+	"Colony projects": "Projekty kolonii",
+	"Big builds for a grown colony. Each stage gives a permanent bonus and a crate.": "Wielkie budowy dla rozwiniętej kolonii. Każdy etap daje stały bonus i skrzynię.",
+	"Complete!": "Ukończono!",
+	"Build stage %d": "Zbuduj etap %d",
+	"%s: stage %d complete!": "%s: etap %d ukończony!",
+	"Garden Dome": "Kopuła ogrodu",
+	"A glass garden on the sea floor. Each stage: +10% food and +5 mood for everyone.": "Szklany ogród na dnie. Każdy etap: +10% jedzenia i +5 nastroju dla wszystkich.",
+	"Survivor Beacon": "Latarnia ocalałych",
+	"A beacon tower that guides survivors home. Each stage: the Radio Room brings people 25% faster.": "Wieża latarni prowadząca ocalałych. Każdy etap: radiostacja ściąga ludzi o 25% szybciej.",
+	"Deep Bathyscaphe": "Batyskaf głębinowy",
+	"A heavy armored sub. Each stage: +10% expedition loot and a 15% shorter way home.": "Ciężko opancerzona łódź. Każdy etap: +10% łupu z wypraw i o 15% krótszy powrót.",
+	"Pearl Monument": "Pomnik perły",
+	"A monument to the colony. Each stage: +5% pearls and +10% colony experience.": "Pomnik kolonii. Każdy etap: +5% pereł i +10% doświadczenia kolonii.",
 }
 
 static func make() -> Translation:

@@ -427,6 +427,20 @@ const TRAITS := {
 	"clumsy": {"name": "Clumsy", "desc": "Worse at fighting fires, floods and monsters.", "good": false, "color": Color(0.85, 0.6, 0.5)},
 }
 
+## Проекты колонии: большие стройки поздней игры, по 3 этапа. Каждый этап — постоянный бонус.
+const PROJECTS := [
+	{"id": "garden_dome", "name": "Garden Dome", "desc": "A glass garden on the sea floor. Each stage: +10% food and +5 mood for everyone.",
+		"level": 6, "pearls": 3000, "materials": {"kelp_fiber": 10, "coral": 6}, "color": Color(0.45, 0.95, 0.5)},
+	{"id": "survivor_beacon", "name": "Survivor Beacon", "desc": "A beacon tower that guides survivors home. Each stage: the Radio Room brings people 25% faster.",
+		"level": 9, "pearls": 5000, "materials": {"copper": 12, "vent_crystal": 6}, "color": Color(1.0, 0.85, 0.4)},
+	{"id": "deep_bathyscaphe", "name": "Deep Bathyscaphe", "desc": "A heavy armored sub. Each stage: +10% expedition loot and a 15% shorter way home.",
+		"level": 12, "pearls": 8000, "materials": {"scrap": 30, "copper": 15, "kraken_ink": 4}, "color": Color(0.5, 0.8, 1.0)},
+	{"id": "pearl_monument", "name": "Pearl Monument", "desc": "A monument to the colony. Each stage: +5% pearls and +10% colony experience.",
+		"level": 15, "pearls": 12000, "materials": {"shell": 20, "abyss_pearl": 2}, "color": Color(1.0, 0.75, 0.95)},
+]
+const PROJECT_STAGES := 3
+const PROJECT_STAGE_MULT := [1.0, 2.5, 6.0]
+
 const RARITIES := ["common", "rare", "legendary"]
 const CRAFT_PEARLS := [300, 1200, 4000]
 const CRAFT_MINUTES := [20, 60, 240]
