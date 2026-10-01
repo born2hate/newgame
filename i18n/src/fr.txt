@@ -561,3 +561,4 @@
 560|Ils sont partis avec %d perles.
 561|PORTE
 562|Entrée de la colonie. Les nouveaux colons arrivent ici. Améliore la porte pour retenir les pirates plus longtemps.
+563|Équipement !

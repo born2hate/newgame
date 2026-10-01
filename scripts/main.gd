@@ -317,6 +317,12 @@ func _dev_screenshot() -> void:
 			Game.send_help(Game.colonists[0], Game.find_room_of_type("airlock"))
 			camera.position = Vector2(450, 150)
 			await get_tree().create_timer(1.5).timeout
+		"raider_bodies":
+			var alr := Game.find_room_of_type("airlock")
+			for i in 2:
+				Game.raider_bodies.append({"room": alr.id, "x": 0.5 + 0.3 * i, "kind": i, "tier": 1, "until": Game.now() + 600.0, "id": 900 + i})
+			camera.position = Vector2(450, 150)
+			await get_tree().create_timer(0.5).timeout
 		"expedition_ru":
 			Audio.set_language("ru")
 			var d2 := Game._add_room("dock", 3, 1)

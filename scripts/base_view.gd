@@ -273,6 +273,7 @@ func _draw_rest(depth_rows: int) -> void:
 		_draw_room(r)
 	_draw_doors()
 	_draw_fallen()
+	_draw_raider_bodies()
 	# дальние рисуем первыми, ближние — поверх
 	var order := Game.colonists.filter(func(c): return c.id != drag_colonist and c.room != Game.ON_EXPEDITION)
 	order.sort_custom(func(a, b): return walkers.get(a.id, {}).get("z", 0.5) > walkers.get(b.id, {}).get("z", 0.5))
@@ -1349,6 +1350,33 @@ func _draw_fallen() -> void:
 		draw_rect(Rect2(bp - Vector2(9, 4), Vector2(18, 6)), Color(1.0, 0.85, 0.85))
 		_text(bp + Vector2(0, -24), _short_time(float(f.until) - Game.now()), 15, Color(1.0, 0.75, 0.75), true)
 
+func raider_body_pos(b: Dictionary) -> Vector2:
+	var r := Game.get_room(int(b.room))
+	if r.is_empty():
+		return Vector2(-9999, -9999)
+	var rect := room_rect(r)
+	return Vector2(rect.position.x + rect.size.x * float(b.x), rect.end.y - 12)
+
+func _draw_raider_bodies() -> void:
+	for b in Game.raider_bodies:
+		var p := raider_body_pos(b)
+		var spr := Art.tex("res://art/creatures/raider_%d.png" % int(b.kind))
+		var tint := Color(0.7, 0.7, 0.7)
+		if spr == null:
+			spr = Art.diver(3 + int(b.kind))
+			tint = Color(0.42, 0.28, 0.28)
+		if spr:
+			var h := 58.0
+			var sz := Vector2(h * spr.get_width() / spr.get_height(), h)
+			draw_set_transform(p + Vector2(0, -sz.x * 0.5 + 4), PI / 2.0, Vector2.ONE)
+			draw_texture_rect(spr, Rect2(Vector2(-sz.x / 2.0, -sz.y / 2.0), sz), false, tint)
+			draw_set_transform(Vector2.ZERO)
+		# блестит — можно обыскать
+		var tw := 0.5 + 0.5 * sin(t * 5.0 + float(b.id))
+		var sp := p + Vector2(10, -34)
+		draw_circle(sp, 6 + 3 * tw, Color(1.0, 0.85, 0.3, 0.25 + 0.25 * tw))
+		Icons.draw(self, "pearls", sp, 8.0, Defs.RESOURCES.pearls.color)
+
 func _on_press(p: Vector2) -> void:
 	press_pos = p
 	moved = false
@@ -1356,6 +1384,20 @@ func _on_press(p: Vector2) -> void:
 	if build_type != "":
 		return
 	var world := screen_to_world(p)
+	for b in Game.raider_bodies:
+		var bp := raider_body_pos(b)
+		if world.distance_to(bp + Vector2(0, -20)) < 40.0:
+			moved = true
+			var loot := Game.loot_raider(b)
+			var parts := []
+			for it in [["pearls", loot.get("pearls", 0)], ["crystals", loot.get("crystals", 0)], ["food", loot.get("resources", 0)]]:
+				if it[1] > 0:
+					parts.append(it)
+			for k in parts.size():
+				floaters.append({"pos": bp + Vector2(0, -40 - 34 * k), "text": "+%d" % parts[k][1], "icon": parts[k][0], "color": Color(1.0, 0.9, 0.6), "life": 1.6})
+			if loot.has("item"):
+				floaters.append({"pos": bp + Vector2(0, -40 - 34 * parts.size()), "text": tr("Gear!"), "icon": "item_" + str(loot.item_base), "color": Defs.ITEM_RARITY[loot.item].color, "life": 2.0})
+			return
 	for i in Game.fallen.size():
 		if world.distance_to(fallen_pos(i) + Vector2(0, -30)) < 40.0:
 			moved = true

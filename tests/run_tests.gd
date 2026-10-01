@@ -360,6 +360,14 @@ func _initialize() -> void:
 		if pd2.raid.is_empty():
 			break
 	check(pd2.raid.is_empty() and pd2.pearls > p_before and al2.incident <= 0.0, "защитники отбили налёт и получили награду")
+	check(pd2.raider_bodies.size() >= 2, "тела пиратов остались лежать")
+	var pb2: int = pd2.pearls
+	var lt: Dictionary = pd2.loot_raider(pd2.raider_bodies[0])
+	check(pd2.pearls > pb2 and lt.get("pearls", 0) > 0, "обыск тела пирата даёт добычу")
+	pd2.raider_bodies[0].until = pd2.now() - 1.0
+	var nb: int = pd2.raider_bodies.size()
+	pd2._expire_raider_bodies()
+	check(pd2.raider_bodies.size() == nb - 1, "тело пирата со временем исчезает")
 	pr.free(); pd2.free()
 	# беда без людей: разгорается, перекидывается на соседа и сама выгорает
 	var bz = load("res://scripts/game_state.gd").new()

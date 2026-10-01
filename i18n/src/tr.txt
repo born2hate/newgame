@@ -561,3 +561,4 @@
 560|%d inciyle kaçtılar.
 561|KAPI
 562|Koloninin girişi. Yeni sakinler buraya gelir. Korsanları daha uzun tutmak için kapıyı geliştir.
+563|Ekipman!

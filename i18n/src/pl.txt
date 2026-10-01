@@ -561,3 +561,4 @@
 560|Uciekli z %d perłami.
 561|DRZWI
 562|Wejście do kolonii. Tu przybywają nowi koloniści. Ulepszaj drzwi, by dłużej powstrzymać piratów.
+563|Sprzęt!

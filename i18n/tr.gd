@@ -567,6 +567,7 @@ const T := {
 	"They escaped with %d pearls.": "%d inciyle kaçtılar.",
 	"DOOR": "KAPI",
 	"Colony entrance. New colonists arrive here. Upgrade the door to hold pirates back longer.": "Koloninin girişi. Yeni sakinler buraya gelir. Korsanları daha uzun tutmak için kapıyı geliştir.",
+	"Gear!": "Ekipman!",
 }
 
 static func make() -> Translation:

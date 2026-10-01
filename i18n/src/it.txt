@@ -561,3 +561,4 @@
 560|Sono fuggiti con %d perle.
 561|PORTA
 562|Ingresso della colonia. Qui arrivano i nuovi coloni. Migliora la porta per trattenere i pirati più a lungo.
+563|Equipaggiamento!

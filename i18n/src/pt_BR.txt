@@ -561,3 +561,4 @@
 560|Levaram %d pérolas.
 561|PORTA
 562|Entrada da colônia. Novos colonos chegam aqui. Melhore a porta para segurar os piratas por mais tempo.
+563|Equipamento!

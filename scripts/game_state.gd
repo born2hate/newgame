@@ -1229,6 +1229,9 @@ const RAID_MIN_POP := 10
 const RAID_STAY := 10.0
 var raid := {}
 var raid_timer := 900.0
+## Тела побеждённых пиратов: лежат RAIDER_BODY_TIME секунд, нажатие — немного добычи.
+const RAIDER_BODY_TIME := 600.0
+var raider_bodies: Array = []
 
 func raid_tier() -> int:
 	return colonists.size() / 10 + max_row() / 4
@@ -1251,6 +1254,39 @@ func start_raid() -> void:
 	event.emit("incident")
 	changed.emit()
 
+## Обыскать тело пирата: немного жемчуга, иногда запасы, кристалл или простое снаряжение.
+func loot_raider(body: Dictionary) -> Dictionary:
+	if not body in raider_bodies:
+		return {}
+	raider_bodies.erase(body)
+	var tier: int = body.get("tier", 0)
+	var r := {"pearls": rng.randi_range(8, 20) * (1 + tier)}
+	var roll := rng.randf()
+	if roll < 0.04 + 0.02 * tier:
+		r["item"] = "rare" if rng.randf() < 0.15 + 0.05 * tier else "common"
+	elif roll < 0.18:
+		r["crystals"] = rng.randi_range(1, 1 + tier / 2)
+	elif roll < 0.45:
+		r["resources"] = rng.randi_range(10, 20) * (1 + tier)
+	if r.has("resources"):
+		for k in ["energy", "oxygen", "food"]:
+			resources[k] = minf(storage_cap(), resources[k] + r.resources)
+	pearls += int(r.pearls)
+	crystals += int(r.get("crystals", 0))
+	if r.has("item"):
+		var it := add_item(r.item)
+		r["item_base"] = it.base
+	track("loot_raider")
+	event.emit("bubble")
+	changed.emit()
+	return r
+
+func _expire_raider_bodies() -> void:
+	var t := now()
+	for b in raider_bodies.duplicate():
+		if t > float(b.until) or get_room(int(b.room)).is_empty():
+			raider_bodies.erase(b)
+
 func raid_alive() -> Array:
 	return raid.get("raiders", []).filter(func(x): return x.hp > 0.0)
 
@@ -1259,6 +1295,8 @@ func fight_power(c: Dictionary) -> float:
 	return (stat(c, "str") + stat(c, "end") * 0.5 + 1.0) * (0.4 + 0.6 * c.health / 100.0)
 
 func _tick_raid(delta: float) -> void:
+	if not raider_bodies.is_empty():
+		_expire_raider_bodies()
 	if raid.is_empty():
 		if colonists.size() >= RAID_MIN_POP:
 			raid_timer -= delta
@@ -1285,6 +1323,10 @@ func _tick_raid(delta: float) -> void:
 			var take := minf(rd.hp, dmg_left)
 			rd.hp -= take
 			dmg_left -= take
+			if rd.hp <= 0.0:
+				raider_bodies.append({"room": room.id, "x": rng.randf_range(0.4, 0.9), "kind": rd.kind,
+					"tier": raid_tier(), "until": now() + RAIDER_BODY_TIME, "id": next_id})
+				next_id += 1
 		alive = raid_alive()
 		if alive.is_empty():
 			_end_raid(true)

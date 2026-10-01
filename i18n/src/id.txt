@@ -561,3 +561,4 @@
 560|Mereka kabur membawa %d mutiara.
 561|PINTU
 562|Pintu masuk koloni. Kolonis baru tiba di sini. Tingkatkan pintunya agar bajak laut tertahan lebih lama.
+563|Perlengkapan!

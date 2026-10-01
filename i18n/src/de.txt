@@ -561,3 +561,4 @@
 560|Sie sind mit %d Perlen entkommen.
 561|TÜR
 562|Eingang der Kolonie. Hier kommen neue Kolonisten an. Verbessere die Tür, um Piraten länger aufzuhalten.
+563|Ausrüstung!

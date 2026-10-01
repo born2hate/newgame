@@ -562,3 +562,4 @@
 560|Se llevaron %d perlas.
 561|PUERTA
 562|Entrada de la colonia. Aquí llegan los nuevos colonos. Mejora la puerta para frenar más a los piratas.
+563|¡Equipo!
