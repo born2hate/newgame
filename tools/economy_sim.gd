@@ -195,7 +195,7 @@ func _build() -> void:
 	var pop: int = g.colonists.size()
 	var use_o2: float = g.O2_PER_COLONIST * pop
 	var use_food: float = g.FOOD_PER_COLONIST * pop
-	if pop >= g.population_cap() - 1:
+	if pop >= g.population_cap() - 1 and pop < g.MAX_POP:
 		need = "living"
 	elif _rate("oxygen") < use_o2 * 1.3 and _staffed("oxygen"):
 		need = "oxygen"

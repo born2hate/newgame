@@ -10,6 +10,7 @@ APK builds live in [`releases/`](releases/).
 - **Tense music** fades in during pirate raids and boss fights.
 ### Changed
 - **Shorter tutorial**: 6 hands-on steps instead of 11 — collect, build, place, drag, done.
+- Slower population growth: at most 1 child growing at a time (up to 3 at high colony level), babies take longer; the Radio Room attracts people more slowly.
 ### Fixed
 - Tapping a ready room where a colonist stands now collects instead of opening the colonist card.
 

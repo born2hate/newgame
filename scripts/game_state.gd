@@ -19,7 +19,7 @@ const TRAIN_TIME := 1800.0
 const NATURAL_POP := 8
 const MAX_POP := 100
 ## Дети: сколько секунд «ухаживания» в жилом отсеке (при силе обаяния 10) и сколько растёт ребёнок.
-const BREED_TIME := 14400.0
+const BREED_TIME := 28800.0
 const GROW_TIME := 21600.0
 ## Комбо-сбор: окно между сборами и множитель.
 const COMBO_WINDOW := 2.5
@@ -365,8 +365,8 @@ func arrival_speed() -> float:
 	# сила радиорубки 10 ≈ один человек в час
 	var base := 1.0 if colonists.size() < NATURAL_POP else 0.0
 	var rp := type_power("radio")
-	# сила 10 ≈ один человек в 2 часа, дальше с убывающей отдачей
-	var per_hour := 0.5 * pow(rp / 10.0, 0.6) if rp > 0.0 else 0.0
+	# сила 10 ≈ один человек в 10 часов, дальше с убывающей отдачей
+	var per_hour := 0.1 * pow(rp / 10.0, 0.5) if rp > 0.0 else 0.0
 	return base + per_hour * ARRIVAL_INTERVAL / 3600.0
 
 func armory_bonus() -> float:
@@ -581,8 +581,13 @@ func _tick_family(delta: float, offline: bool) -> void:
 				if not offline:
 					banner.emit("suit_%d" % c.suit, tr("All grown up!"), tr("%s is ready to work.") % c.name)
 				changed.emit()
+	# сколько детей может расти одновременно: 1, с уровнем колонии — до 3
+	var kids := colonists.filter(func(c): return c.get("child", false)).size()
+	var can_breed := kids < max_children()
 	for r in rooms:
 		if not Defs.ROOMS[r.type].get("breeds", false) or r.incident > 0.0:
+			continue
+		if not can_breed:
 			continue
 		var pair := workers_in(r)
 		if pair.size() < 2 or colonists.size() >= mini(population_cap(), MAX_POP):
@@ -597,6 +602,11 @@ func _tick_family(delta: float, offline: bool) -> void:
 		if r.progress >= 1.0:
 			r.progress = 0.0
 			_birth(r, pair[0], pair[1], offline)
+			kids += 1
+			can_breed = kids < max_children()
+
+func max_children() -> int:
+	return mini(3, 1 + colony_level / 8)
 
 func _birth(r: Dictionary, a: Dictionary, b: Dictionary, offline: bool) -> void:
 	var kid := _make_colonist()
