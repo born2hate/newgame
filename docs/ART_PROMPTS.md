@@ -190,3 +190,42 @@ transparent background, no text: <объект>
 
 Square, transparent background, glossy cartoon game icon in a round brass frame. A 4×5 grid on one sheet is fine — I'll cut it.
 Order: efficient_reactors, hydroponics, electrolysis, reinforced_hull, training_programs, sonar_mapping, fire_suppression, deep_drilling, auto_collectors, medical_ai, bathyscaphe_engines, storage_compression, pearl_cultivation, trader_beacon, abyssal_engineering, legendary_signal, fusion_core.
+
+## Материалы для крафта → `art/materials/<id>.png`
+
+Квадрат, прозрачный фон, блестящий мультяшный стиль, как иконки предметов. Можно одним листом 4×2 — я разрежу.
+Порядок: scrap, kelp_fiber, shell, coral, copper, vent_crystal, kraken_ink, abyss_pearl.
+
+`set of 8 cartoon game material icons for an underwater colony game, glossy mobile game style, each on its own, transparent background: 1) pile of rusty scrap metal plates and bolts, 2) bundle of green kelp fiber rope, 3) iridescent pearl shell, 4) branch of red-orange coral, 5) coil of shiny copper wire, 6) glowing cyan hydrothermal vent crystal, 7) bottle of glowing purple kraken ink, 8) large glowing white abyss pearl with a faint blue aura`
+
+## Чертёж → `art/ui/blueprint.png`
+
+`cartoon rolled-out blueprint scroll with white technical drawing of a harpoon on blue paper, slightly curled edges, glossy mobile game item icon, transparent background`
+
+## Таинственный незнакомец → `art/characters/stranger.png`
+
+Как колонисты (тот же чиби-стиль), вид сбоку, смотрит вправо, во весь рост.
+
+`mysterious stranger character in the same chibi style as the attached diver: long dark trench coat over an old brass diving suit, wide-brim hat, face hidden in shadow with two glowing eyes behind the helmet glass, holding a small lantern, side view facing right, full body, transparent background`
+
+## Черты характера → `art/ui/traits/<id>.png`
+
+Круглые значки-медальки, прозрачный фон. Можно листом 4×2.
+Порядок: brave, tough, lucky, genius, cheerful, night_owl, lazy, clumsy.
+
+`set of 8 round cartoon badge icons for character traits, glossy mobile game style, brass rim, transparent background: 1) brave — red shield with a lion face, 2) tough — flexed arm with a bandage, 3) lucky — four-leaf clover with a pearl, 4) genius — glowing light bulb with a brain, 5) cheerful — big smiling sun, 6) night owl — owl under a crescent moon, 7) lazy — sleeping face with Zzz on a pillow, 8) clumsy — banana peel and a tilted wrench`
+
+## Проекты колонии → `art/projects/<id>.png`
+
+Широкие картинки 16:9, как фоны зон экспедиций. Подводная колония, мультяшный стиль игры.
+
+| Файл | Промт |
+|---|---|
+| `garden_dome.png` | `huge glass dome garden on the sea floor full of glowing plants and little trees, colonists in diving suits tending it, cartoon underwater colony game art, wide 16:9` |
+| `survivor_beacon.png` | `tall underwater radio beacon tower with a bright rotating light beam cutting through dark water, small submarines approaching, cartoon underwater colony game art, wide 16:9` |
+| `deep_bathyscaphe.png` | `giant heavy armored bathyscaphe in a dry dock under construction with cranes and sparks, glowing portholes, cartoon underwater colony game art, wide 16:9` |
+| `pearl_monument.png` | `grand monument statue of a diver holding a giant glowing pearl in the colony plaza, coral and lights around, cartoon underwater colony game art, wide 16:9` |
+
+## Морская буря → `art/ui/storm.png`
+
+`cartoon underwater storm event icon: swirling dark current vortex with lightning flashes from the surface above and a frightened little fish, glossy mobile game icon, transparent background`
