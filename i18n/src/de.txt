@@ -813,3 +813,5 @@
 812|Drehen ◆ %d
 813|Bezahlte Drehungen heute: %d / %d
 814|Heute −40%!
+815|Der Kauf wurde nicht abgeschlossen.
+816|Das Video ist noch nicht bereit. Versuch es gleich noch mal.

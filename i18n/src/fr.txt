@@ -813,3 +813,5 @@
 812|Tourner ◆ %d
 813|Tours payants aujourd'hui : %d / %d
 814|−40 % aujourd'hui !
+815|L'achat n'a pas abouti.
+816|La vidéo n'est pas encore prête. Réessaie dans un instant.

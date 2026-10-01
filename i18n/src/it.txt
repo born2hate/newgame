@@ -813,3 +813,5 @@
 812|Gira ◆ %d
 813|Giri a pagamento oggi: %d / %d
 814|−40% oggi!
+815|L'acquisto non è stato completato.
+816|Il video non è ancora pronto. Riprova tra poco.

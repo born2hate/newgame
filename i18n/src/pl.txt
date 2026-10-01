@@ -813,3 +813,5 @@
 812|Kręć ◆ %d
 813|Płatne obroty dziś: %d / %d
 814|Dziś −40%!
+815|Zakup nie został ukończony.
+816|Film nie jest jeszcze gotowy. Spróbuj za chwilę.

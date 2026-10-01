@@ -813,3 +813,5 @@
 812|Putar ◆ %d
 813|Putaran berbayar hari ini: %d / %d
 814|−40% hari ini!
+815|Pembelian tidak selesai.
+816|Video belum siap. Coba lagi sebentar lagi.

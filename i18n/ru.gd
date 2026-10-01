@@ -819,6 +819,8 @@ const T := {
 	"Spin ◆ %d": "Крутить ◆ %d",
 	"Paid spins today: %d / %d": "Платных вращений сегодня: %d / %d",
 	"−40% today!": "−40% сегодня!",
+	"Purchase was not completed.": "Покупка не завершена.",
+	"The video is not ready yet. Try again in a moment.": "Видео ещё не загрузилось. Попробуй чуть позже.",
 }
 
 static func make() -> Translation:

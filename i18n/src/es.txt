@@ -814,3 +814,5 @@
 812|Girar ◆ %d
 813|Giros de pago hoy: %d / %d
 814|¡−40% hoy!
+815|La compra no se completó.
+816|El vídeo aún no está listo. Inténtalo en un momento.

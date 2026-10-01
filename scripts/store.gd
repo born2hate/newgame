@@ -11,7 +11,15 @@ signal ad_started
 signal ad_finished
 signal purchase_finished(product_id: String, ok: bool)
 
-const DEV_MODE := true
+## Тестовый режим: включается сам, если в сборке нет плагина Google Play Billing.
+## Тогда покупка сразу выдаёт товар, реклама — заглушка на 2 секунды.
+var DEV_MODE := true
+
+## Google Play Billing (плагин GodotGooglePlayBilling). Цены берём из стора.
+var billing: Object = null
+var store_prices := {}
+## Расходуемые покупки (можно купить снова): после выдачи их «потребляем».
+const CONSUMABLE := ["crystals_60", "crystals_330", "crystals_700", "crystals_1500", "crystals_4000", "crystals_9000", "piggy_bank", "season_pass"]
 
 ## Товары за реальные деньги. price — строка для показа; в релизе цену берём из стора.
 const IAP := [
@@ -58,6 +66,99 @@ const CRYSTAL_ITEMS := [
 
 var ad_playing := false
 
+var ads := preload("res://scripts/ads.gd").new()
+
+func _ready() -> void:
+	ads.init()
+	if Engine.has_singleton("GodotGooglePlayBilling"):
+		billing = Engine.get_singleton("GodotGooglePlayBilling")
+		DEV_MODE = false
+		for pair in [["connected", _on_billing_connected], ["purchases_updated", _on_purchases_updated],
+				["purchase_error", _on_purchase_error], ["query_product_details_response", _on_product_details],
+				["product_details_query_completed", _on_product_details], ["sku_details_query_completed", _on_product_details],
+				["query_purchases_response", _on_query_purchases]]:
+			if billing.has_signal(pair[0]):
+				billing.connect(pair[0], pair[1])
+		if billing.has_method("startConnection"):
+			billing.startConnection()
+
+func _on_billing_connected() -> void:
+	var ids: Array = IAP.map(func(p): return p.id)
+	if billing.has_method("queryProductDetails"):
+		billing.queryProductDetails(ids, "inapp")
+	elif billing.has_method("querySkuDetails"):
+		billing.querySkuDetails(ids, "inapp")
+	# восстановить купленное раньше (Premium, без рекламы, наборы) — например, после переустановки
+	if billing.has_method("queryPurchases"):
+		var r = billing.queryPurchases("inapp")
+		if typeof(r) == TYPE_DICTIONARY:
+			_on_query_purchases(r)
+
+## Цены из Google Play (в валюте игрока) вместо строк по умолчанию.
+func _on_product_details(response) -> void:
+	var list: Array = []
+	if typeof(response) == TYPE_DICTIONARY:
+		list = response.get("product_details", response.get("details", []))
+	elif typeof(response) == TYPE_ARRAY:
+		list = response
+	for d in list:
+		var pid: String = str(d.get("product_id", d.get("sku", d.get("id", ""))))
+		var price: String = str(d.get("price", d.get("formatted_price", "")))
+		if price == "" and d.has("one_time_purchase_offer_details"):
+			price = str(d.one_time_purchase_offer_details.get("formatted_price", ""))
+		if pid != "" and price != "":
+			store_prices[pid] = price
+
+func price_of(id: String) -> String:
+	return str(store_prices.get(id, product(id).get("price", "")))
+
+func _purchase_list(response) -> Array:
+	if typeof(response) == TYPE_DICTIONARY:
+		return response.get("purchases", [])
+	if typeof(response) == TYPE_ARRAY:
+		return response
+	return []
+
+func _on_purchases_updated(response) -> void:
+	for pu in _purchase_list(response):
+		_handle_purchase(pu)
+
+func _on_query_purchases(response) -> void:
+	for pu in _purchase_list(response):
+		var ids: Array = pu.get("product_ids", [pu.get("product_id", pu.get("sku", ""))])
+		for pid in ids:
+			# незавершённые покупки и купленное раньше (не расходуемое)
+			if not pu.get("is_acknowledged", false) or (not pid in CONSUMABLE and not is_owned(pid)):
+				_handle_purchase(pu)
+				break
+
+## Покупка подтверждена: выдаём товар, затем потребляем или подтверждаем её в Google Play.
+func _handle_purchase(pu: Dictionary) -> void:
+	# 1 — PURCHASED (0 — ожидает оплаты, 2 — отложена)
+	if int(pu.get("purchase_state", 1)) != 1:
+		return
+	var token: String = str(pu.get("purchase_token", ""))
+	if token != "" and token in Game.purchase_tokens:
+		return
+	var ids: Array = pu.get("product_ids", [pu.get("product_id", pu.get("sku", ""))])
+	for pid in ids:
+		if product(pid).is_empty():
+			continue
+		if not (pid in CONSUMABLE) and is_owned(pid):
+			continue
+		_deliver(pid)
+		if pid in CONSUMABLE:
+			if billing.has_method("consumePurchase"):
+				billing.consumePurchase(token)
+		elif not pu.get("is_acknowledged", false) and billing.has_method("acknowledgePurchase"):
+			billing.acknowledgePurchase(token)
+	if token != "":
+		Game.purchase_tokens.append(token)
+		Game.save_game()
+
+func _on_purchase_error(code = 0, message = "") -> void:
+	Game.message.emit(tr("Purchase was not completed."))
+
 func product(id: String) -> Dictionary:
 	for p in IAP:
 		if p.id == id:
@@ -82,11 +183,11 @@ func can_buy(id: String) -> bool:
 func purchase(id: String) -> void:
 	if not can_buy(id):
 		return
-	if DEV_MODE:
+	if DEV_MODE or billing == null:
 		_deliver(id)
 		return
-	# TODO: вызвать биллинг стора; _deliver(id) — по подтверждению покупки.
-	purchase_finished.emit(id, false)
+	# товар выдаётся в _handle_purchase, когда Google Play подтвердит оплату
+	billing.purchase(id)
 
 func _deliver(id: String) -> void:
 	var p := product(id)
@@ -141,13 +242,28 @@ func show_rewarded(on_reward: Callable) -> void:
 	if Game.ads_left() <= 0:
 		Game.message.emit(tr("No more videos today. Come back tomorrow!"))
 		return
+	if ads.available() and not Game.ads_removed() and not ads.ready():
+		ads.load_ad()
+		Game.message.emit(tr("The video is not ready yet. Try again in a moment."))
+		return
 	Game.register_ad()
 	if Game.ads_removed():
 		on_reward.call()
 		return
+	if ads.available():
+		# настоящая реклама AdMob
+		ad_playing = true
+		ad_started.emit()
+		var got := [false]
+		ads.show(func(): got[0] = true, func():
+			ad_playing = false
+			ad_finished.emit()
+			if got[0]:
+				on_reward.call())
+		return
+	# тестовый режим: заглушка на 2 секунды
 	ad_playing = true
 	ad_started.emit()
-	# TODO: показать rewarded-рекламу AdMob; награда — в колбэке on_user_earned_reward.
 	await get_tree().create_timer(2.0).timeout
 	ad_playing = false
 	ad_finished.emit()

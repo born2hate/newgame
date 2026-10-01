@@ -1841,7 +1841,7 @@ func _open_shop() -> void:
 		nd.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		ninfo.add_child(nd)
 		nrow.add_child(ninfo)
-		var nb := _button(na.price, func():
+		var nb := _button(Store.price_of(na.id), func():
 			Store.purchase("no_ads")
 			_open_shop(), 64)
 		nb.custom_minimum_size.x = 130
@@ -1871,7 +1871,7 @@ func _open_shop() -> void:
 		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		oinfo.add_child(d)
 		offer.add_child(oinfo)
-		var pb := _button(p.price, func():
+		var pb := _button(Store.price_of(p.id), func():
 			Store.purchase(id)
 			_open_shop(), 72)
 		pb.custom_minimum_size.x = 150
@@ -1907,7 +1907,7 @@ func _open_shop() -> void:
 		var amt := _label(str(p.reward.crystals), 24, Defs.RESOURCES.crystals.color)
 		amt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vb.add_child(amt)
-		vb.add_child(_button(p.price, Store.purchase.bind(p.id), 56))
+		vb.add_child(_button(Store.price_of(p.id), Store.purchase.bind(p.id), 56))
 		grid.add_child(cell)
 
 	_section(tr("Spend crystals"))
@@ -2658,7 +2658,7 @@ func _open_tasks() -> void:
 		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		d.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		offer.add_child(d)
-		var bb := _button(p.price, func():
+		var bb := _button(Store.price_of(p.id), func():
 			Store.purchase("season_pass")
 			_open_tasks(), 70)
 		bb.custom_minimum_size.x = 140

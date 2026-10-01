@@ -726,7 +726,7 @@ func add_shop_extras() -> void:
 		info.add_child(hud._reward_chips(p.reward, 28, 17))
 		row.add_child(info)
 		var pid: String = oid
-		var b: Button = hud._button(p.price, func():
+		var b: Button = hud._button(Store.price_of(oid), func():
 			Store.purchase(pid)
 			hud._open_shop(), 72)
 		hud._gold(b)
@@ -764,7 +764,7 @@ func add_shop_extras() -> void:
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	pi.add_child(hint)
 	prow.add_child(pi)
-	var pb: Button = hud._button(Store.product("piggy_bank").price, func():
+	var pb: Button = hud._button(Store.price_of("piggy_bank"), func():
 		Store.purchase("piggy_bank")
 		hud._open_shop(), 64)
 	pb.disabled = not Game.piggy_can_break()

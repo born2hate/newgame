@@ -813,5 +813,7 @@
 "Spin for a video",
 "Spin ◆ %d",
 "Paid spins today: %d / %d",
-"−40% today!"
+"−40% today!",
+"Purchase was not completed.",
+"The video is not ready yet. Try again in a moment."
 ]

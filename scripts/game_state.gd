@@ -70,6 +70,8 @@ var wheel_ad_used := false
 var wheel_paid := 0
 var offers: Dictionary = {}
 var offers_seen: Array = []
+## Токены уже выданных покупок Google Play — чтобы не выдать дважды.
+var purchase_tokens: Array = []
 ## Цепочки заданий: id → {"step": номер шага, "count": прогресс шага}.
 var chains: Dictionary = {}
 
@@ -185,6 +187,7 @@ func new_game() -> void:
 	wheel_paid = 0
 	offers = {}
 	offers_seen = []
+	purchase_tokens = []
 	storm_until = 0.0
 	storm_next = 0.0
 	owned_products = []
@@ -3306,7 +3309,7 @@ func save_game() -> void:
 		"colonists": colonists, "next_id": next_id, "arrival_timer": arrival_timer,
 		"meta": {
 			"crystals": crystals, "crates": crates, "premium": premium, "no_ads": no_ads, "pet": pet, "pets_owned": pets_owned, "owned": owned_products,
-			"materials": materials, "blueprints": blueprints, "craft_jobs": craft_jobs, "projects": projects, "pet_xp": pet_xp, "chains": chains, "piggy": piggy, "wheel": [wheel_day, wheel_free_used, wheel_ad_used, wheel_paid], "offers": offers, "offers_seen": offers_seen, "storm_until": storm_until, "storm_next": storm_next,
+			"materials": materials, "blueprints": blueprints, "craft_jobs": craft_jobs, "projects": projects, "pet_xp": pet_xp, "chains": chains, "piggy": piggy, "wheel": [wheel_day, wheel_free_used, wheel_ad_used, wheel_paid], "offers": offers, "offers_seen": offers_seen, "purchase_tokens": purchase_tokens, "storm_until": storm_until, "storm_next": storm_next,
 			"boost_until": boost_until, "free_crate_at": free_crate_at,
 			"daily_day": daily_day, "daily_streak": daily_streak,
 			"expeditions": expeditions, "quests": quests, "quest_day": quest_day,
@@ -3383,6 +3386,7 @@ func load_game() -> bool:
 	wheel_day = int(wl[0]); wheel_free_used = bool(wl[1]); wheel_ad_used = bool(wl[2]); wheel_paid = int(wl[3])
 	offers = meta.get("offers", {})
 	offers_seen = meta.get("offers_seen", [])
+	purchase_tokens = meta.get("purchase_tokens", [])
 	storm_until = float(meta.get("storm_until", 0.0))
 	storm_next = float(meta.get("storm_next", 0.0))
 	projects = {}
