@@ -45,9 +45,10 @@ const ROOMS := {
 		"desc": "Connects levels. Build above or below another elevator.",
 	},
 	"living": {
-		"name": "Living Quarters", "width": 2, "cost": 100, "buildable": true, "slots": 0,
+		"name": "Living Quarters", "width": 2, "cost": 100, "buildable": true,
 		"capacity": 4, "energy": 0.05, "color": Color(0.75, 0.45, 0.9), "icon": "⌂",
-		"unlock_pop": 0, "desc": "+4 colonist capacity per level.",
+		"slots": 2, "stat": "cha", "breeds": true,
+		"unlock_pop": 0, "desc": "+4 colonist capacity per level. Put two colonists here and they may have a child. Charm helps.",
 	},
 	"reactor": {
 		"name": "Reactor", "width": 2, "cost": 100, "buildable": true, "slots": 2,
@@ -118,7 +119,7 @@ const ROOMS := {
 	"radio": {
 		"name": "Radio Room", "width": 2, "cost": 400, "buildable": true, "slots": 2,
 		"stat": "cha", "energy": 0.15, "color": Color(0.5, 1.0, 0.6), "icon": "☊",
-		"unlock_pop": 20, "desc": "Calls new colonists faster and attracts traders. Needs Charm.",
+		"unlock_pop": 8, "desc": "Broadcasts to survivors: the main way to get new colonists once the colony grows. Also attracts traders. Needs Charm.",
 	},
 	"lounge": {
 		"name": "Lounge", "width": 2, "cost": 400, "buildable": true, "slots": 2,
@@ -159,20 +160,20 @@ const ROOMS := {
 ## Шансы показываются игроку в магазине (требование Apple/Google).
 const CRATES := {
 	"common": {"name": "Supply Crate", "rolls": 2, "color": Color(0.55, 0.75, 0.9), "table": [
-		[50, "pearls", 80, 200], [20, "resources", 40, 80], [15, "crystals", 3, 8],
+		[50, "pearls", 80, 200], [20, "resources", 40, 80], [15, "crystals", 1, 3],
 		[12, "colonist_rare", 1, 1], [3, "colonist_legendary", 1, 1]]},
 	"silver": {"name": "Silver Crate", "rolls": 3, "color": Color(0.85, 0.9, 1.0), "table": [
-		[40, "pearls", 200, 450], [20, "resources", 80, 150], [18, "crystals", 8, 20],
+		[40, "pearls", 200, 450], [20, "resources", 80, 150], [18, "crystals", 4, 10],
 		[17, "colonist_rare", 1, 1], [5, "colonist_legendary", 1, 1]]},
 	"gold": {"name": "Gold Crate", "rolls": 4, "color": Color(1.0, 0.8, 0.3), "guaranteed": "colonist_rare", "table": [
-		[35, "pearls", 400, 900], [20, "resources", 150, 250], [22, "crystals", 20, 45],
+		[35, "pearls", 400, 900], [20, "resources", 150, 250], [22, "crystals", 10, 25],
 		[15, "colonist_rare", 1, 1], [8, "colonist_legendary", 1, 1]]},
 }
 
 ## Ежедневные награды: 7-дневный цикл, серия сбрасывается при пропуске дня.
 const DAILY := [
-	{"pearls": 60}, {"pearls": 100}, {"crystals": 3}, {"pearls": 180},
-	{"crates": {"common": 1}}, {"crystals": 15}, {"crates": {"silver": 1}},
+	{"pearls": 60}, {"pearls": 100}, {"crystals": 2}, {"pearls": 180},
+	{"crates": {"common": 1}}, {"crystals": 8}, {"crates": {"silver": 1}},
 ]
 
 ## Зоны экспедиций. danger — риск потерь здоровья, power — рекомендуемая сила экипажа
@@ -183,16 +184,16 @@ const ZONES := [
 		"loot": {"pearls": [35, 80], "resources": [15, 35]}},
 	{"id": "reef", "name": "Coral Reef", "minutes": 30, "danger": 0.2, "power": 18, "unlock_pop": 0,
 		"desc": "Colorful and full of pearls.",
-		"loot": {"pearls": [90, 190], "crystals": [1, 3], "resources": [30, 60]}},
+		"loot": {"pearls": [90, 190], "crystals": [1, 2], "resources": [30, 60]}},
 	{"id": "wreck", "name": "Sunken Ship", "minutes": 60, "danger": 0.35, "power": 26, "unlock_pop": 8,
 		"desc": "An old wreck. Treasure and trouble.",
-		"loot": {"pearls": [180, 360], "crystals": [3, 7], "crate": "common"}},
+		"loot": {"pearls": [180, 360], "crystals": [1, 4], "crate": "common"}},
 	{"id": "vents", "name": "Hydrothermal Vents", "minutes": 120, "danger": 0.5, "power": 34, "unlock_pop": 12,
 		"desc": "Scalding water, rare minerals.",
-		"loot": {"pearls": [300, 550], "crystals": [6, 14], "crate": "silver"}},
+		"loot": {"pearls": [300, 550], "crystals": [3, 7], "crate": "silver"}},
 	{"id": "trench", "name": "Abyssal Trench", "minutes": 240, "danger": 0.7, "power": 45, "unlock_pop": 16,
 		"desc": "The deepest dark. Legends live here.",
-		"loot": {"pearls": [550, 950], "crystals": [14, 28], "crate": "gold", "survivor": 0.25}},
+		"loot": {"pearls": [550, 950], "crystals": [7, 14], "crate": "gold", "survivor": 0.25}},
 ]
 
 ## Шаблоны записей журнала экспедиции ({n} — имя члена экипажа).
@@ -255,20 +256,20 @@ const QUEST_POOL := [
 	{"event": "collect_energy", "text": "Collect %d energy", "target": [250, 450], "scales": true, "reward": {"pearls": 60}, "xp": 40},
 	{"event": "collect_oxygen", "text": "Collect %d oxygen", "target": [250, 450], "scales": true, "reward": {"pearls": 60}, "xp": 40},
 	{"event": "collect_food", "text": "Collect %d food", "target": [250, 450], "scales": true, "reward": {"pearls": 60}, "xp": 40},
-	{"event": "collect_pearls", "text": "Harvest %d pearls from pearl farms", "target": [150, 300], "scales": true, "needs": "pearl", "reward": {"crystals": 4}, "xp": 60},
+	{"event": "collect_pearls", "text": "Harvest %d pearls from pearl farms", "target": [150, 300], "scales": true, "needs": "pearl", "reward": {"crystals": 2}, "xp": 60},
 	{"event": "collect_science", "text": "Produce %d science", "target": [60, 120], "scales": true, "needs": "lab", "reward": {"pearls": 120}, "xp": 60},
-	{"event": "build", "text": "Build %d rooms", "target": [2, 3], "reward": {"crystals": 4}, "xp": 60},
-	{"event": "upgrade", "text": "Upgrade %d rooms", "target": [2, 3], "reward": {"crystals": 4}, "xp": 60},
-	{"event": "expedition", "text": "Send %d expeditions", "target": [2, 3], "needs": "dock", "reward": {"crystals": 5}, "xp": 80},
+	{"event": "build", "text": "Build %d rooms", "target": [2, 3], "reward": {"crystals": 2}, "xp": 60},
+	{"event": "upgrade", "text": "Upgrade %d rooms", "target": [2, 3], "reward": {"crystals": 2}, "xp": 60},
+	{"event": "expedition", "text": "Send %d expeditions", "target": [2, 3], "needs": "dock", "reward": {"crystals": 2}, "xp": 80},
 	{"event": "expedition_done", "text": "Bring %d expeditions home", "target": [2, 3], "needs": "dock", "reward": {"pearls": 150}, "xp": 80},
-	{"event": "expedition_reef", "text": "Explore the Coral Reef %d times", "target": [1, 2], "needs": "dock", "reward": {"crystals": 6}, "xp": 90},
-	{"event": "incident_resolved", "text": "Handle %d incidents", "target": [2, 4], "reward": {"crystals": 5}, "xp": 70},
+	{"event": "expedition_reef", "text": "Explore the Coral Reef %d times", "target": [1, 2], "needs": "dock", "reward": {"crystals": 3}, "xp": 90},
+	{"event": "incident_resolved", "text": "Handle %d incidents", "target": [2, 4], "reward": {"crystals": 2}, "xp": 70},
 	{"event": "rush", "text": "Rush rooms %d times", "target": [4, 8], "reward": {"pearls": 80}, "xp": 40},
 	{"event": "bubble", "text": "Pop %d treasure bubbles", "target": [4, 8], "reward": {"pearls": 80}, "xp": 40},
-	{"event": "trade", "text": "Make %d deals with the trader", "target": [1, 2], "reward": {"crystals": 5}, "xp": 60},
-	{"event": "level_up", "text": "Level up colonists %d times", "target": [3, 6], "reward": {"crystals": 5}, "xp": 60},
-	{"event": "research", "text": "Finish %d research projects", "target": [1, 1], "needs": "lab", "reward": {"crystals": 6}, "xp": 80},
-	{"event": "craft", "text": "Craft %d pieces of gear", "target": [1, 2], "needs": "workshop", "reward": {"crystals": 8}, "xp": 90},
+	{"event": "trade", "text": "Make %d deals with the trader", "target": [1, 2], "reward": {"crystals": 2}, "xp": 60},
+	{"event": "level_up", "text": "Level up colonists %d times", "target": [3, 6], "reward": {"crystals": 2}, "xp": 60},
+	{"event": "research", "text": "Finish %d research projects", "target": [1, 1], "needs": "lab", "reward": {"crystals": 3}, "xp": 80},
+	{"event": "craft", "text": "Craft %d pieces of gear", "target": [1, 2], "needs": "workshop", "reward": {"crystals": 4}, "xp": 90},
 	{"event": "crate", "text": "Open %d crates", "target": [1, 2], "reward": {"pearls": 100}, "xp": 50},
 ]
 const QUESTS_PER_DAY := 4
@@ -309,9 +310,9 @@ const DIFFICULTY := {
 const DEPTH_ZONES := [
 	{"name": "Twilight Shelf", "from": 0, "bonus": 0.0, "crystal_chance": 0.0, "danger": 1.0, "research": "",
 		"color": Color(0.3, 0.7, 0.9)},
-	{"name": "Midnight Zone", "from": 5, "bonus": 0.3, "crystal_chance": 0.06, "danger": 1.5, "research": "deep_drilling",
+	{"name": "Midnight Zone", "from": 5, "bonus": 0.3, "crystal_chance": 0.02, "danger": 1.5, "research": "deep_drilling",
 		"color": Color(0.5, 0.4, 1.0)},
-	{"name": "The Abyss", "from": 10, "bonus": 0.7, "crystal_chance": 0.14, "danger": 2.2, "research": "abyssal_engineering",
+	{"name": "The Abyss", "from": 10, "bonus": 0.7, "crystal_chance": 0.05, "danger": 2.2, "research": "abyssal_engineering",
 		"color": Color(1.0, 0.35, 0.5)},
 ]
 
@@ -325,7 +326,7 @@ const RESEARCH := [
 	{"id": "sonar_mapping", "tier": 2, "name": "Sonar Mapping", "desc": "Expeditions bring 25% more loot.", "cost": 100, "minutes": 5, "req": ["electrolysis"]},
 	{"id": "fire_suppression", "tier": 2, "name": "Fire Suppression", "desc": "Incidents are handled twice as fast.", "cost": 100, "minutes": 5, "req": ["reinforced_hull"]},
 	{"id": "deep_drilling", "tier": 2, "name": "Deep Drilling", "desc": "Build in the Midnight Zone (rows 6-10).", "cost": 150, "minutes": 8, "req": ["efficient_reactors", "reinforced_hull"]},
-	{"id": "auto_collectors", "tier": 3, "name": "Auto-Collectors", "desc": "Rooms collect resources by themselves.", "cost": 250, "minutes": 15, "req": ["efficient_reactors", "hydroponics", "electrolysis"]},
+	{"id": "auto_collectors", "tier": 3, "name": "Auto-Collectors", "desc": "While you play, energy, oxygen and food rooms collect half their output by themselves.", "cost": 250, "minutes": 15, "req": ["efficient_reactors", "hydroponics", "electrolysis"]},
 	{"id": "medical_ai", "tier": 3, "name": "Medical AI", "desc": "Colonists heal 3 times faster.", "cost": 200, "minutes": 10, "req": ["training_programs"]},
 	{"id": "bathyscaphe_engines", "tier": 3, "name": "Turbo Engines", "desc": "Expeditions are 30% shorter.", "cost": 220, "minutes": 12, "req": ["sonar_mapping"]},
 	{"id": "storage_compression", "tier": 3, "name": "Compressed Storage", "desc": "+50% storage for all resources.", "cost": 200, "minutes": 10, "req": ["deep_drilling"]},
@@ -362,38 +363,38 @@ const STORY := [
 	{"title": "Welcome, Overseer", "text": "Commander Reyes here. The surface is gone, and this colony is all we have. Collect what the reactor made to get started.", "goal": ["collect_energy", 10], "reward": {"pearls": 100}},
 	{"title": "A Place to Sleep", "text": "More survivors are coming. Build Living Quarters so they have somewhere to rest.", "goal": ["build_living", 1], "reward": {"pearls": 150}},
 	{"title": "Everyone Works", "text": "Idle hands won't keep us breathing. Drag a colonist into a room with free slots.", "goal": ["assign", 1], "reward": {"pearls": 100}},
-	{"title": "Growing Colony", "text": "The beacon is working. Reach 8 colonists.", "goal": ["population", 8], "reward": {"crystals": 10}},
+	{"title": "Growing Colony", "text": "The beacon is working. Reach 8 colonists.", "goal": ["population", 8], "reward": {"crystals": 5}},
 	{"title": "Into the Blue", "text": "Build a Sub Dock and send our first crew out. Who knows what's out there.", "goal": ["expedition", 1], "reward": {"crates": {"common": 1}}},
-	{"title": "Knowledge Is Power", "text": "We need science. Build a Research Lab and finish any research.", "goal": ["research", 1], "reward": {"crystals": 15}},
+	{"title": "Knowledge Is Power", "text": "We need science. Build a Research Lab and finish any research.", "goal": ["research", 1], "reward": {"crystals": 7}},
 	{"title": "Trouble Below", "text": "Fires, floods, things with teeth... Handle 3 incidents and keep everyone alive.", "goal": ["incident_resolved", 3], "reward": {"pearls": 400}},
-	{"title": "Deeper", "text": "Our scans show warm vents in the Midnight Zone. Research Deep Drilling and build a room below row 5.", "goal": ["depth", 6], "reward": {"crystals": 25}},
+	{"title": "Deeper", "text": "Our scans show warm vents in the Midnight Zone. Research Deep Drilling and build a room below row 5.", "goal": ["depth", 6], "reward": {"crystals": 12}},
 	{"title": "The Wreck", "text": "Sonar found an old ship. Send an expedition to the Sunken Ship.", "goal": ["expedition_wreck", 1], "reward": {"crates": {"silver": 1}}},
-	{"title": "A Real Home", "text": "Merge rooms: build a room right next to one of the same type and level. Reach 15 colonists.", "goal": ["population", 15], "reward": {"crystals": 30}},
+	{"title": "A Real Home", "text": "Merge rooms: build a room right next to one of the same type and level. Reach 15 colonists.", "goal": ["population", 15], "reward": {"crystals": 15}},
 	{"title": "Signal from the Abyss", "text": "Something is calling from the deep. Reach The Abyss (row 11).", "goal": ["depth", 11], "reward": {"crates": {"gold": 1}}},
-	{"title": "Legend of the Trench", "text": "Send a crew to the Abyssal Trench. Bring back whatever sings down there.", "goal": ["expedition_trench", 1], "reward": {"crystals": 60, "colonist": "legendary"}},
+	{"title": "Legend of the Trench", "text": "Send a crew to the Abyssal Trench. Bring back whatever sings down there.", "goal": ["expedition_trench", 1], "reward": {"crystals": 30, "colonist": "legendary"}},
 	{"title": "Hot Meals", "text": "Morale is low. Build a Kitchen so the colony eats like people again.", "goal": ["build_kitchen", 1], "reward": {"pearls": 500}},
-	{"title": "Stronger Together", "text": "Train our people. Level up colonists 25 times.", "goal": ["level_up", 25], "reward": {"crystals": 30}},
+	{"title": "Stronger Together", "text": "Train our people. Level up colonists 25 times.", "goal": ["level_up", 25], "reward": {"crystals": 15}},
 	{"title": "Steel and Sparks", "text": "We need better gear. Build a Workshop and craft 3 pieces.", "goal": ["craft", 3], "reward": {"crates": {"silver": 1}}},
-	{"title": "Hold the Line", "text": "The deep is getting angrier. Handle 25 incidents.", "goal": ["incident_resolved", 25], "reward": {"crystals": 40}},
+	{"title": "Hold the Line", "text": "The deep is getting angrier. Handle 25 incidents.", "goal": ["incident_resolved", 25], "reward": {"crystals": 20}},
 	{"title": "Call Them Home", "text": "Build a Radio Room and reach 30 colonists.", "goal": ["population", 30], "reward": {"crates": {"gold": 1}}},
-	{"title": "Seasoned Explorers", "text": "Bring 20 expeditions home safely.", "goal": ["expedition_done", 20], "reward": {"crystals": 60}},
+	{"title": "Seasoned Explorers", "text": "Bring 20 expeditions home safely.", "goal": ["expedition_done", 20], "reward": {"crystals": 30}},
 	{"title": "Power from the Deep", "text": "Build a Current Turbine down in the dark.", "goal": ["build_turbine", 1], "reward": {"pearls": 1500}},
-	{"title": "A City Under the Sea", "text": "Reach 45 colonists. Commander Reyes would be proud.", "goal": ["population", 45], "reward": {"crystals": 100, "colonist": "legendary"}},
+	{"title": "A City Under the Sea", "text": "Reach 45 colonists. Commander Reyes would be proud.", "goal": ["population", 45], "reward": {"crystals": 50, "colonist": "legendary"}},
 ]
 
 ## Достижения: stat — счётчик в Game.stats, tiers — пороги.
 const ACHIEVEMENTS := [
-	{"id": "pop", "name": "Colony Founder", "desc": "Reach %d colonists", "stat": "population", "tiers": [10, 20, 35], "reward": [10, 25, 50]},
-	{"id": "builder", "name": "Master Builder", "desc": "Build %d rooms", "stat": "build", "tiers": [5, 15, 30], "reward": [10, 20, 40]},
-	{"id": "collector", "name": "Harvester", "desc": "Collect from rooms %d times", "stat": "collect", "tiers": [50, 300, 1000], "reward": [10, 25, 50]},
-	{"id": "explorer", "name": "Explorer", "desc": "Complete %d expeditions", "stat": "expedition_done", "tiers": [3, 15, 50], "reward": [15, 30, 60]},
-	{"id": "firefighter", "name": "First Responder", "desc": "Handle %d incidents", "stat": "incident_resolved", "tiers": [5, 25, 75], "reward": [10, 25, 50]},
-	{"id": "scientist", "name": "Scientist", "desc": "Finish %d research projects", "stat": "research", "tiers": [3, 8, 17], "reward": [15, 30, 60]},
-	{"id": "deep", "name": "Deep Diver", "desc": "Build on row %d", "stat": "depth", "tiers": [5, 10, 14], "reward": [15, 30, 60]},
-	{"id": "looter", "name": "Treasure Hunter", "desc": "Open %d crates", "stat": "crate", "tiers": [5, 20, 60], "reward": [10, 25, 50]},
-	{"id": "trainer", "name": "Coach", "desc": "Level up colonists %d times", "stat": "level_up", "tiers": [10, 50, 150], "reward": [10, 25, 50]},
-	{"id": "survivor", "name": "True Survivor", "desc": "Reach %d colonists in Survival", "stat": "survival_pop", "tiers": [10, 20, 35], "reward": [30, 60, 120]},
-	{"id": "bubbles", "name": "Bubble Popper", "desc": "Pop %d treasure bubbles", "stat": "bubble", "tiers": [10, 50, 200], "reward": [10, 20, 40]},
+	{"id": "pop", "name": "Colony Founder", "desc": "Reach %d colonists", "stat": "population", "tiers": [10, 20, 35], "reward": [3, 8, 15]},
+	{"id": "builder", "name": "Master Builder", "desc": "Build %d rooms", "stat": "build", "tiers": [5, 15, 30], "reward": [3, 6, 12]},
+	{"id": "collector", "name": "Harvester", "desc": "Collect from rooms %d times", "stat": "collect", "tiers": [50, 300, 1000], "reward": [3, 8, 15]},
+	{"id": "explorer", "name": "Explorer", "desc": "Complete %d expeditions", "stat": "expedition_done", "tiers": [3, 15, 50], "reward": [4, 10, 20]},
+	{"id": "firefighter", "name": "First Responder", "desc": "Handle %d incidents", "stat": "incident_resolved", "tiers": [5, 25, 75], "reward": [3, 8, 15]},
+	{"id": "scientist", "name": "Scientist", "desc": "Finish %d research projects", "stat": "research", "tiers": [3, 8, 17], "reward": [4, 10, 20]},
+	{"id": "deep", "name": "Deep Diver", "desc": "Build on row %d", "stat": "depth", "tiers": [5, 10, 14], "reward": [4, 10, 20]},
+	{"id": "looter", "name": "Treasure Hunter", "desc": "Open %d crates", "stat": "crate", "tiers": [5, 20, 60], "reward": [3, 8, 15]},
+	{"id": "trainer", "name": "Coach", "desc": "Level up colonists %d times", "stat": "level_up", "tiers": [10, 50, 150], "reward": [3, 8, 15]},
+	{"id": "survivor", "name": "True Survivor", "desc": "Reach %d colonists in Survival", "stat": "survival_pop", "tiers": [10, 20, 35], "reward": [6, 15, 30]},
+	{"id": "bubbles", "name": "Bubble Popper", "desc": "Pop %d treasure bubbles", "stat": "bubble", "tiers": [10, 50, 200], "reward": [3, 6, 12]},
 ]
 
 ## Еженедельные события: модификатор + цель с 3 наградами.
@@ -403,7 +404,7 @@ const WEEKLY := [
 	{"name": "Harvest Festival", "desc": "Farms produce +50%. Collect food!", "mod": "harvest", "goal": "collect_food", "tiers": [500, 2000, 5000]},
 	{"name": "Explorer's Season", "desc": "Expeditions bring +50% loot. Send expeditions!", "mod": "explorers", "goal": "expedition", "tiers": [3, 8, 15]},
 ]
-const WEEKLY_REWARDS := [{"crystals": 15}, {"crates": {"silver": 1}}, {"crystals": 40, "crates": {"gold": 1}}]
+const WEEKLY_REWARDS := [{"crystals": 8}, {"crates": {"silver": 1}}, {"crystals": 20, "crates": {"gold": 1}}]
 
 const FIRST_NAMES := [
 	"Ava", "Ben", "Cora", "Dan", "Ella", "Finn", "Gina", "Hugo", "Iris", "Jack",

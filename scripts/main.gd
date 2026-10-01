@@ -324,6 +324,27 @@ func _dev_screenshot() -> void:
 				Game.raider_bodies.append({"room": alr.id, "x": 0.5 + 0.3 * i, "kind": i, "tier": 1, "until": Game.now() + 600.0, "id": 900 + i})
 			camera.position = Vector2(450, 150)
 			await get_tree().create_timer(0.5).timeout
+		"family_ru":
+			Audio.set_language("ru")
+			var home := Game._add_room("living", 7, 1)
+			Game.colonists[2].room = home.id
+			Game.colonists[3].room = home.id
+			home.progress = 0.6
+			var kid := Game._make_colonist()
+			kid["child"] = true
+			kid["grow"] = 15000.0
+			kid.room = home.id
+			Game.colonists.append(kid)
+			for r in Game.rooms:
+				if Defs.ROOMS[r.type].has("produces"):
+					r.ready = true
+			camera.position = Vector2(600, 260)
+			await get_tree().create_timer(0.3).timeout
+			for r in Game.rooms:
+				if r.ready:
+					Game.collect(r)
+					await get_tree().create_timer(0.15).timeout
+			await get_tree().create_timer(0.3).timeout
 		"expedition_ru":
 			Audio.set_language("ru")
 			var d2 := Game._add_room("dock", 3, 1)

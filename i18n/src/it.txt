@@ -562,3 +562,16 @@
 561|PORTA
 562|Ingresso della colonia. Qui arrivano i nuovi coloni. Migliora la porta per trattenere i pirati più a lungo.
 563|Equipaggiamento!
+564|Niente più video per oggi. Torna domani!
+565|Colonia liv. %d
+566|Colonia livello %d!
+567|Combo ×%d · +%d%%
+568|%s è un bambino e non può ancora lavorare
+569|È cresciuto!
+570|%s è pronto a lavorare.
+571|È nato un bambino!
+572|%s e %s danno il benvenuto a %s.
+573|Bambino · cresce tra %s
+574|Trasmette ai sopravvissuti: il modo principale per avere nuovi coloni quando la colonia cresce. Attira anche i mercanti. Serve Fascino.
+575|+4 posti per livello. Metti qui due coloni e potrebbero avere un figlio. Il Fascino aiuta.
+576|Mentre giochi, le stanze di energia, ossigeno e cibo raccolgono da sole metà della produzione.

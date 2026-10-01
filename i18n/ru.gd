@@ -568,6 +568,19 @@ const T := {
 	"DOOR": "ДВЕРЬ",
 	"Colony entrance. New colonists arrive here. Upgrade the door to hold pirates back longer.": "Вход в колонию, сюда прибывают новые колонисты. Улучшайте дверь, чтобы дольше сдерживать пиратов.",
 	"Gear!": "Снаряжение!",
+	"No more videos today. Come back tomorrow!": "На сегодня видео закончились. Возвращайтесь завтра!",
+	"Colony lvl %d": "Колония ур. %d",
+	"Colony level %d!": "Уровень колонии %d!",
+	"Combo ×%d · +%d%%": "Комбо ×%d · +%d%%",
+	"%s is a child and can't work yet": "%s ещё ребёнок и не может работать",
+	"All grown up!": "Вырос!",
+	"%s is ready to work.": "%s готов к работе.",
+	"A child is born!": "Родился ребёнок!",
+	"%s and %s welcome %s.": "%s и %s: у них родился %s.",
+	"Child · grows up in %s": "Ребёнок · вырастет через %s",
+	"Broadcasts to survivors: the main way to get new colonists once the colony grows. Also attracts traders. Needs Charm.": "Вещает для выживших: главный способ найти новых колонистов, когда колония подросла. Приманивает и торговцев. Нужно обаяние.",
+	"+4 colonist capacity per level. Put two colonists here and they may have a child. Charm helps.": "+4 места для колонистов за уровень. Поселите здесь двоих — у них может родиться ребёнок. Обаяние помогает.",
+	"While you play, energy, oxygen and food rooms collect half their output by themselves.": "Пока вы в игре, отсеки энергии, кислорода и еды сами собирают половину добычи.",
 }
 
 static func make() -> Translation:

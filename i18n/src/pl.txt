@@ -562,3 +562,16 @@
 561|DRZWI
 562|Wejście do kolonii. Tu przybywają nowi koloniści. Ulepszaj drzwi, by dłużej powstrzymać piratów.
 563|Sprzęt!
+564|Na dziś koniec filmów. Wróć jutro!
+565|Kolonia poz. %d
+566|Poziom kolonii %d!
+567|Kombo ×%d · +%d%%
+568|%s to jeszcze dziecko i nie może pracować
+569|Dorosły!
+570|%s jest gotowy do pracy.
+571|Urodziło się dziecko!
+572|%s i %s witają na świecie: %s.
+573|Dziecko · dorośnie za %s
+574|Nadaje do ocalałych: główny sposób na nowych kolonistów, gdy kolonia rośnie. Przyciąga też kupców. Wymaga Uroku.
+575|+4 miejsca na poziom. Umieść tu dwoje kolonistów, a mogą mieć dziecko. Urok pomaga.
+576|Gdy grasz, pomieszczenia energii, tlenu i jedzenia same zbierają połowę produkcji.

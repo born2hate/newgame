@@ -568,6 +568,19 @@ const T := {
 	"DOOR": "KAPI",
 	"Colony entrance. New colonists arrive here. Upgrade the door to hold pirates back longer.": "Koloninin girişi. Yeni sakinler buraya gelir. Korsanları daha uzun tutmak için kapıyı geliştir.",
 	"Gear!": "Ekipman!",
+	"No more videos today. Come back tomorrow!": "Bugünlük video kalmadı. Yarın tekrar gel!",
+	"Colony lvl %d": "Koloni sv. %d",
+	"Colony level %d!": "Koloni seviyesi %d!",
+	"Combo ×%d · +%d%%": "Kombo ×%d · +%d%%",
+	"%s is a child and can't work yet": "%s henüz çocuk, çalışamaz",
+	"All grown up!": "Büyüdü!",
+	"%s is ready to work.": "%s çalışmaya hazır.",
+	"A child is born!": "Bir çocuk doğdu!",
+	"%s and %s welcome %s.": "%s ve %s, %s'i karşıladı.",
+	"Child · grows up in %s": "Çocuk · %s sonra büyür",
+	"Broadcasts to survivors: the main way to get new colonists once the colony grows. Also attracts traders. Needs Charm.": "Hayatta kalanlara yayın yapar: koloni büyüyünce yeni sakin bulmanın ana yolu. Tüccarları da çeker. Karizma gerekir.",
+	"+4 colonist capacity per level. Put two colonists here and they may have a child. Charm helps.": "Seviye başına +4 kapasite. Buraya iki sakin koyarsan çocukları olabilir. Karizma yardımcı olur.",
+	"While you play, energy, oxygen and food rooms collect half their output by themselves.": "Sen oynarken enerji, oksijen ve yiyecek odaları üretimin yarısını kendileri toplar.",
 }
 
 static func make() -> Translation:

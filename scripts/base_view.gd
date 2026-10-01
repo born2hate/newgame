@@ -70,6 +70,12 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	t += delta
+	if camera:
+		if shake > 0.05:
+			camera.offset = Vector2(randf_range(-1, 1), randf_range(-1, 1)) * shake
+			shake = move_toward(shake, 0.0, delta * 30.0)
+		elif camera.offset != Vector2.ZERO:
+			camera.offset = Vector2.ZERO
 	_update_walkers(delta)
 	_update_treasure(delta)
 	for f in fish:
@@ -163,7 +169,7 @@ func _update_walkers(delta: float) -> void:
 		w["fighting"] = false
 		# работник: стоит у своего рабочего места и трудится, изредка переходит к другому
 		var room: Dictionary = Game.get_room(here) if here >= 0 else {}
-		var job: bool = not danger and c.get("help", -1) == -1 and not room.is_empty() and Game.slots(room) > 0
+		var job: bool = not danger and c.get("help", -1) == -1 and not room.is_empty() and Game.slots(room) > 0 and not c.get("child", false)
 		if job and not w.has("station"):
 			var mates := Game.workers_in(room)
 			var idx := mates.find(c)
@@ -678,6 +684,15 @@ func _draw_room(r: Dictionary) -> void:
 			var bar0 := Rect2(inner.position.x + 8, inner.end.y - 14, inner.size.x - 16, 7)
 			draw_rect(bar0, Color(0, 0, 0, 0.55))
 			draw_rect(Rect2(bar0.position, Vector2(bar0.size.x * r.progress, bar0.size.y)), Defs.RESOURCES[def.produces].color)
+		if def.get("breeds", false) and Game.workers_in(r).size() >= 2 and r.incident <= 0.0:
+			# пара в жилом отсеке: розовая полоска и сердечки
+			var bar1 := Rect2(inner.position.x + 8, inner.end.y - 14, inner.size.x - 16, 7)
+			draw_rect(bar1, Color(0, 0, 0, 0.55))
+			draw_rect(Rect2(bar1.position, Vector2(bar1.size.x * r.progress, bar1.size.y)), Color(1.0, 0.45, 0.7))
+			for i in 3:
+				var ph := fmod(t * 0.4 + i * 0.33 + r.id * 0.1, 1.0)
+				var hp := Vector2(inner.get_center().x + (i - 1) * 18 + sin(t * 2.0 + i) * 4, inner.end.y - 40 - ph * 50)
+				_heart(hp, 6.0 * (1.0 - ph * 0.4), Color(1.0, 0.4, 0.6, 0.8 * sin(ph * PI)))
 		if r.type != "elevator":
 			var label_w := font.get_string_size(tr(def.name), HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x
 			draw_rect(Rect2(inner.position + Vector2(4, 4), Vector2(label_w + 12, 20)), Color(0, 0, 0, 0.45))
@@ -1103,7 +1118,7 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 	var fighting: bool = w.get("fighting", false) and w.get("panic", false) and not lifted
 	if fighting:
 		walking = false
-	var h := 62.0 * (1.15 if lifted else depth_scale(c))
+	var h := 62.0 * (1.15 if lifted else depth_scale(c)) * (0.62 if c.get("child", false) else 1.0)
 	var size := Vector2(h * sprite.get_width() / sprite.get_height(), h)
 	var bob := absf(sin(t * 10.0 + c.id)) * -3.0 if walking else sin(t * 2.0 + c.id) * 0.8
 	var facing: float = w.get("facing", 1.0)
@@ -1233,6 +1248,17 @@ func _draw_fight_fx(feet: Vector2, c: Dictionary, facing: float, h: float) -> vo
 				var q := fmod(k + i / 5.0, 1.0)
 				var p := hand + Vector2(facing * (6.0 + q * 30.0) + (i - 2) * 3.0, -q * 36.0 + q * q * 40.0)
 				draw_circle(p, 3.0, Color(0.6, 0.9, 1.0, 1.0 - q))
+
+func _heart(c: Vector2, s: float, col: Color) -> void:
+	draw_circle(c + Vector2(-s * 0.5, 0), s * 0.6, col)
+	draw_circle(c + Vector2(s * 0.5, 0), s * 0.6, col)
+	draw_colored_polygon(PackedVector2Array([c + Vector2(-s * 1.05, s * 0.2), c + Vector2(s * 1.05, s * 0.2), c + Vector2(0, s * 1.4)]), col)
+
+## Лёгкая тряска камеры (сбор, удары).
+var shake := 0.0
+
+func add_shake(v: float) -> void:
+	shake = minf(10.0, shake + v)
 
 func _star_burst(c: Vector2, r: float, col: Color) -> void:
 	var sp := Art.tex("res://art/fx/spark_%d.png" % (int(t * 14.0 + c.x) % 3))

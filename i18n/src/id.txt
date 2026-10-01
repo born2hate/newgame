@@ -562,3 +562,16 @@
 561|PINTU
 562|Pintu masuk koloni. Kolonis baru tiba di sini. Tingkatkan pintunya agar bajak laut tertahan lebih lama.
 563|Perlengkapan!
+564|Video hari ini sudah habis. Kembali besok!
+565|Koloni lv. %d
+566|Koloni level %d!
+567|Kombo ×%d · +%d%%
+568|%s masih anak-anak dan belum bisa bekerja
+569|Sudah dewasa!
+570|%s siap bekerja.
+571|Seorang anak lahir!
+572|%s dan %s menyambut %s.
+573|Anak · dewasa dalam %s
+574|Menyiarkan ke para penyintas: cara utama mendapat kolonis baru saat koloni tumbuh. Juga menarik pedagang. Butuh Pesona.
+575|+4 kapasitas per level. Taruh dua kolonis di sini, mereka bisa punya anak. Pesona membantu.
+576|Selama kamu bermain, ruangan energi, oksigen, dan makanan mengumpulkan setengah hasilnya sendiri.

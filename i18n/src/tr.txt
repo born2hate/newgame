@@ -562,3 +562,16 @@
 561|KAPI
 562|Koloninin girişi. Yeni sakinler buraya gelir. Korsanları daha uzun tutmak için kapıyı geliştir.
 563|Ekipman!
+564|Bugünlük video kalmadı. Yarın tekrar gel!
+565|Koloni sv. %d
+566|Koloni seviyesi %d!
+567|Kombo ×%d · +%d%%
+568|%s henüz çocuk, çalışamaz
+569|Büyüdü!
+570|%s çalışmaya hazır.
+571|Bir çocuk doğdu!
+572|%s ve %s, %s'i karşıladı.
+573|Çocuk · %s sonra büyür
+574|Hayatta kalanlara yayın yapar: koloni büyüyünce yeni sakin bulmanın ana yolu. Tüccarları da çeker. Karizma gerekir.
+575|Seviye başına +4 kapasite. Buraya iki sakin koyarsan çocukları olabilir. Karizma yardımcı olur.
+576|Sen oynarken enerji, oksijen ve yiyecek odaları üretimin yarısını kendileri toplar.

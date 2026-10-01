@@ -16,6 +16,23 @@ const O2_PER_COLONIST := 0.07 / PACE
 const FOOD_PER_COLONIST := 0.05 / PACE
 ## Сколько секунд нужно работнику спортзала/школы/комнаты отдыха на +1 к навыку (1 уровень).
 const TRAIN_TIME := 1800.0
+const NATURAL_POP := 8
+const MAX_POP := 100
+## Дети: сколько секунд «ухаживания» в жилом отсеке (при силе обаяния 10) и сколько растёт ребёнок.
+const BREED_TIME := 14400.0
+const GROW_TIME := 21600.0
+## Комбо-сбор: окно между сборами и множитель.
+const COMBO_WINDOW := 2.5
+var combo := 0
+var combo_until := 0.0
+## Уровень колонии: опыт за всё, что происходит в колонии.
+var colony_level := 1
+var colony_xp := 0
+const COLONY_XP := {"collect": 2, "build": 25, "upgrade": 20, "expedition_done": 30, "incident_resolved": 15,
+	"raid_won": 60, "research": 40, "level_up": 5, "craft": 15, "trade": 10, "birth": 40, "bubble": 3}
+signal colony_level_up(level: int)
+signal combo_changed(count: int, mult: float)
+signal collected(room_id: int, res: String, amount: int)
 
 var resources := {}
 var pearls := 0
@@ -122,6 +139,8 @@ func new_game() -> void:
 	rooms = []
 	colonists = []
 	fallen = []
+	colony_level = 1
+	colony_xp = 0
 	next_id = 1
 	arrival_timer = 0.0
 	_add_room("reactor", 1, 0).progress = 0.93
@@ -199,7 +218,7 @@ func slots(r: Dictionary) -> int:
 func workers_in(room: Dictionary) -> Array:
 	var out := []
 	for c in colonists:
-		if c.room == room.id:
+		if c.room == room.id and not c.get("child", false):
 			out.append(c)
 	return out
 
@@ -226,7 +245,9 @@ func count_of(type: String) -> int:
 
 func build_cost(type: String) -> int:
 	var base: int = Defs.ROOMS[type].cost
-	return int(base * (1.0 + 0.6 * count_of(type)))
+	# дороже каждый следующий такой же и, понемногу, каждый отсек вообще
+	var total := rooms.filter(func(r): return r.type != "elevator" and r.type != "airlock").size()
+	return int(base * (1.0 + 0.6 * count_of(type)) * (1.0 + 0.04 * total))
 
 func is_unlocked(type: String) -> bool:
 	return colonists.size() >= Defs.ROOMS[type].get("unlock_pop", 0)
@@ -312,8 +333,16 @@ func trade_discount() -> float:
 			best = maxi(best, stat(c, "cha"))
 	return minf(0.3, best * 0.03)
 
+## Как в Fallout: пока колония маленькая, люди сами приходят к шлюзу,
+## потом — редко; основной приток даёт радиорубка (и дети).
 func arrival_speed() -> float:
-	return 1.0 + type_power("radio") * 0.04
+	# первые NATURAL_POP человек приходят сами (каждые ARRIVAL_INTERVAL с), дальше — только по радио:
+	# сила радиорубки 10 ≈ один человек в час
+	var base := 1.0 if colonists.size() < NATURAL_POP else 0.0
+	var rp := type_power("radio")
+	# сила 10 ≈ один человек в 2 часа, дальше с убывающей отдачей
+	var per_hour := 0.5 * pow(rp / 10.0, 0.6) if rp > 0.0 else 0.0
+	return base + per_hour * ARRIVAL_INTERVAL / 3600.0
 
 func armory_bonus() -> float:
 	return 1.0 + type_power("armory") * 0.04
@@ -359,7 +388,9 @@ func cycle_time(room: Dictionary) -> float:
 		power = 2.0
 	if power <= 0.0:
 		return INF
-	return def.cycle * PACE / (power / 5.0)
+	# убывающая отдача: вдвое сильнее команда — примерно в 1.5 раза быстрее
+	# и потолок ×3 — иначе прокачанные отсеки печатают ресурсы без меры
+	return def.cycle * PACE / minf(3.0, pow(power / 5.0, 0.6))
 
 func production_amount(room: Dictionary) -> float:
 	var def: Dictionary = Defs.ROOMS[room.type]
@@ -378,6 +409,9 @@ func production_amount(room: Dictionary) -> float:
 		m *= mode().reward * (1.0 + pearl_bonus())
 	if res == "gear":
 		return 1.0
+	if res == "pearls":
+		# жемчуг — валюта: уровни и объединение дают меньше, чем у ресурсов
+		return def.amount * (1.0 + 0.3 * (room.level - 1)) * (1.0 + 0.7 * (room.size - 1)) * m
 	return def.amount * (1.0 + 0.6 * (room.level - 1)) * room.size * m
 
 func rush_chance(room: Dictionary) -> float:
@@ -416,8 +450,11 @@ func simulate(delta: float, offline: bool) -> void:
 				if r.progress >= 1.0:
 					r.progress = 1.0
 					r.ready = true
-					if has_research("auto_collectors"):
-						collect(r, offline)
+					if has_research("auto_collectors") and not offline and def.produces in ["energy", "oxygen", "food"]:
+						# автосбор только базовых ресурсов, только в игре и вполовину — жемчуг и науку собираем сами
+						r.ready = false
+						r.progress = 0.0
+						resources[def.produces] = minf(storage_cap(), resources[def.produces] + production_amount(r) * 0.5)
 
 	# колонисты
 	var heal_rate := 0.3
@@ -430,6 +467,7 @@ func simulate(delta: float, offline: bool) -> void:
 	for r in rooms:
 		xp_mult += float(Defs.ROOMS[r.type].get("xp_bonus", 0.0)) * r.level * r.size
 	var mood_target := 60.0 + mood_bonus() - (35.0 if starving else 0.0) - (15.0 if not powered else 0.0)
+	_tick_family(delta, offline)
 	for c in colonists:
 		var mt := mood_target
 		var here := get_room(c.room) if c.room >= 0 else {}
@@ -473,10 +511,13 @@ func simulate(delta: float, offline: bool) -> void:
 		_finish_research(offline)
 
 	# новые колонисты
-	if colonists.size() < population_cap():
+	var at_base0 := colonists.filter(func(c): return c.room != ON_EXPEDITION).size()
+	if colonists.size() < population_cap() and colonists.size() < MAX_POP and (arrival_speed() > 0.0 or at_base0 == 0):
 		# если на базе никого не осталось — помощь приходит быстрее
 		var at_base := colonists.filter(func(c): return c.room != ON_EXPEDITION).size()
-		arrival_timer += delta * (4.0 if at_base == 0 else (2.0 if at_base <= 2 else 1.0)) * arrival_speed()
+		# база пуста (все в экспедиции или погибли) — кто-нибудь всё равно придёт, чтобы не застрять
+		var spd := maxf(arrival_speed(), 1.0) if at_base == 0 else arrival_speed()
+		arrival_timer += delta * (4.0 if at_base == 0 else (2.0 if at_base <= 2 else 1.0)) * spd
 		if arrival_timer >= ARRIVAL_INTERVAL:
 			arrival_timer = 0.0
 			var c := _make_colonist()
@@ -493,6 +534,51 @@ func simulate(delta: float, offline: bool) -> void:
 			changed.emit()
 	for k in resources:
 		resources[k] = minf(resources[k], cap)
+
+## Дети: двое в жилом отсеке со временем заводят ребёнка (быстрее с обаянием и настроением),
+## ребёнок растёт и становится колонистом со статами родителей.
+func _tick_family(delta: float, offline: bool) -> void:
+	for c in colonists:
+		if c.get("child", false):
+			c["grow"] = float(c.get("grow", GROW_TIME)) - delta
+			if c.grow <= 0.0:
+				c.erase("child")
+				c.erase("grow")
+				c.room = -1
+				if not offline:
+					banner.emit("suit_%d" % c.suit, tr("All grown up!"), tr("%s is ready to work.") % c.name)
+				changed.emit()
+	for r in rooms:
+		if not Defs.ROOMS[r.type].get("breeds", false) or r.incident > 0.0:
+			continue
+		var pair := workers_in(r)
+		if pair.size() < 2 or colonists.size() >= mini(population_cap(), MAX_POP):
+			r.progress = 0.0
+			continue
+		var cha := 0.0
+		var mood := 0.0
+		for c in pair.slice(0, 2):
+			cha += stat(c, "cha")
+			mood += float(c.get("mood", 70.0))
+		r.progress += delta * (0.4 + cha / 20.0) * (0.5 + mood / 200.0) / BREED_TIME
+		if r.progress >= 1.0:
+			r.progress = 0.0
+			_birth(r, pair[0], pair[1], offline)
+
+func _birth(r: Dictionary, a: Dictionary, b: Dictionary, offline: bool) -> void:
+	var kid := _make_colonist()
+	for k in Defs.ALL_STATS:
+		kid[k] = clampi(int(round((int(a[k]) + int(b[k])) / 2.0)) + rng.randi_range(-1, 1), 1, 10)
+	kid.name = "%s %s" % [Defs.FIRST_NAMES.pick_random(), a.name.split(" ")[-1]]
+	kid["child"] = true
+	kid["grow"] = GROW_TIME
+	kid.room = r.id
+	colonists.append(kid)
+	track("birth")
+	if not offline:
+		banner.emit("suit_%d" % kid.suit, tr("A child is born!"), tr("%s and %s welcome %s.") % [a.name.split(" ")[0], b.name.split(" ")[0], kid.name.split(" ")[0]])
+		event.emit("arrive")
+	changed.emit()
 
 func _tick_training(c: Dictionary, room: Dictionary, delta: float, offline: bool) -> void:
 	var opts: Array = Defs.ROOMS[room.type].train.filter(func(k): return c[k] < 10)
@@ -512,8 +598,8 @@ func _tick_training(c: Dictionary, room: Dictionary, delta: float, offline: bool
 	changed.emit()
 
 func _xp_needed(c: Dictionary) -> float:
-	# каждый следующий уровень заметно дольше: 4 мин, 16 мин, 36 мин, ~1 ч, ~1.7 ч…
-	return 240.0 * c.level * c.level
+	# каждый следующий уровень заметно дольше: 10 мин, 40 мин, 1.5 ч, 2.7 ч, 4 ч…
+	return 600.0 * c.level * c.level
 
 func _level_up(c: Dictionary) -> void:
 	c.xp = 0.0
@@ -531,7 +617,7 @@ func _level_up(c: Dictionary) -> void:
 	changed.emit()
 
 func seconds_until_arrival() -> float:
-	if colonists.size() >= population_cap():
+	if colonists.size() >= population_cap() or arrival_speed() <= 0.0:
 		return -1.0
 	return (ARRIVAL_INTERVAL - arrival_timer) / arrival_speed()
 
@@ -594,7 +680,17 @@ func collect(room: Dictionary, silent := false) -> void:
 	if res == "gear":
 		_collect_gear(room, silent)
 		return
-	var amount := production_amount(room) * (2.0 if boost_active() else 1.0) * (1.0 + (PET_BONUS if pet != "" else 0.0))
+	# ×2 за рекламу — только на базовые ресурсы, валюту (жемчуг, наука) не удваивает
+	var boosted: bool = boost_active() and res in ["energy", "oxygen", "food"]
+	var amount := production_amount(room) * (2.0 if boosted else 1.0) * (1.0 + (PET_BONUS if pet != "" else 0.0))
+	if not silent:
+		# собираешь подряд — растёт множитель (до +50%), на жемчуг не действует
+		var tnow := Time.get_ticks_msec() / 1000.0
+		combo = combo + 1 if tnow < combo_until else 1
+		combo_until = tnow + COMBO_WINDOW
+		if res != "pearls":
+			amount *= combo_mult()
+		combo_changed.emit(combo, combo_mult())
 	var lucky := rng.randf() < luck_chance(room)
 	if lucky:
 		amount *= 2.0
@@ -612,7 +708,7 @@ func collect(room: Dictionary, silent := false) -> void:
 	room.progress = 0.0
 	var zone := depth_zone(room.row)
 	if zone.crystal_chance > 0.0 and rng.randf() < zone.crystal_chance:
-		var cr := rng.randi_range(1, 3)
+		var cr := 1
 		crystals += cr
 		if not silent:
 			floating_text.emit(room.id, "[crystals]+%d" % cr, Defs.RESOURCES.crystals.color)
@@ -620,6 +716,7 @@ func collect(room: Dictionary, silent := false) -> void:
 		stats["collect"] = stats.get("collect", 0) + 1
 		return
 	floating_text.emit(room.id, "[%s]+%d" % [res, int(amount)], Defs.RESOURCES[res].color)
+	collected.emit(room.id, res, int(amount))
 	track("collect_" + res, int(amount))
 	track("collect")
 	changed.emit()
@@ -678,6 +775,9 @@ func rush(room: Dictionary) -> void:
 	changed.emit()
 
 func assign(colonist: Dictionary, room: Dictionary) -> bool:
+	if colonist.get("child", false):
+		message.emit(tr("%s is a child and can't work yet") % colonist.name)
+		return false
 	if colonist.room == ON_EXPEDITION:
 		message.emit(tr("%s is away on an expedition") % colonist.name)
 		return false
@@ -707,8 +807,11 @@ func auto_assign(colonist: Dictionary, room: Dictionary) -> void:
 
 # ---------------------------------------------------------------- премиум-экономика
 
+## Сдвиг часов — только для симулятора экономики (tools/economy_sim.gd).
+static var clock_offset := 0.0
+
 static func now() -> float:
-	return Time.get_unix_time_from_system()
+	return Time.get_unix_time_from_system() + clock_offset
 
 ## Premium включает отключение рекламы.
 func ads_removed() -> bool:
@@ -720,8 +823,25 @@ func boost_active() -> bool:
 func boost_left() -> float:
 	return maxf(0.0, boost_until - now())
 
+## Реклама за награду: не больше AD_DAILY_LIMIT в день — иначе ресурсы бесконечные.
+const AD_DAILY_LIMIT := 12
+var ads_day := -1
+var ads_count := 0
+
+func ads_left() -> int:
+	if ads_day != today():
+		return AD_DAILY_LIMIT
+	return maxi(0, AD_DAILY_LIMIT - ads_count)
+
+func register_ad() -> void:
+	if ads_day != today():
+		ads_day = today()
+		ads_count = 0
+	ads_count += 1
+
 func start_boost() -> void:
-	boost_until = maxf(boost_until, now()) + BOOST_DURATION
+	# копится не больше чем на 2 часа вперёд
+	boost_until = minf(maxf(boost_until, now()) + BOOST_DURATION, now() + 4.0 * BOOST_DURATION)
 	message.emit(tr("Double collection active for 30 minutes!"))
 	changed.emit()
 
@@ -792,7 +912,7 @@ func grant(reward: Dictionary, title: String) -> void:
 	rewards_granted.emit(title, lines)
 
 func _grant_colonist(rarity: String) -> String:
-	if colonists.size() >= population_cap():
+	if colonists.size() >= mini(population_cap(), MAX_POP):
 		pearls += 300
 		return tr("No room for a new colonist: +300 pearls instead")
 	var c := _make_colonist()
@@ -943,7 +1063,7 @@ func expedition_progress(e: Dictionary) -> float:
 	return clampf((now() - float(e.start)) / maxf(1.0, float(e.end) - float(e.start)), 0.0, 1.0)
 
 func available_crew() -> Array:
-	return colonists.filter(func(c): return c.room != ON_EXPEDITION)
+	return colonists.filter(func(c): return c.room != ON_EXPEDITION and not c.get("child", false))
 
 func crew_power(ids: Array) -> float:
 	var p := 0.0
@@ -1166,6 +1286,9 @@ func finish_expedition_now(e: Dictionary) -> void:
 	changed.emit()
 
 func cut_expedition(e: Dictionary, seconds: float) -> void:
+	if e.get("ad_used", false):
+		return
+	e["ad_used"] = true
 	e.end = maxf(now(), float(e.end) - seconds)
 	changed.emit()
 
@@ -1521,7 +1644,7 @@ func _spawn_random_incident() -> void:
 
 ## Кто борется с бедой: рабочие отсека и прибежавшие на помощь.
 func responders(room: Dictionary) -> Array:
-	return colonists.filter(func(c): return (c.room == room.id or c.help == room.id) and c.room != ON_EXPEDITION)
+	return colonists.filter(func(c): return (c.room == room.id or c.help == room.id) and c.room != ON_EXPEDITION and not c.get("child", false))
 
 func hazard_power(room: Dictionary) -> float:
 	var p := 0.0
@@ -1993,8 +2116,30 @@ func refresh_daily_systems() -> void:
 		season_claimed_free = []
 		season_claimed_premium = []
 
+func colony_xp_needed() -> int:
+	return int(120 * pow(colony_level, 1.4))
+
+func add_colony_xp(x: int) -> void:
+	colony_xp += x
+	while colony_xp >= colony_xp_needed():
+		colony_xp -= colony_xp_needed()
+		colony_level += 1
+		var r := {"pearls": 20 + 10 * colony_level}
+		if colony_level % 5 == 0:
+			r["crystals"] = 3
+		if colony_level % 10 == 0:
+			r["crates"] = {"common": 1}
+		colony_level_up.emit(colony_level)
+		grant(r, tr("Colony level %d!") % colony_level)
+
+## +10% за каждый следующий сбор подряд, максимум +50% — заметно, но экономику не ломает.
+func combo_mult() -> float:
+	return 1.0 + 0.1 * minf(5.0, float(maxi(0, combo - 1)))
+
 func track(ev: String, amount := 1) -> void:
 	event.emit(ev)
+	if COLONY_XP.has(ev):
+		add_colony_xp(COLONY_XP[ev])
 	stats[ev] = stats.get(ev, 0) + amount
 	if story_index < Defs.STORY.size() and Defs.STORY[story_index].goal[0] == ev:
 		story_count += amount
@@ -2061,7 +2206,8 @@ func save_game() -> void:
 			"story_index": story_index, "story_count": story_count, "weekly_week": weekly_week,
 			"weekly_progress": weekly_progress, "weekly_claimed": weekly_claimed, "trader": trader,
 			"tutorial_done": tutorial_done, "difficulty": difficulty, "mode_chosen": mode_chosen,
-			"fallen": fallen,
+			"fallen": fallen, "colony_level": colony_level, "colony_xp": colony_xp,
+			"ads_day": ads_day, "ads_count": ads_count,
 		},
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -2082,6 +2228,10 @@ func load_game() -> bool:
 	rooms = data.rooms
 	colonists = data.colonists
 	fallen = data.get("meta", {}).get("fallen", [])
+	colony_level = int(data.get("meta", {}).get("colony_level", 1))
+	colony_xp = int(data.get("meta", {}).get("colony_xp", 0))
+	ads_day = int(data.get("meta", {}).get("ads_day", -1))
+	ads_count = int(data.get("meta", {}).get("ads_count", 0))
 	# налёт не сохраняется: после перезапуска пиратов уже нет
 	raid = {}
 	for r in rooms:
@@ -2168,6 +2318,8 @@ func load_game() -> bool:
 				c[k] = rng.randi_range(1, 4)
 		c["mood"] = float(c.get("mood", 70.0))
 		c["train"] = float(c.get("train", 0.0))
+		if c.has("grow"):
+			c.grow = float(c.grow)
 		for k in ["id", "str", "tech", "bio", "end", "cha", "luck", "level", "room", "suit", "help", "suit_item", "tool_item", "armor_item"]:
 			c[k] = int(c[k])
 	_fix_orphans()

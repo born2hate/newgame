@@ -22,8 +22,9 @@ func _initialize() -> void:
 	check(g.build("elevator", 5, 2), "строим лифт")
 	check(g.can_build_at("living", 6, 2), "жилой отсек рядом с лифтом")
 	var pearls_before: int = g.pearls
+	var lcost: int = g.build_cost("living")
 	check(g.build("living", 6, 2), "строим жилой отсек")
-	check(g.pearls == pearls_before - 100, "жемчуг списан")
+	check(g.pearls == pearls_before - lcost and lcost >= 100, "жемчуг списан")
 	check(g.population_cap() == 10, "вместимость выросла до 10")
 	check(not g.can_build_at("farm", 6, 2), "нельзя строить поверх")
 
@@ -47,7 +48,8 @@ func _initialize() -> void:
 	var free: Dictionary = g.colonists[3]
 	check(g.assign(free, reactor), "назначение колониста")
 	check(g.workers_in(reactor).size() == 2, "2 рабочих в реакторе")
-	check(not g.assign(free, g.find_room_of_type("living")), "в жилом отсеке не работают")
+	check(g.assign(free, g.find_room_of_type("living")), "в жилой отсек можно поселить пару")
+	g.assign(free, reactor)
 
 	g.rush(reactor)
 	check(reactor.ready or reactor.incident > 0.0, "ускорение: успех или авария")
@@ -329,6 +331,42 @@ func _initialize() -> void:
 	of._apply_offline(8 * 3600.0)
 	check(of.resources.oxygen >= 80.0 * 0.35 - 0.01 and of.resources.food >= 80.0 * 0.35 - 0.01, "офлайн 8 ч: запасы не обнулились (%.0f O₂, %.0f еды)" % [of.resources.oxygen, of.resources.food])
 	rv.free(); of.free()
+	# дети
+	var fam = load("res://scripts/game_state.gd").new()
+	fam.new_game()
+	var home: Dictionary = fam._add_room("living", 8, 1)
+	fam.arrival_timer = -1.0e9
+	fam.colonists[0].room = home.id
+	fam.colonists[1].room = home.id
+	var fam_n: int = fam.colonists.size()
+	for i in 6000:
+		fam.resources.oxygen = 100.0
+		fam.resources.food = 100.0
+		fam.resources.energy = 100.0
+		fam.simulate(10.0, true)
+		if fam.colonists.size() > fam_n:
+			break
+	var kid2: Dictionary = fam.colonists[-1]
+	check(fam.colonists.size() == fam_n + 1 and kid2.get("child", false), "у пары в жилом отсеке родился ребёнок")
+	check(not fam.assign(kid2, fam.find_room_of_type("reactor")), "ребёнок не работает")
+	for i in int(fam.GROW_TIME) + 5:
+		fam.simulate(1.0, true)
+	check(not kid2.get("child", false), "ребёнок вырос")
+	# медленный самостоятельный приход после 8 колонистов
+	check(fam.arrival_speed() >= 1.0 or fam.colonists.size() >= fam.NATURAL_POP, "маленькая колония — люди приходят сами")
+	while fam.colonists.size() < 9:
+		fam.colonists.append(fam._make_colonist())
+	check(fam.arrival_speed() < 0.5, "большая колония без радио — приток медленный")
+	# комбо и уровень колонии
+	fam.combo = 0
+	fam.combo_until = 0.0
+	check(absf(fam.combo_mult() - 1.0) < 0.01, "без комбо множитель 1")
+	fam.combo = 10
+	check(fam.combo_mult() <= 1.5 + 0.001, "комбо не больше +50%")
+	var lv: int = fam.colony_level
+	fam.add_colony_xp(fam.colony_xp_needed())
+	check(fam.colony_level == lv + 1, "уровень колонии растёт")
+	fam.free()
 	# налёт пиратов
 	var pr = load("res://scripts/game_state.gd").new()
 	pr.new_game()

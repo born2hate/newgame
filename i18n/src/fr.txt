@@ -562,3 +562,16 @@
 561|PORTE
 562|Entrée de la colonie. Les nouveaux colons arrivent ici. Améliore la porte pour retenir les pirates plus longtemps.
 563|Équipement !
+564|Plus de vidéos aujourd'hui. Reviens demain !
+565|Colonie niv. %d
+566|Colonie niveau %d !
+567|Combo ×%d · +%d%%
+568|%s est un enfant et ne peut pas encore travailler
+569|Devenu grand !
+570|%s est prêt à travailler.
+571|Un enfant est né !
+572|%s et %s accueillent %s.
+573|Enfant · grandit dans %s
+574|Émet pour les survivants : le moyen principal d'obtenir des colons quand la colonie grandit. Attire aussi les marchands. Requiert Charme.
+575|+4 places par niveau. Mets deux colons ici et ils pourraient avoir un enfant. Le Charme aide.
+576|Pendant que tu joues, les salles d'énergie, d'oxygène et de nourriture récoltent la moitié toutes seules.

@@ -562,3 +562,16 @@
 561|TÜR
 562|Eingang der Kolonie. Hier kommen neue Kolonisten an. Verbessere die Tür, um Piraten länger aufzuhalten.
 563|Ausrüstung!
+564|Heute keine Videos mehr. Komm morgen wieder!
+565|Kolonie Stufe %d
+566|Kolonie Stufe %d!
+567|Kombo ×%d · +%d%%
+568|%s ist noch ein Kind und kann nicht arbeiten
+569|Erwachsen!
+570|%s ist bereit zu arbeiten.
+571|Ein Kind ist geboren!
+572|%s und %s begrüßen %s.
+573|Kind · erwachsen in %s
+574|Sendet an Überlebende: der wichtigste Weg zu neuen Kolonisten, sobald die Kolonie wächst. Lockt auch Händler an. Braucht Charme.
+575|+4 Kolonistenplätze pro Stufe. Setze zwei Kolonisten hierher, dann bekommen sie vielleicht ein Kind. Charme hilft.
+576|Während du spielst, sammeln Energie-, Sauerstoff- und Nahrungsräume die Hälfte selbst ein.

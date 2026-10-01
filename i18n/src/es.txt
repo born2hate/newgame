@@ -563,3 +563,16 @@
 561|PUERTA
 562|Entrada de la colonia. Aquí llegan los nuevos colonos. Mejora la puerta para frenar más a los piratas.
 563|¡Equipo!
+564|No hay más vídeos hoy. ¡Vuelve mañana!
+565|Colonia nv. %d
+566|¡Colonia nivel %d!
+567|Combo ×%d · +%d%%
+568|%s es un niño y aún no puede trabajar
+569|¡Ya es mayor!
+570|%s está listo para trabajar.
+571|¡Ha nacido un niño!
+572|%s y %s dan la bienvenida a %s.
+573|Niño · crece en %s
+574|Transmite a los supervivientes: la forma principal de conseguir colonos cuando la colonia crece. También atrae comerciantes. Requiere Carisma.
+575|+4 de capacidad por nivel. Pon a dos colonos aquí y podrían tener un hijo. El Carisma ayuda.
+576|Mientras juegas, las salas de energía, oxígeno y comida recogen la mitad solas.

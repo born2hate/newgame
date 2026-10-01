@@ -568,6 +568,19 @@ const T := {
 	"DOOR": "PINTU",
 	"Colony entrance. New colonists arrive here. Upgrade the door to hold pirates back longer.": "Pintu masuk koloni. Kolonis baru tiba di sini. Tingkatkan pintunya agar bajak laut tertahan lebih lama.",
 	"Gear!": "Perlengkapan!",
+	"No more videos today. Come back tomorrow!": "Video hari ini sudah habis. Kembali besok!",
+	"Colony lvl %d": "Koloni lv. %d",
+	"Colony level %d!": "Koloni level %d!",
+	"Combo ×%d · +%d%%": "Kombo ×%d · +%d%%",
+	"%s is a child and can't work yet": "%s masih anak-anak dan belum bisa bekerja",
+	"All grown up!": "Sudah dewasa!",
+	"%s is ready to work.": "%s siap bekerja.",
+	"A child is born!": "Seorang anak lahir!",
+	"%s and %s welcome %s.": "%s dan %s menyambut %s.",
+	"Child · grows up in %s": "Anak · dewasa dalam %s",
+	"Broadcasts to survivors: the main way to get new colonists once the colony grows. Also attracts traders. Needs Charm.": "Menyiarkan ke para penyintas: cara utama mendapat kolonis baru saat koloni tumbuh. Juga menarik pedagang. Butuh Pesona.",
+	"+4 colonist capacity per level. Put two colonists here and they may have a child. Charm helps.": "+4 kapasitas per level. Taruh dua kolonis di sini, mereka bisa punya anak. Pesona membantu.",
+	"While you play, energy, oxygen and food rooms collect half their output by themselves.": "Selama kamu bermain, ruangan energi, oksigen, dan makanan mengumpulkan setengah hasilnya sendiri.",
 }
 
 static func make() -> Translation:

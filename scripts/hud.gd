@@ -52,6 +52,8 @@ func _ready() -> void:
 	view.build_finished.connect(_on_build_finished)
 	view.colonist_selected.connect(_open_colonist)
 	Game.rewards_granted.connect(_show_rewards)
+	Game.combo_changed.connect(_on_combo)
+	Game.collected.connect(_on_collected)
 	Store.ad_started.connect(_on_ad_started)
 	Store.ad_finished.connect(func(): ad_overlay.visible = false)
 	more = preload("res://scripts/hud_more.gd").new()
@@ -483,6 +485,86 @@ func _build_top_bar() -> void:
 		bar.draw.connect(_draw_res_bar.bind(bar, k))
 		bars.add_child(bar)
 		res_bars[k] = bar
+	# уровень колонии: тонкая золотая шкала
+	colony_bar = Control.new()
+	colony_bar.custom_minimum_size = Vector2(0, 18)
+	colony_bar.draw.connect(_draw_colony_bar)
+	vb.add_child(colony_bar)
+
+var colony_bar: Control
+
+func _draw_colony_bar() -> void:
+	var r := Rect2(Vector2.ZERO, colony_bar.size)
+	var font := ThemeDB.fallback_font
+	var txt := tr("Colony lvl %d") % Game.colony_level
+	var tw := font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x + 12
+	colony_bar.draw_string_outline(font, Vector2(2, 14), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, 4, Color(0, 0, 0, 0.8))
+	colony_bar.draw_string(font, Vector2(2, 14), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color(1.0, 0.85, 0.4))
+	var br := Rect2(tw, 5, r.size.x - tw, 8)
+	colony_bar.draw_rect(br, Color(0, 0, 0, 0.5))
+	var f := float(Game.colony_xp) / float(Game.colony_xp_needed())
+	colony_bar.draw_rect(Rect2(br.position, Vector2(br.size.x * f, br.size.y)), Color(1.0, 0.78, 0.25))
+	colony_bar.draw_rect(Rect2(br.position, Vector2(br.size.x * f, 3)), Color(1, 1, 1, 0.3))
+
+## Комбо и летящие к панели ресурсы при сборе.
+var combo_label: Label
+
+func _on_combo(count: int, mult: float) -> void:
+	if count < 2:
+		return
+	if combo_label == null:
+		combo_label = _label("", 34, Color(1.0, 0.85, 0.3))
+		combo_label.add_theme_constant_override("outline_size", 9)
+		combo_label.add_theme_color_override("font_outline_color", Color(0.3, 0.1, 0.0))
+		combo_label.set_anchors_preset(Control.PRESET_CENTER_TOP)
+		combo_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		combo_label.offset_left = -200
+		combo_label.offset_right = 200
+		combo_label.offset_top = 205
+		combo_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		root.add_child(combo_label)
+	combo_label.text = tr("Combo ×%d · +%d%%") % [count, int(round((mult - 1.0) * 100))]
+	combo_label.modulate.a = 1.0
+	combo_label.pivot_offset = Vector2(200, 20)
+	combo_label.scale = Vector2(1.3, 1.3)
+	var tw := create_tween()
+	tw.tween_property(combo_label, "scale", Vector2.ONE, 0.2)
+	tw.tween_interval(1.2)
+	tw.tween_property(combo_label, "modulate:a", 0.0, 0.4)
+
+func _on_collected(room_id: int, res: String, amount: int) -> void:
+	var r := Game.get_room(room_id)
+	if r.is_empty():
+		return
+	view.add_shake(2.5)
+	var from: Vector2 = view.get_viewport().get_canvas_transform() * view.room_rect(r).get_center()
+	var target_ctrl: Control = res_bars.get(res, pearls_label if res == "pearls" else science_label)
+	if target_ctrl == null:
+		return
+	var to := target_ctrl.get_global_rect().position + Vector2(22, target_ctrl.size.y / 2.0)
+	var tex := Art.icon(res)
+	if tex == null:
+		return
+	var n := clampi(amount / 6, 3, 8)
+	for i in n:
+		var ic := TextureRect.new()
+		ic.texture = tex
+		ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		ic.size = Vector2(34, 34)
+		ic.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		ic.position = from + Vector2(randf_range(-40, 40), randf_range(-25, 25)) - ic.size / 2.0
+		root.add_child(ic)
+		var tw := create_tween()
+		tw.tween_interval(i * 0.04)
+		tw.tween_property(ic, "position", to - ic.size / 2.0, 0.55).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tw.parallel().tween_property(ic, "scale", Vector2(0.6, 0.6), 0.55)
+		tw.tween_callback(ic.queue_free)
+	var pulse := create_tween()
+	target_ctrl.pivot_offset = target_ctrl.size / 2.0
+	pulse.tween_interval(0.55)
+	pulse.tween_property(target_ctrl, "scale", Vector2(1.08, 1.08), 0.08)
+	pulse.tween_property(target_ctrl, "scale", Vector2.ONE, 0.12)
 
 func _draw_res_bar(bar: Control, k: String) -> void:
 	var col: Color = Defs.RESOURCES[k].color
@@ -531,6 +613,8 @@ func _refresh_top() -> void:
 		shop_badge.queue_redraw()
 	for k in res_bars:
 		res_bars[k].queue_redraw()
+	if colony_bar:
+		colony_bar.queue_redraw()
 
 # ---------------------------------------------------------------- нижняя панель
 
@@ -1031,6 +1115,8 @@ func reyes_portrait(size: int) -> Control:
 	return t
 
 func _where(c: Dictionary) -> String:
+	if c.get("child", false):
+		return tr("Child · grows up in %s") % _clock(float(c.get("grow", 0.0)))
 	if c.room == Game.ON_EXPEDITION:
 		return tr("On expedition")
 	if c.get("help", -1) != -1:
@@ -1981,7 +2067,7 @@ func _refresh_dock_live(_r: Dictionary) -> void:
 	d.bar.value = Game.expedition_progress(e)
 	d.status.text = tr("Back home! Collect the loot.") if done else tr("Returns in %s") % _clock(float(e.end) - Game.now())
 	d.fin.visible = not done and Game.crystal_rush_allowed()
-	d.ad.visible = not done
+	d.ad.visible = not done and not e.get("ad_used", false) and Game.ads_left() > 0
 	d.claim.visible = done
 	set_cost_text(d.fin, tr("Finish ◆ %d") % Game.finish_cost(e) if not done else "")
 	var evs := Game.visible_events(e)

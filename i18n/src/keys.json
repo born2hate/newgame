@@ -562,5 +562,18 @@
 "They escaped with %d pearls.",
 "DOOR",
 "Colony entrance. New colonists arrive here. Upgrade the door to hold pirates back longer.",
-"Gear!"
+"Gear!",
+"No more videos today. Come back tomorrow!",
+"Colony lvl %d",
+"Colony level %d!",
+"Combo ×%d · +%d%%",
+"%s is a child and can't work yet",
+"All grown up!",
+"%s is ready to work.",
+"A child is born!",
+"%s and %s welcome %s.",
+"Child · grows up in %s",
+"Broadcasts to survivors: the main way to get new colonists once the colony grows. Also attracts traders. Needs Charm.",
+"+4 colonist capacity per level. Put two colonists here and they may have a child. Charm helps.",
+"While you play, energy, oxygen and food rooms collect half their output by themselves."
 ]

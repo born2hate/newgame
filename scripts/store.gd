@@ -89,6 +89,10 @@ func buy_with_crystals(id: String) -> void:
 func show_rewarded(on_reward: Callable) -> void:
 	if ad_playing:
 		return
+	if Game.ads_left() <= 0:
+		Game.message.emit(tr("No more videos today. Come back tomorrow!"))
+		return
+	Game.register_ad()
 	if Game.ads_removed():
 		on_reward.call()
 		return
