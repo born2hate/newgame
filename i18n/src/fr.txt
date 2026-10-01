@@ -641,3 +641,6 @@
 640|Trident
 641|Découpeur plasma
 642|Blaster sonique
+643|Il faut creuser plus profond
+644|Recherche %s pour construire dans la zone de profondeur suivante.
+645|En surbrillance : ce qu'il faut rechercher, étape par étape.

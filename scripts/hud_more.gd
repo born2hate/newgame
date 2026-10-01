@@ -9,9 +9,12 @@ func _body() -> VBoxContainer:
 
 # ---------------------------------------------------------------- исследования
 
-func open_research() -> void:
+## focus — исследование, к которому ведём: оно и его недостающие шаги подсвечены, список прокручен к ним.
+func open_research(focus := "") -> void:
 	hud._open_sheet("research", 900)
 	hud._header(tr("Research"))
+	var path: Array = Game.research_path(focus) if focus != "" else []
+	var scroll_to: Control = null
 	var top := HBoxContainer.new()
 	top.add_child(hud._icon("science", 32))
 	top.add_child(hud._label("%d" % Game.science, 26, Defs.RESOURCES.science.color))
@@ -53,10 +56,18 @@ func open_research() -> void:
 		var active: bool = Game.research_current.get("id", "") == d.id
 		var bg := Color(0.05, 0.2, 0.1, 0.9) if done else (Color(0.1, 0.08, 0.2, 0.92) if avail else Color(0.05, 0.07, 0.1, 0.9))
 		var border := Color(0.5, 0.95, 0.6, 0.7) if done else (Color(0.75, 0.6, 1.0, 0.8) if avail else Color(0.4, 0.45, 0.5, 0.4))
+		if d.id in path:
+			border = Color(1.0, 0.82, 0.3)
+			bg = Color(0.25, 0.17, 0.04, 0.95)
 		var row: HBoxContainer = hud._card(bg, border)
+		if d.id in path and (scroll_to == null or avail):
+			if scroll_to == null or not scroll_to.has_meta("avail"):
+				scroll_to = row.get_parent()
+				if avail:
+					scroll_to.set_meta("avail", true)
 		var info := VBoxContainer.new()
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		info.add_child(hud._label(("✓ " if done else "") + tr(d.name), 22, Color(0.95, 0.9, 1.0) if avail or done else Color(0.6, 0.65, 0.7)))
+		info.add_child(hud._label(("✓ " if done else ("→ " if d.id in path else "")) + tr(d.name), 22, Color(0.95, 0.9, 1.0) if avail or done else Color(0.6, 0.65, 0.7)))
 		var dl: Label = hud._label(tr(d.desc), 17, Color(0.78, 0.85, 0.95))
 		dl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		info.add_child(dl)
@@ -77,6 +88,20 @@ func open_research() -> void:
 			b.add_theme_font_size_override("font_size", 18)
 			b.disabled = not avail or active or not Game.research_current.is_empty()
 			row.add_child(b)
+	if scroll_to:
+		_scroll_to.call_deferred(scroll_to)
+	if focus != "":
+		var tip: Label = hud._label(tr("Highlighted: what to research, step by step."), 17, Color(1.0, 0.85, 0.4))
+		tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_body().add_child(tip)
+		_body().move_child(tip, 1)
+
+func _scroll_to(c: Control) -> void:
+	await get_tree().process_frame
+	await get_tree().process_frame
+	var sc := hud.sheet.get_child(0) as ScrollContainer
+	if is_instance_valid(c):
+		sc.scroll_vertical = int(maxf(0.0, c.position.y - 80.0))
 
 # ---------------------------------------------------------------- сюжет, событие недели, достижения (в «Заданиях»)
 

@@ -61,6 +61,7 @@ func _ready() -> void:
 	add_child(more)
 	view.trader_tapped.connect(func(): more.open_trader())
 	view.outside_tapped.connect(open_outside)
+	view.locked_zone_tapped.connect(func(rid): more.open_research(rid))
 	view.fallen_tapped.connect(func(i): open_fallen(i))
 	_build_expedition_button()
 	_build_popup()
@@ -878,6 +879,12 @@ func _start_build(type: String) -> void:
 		return
 	var spots := Game.build_spots(type)
 	if spots.is_empty():
+		# места нет, и вниз не пускает закрытая зона — ведём к нужному исследованию
+		var nr := Game.next_depth_research()
+		if Game.build_spots("elevator").is_empty() and nr != "":
+			show_banner("science", tr("Need to dig deeper"), tr("Research %s to build in the next depth zone.") % tr(Game.research_def(nr).name))
+			more.open_research(nr)
+			return
 		show_banner("build", tr("No free space"), tr("Build an Elevator below to open new floors.") if type != "elevator" else tr("Build rooms next to the elevator first."))
 		return
 	view.build_type = type

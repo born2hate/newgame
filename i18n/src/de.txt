@@ -641,3 +641,6 @@
 640|Dreizack
 641|Plasmaschneider
 642|Schallblaster
+643|Tiefer graben nötig
+644|Erforsche %s, um in der nächsten Tiefenzone zu bauen.
+645|Hervorgehoben: was du Schritt für Schritt erforschen musst.

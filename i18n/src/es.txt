@@ -642,3 +642,6 @@
 640|Tridente
 641|Cortador de plasma
 642|Bláster sónico
+643|Hay que cavar más hondo
+644|Investiga %s para construir en la siguiente zona de profundidad.
+645|Resaltado: qué investigar, paso a paso.

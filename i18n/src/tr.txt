@@ -641,3 +641,6 @@
 640|Trident
 641|Plazma kesici
 642|Sonik blaster
+643|Daha derine kazmak gerek
+644|Bir sonraki derinlik bölgesinde inşa etmek için %s araştır.
+645|Vurgulananlar: adım adım ne araştırılmalı.

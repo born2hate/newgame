@@ -1968,6 +1968,26 @@ func depth_zone(row: int) -> Dictionary:
 			z = d
 	return z
 
+## Исследование, которое откроет ближайшую закрытую зону глубины ("" — все открыты).
+func next_depth_research() -> String:
+	for z in Defs.DEPTH_ZONES:
+		if z.research != "" and not has_research(z.research):
+			return z.research
+	return ""
+
+## Цепочка исследований до цели: сначала то, что можно начать уже сейчас.
+func research_path(id: String) -> Array:
+	var out := []
+	var stack := [id]
+	while not stack.is_empty():
+		var cur: String = stack.pop_back()
+		if has_research(cur) or cur in out:
+			continue
+		out.append(cur)
+		for rq in research_def(cur).req:
+			stack.append(rq)
+	return out
+
 func zone_unlocked_row(row: int) -> bool:
 	var need: String = depth_zone(row).research
 	return need == "" or has_research(need)

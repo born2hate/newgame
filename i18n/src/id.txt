@@ -641,3 +641,6 @@
 640|Trisula
 641|Pemotong plasma
 642|Blaster sonik
+643|Perlu menggali lebih dalam
+644|Teliti %s untuk membangun di zona kedalaman berikutnya.
+645|Disorot: apa yang perlu diteliti, langkah demi langkah.

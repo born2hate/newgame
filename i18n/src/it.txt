@@ -641,3 +641,6 @@
 640|Tridente
 641|Taglierina al plasma
 642|Blaster sonico
+643|Bisogna scavare più a fondo
+644|Ricerca %s per costruire nella zona di profondità successiva.
+645|Evidenziato: cosa ricercare, passo dopo passo.

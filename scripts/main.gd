@@ -394,6 +394,10 @@ func _dev_screenshot() -> void:
 			camera.position = Vector2(780, 220)
 			camera.zoom = Vector2(1.8, 1.8)
 			await get_tree().create_timer(0.6).timeout
+		"deep_ru":
+			Audio.set_language("ru")
+			hud.more.open_research(Game.next_depth_research())
+			await get_tree().create_timer(0.5).timeout
 		"expedition_ru":
 			Audio.set_language("ru")
 			var d2 := Game._add_room("dock", 3, 1)

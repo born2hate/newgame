@@ -5,6 +5,7 @@ signal room_selected(room_id: int)
 signal build_finished
 signal colonist_selected(colonist_id: int)
 signal trader_tapped
+signal locked_zone_tapped(research_id: String)
 signal fallen_tapped(index: int)
 signal outside_tapped
 
@@ -1593,6 +1594,9 @@ func _on_release(p: Vector2) -> void:
 				return
 		return
 	var room := Game.room_at(cell.x, cell.y)
+	if room.is_empty() and cell.y >= 0 and cell.y < Defs.MAX_DEPTH and not Game.zone_unlocked_row(cell.y):
+		locked_zone_tapped.emit(str(Game.depth_zone(cell.y).research))
+		return
 	var al := Game.find_room_of_type("airlock")
 	if room.is_empty() and world.y < 0 and world.y > -260 and not al.is_empty() and absf(world.x - room_rect(al).get_center().x) < 170:
 		outside_tapped.emit()

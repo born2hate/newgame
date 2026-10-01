@@ -641,3 +641,6 @@
 640|Trójząb
 641|Przecinarka plazmowa
 642|Blaster dźwiękowy
+643|Trzeba kopać głębiej
+644|Zbadaj %s, by budować w następnej strefie głębokości.
+645|Podświetlone: co badać, krok po kroku.

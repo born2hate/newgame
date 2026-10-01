@@ -647,6 +647,9 @@ const T := {
 	"Trident": "Трезубец",
 	"Plasma Cutter": "Плазменный резак",
 	"Sonic Blaster": "Звуковой бластер",
+	"Need to dig deeper": "Нужно копать глубже",
+	"Research %s to build in the next depth zone.": "Изучите «%s», чтобы строить в следующей зоне глубины.",
+	"Highlighted: what to research, step by step.": "Подсвечено: что изучить, шаг за шагом.",
 }
 
 static func make() -> Translation:
