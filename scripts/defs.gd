@@ -491,8 +491,10 @@ static func recipe(key: String) -> Dictionary:
 	mats["scrap"] = [2, 4, 6][r]
 	mats[main] = int(mats.get(main, 0)) + [2, 4, 6][r]
 	if r >= 1:
-		var extra := "coral" if main == "copper" else "copper"
-		mats[extra] = int(mats.get(extra, 0)) + 2
+		# второй материал для редких вещей — разный, чтобы в ход шло всё, что приносят экспедиции
+		var extra: String = {"copper": "coral", "vent_crystal": "copper", "coral": "vent_crystal", "shell": "vent_crystal",
+			"kelp_fiber": "coral", "scrap": "vent_crystal", "kraken_ink": "vent_crystal"}.get(main, "copper")
+		mats[extra] = int(mats.get(extra, 0)) + 2 * r
 	if r >= 2:
 		mats["abyss_pearl"] = int(mats.get("abyss_pearl", 0)) + 1
 		mats["kraken_ink"] = int(mats.get("kraken_ink", 0)) + 2
