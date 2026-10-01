@@ -606,3 +606,21 @@
 605|Era uma emboscada! {n} lutou para escapar. −{h} PV
 606|O atalho funcionou! O submarino volta mais cedo.
 607|Algo atacou na caverna! {n} se feriu. −{h} PV
+608|Mascotes (%d/%d)
+609|Mascotes
+610|Um mascote nada com você e dá seu bônus. Encontre mais em baús de prata e ouro.
+611|Com você
+612|Levar
+613|Novo mascote: %s! %s
+614|Nemo, o peixe-palhaço
+615|Espinho, o baiacu
+616|Graça, o peixe-anjo
+617|Leo, o peixe-leão
+618|Polly, o peixe-papagaio
+619|Sunny, o cirurgião-amarelo
+620|+10% em todas as coletas
+621|+25% de dano contra piratas, monstros e chefes
+622|+10 de ânimo para todos
+623|+20% de saque das expedições
+624|+15% de chance de acelerar com sucesso
+625|Os colonos se curam 50% mais rápido

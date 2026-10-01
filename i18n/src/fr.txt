@@ -606,3 +606,21 @@
 605|C'était une embuscade ! {n} s'est dégagé. −{h} PV
 606|Le raccourci a marché ! Le sous-marin rentrera plus tôt.
 607|Quelque chose a attaqué dans la grotte ! {n} est blessé. −{h} PV
+608|Compagnons (%d/%d)
+609|Compagnons
+610|Un compagnon nage avec toi et donne son bonus. Trouves-en d'autres dans les caisses d'argent et d'or.
+611|Avec toi
+612|Prendre
+613|Nouveau compagnon : %s ! %s
+614|Nemo le poisson-clown
+615|Piquant le poisson-globe
+616|Grâce le poisson-ange
+617|Léo le poisson-lion
+618|Polly le poisson-perroquet
+619|Sunny le chirurgien jaune
+620|+10% sur toutes les récoltes
+621|+25% de dégâts contre pirates, monstres et boss
+622|+10 de moral pour tous
+623|+20% de butin d'expédition
+624|+15% de chances de réussir une accélération
+625|Les colons guérissent 50% plus vite

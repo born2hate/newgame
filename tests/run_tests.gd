@@ -390,6 +390,19 @@ func _initialize() -> void:
 	var txt: String = bs.resolve_choice(ex3, true)
 	check(txt != "" and bs.pending_choice(ex3).is_empty(), "выбор сделан, результат в журнале")
 	bs.free()
+	# питомцы
+	var pt = load("res://scripts/game_state.gd").new()
+	pt.new_game()
+	pt.grant_pet("puffer")
+	check(pt.pet == "puffer" and "puffer" in pt.pets_owned, "первый питомец сразу с тобой")
+	var ab: float = pt.armory_bonus()
+	pt.grant_pet("angel")
+	pt.set_pet("angel")
+	check(pt.pet == "angel" and pt.armory_bonus() < ab and pt.mood_bonus() >= 10.0, "смена питомца меняет бонус")
+	for i in 10:
+		pt.grant_pet()
+	check(pt.pets_owned.size() == Defs.PETS.size(), "все питомцы собраны, дальше — кристаллы")
+	pt.free()
 	# налёт пиратов
 	var pr = load("res://scripts/game_state.gd").new()
 	pr.new_game()

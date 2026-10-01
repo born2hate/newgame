@@ -606,3 +606,21 @@
 605|To była zasadzka! {n} przebił się. −{h} PŻ
 606|Skrót zadziałał! Łódź wróci szybciej.
 607|Coś zaatakowało w jaskini! {n} ranny. −{h} PŻ
+608|Zwierzaki (%d/%d)
+609|Zwierzaki
+610|Jeden zwierzak pływa z tobą i daje premię. Więcej znajdziesz w srebrnych i złotych skrzyniach.
+611|Z tobą
+612|Weź
+613|Nowy zwierzak: %s! %s
+614|Nemo, błazenek
+615|Kolec, rozdymka
+616|Grace, skalar
+617|Leo, skrzydlica
+618|Polly, skaroszczęk
+619|Sunny, pokolec żółty
+620|+10% do wszystkich zbiorów
+621|+25% obrażeń przeciw piratom, potworom i bossom
+622|+10 nastroju dla wszystkich
+623|+20% łupu z wypraw
+624|+15% szansy na udane przyspieszenie
+625|Koloniści leczą się 50% szybciej

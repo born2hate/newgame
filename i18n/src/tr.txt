@@ -606,3 +606,21 @@
 605|Pusuymuş! {n} savaşarak kurtuldu. −{h} CP
 606|Kısa yol işe yaradı! Denizaltı daha erken dönecek.
 607|Mağarada bir şey saldırdı! {n} yaralandı. −{h} CP
+608|Evcil hayvanlar (%d/%d)
+609|Evcil hayvanlar
+610|Bir evcil hayvan seninle yüzer ve bonusunu verir. Diğerlerini gümüş ve altın sandıklarda bul.
+611|Seninle
+612|Al
+613|Yeni evcil hayvan: %s! %s
+614|Palyaço balığı Nemo
+615|Kirpi balığı Diken
+616|Melek balığı Grace
+617|Aslan balığı Leo
+618|Papağan balığı Polly
+619|Sarı cerrah Sunny
+620|Tüm toplamalara +%10
+621|Korsanlara, canavarlara ve patronlara +%25 hasar
+622|Herkese +10 moral
+623|Keşif ganimetine +%20
+624|Başarılı hızlandırma şansına +%15
+625|Sakinler %50 daha hızlı iyileşir

@@ -164,10 +164,10 @@ const CRATES := {
 		[12, "colonist_rare", 1, 1], [3, "colonist_legendary", 1, 1]]},
 	"silver": {"name": "Silver Crate", "rolls": 3, "color": Color(0.85, 0.9, 1.0), "table": [
 		[40, "pearls", 200, 450], [20, "resources", 80, 150], [18, "crystals", 4, 10],
-		[17, "colonist_rare", 1, 1], [5, "colonist_legendary", 1, 1]]},
+		[17, "colonist_rare", 1, 1], [5, "colonist_legendary", 1, 1], [3, "pet", 1, 1]]},
 	"gold": {"name": "Gold Crate", "rolls": 4, "color": Color(1.0, 0.8, 0.3), "guaranteed": "colonist_rare", "table": [
 		[35, "pearls", 400, 900], [20, "resources", 150, 250], [22, "crystals", 10, 25],
-		[15, "colonist_rare", 1, 1], [8, "colonist_legendary", 1, 1]]},
+		[15, "colonist_rare", 1, 1], [8, "colonist_legendary", 1, 1], [8, "pet", 1, 1]]},
 }
 
 ## Ежедневные награды: 7-дневный цикл, серия сбрасывается при пропуске дня.
@@ -257,6 +257,16 @@ const EXP_CHOICES := [
 	{"id": "cave", "text": "Sonar shows a shortcut through a dark cave. Something lives there.", "a": "Take the shortcut", "b": "Go around"},
 	{"id": "glow", "text": "A strange glowing coral pulses nearby. Rare minerals... or poison?", "a": "Harvest it", "b": "Don't touch"},
 ]
+
+## Питомцы: одного можно взять с собой, у каждого свой бонус.
+const PETS := {
+	"clownfish": {"name": "Nemo the Clownfish", "art": "res://art/creatures/clownfish.png", "desc": "+10% to all collections"},
+	"puffer": {"name": "Spike the Pufferfish", "art": "res://art/creatures/fish/fish_puffer.png", "desc": "+25% damage against pirates, monsters and bosses"},
+	"angel": {"name": "Grace the Angelfish", "art": "res://art/creatures/fish/fish_angel2.png", "desc": "+10 mood for everyone"},
+	"lion": {"name": "Leo the Lionfish", "art": "res://art/creatures/fish/fish_lion.png", "desc": "+20% expedition loot"},
+	"parrot": {"name": "Polly the Parrotfish", "art": "res://art/creatures/fish/fish_parrot.png", "desc": "+15% chance for a successful rush"},
+	"tang": {"name": "Sunny the Yellow Tang", "art": "res://art/creatures/fish/fish_yellow_tang.png", "desc": "Colonists heal 50% faster"},
+}
 
 ## Ежедневные задания: event — что считаем, target — [мин, макс], reward.
 ## needs — отсек, без которого задание не выдаётся; scales — цель растёт с размером колонии.

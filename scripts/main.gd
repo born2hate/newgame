@@ -372,6 +372,11 @@ func _dev_screenshot() -> void:
 			ec["choice"] = {"id": "stranger", "at": 0.2, "pick": ""}
 			view.room_selected.emit(dkc.id)
 			await get_tree().create_timer(0.6).timeout
+		"pets_ru":
+			Audio.set_language("ru")
+			Game.grant_pet("puffer")
+			Game.grant_pet("lion")
+			hud.open_pets()
 		"expedition_ru":
 			Audio.set_language("ru")
 			var d2 := Game._add_room("dock", 3, 1)

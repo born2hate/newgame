@@ -606,3 +606,21 @@
 605|Ein Hinterhalt! {n} kämpfte sich frei. −{h} LP
 606|Die Abkürzung hat geklappt! Das U-Boot ist früher zurück.
 607|In der Höhle griff etwas an! {n} wurde verletzt. −{h} LP
+608|Haustiere (%d/%d)
+609|Haustiere
+610|Ein Haustier schwimmt mit dir und gibt seinen Bonus. Weitere in Silber- und Goldkisten.
+611|Dabei
+612|Mitnehmen
+613|Neues Haustier: %s! %s
+614|Nemo der Clownfisch
+615|Stachel der Kugelfisch
+616|Grace der Kaiserfisch
+617|Leo der Rotfeuerfisch
+618|Polly der Papageifisch
+619|Sunny der Gelbe Segelflossendoktor
+620|+10% auf alle Ernten
+621|+25% Schaden gegen Piraten, Monster und Bosse
+622|+10 Laune für alle
+623|+20% Expeditionsbeute
+624|+15% Chance auf erfolgreiches Beschleunigen
+625|Kolonisten heilen 50% schneller

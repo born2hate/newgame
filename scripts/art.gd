@@ -66,7 +66,10 @@ static func marker_icon(key: String) -> Texture2D:
 	match key:
 		"colonist": return walk(2, 0)
 		"captain": return walk(CAPTAIN_SUIT, 0)
-		"pet": return tex("res://art/creatures/clownfish.png")
+		"pet":
+			var gs = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("Game")
+			var pid: String = str(gs.pet) if gs and str(gs.pet) != "" else "clownfish"
+			return tex(Defs.PETS[pid].art) if Defs.PETS.has(pid) else tex("res://art/creatures/clownfish.png")
 		"trader": return tex("res://art/creatures/trader_sub.png")
 		"leviathan": return tex("res://art/creatures/boss_angler.png")
 		"raid":

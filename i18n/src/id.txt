@@ -606,3 +606,21 @@
 605|Itu penyergapan! {n} berhasil lolos. −{h} HP
 606|Jalan pintasnya berhasil! Kapal akan pulang lebih cepat.
 607|Sesuatu menyerang di gua! {n} terluka. −{h} HP
+608|Peliharaan (%d/%d)
+609|Peliharaan
+610|Satu peliharaan berenang bersamamu dan memberi bonus. Temukan lainnya di peti perak dan emas.
+611|Bersamamu
+612|Ambil
+613|Peliharaan baru: %s! %s
+614|Nemo si ikan badut
+615|Duri si ikan buntal
+616|Grace si ikan bidadari
+617|Leo si ikan singa
+618|Polly si ikan kakatua
+619|Sunny si ikan kuning
+620|+10% untuk semua panen
+621|+25% kerusakan melawan bajak laut, monster, dan bos
+622|+10 suasana hati untuk semua
+623|+20% rampasan ekspedisi
+624|+15% peluang percepatan berhasil
+625|Kolonis sembuh 50% lebih cepat

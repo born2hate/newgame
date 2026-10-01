@@ -55,6 +55,28 @@ var premium := false
 var no_ads := false
 var pet := ""
 const PET_BONUS := 0.1
+var pets_owned: Array = []
+
+func has_pet(id: String) -> bool:
+	return pet == id
+
+## Новый питомец (если уже есть все — немного кристаллов).
+func grant_pet(id := "") -> String:
+	var free: Array = Defs.PETS.keys().filter(func(k): return not k in pets_owned)
+	if free.is_empty():
+		crystals += 10
+		return tr("+%d crystals") % 10
+	if id == "" or id in pets_owned:
+		id = free.pick_random()
+	pets_owned.append(id)
+	if pet == "":
+		pet = id
+	return tr("New pet: %s! %s") % [tr(Defs.PETS[id].name), tr(Defs.PETS[id].desc)]
+
+func set_pet(id: String) -> void:
+	if id in pets_owned:
+		pet = id
+		changed.emit()
 var owned_products: Array = []
 var boost_until := 0.0
 var free_crate_at := 0.0
@@ -108,6 +130,7 @@ func new_game() -> void:
 	premium = false
 	no_ads = false
 	pet = ""
+	pets_owned = []
 	owned_products = []
 	boost_until = 0.0
 	free_crate_at = 0.0
@@ -308,6 +331,8 @@ func mood_bonus() -> float:
 	var b := 0.0
 	for r in rooms:
 		b += float(Defs.ROOMS[r.type].get("mood", 0)) * r.level * r.size
+	if has_pet("angel"):
+		b += 10.0
 	return minf(40.0, b)
 
 ## Сила всех отсеков типа (для пассивных эффектов: радио, оружейная).
@@ -345,7 +370,7 @@ func arrival_speed() -> float:
 	return base + per_hour * ARRIVAL_INTERVAL / 3600.0
 
 func armory_bonus() -> float:
-	return 1.0 + type_power("armory") * 0.04
+	return (1.0 + type_power("armory") * 0.04) * (1.25 if has_pet("puffer") else 1.0)
 
 ## Шанс удвоить сбор: удача работников отсека.
 func luck_chance(room: Dictionary) -> float:
@@ -415,7 +440,7 @@ func production_amount(room: Dictionary) -> float:
 	return def.amount * (1.0 + 0.6 * (room.level - 1)) * room.size * m
 
 func rush_chance(room: Dictionary) -> float:
-	return clampf(0.8 - room.heat * 0.15, 0.2, 0.8)
+	return clampf(0.8 - room.heat * 0.15 + (0.15 if has_pet("parrot") else 0.0), 0.2, 0.95)
 
 # ---------------------------------------------------------------- симуляция
 
@@ -463,6 +488,8 @@ func simulate(delta: float, offline: bool) -> void:
 			heal_rate += room_power(r) * 0.1 * r.level
 	if has_research("medical_ai"):
 		heal_rate *= 3.0
+	if has_pet("tang"):
+		heal_rate *= 1.5
 	var xp_mult := 1.5 if has_research("training_programs") else 1.0
 	for r in rooms:
 		xp_mult += float(Defs.ROOMS[r.type].get("xp_bonus", 0.0)) * r.level * r.size
@@ -683,7 +710,7 @@ func collect(room: Dictionary, silent := false) -> void:
 		return
 	# ×2 за рекламу — только на базовые ресурсы, валюту (жемчуг, наука) не удваивает
 	var boosted: bool = boost_active() and res in ["energy", "oxygen", "food"]
-	var amount := production_amount(room) * (2.0 if boosted else 1.0) * (1.0 + (PET_BONUS if pet != "" else 0.0))
+	var amount := production_amount(room) * (2.0 if boosted else 1.0) * (1.0 + (PET_BONUS if has_pet("clownfish") else 0.0))
 	if not silent:
 		# собираешь подряд — растёт множитель (до +50%), на жемчуг не действует
 		var tnow := Time.get_ticks_msec() / 1000.0
@@ -909,8 +936,7 @@ func grant(reward: Dictionary, title: String) -> void:
 		var it := add_item(reward.item, reward.get("item_base", ""))
 		lines.append("[item_%s]" % it.base + tr("New gear: %s") % item_name(it))
 	if reward.has("pet"):
-		pet = reward.pet
-		lines.append("[pet]" + tr("Nemo the clownfish joined you! +10% to all collections"))
+		lines.append("[pet]" + grant_pet(str(reward.pet)))
 	if reward.get("no_ads", false):
 		no_ads = true
 		lines.append(tr("Ads removed. Rewards are now instant!"))
@@ -987,6 +1013,8 @@ func open_crate(type: String) -> void:
 				extra.append("[colonist]" + _grant_colonist("rare"))
 			"colonist_legendary":
 				extra.append("[colonist]" + _grant_colonist("legendary"))
+			"pet":
+				extra.append("[pet]" + grant_pet())
 	if reward.pearls == 0:
 		reward.erase("pearls")
 	if reward.crystals == 0:
@@ -1098,7 +1126,7 @@ func launch_expedition(dock_id: int, zone_idx: int, ids: Array) -> bool:
 		return false
 	var zone: Dictionary = Defs.ZONES[zone_idx]
 	var f := expedition_chance(zone_idx, ids)
-	var loot_mult: float = (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * mode().reward
+	var loot_mult: float = (1.2 if has_pet("lion") else 1.0) * (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * mode().reward
 	var names := []
 	for id in ids:
 		names.append(get_colonist(id).name.split(" ")[0])
@@ -1467,7 +1495,7 @@ func start_boss() -> void:
 
 ## Урон от нажатия: растёт с уровнем колонии.
 func boss_tap_damage() -> int:
-	return 4 + colony_level / 2
+	return int((4 + colony_level / 2) * (1.25 if has_pet("puffer") else 1.0))
 
 func hit_boss() -> int:
 	if boss.is_empty():
@@ -2364,7 +2392,7 @@ func save_game() -> void:
 		"resources": resources, "pearls": pearls, "rooms": rooms,
 		"colonists": colonists, "next_id": next_id, "arrival_timer": arrival_timer,
 		"meta": {
-			"crystals": crystals, "crates": crates, "premium": premium, "no_ads": no_ads, "pet": pet, "owned": owned_products,
+			"crystals": crystals, "crates": crates, "premium": premium, "no_ads": no_ads, "pet": pet, "pets_owned": pets_owned, "owned": owned_products,
 			"boost_until": boost_until, "free_crate_at": free_crate_at,
 			"daily_day": daily_day, "daily_streak": daily_streak,
 			"expeditions": expeditions, "quests": quests, "quest_day": quest_day,
@@ -2425,6 +2453,9 @@ func load_game() -> bool:
 	premium = bool(meta.get("premium", false))
 	no_ads = bool(meta.get("no_ads", false))
 	pet = str(meta.get("pet", ""))
+	pets_owned = meta.get("pets_owned", [])
+	if pet != "" and not pet in pets_owned:
+		pets_owned.append(pet)
 	owned_products = meta.get("owned", [])
 	boost_until = float(meta.get("boost_until", 0.0))
 	free_crate_at = float(meta.get("free_crate_at", 0.0))

@@ -1178,6 +1178,46 @@ func _fallen_card(f: Dictionary, big: bool) -> void:
 			_close_sheet(), 50))
 	card.add_child(col)
 
+## Питомцы: один с тобой, у каждого свой бонус. Остальные ищутся в серебряных и золотых ящиках.
+func open_pets() -> void:
+	_open_sheet("pets", 700)
+	_header(tr("Pets"))
+	var hint := _label(tr("One pet swims with you and gives its bonus. Find more in Silver and Gold crates."), 17, Color(0.75, 0.85, 0.95))
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	sheet_body.add_child(hint)
+	for id in Defs.PETS:
+		var d: Dictionary = Defs.PETS[id]
+		var owned: bool = id in Game.pets_owned
+		var active: bool = Game.pet == id
+		var row := _card(Color(0.08, 0.2, 0.18, 0.92) if active else Color(0.05, 0.12, 0.2, 0.9), Color(1.0, 0.85, 0.35) if active else Color(ACCENT, 0.3))
+		var t := TextureRect.new()
+		t.texture = Art.tex(d.art)
+		t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		t.custom_minimum_size = Vector2(80, 64)
+		if not owned:
+			# силуэт: ещё не найден
+			var mat := CanvasItemMaterial.new()
+			t.material = mat
+			t.self_modulate = Color(0.0, 0.0, 0.05, 0.85)
+		row.add_child(t)
+		var vb := VBoxContainer.new()
+		vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		vb.add_child(_label(tr(d.name) if owned else "???", 21, Color(1.0, 0.9, 0.6) if owned else Color(0.6, 0.65, 0.7)))
+		var dl := _label(tr(d.desc), 16, Color(0.8, 0.9, 1.0))
+		dl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(dl)
+		row.add_child(vb)
+		if owned:
+			var b := _button(tr("With you") if active else tr("Take"), func():
+				Game.set_pet(id)
+				open_pets(), 56)
+			b.disabled = active
+			b.custom_minimum_size.x = 140
+			if not active:
+				_gold(b)
+			row.add_child(b)
+
 func _open_colonists() -> void:
 	_open_sheet("colonists", 700)
 	_header(tr("Colonists (%d/%d)") % [Game.colonists.size(), Game.population_cap()])
@@ -1185,6 +1225,12 @@ func _open_colonists() -> void:
 		sheet_body.add_child(_label(tr("Fallen — revive them before it's too late"), 20, Color(1.0, 0.55, 0.5)))
 		for f in Game.fallen:
 			_fallen_card(f, false)
+	var pb := _button(tr("Pets (%d/%d)") % [Game.pets_owned.size(), Defs.PETS.size()], open_pets, 60)
+	if Game.pet != "":
+		pb.icon = Art.tex(Defs.PETS[Game.pet].art)
+		pb.expand_icon = true
+		pb.add_theme_constant_override("icon_max_width", 48)
+	sheet_body.add_child(pb)
 	sheet_body.add_child(_label(tr("Tap a colonist to see their stats"), 19, Color(0.7, 0.82, 0.92)))
 	for c in Game.colonists:
 		var card := PanelContainer.new()

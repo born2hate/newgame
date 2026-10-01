@@ -333,7 +333,7 @@ func _draw_rest(depth_rows: int) -> void:
 func _draw_pet() -> void:
 	if Game.pet == "":
 		return
-	var tex := Art.tex("res://art/creatures/%s.png" % Game.pet)
+	var tex := Art.tex(Defs.PETS[Game.pet].art) if Defs.PETS.has(Game.pet) else null
 	if tex == null:
 		return
 	var span := Defs.GRID_COLS * CELL_W

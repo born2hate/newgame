@@ -607,3 +607,21 @@
 605|¡Era una emboscada! {n} se abrió paso. −{h} PS
 606|¡El atajo funcionó! El submarino volverá antes.
 607|¡Algo atacó en la cueva! {n} resultó herido. −{h} PS
+608|Mascotas (%d/%d)
+609|Mascotas
+610|Una mascota nada contigo y da su bonificación. Encuentra más en cofres de plata y oro.
+611|Contigo
+612|Llevar
+613|¡Nueva mascota: %s! %s
+614|Nemo, el pez payaso
+615|Púas, el pez globo
+616|Gracia, el pez ángel
+617|Leo, el pez león
+618|Polly, el pez loro
+619|Sunny, el cirujano amarillo
+620|+10% a todas las recolecciones
+621|+25% de daño contra piratas, monstruos y jefes
+622|+10 de ánimo para todos
+623|+20% de botín de expediciones
+624|+15% de probabilidad de acelerar con éxito
+625|Los colonos se curan un 50% más rápido
