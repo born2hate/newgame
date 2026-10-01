@@ -747,3 +747,19 @@
 746|Crea equipaggiamento da progetti e materiali, e produce rottami da sola. Serve Tecnica.
 747|Il misterioso sconosciuto
 748|Preso!
+749|Coraggioso
+750|Subisce meno danni in battaglia.
+751|Tosto
+752|Subisce meno danni e guarisce prima.
+753|Fortunato
+754|+3 Fortuna.
+755|Genio
+756|Guadagna esperienza il 30% più in fretta.
+757|Allegro
+758|Umore migliore per sé e per tutti nella stessa stanza.
+759|Nottambulo
+760|Guarisce il doppio più in fretta mentre sei via.
+761|Pigro
+762|Lavora il 25% più lentamente, ma non è mai triste.
+763|Imbranato
+764|Peggiore contro incendi, allagamenti e mostri.

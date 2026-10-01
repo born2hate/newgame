@@ -12,6 +12,7 @@ func check(cond: bool, what: String) -> void:
 
 func _initialize() -> void:
 	var g = load("res://scripts/game_state.gd").new()
+	g.traits_enabled = false
 	g.rng.seed = 1
 	g.new_game()
 	check(g.rooms.size() == 6, "стартовая база из 6 отсеков")
@@ -237,6 +238,7 @@ func _initialize() -> void:
 	check(col0.tool_item == -1 and pg.colonists[1].tool_item == it.uid, "предмет переходит к другому")
 	var arm: Dictionary = pg.add_item("rare", "diving_armor")
 	var hc: Dictionary = pg.colonists[2]
+	hc.traits = []
 	pg.equip(hc, arm.uid)
 	check(hc.armor_item == arm.uid and absf(pg.protection(hc) - (0.3 + pg.stat(hc, "end") * 0.02)) < 0.001, "броня надета: −30% урона плюс выносливость")
 	check(pg.story_index == 0 and not pg.story_ready(), "сюжет: глава 1")
@@ -568,6 +570,39 @@ func _initialize() -> void:
 	ul._add_room("radio", 1, 1)
 	check(ul.arrival_speed() > 0.0, "пустое радио слабо, но вещает")
 	ul.free()
+
+	# черты характера
+	var tr_tg = load("res://scripts/game_state.gd").new()
+	tr_tg.traits_enabled = true
+	tr_tg.new_game()
+	var tr_tc: Dictionary = tr_tg.colonists[0]
+	tr_tc.traits = []
+	var tr_luck0: int = tr_tg.stat(tr_tc, "luck")
+	var tr_prot0: float = tr_tg.protection(tr_tc)
+	tr_tc.traits = ["lucky", "brave"]
+	check(tr_tg.stat(tr_tc, "luck") == tr_luck0 + 3, "везунчик: +3 удачи")
+	check(tr_tg.protection(tr_tc) > tr_prot0, "храбрец: меньше урона")
+	var tr_trm: Dictionary = tr_tg.get_room(tr_tc.room) if tr_tc.room >= 0 else tr_tg.find_room_of_type("reactor")
+	tr_tc.room = tr_trm.id
+	tr_tc.traits = []
+	var tr_pw0: float = tr_tg.room_power(tr_trm)
+	tr_tc.traits = ["lazy"]
+	check(tr_tg.room_power(tr_trm) < tr_pw0, "лентяй работает медленнее")
+	var tr_ta: Dictionary = tr_tg._make_colonist()
+	var tr_tb: Dictionary = tr_tg._make_colonist()
+	tr_ta.traits = ["genius", "cheerful"]
+	tr_tb.traits = ["tough"]
+	var tr_kids_ok := true
+	for i in 30:
+		var tr_kt: Array = tr_tg._inherit_traits(tr_ta, tr_tb)
+		if tr_kt.size() > 2:
+			tr_kids_ok = false
+		for tt in tr_kt:
+			if not tt in Defs.TRAITS:
+				tr_kids_ok = false
+	check(tr_kids_ok, "дети наследуют не больше двух черт")
+	tr_tg.traits_enabled = false
+	tr_tg.free()
 
 	# таинственный незнакомец
 	var sg = load("res://scripts/game_state.gd").new()

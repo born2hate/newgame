@@ -1415,6 +1415,25 @@ func _stat_bar(name: String, value: int, col: Color, highlight: bool, key := "")
 	row.add_child(_label("%d" % value, 22))
 	return row
 
+## Значок черты характера: картинка art/ui/traits/<id>.png или цветной кружок; нажатие — описание.
+func _trait_chip(t: String) -> Control:
+	var d: Dictionary = Defs.TRAITS[t]
+	var b := Button.new()
+	b.text = tr(d.name)
+	b.add_theme_font_size_override("font_size", 17)
+	b.add_theme_color_override("font_color", d.color)
+	b.custom_minimum_size = Vector2(0, 40)
+	var tex := Art.tex("res://art/ui/traits/%s.png" % t)
+	if tex:
+		b.icon = tex
+		b.expand_icon = true
+		b.add_theme_constant_override("icon_max_width", 30)
+	var sb := _box(Color(0.06, 0.1, 0.16, 0.9), Color(d.color, 0.7), 18, 2)
+	for st in ["normal", "hover", "pressed", "focus"]:
+		b.add_theme_stylebox_override(st, sb)
+	b.pressed.connect(func(): show_toast("%s: %s" % [tr(d.name), tr(d.desc)]))
+	return b
+
 func _open_colonist(id: int) -> void:
 	var c := Game.get_colonist(id)
 	if c.is_empty():
@@ -1432,6 +1451,12 @@ func _open_colonist(id: int) -> void:
 	info.add_child(_label(tr("Rarity: %s") % tr(rarity.capitalize()), 19, rcol))
 	info.add_child(_label(tr("Works in: %s") % _where(c), 19, Color(0.8, 0.88, 0.95)))
 	info.add_child(_label("XP %d / %d" % [int(c.xp), int(Game._xp_needed(c))], 17, Color(0.7, 0.8, 0.9)))
+	if not c.get("traits", []).is_empty():
+		var tr_row := HFlowContainer.new()
+		tr_row.add_theme_constant_override("h_separation", 6)
+		for t in c.traits:
+			tr_row.add_child(_trait_chip(t))
+		info.add_child(tr_row)
 	var xp := ProgressBar.new()
 	xp.show_percentage = false
 	xp.custom_minimum_size = Vector2(0, 12)

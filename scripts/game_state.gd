@@ -205,6 +205,7 @@ func _make_colonist() -> Dictionary:
 		"mood": 70.0, "train": 0.0,
 		"level": 1, "xp": 0.0, "health": 100.0, "room": -1, "help": -1, "suit_item": -1, "tool_item": -1, "armor_item": -1, "weapon_item": -1,
 		"suit": rng.randi_range(0, 5),
+		"traits": _roll_traits(),
 	}
 	next_id += 1
 	return c
@@ -329,8 +330,34 @@ func room_power(room: Dictionary) -> float:
 		return 0.0
 	var total := 0.0
 	for c in workers_in(room):
-		total += stat(c, def.stat) * (0.4 + 0.6 * c.health / 100.0) * mood_factor(c)
+		total += stat(c, def.stat) * (0.4 + 0.6 * c.health / 100.0) * mood_factor(c) * (0.75 if has_trait(c, "lazy") else 1.0)
 	return total
+
+## Тесты отключают черты, чтобы случайность не влияла на проверки.
+static var traits_enabled := true
+
+func has_trait(c: Dictionary, t: String) -> bool:
+	return traits_enabled and t in c.get("traits", [])
+
+## Новому колонисту — 0–2 черты (чаще одна).
+func _roll_traits() -> Array:
+	if not traits_enabled:
+		return []
+	var keys: Array = Defs.TRAITS.keys()
+	keys.shuffle()
+	var roll := rng.randf()
+	var n := 0 if roll < 0.15 else (1 if roll < 0.75 else 2)
+	return keys.slice(0, n)
+
+## Ребёнку — каждая черта родителя с шансом 50%, не больше двух.
+func _inherit_traits(a: Dictionary, b: Dictionary) -> Array:
+	var out := []
+	for t in a.get("traits", []) + b.get("traits", []):
+		if not t in out and rng.randf() < 0.5:
+			out.append(t)
+	if out.is_empty() and rng.randf() < 0.4:
+		out = _roll_traits().slice(0, 1)
+	return out.slice(0, 2)
 
 ## Настроение 0..100 меняет скорость работы от ×0.7 до ×1.2.
 func mood_factor(c: Dictionary) -> float:
@@ -526,6 +553,10 @@ func simulate(delta: float, offline: bool) -> void:
 		stats["max_pop"] = colonists.size()
 	if not stats.has("founded"):
 		stats["founded"] = today()
+	var cheerful_rooms := {}
+	for c in colonists:
+		if has_trait(c, "cheerful") and c.room >= 0:
+			cheerful_rooms[c.room] = true
 	for c in colonists:
 		var mt := mood_target
 		var here := get_room(c.room) if c.room >= 0 else {}
@@ -533,16 +564,23 @@ func simulate(delta: float, offline: bool) -> void:
 			mt -= 20.0
 		if c.room == -1:
 			mt -= 10.0
+		if has_trait(c, "cheerful"):
+			mt += 10.0
+		elif not here.is_empty() and cheerful_rooms.has(here.id):
+			mt += 5.0
+		if has_trait(c, "lazy"):
+			mt = maxf(mt, 65.0)
 		c["mood"] = clampf(float(c.get("mood", 70.0)) + (clampf(mt, 0.0, 100.0) - float(c.get("mood", 70.0))) * minf(1.0, delta / 90.0), 0.0, 100.0)
 		if not here.is_empty() and here.incident <= 0.0 and powered and Defs.ROOMS[here.type].has("train"):
 			_tick_training(c, here, delta, offline)
 		if starving and not offline and mode().hunger:
-			c.health = maxf(health_floor(), c.health - 0.35 * delta * mode().damage)
+			c.health = maxf(health_floor(), c.health - 0.35 * delta * mode().damage * (0.8 if has_trait(c, "tough") else 1.0))
 			c["last_hit"] = "hunger"
 		elif not starving and c.health > 0.0:
-			c.health = minf(100.0, c.health + heal_rate * delta)
+			var hr := heal_rate * (1.5 if has_trait(c, "tough") else 1.0) * (2.0 if offline and has_trait(c, "night_owl") else 1.0)
+			c.health = minf(100.0, c.health + hr * delta)
 		if c.room >= 0:
-			c.xp += delta * xp_mult
+			c.xp += delta * xp_mult * (1.3 if has_trait(c, "genius") else 1.0)
 			if c.xp >= _xp_needed(c):
 				_level_up(c)
 
@@ -641,6 +679,7 @@ func _birth(r: Dictionary, a: Dictionary, b: Dictionary, offline: bool) -> void:
 		kid[k] = clampi(int(round((int(a[k]) + int(b[k])) / 2.0)) + rng.randi_range(-1, 1), 1, 10)
 	kid.name = "%s %s" % [Defs.FIRST_NAMES.pick_random(), a.name.split(" ")[-1]]
 	kid["child"] = true
+	kid["traits"] = _inherit_traits(a, b)
 	kid["grow"] = GROW_TIME
 	kid.room = r.id
 	colonists.append(kid)
@@ -2153,7 +2192,7 @@ func raid_alive() -> Array:
 
 ## Сила колониста в бою: сила, выносливость, оружие (через stat) и здоровье.
 func fight_power(c: Dictionary) -> float:
-	return (stat(c, "str") + stat(c, "end") * 0.5 + 1.0 + weapon_power(c)) * (0.4 + 0.6 * c.health / 100.0)
+	return (stat(c, "str") + stat(c, "end") * 0.5 + 1.0 + weapon_power(c)) * (0.4 + 0.6 * c.health / 100.0) * (0.85 if has_trait(c, "clumsy") else 1.0)
 
 func _tick_raid(delta: float) -> void:
 	if not raider_bodies.is_empty():
@@ -2390,7 +2429,7 @@ func hazard_power(room: Dictionary) -> float:
 	for c in responders(room):
 		# с чудовищем помогает оружие
 		var wp := weapon_power(c) if room.hazard == "creature" else 0.0
-		p += ((stat(c, "str") + stat(c, "tech") + stat(c, "bio")) / 3.0 + wp) * (0.4 + 0.6 * c.health / 100.0)
+		p += ((stat(c, "str") + stat(c, "tech") + stat(c, "bio")) / 3.0 + wp) * (0.4 + 0.6 * c.health / 100.0) * (0.7 if has_trait(c, "clumsy") else 1.0)
 	return p * armory_bonus()
 
 func send_help(colonist: Dictionary, room: Dictionary) -> void:
@@ -2621,6 +2660,8 @@ func item_owner(uid: int) -> Dictionary:
 ## Навык с учётом снаряжения.
 func stat(c: Dictionary, k: String) -> int:
 	var v: int = c.get(k, 1)
+	if k == "luck" and has_trait(c, "lucky"):
+		v += 3
 	for slot in ["suit_item", "tool_item"]:
 		var uid: int = c.get(slot, -1)
 		if uid != -1:
@@ -2639,7 +2680,11 @@ func protection(c: Dictionary) -> float:
 		var it := get_item(uid)
 		if not it.is_empty():
 			p += ARMOR_PROTECTION[it.rarity] + float(item_base(it).get("prot", 0.0))
-	return minf(0.8, p)
+	if has_trait(c, "brave"):
+		p += 0.15
+	if has_trait(c, "tough"):
+		p += 0.1
+	return minf(0.85, p)
 
 const WEAPON_RARITY := {"common": 1.0, "rare": 1.6, "legendary": 2.5}
 

@@ -753,6 +753,22 @@ const T := {
 	"Crafts gear from blueprints and materials, and makes scrap on its own. Needs Tech.": "Membuat perlengkapan dari cetak biru dan bahan, dan membuat rongsok sendiri. Butuh Teknik.",
 	"The mysterious stranger": "Orang asing misterius",
 	"Gotcha!": "Kena!",
+	"Brave": "Pemberani",
+	"Takes less damage in fights.": "Menerima lebih sedikit kerusakan saat bertarung.",
+	"Tough": "Tangguh",
+	"Takes less damage and heals faster.": "Lebih sedikit kerusakan dan lebih cepat pulih.",
+	"Lucky": "Beruntung",
+	"+3 Luck.": "+3 Keberuntungan.",
+	"Genius": "Jenius",
+	"Gains experience 30% faster.": "Mendapat pengalaman 30% lebih cepat.",
+	"Cheerful": "Ceria",
+	"Better mood for themselves and everyone in the same room.": "Suasana hati lebih baik untuk dirinya dan semua di ruangan yang sama.",
+	"Night Owl": "Burung Hantu",
+	"Heals twice as fast while you are away.": "Pulih dua kali lebih cepat saat kamu pergi.",
+	"Lazy": "Malas",
+	"Works 25% slower, but never gets sad.": "Bekerja 25% lebih lambat, tapi tidak pernah sedih.",
+	"Clumsy": "Ceroboh",
+	"Worse at fighting fires, floods and monsters.": "Lebih buruk melawan kebakaran, banjir, dan monster.",
 }
 
 static func make() -> Translation:

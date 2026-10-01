@@ -747,3 +747,19 @@
 746|Planlardan ve malzemelerden ekipman üretir, boşta hurda yapar. Teknik gerekir.
 747|Gizemli yabancı
 748|Yakaladım!
+749|Cesur
+750|Savaşta daha az hasar alır.
+751|Dayanıklı
+752|Daha az hasar alır ve daha hızlı iyileşir.
+753|Şanslı
+754|+3 Şans.
+755|Dahi
+756|%30 daha hızlı deneyim kazanır.
+757|Neşeli
+758|Kendisinin ve aynı odadaki herkesin morali yükselir.
+759|Gece kuşu
+760|Sen yokken iki kat hızlı iyileşir.
+761|Tembel
+762|%25 daha yavaş çalışır ama hiç üzülmez.
+763|Sakar
+764|Yangın, sel ve canavarlarla daha kötü başa çıkar.

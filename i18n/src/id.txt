@@ -747,3 +747,19 @@
 746|Membuat perlengkapan dari cetak biru dan bahan, dan membuat rongsok sendiri. Butuh Teknik.
 747|Orang asing misterius
 748|Kena!
+749|Pemberani
+750|Menerima lebih sedikit kerusakan saat bertarung.
+751|Tangguh
+752|Lebih sedikit kerusakan dan lebih cepat pulih.
+753|Beruntung
+754|+3 Keberuntungan.
+755|Jenius
+756|Mendapat pengalaman 30% lebih cepat.
+757|Ceria
+758|Suasana hati lebih baik untuk dirinya dan semua di ruangan yang sama.
+759|Burung Hantu
+760|Pulih dua kali lebih cepat saat kamu pergi.
+761|Malas
+762|Bekerja 25% lebih lambat, tapi tidak pernah sedih.
+763|Ceroboh
+764|Lebih buruk melawan kebakaran, banjir, dan monster.

@@ -747,5 +747,21 @@
 "{n} found a blueprint: {v}!",
 "Crafts gear from blueprints and materials, and makes scrap on its own. Needs Tech.",
 "The mysterious stranger",
-"Gotcha!"
+"Gotcha!",
+"Brave",
+"Takes less damage in fights.",
+"Tough",
+"Takes less damage and heals faster.",
+"Lucky",
+"+3 Luck.",
+"Genius",
+"Gains experience 30% faster.",
+"Cheerful",
+"Better mood for themselves and everyone in the same room.",
+"Night Owl",
+"Heals twice as fast while you are away.",
+"Lazy",
+"Works 25% slower, but never gets sad.",
+"Clumsy",
+"Worse at fighting fires, floods and monsters."
 ]

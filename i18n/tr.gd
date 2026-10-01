@@ -753,6 +753,22 @@ const T := {
 	"Crafts gear from blueprints and materials, and makes scrap on its own. Needs Tech.": "Planlardan ve malzemelerden ekipman üretir, boşta hurda yapar. Teknik gerekir.",
 	"The mysterious stranger": "Gizemli yabancı",
 	"Gotcha!": "Yakaladım!",
+	"Brave": "Cesur",
+	"Takes less damage in fights.": "Savaşta daha az hasar alır.",
+	"Tough": "Dayanıklı",
+	"Takes less damage and heals faster.": "Daha az hasar alır ve daha hızlı iyileşir.",
+	"Lucky": "Şanslı",
+	"+3 Luck.": "+3 Şans.",
+	"Genius": "Dahi",
+	"Gains experience 30% faster.": "%30 daha hızlı deneyim kazanır.",
+	"Cheerful": "Neşeli",
+	"Better mood for themselves and everyone in the same room.": "Kendisinin ve aynı odadaki herkesin morali yükselir.",
+	"Night Owl": "Gece kuşu",
+	"Heals twice as fast while you are away.": "Sen yokken iki kat hızlı iyileşir.",
+	"Lazy": "Tembel",
+	"Works 25% slower, but never gets sad.": "%25 daha yavaş çalışır ama hiç üzülmez.",
+	"Clumsy": "Sakar",
+	"Worse at fighting fires, floods and monsters.": "Yangın, sel ve canavarlarla daha kötü başa çıkar.",
 }
 
 static func make() -> Translation:

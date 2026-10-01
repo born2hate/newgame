@@ -748,3 +748,19 @@
 746|Fabrica equipo con planos y materiales, y hace chatarra por su cuenta. Necesita Técnica.
 747|El misterioso desconocido
 748|¡Te pillé!
+749|Valiente
+750|Recibe menos daño en combate.
+751|Duro
+752|Recibe menos daño y se cura más rápido.
+753|Suertudo
+754|+3 Suerte.
+755|Genio
+756|Gana experiencia un 30% más rápido.
+757|Alegre
+758|Mejor ánimo para sí y para todos en su sala.
+759|Noctámbulo
+760|Se cura el doble de rápido mientras no estás.
+761|Perezoso
+762|Trabaja un 25% más lento, pero nunca se pone triste.
+763|Torpe
+764|Peor contra incendios, inundaciones y monstruos.

@@ -747,3 +747,19 @@
 746|Fabrica equipamento com projetos e materiais, e faz sucata sozinha. Precisa de Técnica.
 747|O misterioso estranho
 748|Peguei!
+749|Corajoso
+750|Leva menos dano em lutas.
+751|Durão
+752|Leva menos dano e se cura mais rápido.
+753|Sortudo
+754|+3 Sorte.
+755|Gênio
+756|Ganha experiência 30% mais rápido.
+757|Alegre
+758|Melhor humor para si e para todos na mesma sala.
+759|Coruja
+760|Se cura duas vezes mais rápido enquanto você está fora.
+761|Preguiçoso
+762|Trabalha 25% mais devagar, mas nunca fica triste.
+763|Desajeitado
+764|Pior contra incêndios, inundações e monstros.

@@ -747,3 +747,19 @@
 746|Fabrique de l'équipement à partir de plans et de matériaux, et produit de la ferraille. Demande de la Technique.
 747|Le mystérieux inconnu
 748|Attrapé !
+749|Courageux
+750|Subit moins de dégâts en combat.
+751|Costaud
+752|Subit moins de dégâts et guérit plus vite.
+753|Chanceux
+754|+3 Chance.
+755|Génie
+756|Gagne de l'expérience 30% plus vite.
+757|Joyeux
+758|Meilleure humeur pour lui et tous ceux de sa salle.
+759|Oiseau de nuit
+760|Guérit deux fois plus vite pendant ton absence.
+761|Paresseux
+762|Travaille 25% moins vite, mais n'est jamais triste.
+763|Maladroit
+764|Moins doué contre les incendies, inondations et monstres.

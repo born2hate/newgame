@@ -415,6 +415,18 @@ const ITEM_MATERIAL := {
 	"spear": "shell", "harpoon_gun": "copper", "shock_baton": "vent_crystal", "trident": "coral",
 	"plasma_cutter": "vent_crystal", "sonic_blaster": "kraken_ink",
 }
+## Черты характера: у колониста 0–2, дети наследуют. good — положительная.
+const TRAITS := {
+	"brave": {"name": "Brave", "desc": "Takes less damage in fights.", "good": true, "color": Color(1.0, 0.45, 0.35)},
+	"tough": {"name": "Tough", "desc": "Takes less damage and heals faster.", "good": true, "color": Color(0.95, 0.7, 0.4)},
+	"lucky": {"name": "Lucky", "desc": "+3 Luck.", "good": true, "color": Color(0.5, 1.0, 0.5)},
+	"genius": {"name": "Genius", "desc": "Gains experience 30% faster.", "good": true, "color": Color(0.6, 0.8, 1.0)},
+	"cheerful": {"name": "Cheerful", "desc": "Better mood for themselves and everyone in the same room.", "good": true, "color": Color(1.0, 0.85, 0.3)},
+	"night_owl": {"name": "Night Owl", "desc": "Heals twice as fast while you are away.", "good": true, "color": Color(0.7, 0.6, 1.0)},
+	"lazy": {"name": "Lazy", "desc": "Works 25% slower, but never gets sad.", "good": false, "color": Color(0.7, 0.7, 0.75)},
+	"clumsy": {"name": "Clumsy", "desc": "Worse at fighting fires, floods and monsters.", "good": false, "color": Color(0.85, 0.6, 0.5)},
+}
+
 const RARITIES := ["common", "rare", "legendary"]
 const CRAFT_PEARLS := [300, 1200, 4000]
 const CRAFT_MINUTES := [20, 60, 240]

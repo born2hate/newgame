@@ -747,3 +747,19 @@
 746|Stellt Ausrüstung aus Bauplänen und Materialien her und macht nebenbei Schrott. Braucht Technik.
 747|Der geheimnisvolle Fremde
 748|Erwischt!
+749|Mutig
+750|Nimmt im Kampf weniger Schaden.
+751|Zäh
+752|Nimmt weniger Schaden und heilt schneller.
+753|Glückspilz
+754|+3 Glück.
+755|Genie
+756|Sammelt 30% schneller Erfahrung.
+757|Fröhlich
+758|Bessere Laune für sich und alle im selben Raum.
+759|Nachteule
+760|Heilt doppelt so schnell, während du weg bist.
+761|Faul
+762|Arbeitet 25% langsamer, wird aber nie traurig.
+763|Tollpatsch
+764|Schlechter gegen Brände, Fluten und Monster.

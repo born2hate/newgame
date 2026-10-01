@@ -753,6 +753,22 @@ const T := {
 	"Crafts gear from blueprints and materials, and makes scrap on its own. Needs Tech.": "Делает снаряжение по чертежам из материалов, а в свободное время — металлолом. Важна техника.",
 	"The mysterious stranger": "Таинственный незнакомец",
 	"Gotcha!": "Попался!",
+	"Brave": "Храбрец",
+	"Takes less damage in fights.": "Получает меньше урона в боях.",
+	"Tough": "Крепыш",
+	"Takes less damage and heals faster.": "Меньше урона и быстрее лечится.",
+	"Lucky": "Везунчик",
+	"+3 Luck.": "+3 к удаче.",
+	"Genius": "Гений",
+	"Gains experience 30% faster.": "Получает опыт на 30% быстрее.",
+	"Cheerful": "Весельчак",
+	"Better mood for themselves and everyone in the same room.": "Лучше настроение у себя и у всех в том же отсеке.",
+	"Night Owl": "Сова",
+	"Heals twice as fast while you are away.": "Вдвое быстрее лечится, пока тебя нет в игре.",
+	"Lazy": "Лентяй",
+	"Works 25% slower, but never gets sad.": "Работает на 25% медленнее, зато никогда не грустит.",
+	"Clumsy": "Растяпа",
+	"Worse at fighting fires, floods and monsters.": "Хуже тушит пожары, откачивает воду и отбивается от чудовищ.",
 }
 
 static func make() -> Translation:

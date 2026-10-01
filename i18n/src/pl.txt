@@ -747,3 +747,19 @@
 746|Wytwarza sprzęt z planów i materiałów, a sam robi złom. Wymaga Techniki.
 747|Tajemniczy nieznajomy
 748|Mam cię!
+749|Odważny
+750|Otrzymuje mniej obrażeń w walce.
+751|Twardziel
+752|Mniej obrażeń i szybciej się leczy.
+753|Szczęściarz
+754|+3 Szczęścia.
+755|Geniusz
+756|Zdobywa doświadczenie o 30% szybciej.
+757|Pogodny
+758|Lepszy nastrój dla siebie i wszystkich w tym samym pomieszczeniu.
+759|Nocny marek
+760|Leczy się dwa razy szybciej, gdy cię nie ma.
+761|Leniwy
+762|Pracuje o 25% wolniej, ale nigdy się nie smuci.
+763|Niezdara
+764|Gorzej radzi sobie z pożarami, powodziami i potworami.

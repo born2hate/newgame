@@ -753,6 +753,22 @@ const T := {
 	"Crafts gear from blueprints and materials, and makes scrap on its own. Needs Tech.": "Fabrica equipo con planos y materiales, y hace chatarra por su cuenta. Necesita Técnica.",
 	"The mysterious stranger": "El misterioso desconocido",
 	"Gotcha!": "¡Te pillé!",
+	"Brave": "Valiente",
+	"Takes less damage in fights.": "Recibe menos daño en combate.",
+	"Tough": "Duro",
+	"Takes less damage and heals faster.": "Recibe menos daño y se cura más rápido.",
+	"Lucky": "Suertudo",
+	"+3 Luck.": "+3 Suerte.",
+	"Genius": "Genio",
+	"Gains experience 30% faster.": "Gana experiencia un 30% más rápido.",
+	"Cheerful": "Alegre",
+	"Better mood for themselves and everyone in the same room.": "Mejor ánimo para sí y para todos en su sala.",
+	"Night Owl": "Noctámbulo",
+	"Heals twice as fast while you are away.": "Se cura el doble de rápido mientras no estás.",
+	"Lazy": "Perezoso",
+	"Works 25% slower, but never gets sad.": "Trabaja un 25% más lento, pero nunca se pone triste.",
+	"Clumsy": "Torpe",
+	"Worse at fighting fires, floods and monsters.": "Peor contra incendios, inundaciones y monstruos.",
 }
 
 static func make() -> Translation:
