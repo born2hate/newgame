@@ -51,6 +51,10 @@ func _initialize() -> void:
 	for r in g.rooms:
 		have[r.type] = have.get(r.type, 0) + 1
 	print("rooms: ", have)
+	var lv := {}
+	for r in g.rooms:
+		lv[r.level] = lv.get(r.level, 0) + 1
+	print("room levels: ", lv)
 	print("pearl sources: ", src)
 	print("pop sources: ", popsrc, " births ", g.stats.get("birth", 0))
 	quit()
@@ -235,7 +239,7 @@ func _build() -> void:
 	# иначе улучшаем самое дешёвое
 	var cheapest := {}
 	for r in g.rooms:
-		if r.level < Defs.MAX_LEVEL and Defs.ROOMS[r.type].get("buildable", false) and r.type != "elevator":
+		if r.level < Defs.MAX_LEVEL and Defs.ROOMS[r.type].get("buildable", false) and r.type != "elevator" and g.colony_level >= int(Defs.LEVEL_GATE.get(r.level + 1, 0)):
 			if cheapest.is_empty() or g.upgrade_cost(r) < g.upgrade_cost(cheapest):
 				cheapest = r
 	if not cheapest.is_empty() and g.pearls >= g.upgrade_cost(cheapest):

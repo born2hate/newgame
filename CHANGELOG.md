@@ -9,8 +9,10 @@ APK builds live in [`releases/`](releases/).
 - **New sounds**: hits on bosses, boss roar, raid horn, rising notes while combo collecting, coins flying to the top bar, a lullaby for a newborn, repair clinks.
 - **Tense music** fades in during pirate raids and boss fights.
 - Hand-drawn art for the 6 **pets** and all 17 **research** icons.
+- **Room levels 4 and 5** (need colony level 10 / 16). Upgrade prices grow steeply: ×1.5, ×4, ×12, ×30 of the room's base cost.
 ### Changed
 - **Shorter tutorial**: 6 hands-on steps instead of 11 — collect, build, place, drag, done.
+- **Pearl economy fixed**: no more bonus pearls from every collection; Pearl Farms have a longer cycle and a strong crew speeds them up at most ×1.5; depth and Aquarium bonuses for pearls are smaller. Late-game pearl income dropped about 4×.
 - Slower population growth: at most 1 child growing at a time (up to 3 at high colony level), babies take longer; the Radio Room attracts people more slowly.
 ### Fixed
 - Tapping a ready room where a colonist stands now collects instead of opening the colonist card.

@@ -4,7 +4,11 @@ extends RefCounted
 
 const GRID_COLS := 14
 const MAX_DEPTH := 14
-const MAX_LEVEL := 3
+const MAX_LEVEL := 5
+## Уровень колонии, с которого можно улучшать отсеки до 4 и 5 уровня.
+const LEVEL_GATE := {4: 10, 5: 16}
+## Множитель цены улучшения: 1→2, 2→3, 3→4, 4→5 (от базовой цены отсека).
+const UPGRADE_MULT := [1.5, 4.0, 12.0, 30.0]
 
 const RESOURCES := {
 	"energy": {"name": "Energy", "short": "E", "color": Color(1.0, 0.82, 0.3)},
@@ -75,7 +79,7 @@ const ROOMS := {
 	},
 	"pearl": {
 		"name": "Pearl Farm", "width": 2, "cost": 250, "buildable": true, "slots": 2,
-		"produces": "pearls", "stat": "bio", "amount": 25.0, "cycle": 45.0,
+		"produces": "pearls", "stat": "bio", "amount": 40.0, "cycle": 120.0,
 		"energy": 0.2, "color": Color(1.0, 0.6, 0.9), "icon": "◉", "unlock_pop": 10,
 		"desc": "Grows pearls, the colony currency.",
 	},
@@ -140,8 +144,8 @@ const ROOMS := {
 	},
 	"aquarium": {
 		"name": "Aquarium", "width": 2, "cost": 600, "buildable": true, "slots": 0,
-		"mood": 8, "pearl_bonus": 0.1, "energy": 0.1, "color": Color(0.3, 0.9, 0.9), "icon": "✦",
-		"unlock_pop": 30, "desc": "Beautiful fish: better mood for all and +10% pearls per level.",
+		"mood": 8, "pearl_bonus": 0.05, "energy": 0.1, "color": Color(0.3, 0.9, 0.9), "icon": "✦",
+		"unlock_pop": 30, "desc": "Beautiful fish: better mood for all and +5% pearls per level.",
 	},
 	"turbine": {
 		"name": "Current Turbine", "width": 2, "cost": 700, "buildable": true, "slots": 0,
@@ -456,4 +460,4 @@ static func room_slots(type: String, level: int) -> int:
 	return base + level - 1
 
 static func upgrade_cost(type: String, level: int) -> int:
-	return int(ROOMS[type]["cost"] * (level + 0.5) * 1.5)
+	return int(ROOMS[type]["cost"] * UPGRADE_MULT[clampi(level - 1, 0, UPGRADE_MULT.size() - 1)])

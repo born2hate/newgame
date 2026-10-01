@@ -680,3 +680,5 @@
 679|Una cassa di rifornimenti gratuita ti aspetta nel negozio.
 680|La tua ricompensa giornaliera è pronta, supervisore!
 681|La colonia sente la tua mancanza, supervisore. Quaggiù si mette male!
+682|Serve livello colonia %d
+683|Pesci bellissimi: umore migliore per tutti e +5% di perle per livello.

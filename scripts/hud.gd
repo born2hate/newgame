@@ -1046,10 +1046,13 @@ func _open_room(id: int) -> void:
 	actions.add_theme_constant_override("separation", 10)
 	if r.level < Defs.MAX_LEVEL and (def.get("buildable", false) or def.get("upgradable", false)):
 		var cost := Game.upgrade_cost(r)
+		var gate: int = int(Defs.LEVEL_GATE.get(r.level + 1, 0))
 		var up := _button(tr("Upgrade ◉%d") % cost, func():
 			Game.upgrade(r)
 			_open_room(id), 72)
-		up.disabled = Game.pearls < cost
+		up.disabled = Game.pearls < cost or Game.colony_level < gate
+		if Game.colony_level < gate:
+			up.text = tr("Needs colony level %d") % gate
 		up.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		actions.add_child(up)
 	if def.has("produces"):

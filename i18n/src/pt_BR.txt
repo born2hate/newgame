@@ -680,3 +680,5 @@
 679|Um baú de suprimentos grátis espera na loja.
 680|Sua recompensa diária está pronta, supervisor!
 681|A colônia sente sua falta, supervisor. As coisas estão complicadas aqui embaixo!
+682|Requer nível de colônia %d
+683|Peixes lindos: mais ânimo para todos e +5% de pérolas por nível.

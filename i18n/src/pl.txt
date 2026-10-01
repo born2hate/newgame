@@ -680,3 +680,5 @@
 679|W sklepie czeka darmowa skrzynia zaopatrzenia.
 680|Twoja nagroda dzienna czeka, nadzorco!
 681|Kolonia tęskni, nadzorco. Na dole robi się nieciekawie!
+682|Wymaga poziomu kolonii %d
+683|Piękne ryby: lepszy nastrój dla wszystkich i +5% pereł na poziom.

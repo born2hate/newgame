@@ -680,3 +680,5 @@
 679|Une caisse de ravitaillement gratuite t'attend dans la boutique.
 680|Ta récompense quotidienne est prête, superviseur !
 681|La colonie s'ennuie de toi, superviseur. Ça se complique en bas !
+682|Nécessite le niveau de colonie %d
+683|De beaux poissons : meilleur moral pour tous et +5% de perles par niveau.

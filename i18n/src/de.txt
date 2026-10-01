@@ -680,3 +680,5 @@
 679|Eine Gratis-Vorratskiste wartet im Shop.
 680|Deine tägliche Belohnung ist bereit, Aufseher!
 681|Die Kolonie vermisst dich, Aufseher. Hier unten wird es ungemütlich!
+682|Benötigt Kolonie-Stufe %d
+683|Schöne Fische: bessere Laune für alle und +5% Perlen pro Stufe.

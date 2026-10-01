@@ -680,3 +680,5 @@
 679|Mağazada ücretsiz bir erzak sandığı bekliyor.
 680|Günlük ödülün hazır, gözetmen!
 681|Koloni seni özledi, gözetmen. Aşağıda işler karışıyor!
+682|Koloni seviyesi %d gerekir
+683|Güzel balıklar: herkese daha iyi moral ve seviye başına +%5 inci.

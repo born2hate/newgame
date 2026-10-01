@@ -680,3 +680,5 @@
 679|Peti perbekalan gratis menunggu di toko.
 680|Hadiah harianmu siap, pengawas!
 681|Koloni merindukanmu, pengawas. Keadaan di bawah mulai sulit!
+682|Butuh level koloni %d
+683|Ikan cantik: suasana hati lebih baik untuk semua dan +5% mutiara per level.

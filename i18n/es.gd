@@ -686,6 +686,8 @@ const T := {
 	"A free Supply Crate is waiting in the shop.": "Un cofre de suministros gratis te espera en la tienda.",
 	"Your daily reward is ready, Overseer!": "¡Tu recompensa diaria está lista, supervisor!",
 	"The colony misses you, Overseer. Things are getting rough down here!": "La colonia te echa de menos, supervisor. ¡Las cosas se complican aquí abajo!",
+	"Needs colony level %d": "Requiere nivel de colonia %d",
+	"Beautiful fish: better mood for all and +5% pearls per level.": "Peces preciosos: mejor ánimo para todos y +5% de perlas por nivel.",
 }
 
 static func make() -> Translation:

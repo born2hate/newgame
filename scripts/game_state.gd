@@ -19,8 +19,8 @@ const TRAIN_TIME := 1800.0
 const NATURAL_POP := 8
 const MAX_POP := 100
 ## Дети: сколько секунд «ухаживания» в жилом отсеке (при силе обаяния 10) и сколько растёт ребёнок.
-const BREED_TIME := 28800.0
-const GROW_TIME := 21600.0
+const BREED_TIME := 43200.0
+const GROW_TIME := 28800.0
 ## Комбо-сбор: окно между сборами и множитель.
 const COMBO_WINDOW := 2.5
 var combo := 0
@@ -415,13 +415,15 @@ func cycle_time(room: Dictionary) -> float:
 		return INF
 	# убывающая отдача: вдвое сильнее команда — примерно в 1.5 раза быстрее
 	# и потолок ×3 — иначе прокачанные отсеки печатают ресурсы без меры
-	var t: float = def.cycle * PACE / minf(3.0, pow(power / 5.0, 0.6))
+	# жемчуг — валюта: сильная команда ускоряет ферму не больше чем в 1.5 раза
+	var cap := 1.5 if def.get("produces", "") == "pearls" else 3.0
+	var t: float = def.cycle * PACE / minf(cap, pow(power / 5.0, 0.6))
 	return t * (2.0 if room.get("damaged", false) else 1.0)
 
 func production_amount(room: Dictionary) -> float:
 	var def: Dictionary = Defs.ROOMS[room.type]
 	var res: String = def.get("produces", "")
-	var m: float = 1.0 + depth_zone(room.row).bonus
+	var m: float = 1.0 + depth_zone(room.row).bonus * (0.4 if res == "pearls" else 1.0)
 	match res:
 		"energy": m *= 1.2 if has_research("efficient_reactors") else 1.0
 		"food":
@@ -437,7 +439,7 @@ func production_amount(room: Dictionary) -> float:
 		return 1.0
 	if res == "pearls":
 		# жемчуг — валюта: уровни и объединение дают меньше, чем у ресурсов
-		return def.amount * (1.0 + 0.3 * (room.level - 1)) * (1.0 + 0.7 * (room.size - 1)) * m
+		return def.amount * (1.0 + 0.25 * (room.level - 1)) * (1.0 + 0.6 * (room.size - 1)) * m
 	return def.amount * (1.0 + 0.6 * (room.level - 1)) * room.size * m
 
 func rush_chance(room: Dictionary) -> float:
@@ -606,7 +608,7 @@ func _tick_family(delta: float, offline: bool) -> void:
 			can_breed = kids < max_children()
 
 func max_children() -> int:
-	return mini(3, 1 + colony_level / 8)
+	return mini(2, 1 + colony_level / 12)
 
 func _birth(r: Dictionary, a: Dictionary, b: Dictionary, offline: bool) -> void:
 	var kid := _make_colonist()
@@ -728,6 +730,10 @@ func upgrade_cost(room: Dictionary) -> int:
 func upgrade(room: Dictionary) -> void:
 	if room.level >= Defs.MAX_LEVEL:
 		return
+	if colony_level < int(Defs.LEVEL_GATE.get(room.level + 1, 0)):
+		message.emit(tr("Needs colony level %d") % int(Defs.LEVEL_GATE[room.level + 1]))
+		event.emit("error")
+		return
 	var cost := upgrade_cost(room)
 	if pearls < cost:
 		message.emit(tr("Not enough pearls"))
@@ -769,8 +775,6 @@ func collect(room: Dictionary, silent := false, combo_ok := true) -> void:
 		science += int(amount)
 	else:
 		resources[res] = minf(storage_cap(), resources[res] + amount)
-	# немного жемчуга за сбор только с улучшенных отсеков
-	pearls += room.level - 1
 	room.ready = false
 	room.progress = 0.0
 	var zone := depth_zone(room.row)
