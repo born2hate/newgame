@@ -828,6 +828,18 @@ const AD_DAILY_LIMIT := 12
 var ads_day := -1
 var ads_count := 0
 
+var pearl_buys := {}
+var pearl_buys_day := -1
+
+func pearl_buys_today(id: String) -> int:
+	return int(pearl_buys.get(id, 0)) if pearl_buys_day == today() else 0
+
+func note_pearl_buy(id: String) -> void:
+	if pearl_buys_day != today():
+		pearl_buys_day = today()
+		pearl_buys = {}
+	pearl_buys[id] = int(pearl_buys.get(id, 0)) + 1
+
 func ads_left() -> int:
 	if ads_day != today():
 		return AD_DAILY_LIMIT
@@ -2207,7 +2219,7 @@ func save_game() -> void:
 			"weekly_progress": weekly_progress, "weekly_claimed": weekly_claimed, "trader": trader,
 			"tutorial_done": tutorial_done, "difficulty": difficulty, "mode_chosen": mode_chosen,
 			"fallen": fallen, "colony_level": colony_level, "colony_xp": colony_xp,
-			"ads_day": ads_day, "ads_count": ads_count,
+			"ads_day": ads_day, "ads_count": ads_count, "pearl_buys": pearl_buys, "pearl_buys_day": pearl_buys_day,
 		},
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -2232,6 +2244,8 @@ func load_game() -> bool:
 	colony_xp = int(data.get("meta", {}).get("colony_xp", 0))
 	ads_day = int(data.get("meta", {}).get("ads_day", -1))
 	ads_count = int(data.get("meta", {}).get("ads_count", 0))
+	pearl_buys = data.get("meta", {}).get("pearl_buys", {})
+	pearl_buys_day = int(data.get("meta", {}).get("pearl_buys_day", -1))
 	# налёт не сохраняется: после перезапуска пиратов уже нет
 	raid = {}
 	for r in rooms:

@@ -575,3 +575,5 @@
 574|Nadaje do ocalałych: główny sposób na nowych kolonistów, gdy kolonia rośnie. Przyciąga też kupców. Wymaga Uroku.
 575|+4 miejsca na poziom. Umieść tu dwoje kolonistów, a mogą mieć dziecko. Urok pomaga.
 576|Gdy grasz, pomieszczenia energii, tlenu i jedzenia same zbierają połowę produkcji.
+577|Wydaj perły
+578|Cena rośnie z każdym dzisiejszym zakupem

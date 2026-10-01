@@ -575,3 +575,5 @@
 574|Menyiarkan ke para penyintas: cara utama mendapat kolonis baru saat koloni tumbuh. Juga menarik pedagang. Butuh Pesona.
 575|+4 kapasitas per level. Taruh dua kolonis di sini, mereka bisa punya anak. Pesona membantu.
 576|Selama kamu bermain, ruangan energi, oksigen, dan makanan mengumpulkan setengah hasilnya sendiri.
+577|Belanjakan mutiara
+578|Harga naik setiap pembelian hari ini

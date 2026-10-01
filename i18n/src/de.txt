@@ -575,3 +575,5 @@
 574|Sendet an Überlebende: der wichtigste Weg zu neuen Kolonisten, sobald die Kolonie wächst. Lockt auch Händler an. Braucht Charme.
 575|+4 Kolonistenplätze pro Stufe. Setze zwei Kolonisten hierher, dann bekommen sie vielleicht ein Kind. Charme hilft.
 576|Während du spielst, sammeln Energie-, Sauerstoff- und Nahrungsräume die Hälfte selbst ein.
+577|Perlen ausgeben
+578|Der Preis steigt mit jedem Kauf heute

@@ -575,3 +575,5 @@
 574|Hayatta kalanlara yayın yapar: koloni büyüyünce yeni sakin bulmanın ana yolu. Tüccarları da çeker. Karizma gerekir.
 575|Seviye başına +4 kapasite. Buraya iki sakin koyarsan çocukları olabilir. Karizma yardımcı olur.
 576|Sen oynarken enerji, oksijen ve yiyecek odaları üretimin yarısını kendileri toplar.
+577|İnci harca
+578|Bugünkü her alımda fiyat artar

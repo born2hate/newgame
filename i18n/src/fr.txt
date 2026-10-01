@@ -575,3 +575,5 @@
 574|Émet pour les survivants : le moyen principal d'obtenir des colons quand la colonie grandit. Attire aussi les marchands. Requiert Charme.
 575|+4 places par niveau. Mets deux colons ici et ils pourraient avoir un enfant. Le Charme aide.
 576|Pendant que tu joues, les salles d'énergie, d'oxygène et de nourriture récoltent la moitié toutes seules.
+577|Dépenser des perles
+578|Le prix augmente à chaque achat aujourd'hui

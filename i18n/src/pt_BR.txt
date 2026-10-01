@@ -575,3 +575,5 @@
 574|Transmite para sobreviventes: o principal jeito de conseguir colonos quando a colônia cresce. Também atrai comerciantes. Precisa de Carisma.
 575|+4 de capacidade por nível. Coloque dois colonos aqui e eles podem ter um filho. Carisma ajuda.
 576|Enquanto você joga, salas de energia, oxigênio e comida coletam metade sozinhas.
+577|Gastar pérolas
+578|O preço sobe a cada compra de hoje

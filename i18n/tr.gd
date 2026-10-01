@@ -581,6 +581,8 @@ const T := {
 	"Broadcasts to survivors: the main way to get new colonists once the colony grows. Also attracts traders. Needs Charm.": "Hayatta kalanlara yayın yapar: koloni büyüyünce yeni sakin bulmanın ana yolu. Tüccarları da çeker. Karizma gerekir.",
 	"+4 colonist capacity per level. Put two colonists here and they may have a child. Charm helps.": "Seviye başına +4 kapasite. Buraya iki sakin koyarsan çocukları olabilir. Karizma yardımcı olur.",
 	"While you play, energy, oxygen and food rooms collect half their output by themselves.": "Sen oynarken enerji, oksijen ve yiyecek odaları üretimin yarısını kendileri toplar.",
+	"Spend pearls": "İnci harca",
+	"Price grows with each purchase today": "Bugünkü her alımda fiyat artar",
 }
 
 static func make() -> Translation:

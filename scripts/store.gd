@@ -79,6 +79,26 @@ func _deliver(id: String) -> void:
 	Game.save_game()
 	purchase_finished.emit(id, true)
 
+## Ящики за жемчуг — дорого, и каждая покупка за день поднимает цену на 50%.
+const PEARL_ITEMS := [
+	{"id": "pcrate_common", "title": "Supply Crate", "cost": 4000, "reward": {"crates": {"common": 1}}},
+	{"id": "pcrate_silver", "title": "Silver Crate", "cost": 12000, "reward": {"crates": {"silver": 1}}},
+]
+
+func pearl_price(item: Dictionary) -> int:
+	return int(item.cost * (1.0 + 0.5 * Game.pearl_buys_today(item.id)))
+
+func buy_with_pearls(id: String) -> void:
+	for item in PEARL_ITEMS:
+		if item.id == id:
+			var price := pearl_price(item)
+			if Game.pearls < price:
+				return
+			Game.pearls -= price
+			Game.note_pearl_buy(id)
+			Game.grant(item.reward, tr(item.title))
+			Game.save_game()
+
 func buy_with_crystals(id: String) -> void:
 	for item in CRYSTAL_ITEMS:
 		if item.id == id and Game.spend_crystals(item.cost):

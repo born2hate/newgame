@@ -581,6 +581,8 @@ const T := {
 	"Broadcasts to survivors: the main way to get new colonists once the colony grows. Also attracts traders. Needs Charm.": "Menyiarkan ke para penyintas: cara utama mendapat kolonis baru saat koloni tumbuh. Juga menarik pedagang. Butuh Pesona.",
 	"+4 colonist capacity per level. Put two colonists here and they may have a child. Charm helps.": "+4 kapasitas per level. Taruh dua kolonis di sini, mereka bisa punya anak. Pesona membantu.",
 	"While you play, energy, oxygen and food rooms collect half their output by themselves.": "Selama kamu bermain, ruangan energi, oksigen, dan makanan mengumpulkan setengah hasilnya sendiri.",
+	"Spend pearls": "Belanjakan mutiara",
+	"Price grows with each purchase today": "Harga naik setiap pembelian hari ini",
 }
 
 static func make() -> Translation:

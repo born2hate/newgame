@@ -345,6 +345,14 @@ func _dev_screenshot() -> void:
 					Game.collect(r)
 					await get_tree().create_timer(0.15).timeout
 			await get_tree().create_timer(0.3).timeout
+		"persp":
+			camera.position = Vector2(300, -150)
+			camera.zoom = Vector2(1.6, 1.6)
+			await get_tree().create_timer(0.3).timeout
+		"persp2":
+			camera.position = Vector2(900, 500)
+			camera.zoom = Vector2(1.6, 1.6)
+			await get_tree().create_timer(0.3).timeout
 		"expedition_ru":
 			Audio.set_language("ru")
 			var d2 := Game._add_room("dock", 3, 1)

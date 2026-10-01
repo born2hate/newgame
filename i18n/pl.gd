@@ -581,6 +581,8 @@ const T := {
 	"Broadcasts to survivors: the main way to get new colonists once the colony grows. Also attracts traders. Needs Charm.": "Nadaje do ocalałych: główny sposób na nowych kolonistów, gdy kolonia rośnie. Przyciąga też kupców. Wymaga Uroku.",
 	"+4 colonist capacity per level. Put two colonists here and they may have a child. Charm helps.": "+4 miejsca na poziom. Umieść tu dwoje kolonistów, a mogą mieć dziecko. Urok pomaga.",
 	"While you play, energy, oxygen and food rooms collect half their output by themselves.": "Gdy grasz, pomieszczenia energii, tlenu i jedzenia same zbierają połowę produkcji.",
+	"Spend pearls": "Wydaj perły",
+	"Price grows with each purchase today": "Cena rośnie z każdym dzisiejszym zakupem",
 }
 
 static func make() -> Translation:

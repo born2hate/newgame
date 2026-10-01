@@ -895,16 +895,18 @@ static func _short_time(sec: float) -> String:
 	return "%d:%02d" % [s / 60, s % 60]
 
 ## Задняя стена отсека: чуть меньше рамки и сдвинута в сторону от центра экрана.
-const DEPTH := 0.10          # глубина комнаты: видны пол, потолок и стены
-const DEPTH_SHIFT := 0.0     # без параллакса: камера не «крутит» комнаты
+const DEPTH := 0.16          # глубина комнаты: видны пол, потолок и стены
+const DEPTH_SHIFT := 0.05    # перспектива как в Fallout: задняя стена смещается к центру экрана
 
+## Задняя стена отсека. Камера выше отсека — стена уезжает вверх: потолка не видно, пола больше;
+## камера левее — видна правая стена, и наоборот.
 func _diorama_back(inner: Rect2) -> Rect2:
+	var m := Vector2(inner.size.x * DEPTH * 0.5, inner.size.y * DEPTH * 0.7)
 	var cam := camera.get_screen_center_position() if camera else inner.get_center()
-	var off := (inner.get_center() - cam) * DEPTH_SHIFT
-	off.x = clampf(off.x, -inner.size.x * 0.12, inner.size.x * 0.12)
-	off.y = clampf(off.y, -inner.size.y * 0.14, inner.size.y * 0.14)
-	var shrink := Vector2(inner.size.x * DEPTH, inner.size.y * DEPTH * 1.4)
-	return Rect2(inner.position + shrink / 2.0 - off, inner.size - shrink)
+	var off := (cam - inner.get_center()) * DEPTH_SHIFT
+	off.x = clampf(off.x, -m.x, m.x)
+	off.y = clampf(off.y, -m.y, m.y)
+	return Rect2(inner.position + m + off, inner.size - m * 2.0)
 
 func _draw_diorama_walls(inner: Rect2, back: Rect2, col: Color, light: float) -> void:
 	var a := inner.position

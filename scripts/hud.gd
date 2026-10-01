@@ -1726,6 +1726,26 @@ func _open_shop() -> void:
 		cb.custom_minimum_size.x = 140
 		row.add_child(cb)
 
+	_section(tr("Spend pearls"))
+	for item in Store.PEARL_ITEMS:
+		var prow := _card(Color(0.16, 0.08, 0.16, 0.9), Color(1.0, 0.7, 0.95, 0.4))
+		prow.add_child(_crate_icon(item.reward.crates.keys()[0], 64))
+		var pv := VBoxContainer.new()
+		pv.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		pv.add_child(_label(tr(item.title), 22))
+		var note := _label(tr("Price grows with each purchase today"), 15, Color(0.85, 0.75, 0.85))
+		note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		pv.add_child(note)
+		prow.add_child(pv)
+		var price := Store.pearl_price(item)
+		var pb := _button("", func():
+			Store.buy_with_pearls(item.id)
+			_open_shop(), 60)
+		set_cost_text(pb, "◉ %d" % price)
+		pb.disabled = Game.pearls < price
+		pb.custom_minimum_size.x = 170
+		prow.add_child(pb)
+
 	_section(tr("Crate odds"))
 	for type in Defs.CRATES:
 		var parts := []

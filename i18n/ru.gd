@@ -581,6 +581,8 @@ const T := {
 	"Broadcasts to survivors: the main way to get new colonists once the colony grows. Also attracts traders. Needs Charm.": "Вещает для выживших: главный способ найти новых колонистов, когда колония подросла. Приманивает и торговцев. Нужно обаяние.",
 	"+4 colonist capacity per level. Put two colonists here and they may have a child. Charm helps.": "+4 места для колонистов за уровень. Поселите здесь двоих — у них может родиться ребёнок. Обаяние помогает.",
 	"While you play, energy, oxygen and food rooms collect half their output by themselves.": "Пока вы в игре, отсеки энергии, кислорода и еды сами собирают половину добычи.",
+	"Spend pearls": "Потратить жемчуг",
+	"Price grows with each purchase today": "Каждая покупка за день поднимает цену",
 }
 
 static func make() -> Translation:
