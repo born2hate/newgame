@@ -604,6 +604,10 @@ func _draw_boss() -> void:
 		draw_texture_rect(tex, Rect2(-r.size.x / 2.0, -h / 2.0, r.size.x, h), false, tint)
 		draw_set_transform(Vector2.ZERO)
 	var hb := Rect2(r.position.x + 60, r.position.y - 30, r.size.x - 120, 18)
+	# полоска здоровья всегда на экране, даже когда босс уплыл за край
+	var vis := get_canvas_transform().affine_inverse() * get_viewport_rect()
+	var pad := vis.size.x * 0.04
+	hb.position.x = clampf(hb.position.x, vis.position.x + pad, maxf(vis.position.x + pad, vis.end.x - hb.size.x - pad))
 	draw_rect(hb, Color(0, 0, 0, 0.7))
 	draw_rect(Rect2(hb.position, Vector2(hb.size.x * Game.boss.hp / Game.boss.max, hb.size.y)), Color(1.0, 0.2, 0.25))
 	draw_rect(hb, Color(1.0, 0.85, 0.4), false, 2.0)

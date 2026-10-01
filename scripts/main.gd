@@ -508,9 +508,117 @@ func _dev_screenshot() -> void:
 		"zoom":
 			camera.zoom = Vector2(1.5, 1.5)
 			camera.position = Vector2(200, 120)
+		"store_base":
+			_showcase()
+		"store_boss":
+			_showcase()
+			Game.start_boss()
+			Game.boss.hp = Game.boss.max * 0.55
+			camera.position = Vector2(600, -120)
+			await get_tree().create_timer(0.8).timeout
+		"store_raid":
+			_showcase()
+			Game.find_room_of_type("airlock").level = 2
+			Game.start_raid()
+			Game.raid.door = 0.0
+			Game.send_help(Game.colonists[0], Game.find_room_of_type("airlock"))
+			camera.zoom = Vector2(1.0, 1.0)
+			camera.position = Vector2(460, 260)
+			await get_tree().create_timer(1.5).timeout
+		"store_fire":
+			_showcase()
+			Game.start_hazard(Game.find_room_of_type("kitchen"), "fire")
+			Game.start_hazard(Game.find_room_of_type("gym"), "creature")
+			Game.start_hazard(Game.find_room_of_type("oxygen"), "flood")
+			camera.zoom = Vector2(1.0, 1.0)
+			camera.position = Vector2(460, 300)
+			await get_tree().create_timer(0.8).timeout
+		"store_exp":
+			_showcase()
+			var dks := Game.find_room_of_type("dock")
+			Game.launch_expedition(dks.id, 2, [Game.colonists[3].id, Game.colonists[0].id])
+			var es := Game.expedition_at(dks.id)
+			es.start = Game.now() - 2900.0
+			es.end = Game.now() + 700.0
+			view.room_selected.emit(dks.id)
+			await get_tree().create_timer(0.4).timeout
+			(hud.sheet.get_child(0) as ScrollContainer).scroll_vertical = 300
+		"store_gear":
+			_showcase()
+			var cg: Dictionary = Game.colonists[0]
+			Game.equip(cg, Game.add_item("legendary", "trident").uid)
+			Game.equip(cg, Game.add_item("rare", "titan_suit").uid)
+			cg.level = 14
+			hud._open_colonist(cg.id)
+		"store_family":
+			_showcase()
+			var homes := Game.rooms.filter(func(r): return r.type == "living")
+			for h in homes:
+				h.progress = 0.6
+			var kid2 := Game._make_colonist()
+			kid2["child"] = true
+			kid2["grow"] = 15000.0
+			kid2.room = homes[0].id
+			Game.colonists.append(kid2)
+			camera.zoom = Vector2(1.2, 1.2)
+			camera.position = Vector2(560, 250)
+			await get_tree().create_timer(0.6).timeout
+		"store_pets":
+			_showcase()
+			Game.grant_pet("puffer")
+			Game.grant_pet("lion")
+			Game.grant_pet("angel")
+			Game.grant_pet("clownfish")
+			hud.open_pets()
 	await get_tree().create_timer(0.8).timeout
 	get_viewport().get_texture().get_image().save_png(path)
 	get_tree().quit()
+
+## Витрина для скриншотов магазина: развитая колония на 8 этажей.
+func _showcase() -> void:
+	hud._close_sheet()
+	Game.research_done.append("deep_drilling")
+	Game.colony_level = 14
+	Game.pearls = 18450
+	Game.crystals = 320
+	Game.science = 460
+	Game.rooms.clear()
+	Game.colonists.clear()
+	var layout := [
+		["reactor", 1, 0], ["airlock", 3, 0], ["elevator", 5, 0], ["oxygen", 6, 0], ["lab", 8, 0], ["storage", 10, 0],
+		["living", 1, 1], ["kitchen", 3, 1], ["elevator", 5, 1], ["farm", 6, 1], ["pearl", 8, 1], ["dock", 10, 1],
+		["medbay", 1, 2], ["gym", 3, 2], ["elevator", 5, 2], ["living", 6, 2], ["school", 10, 2],
+		["radio", 1, 3], ["workshop", 3, 3], ["elevator", 5, 3], ["reactor", 6, 3], ["medbay", 8, 3], ["armory", 10, 3],
+		["lounge", 1, 4], ["aquarium", 3, 4], ["elevator", 5, 4], ["farm", 6, 4], ["oxygen", 8, 4], ["pearl", 10, 4],
+		["observatory", 1, 5], ["living", 3, 5], ["elevator", 5, 5], ["turbine", 6, 5], ["lab", 8, 5], ["kitchen", 10, 5],
+		["oxygen", 3, 6], ["elevator", 5, 6], ["farm", 6, 6], ["reactor", 8, 6], ["workshop", 10, 6],
+		["living", 3, 7], ["elevator", 5, 7], ["pearl", 6, 7], ["storage", 8, 7],
+	]
+	var lv := [3, 5, 2, 4, 3, 2, 5, 4, 3, 1, 4, 2]
+	for i in layout.size():
+		var r := Game._add_room(layout[i][0], layout[i][1], layout[i][2])
+		if Defs.ROOMS[r.type].get("buildable", false) and r.type != "elevator":
+			r.level = lv[i % lv.size()]
+		r.progress = fmod(i * 0.37, 1.0)
+	Game.get_room(Game.rooms[15].id)["size"] = 2
+	for r in Game.rooms:
+		if r.type == "elevator":
+			continue
+		var n := mini(Game.slots(r), 2) if r.type != "living" else 2
+		for k in n:
+			var c := Game._make_colonist()
+			c.level = 3 + (c.id % 9)
+			Game.colonists.append(c)
+			c.room = r.id
+	for i in Game.rooms.size():
+		if Defs.ROOMS[Game.rooms[i].type].has("produces") and i % 3 == 0:
+			Game.rooms[i].ready = true
+	Game.resources.energy = 92.0
+	Game.resources.oxygen = 88.0
+	Game.resources.food = 95.0
+	Game.changed.emit()
+	camera.zoom = Vector2(0.62, 0.62)
+	camera.position = Vector2(640, 380)
 
 func _process(_delta: float) -> void:
 	var depth := clampf(camera.position.y / (base_view_cell_h() * 12.0), 0.0, 1.0)
