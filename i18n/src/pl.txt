@@ -776,3 +776,8 @@
 775|Ciężko opancerzona łódź. Każdy etap: +10% łupu z wypraw i o 15% krótszy powrót.
 776|Pomnik perły
 777|Pomnik kolonii. Każdy etap: +5% pereł i +10% doświadczenia kolonii.
+778|%s awansował na poziom %d!
+779|Jego bonus jest silniejszy.
+780|Nadciąga sztorm!
+781|Przez 2 godziny: na zewnątrz groźniej, ale łupy dużo bogatsze. Więcej powodzi w bazie.
+782|poz. %d

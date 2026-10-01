@@ -63,6 +63,31 @@ var craft_jobs: Dictionary = {}
 ## Проекты колонии: id → построенных этапов.
 var projects: Dictionary = {}
 
+## Уровни питомцев: опыт идёт, пока питомец с тобой (за каждый сбор). Бонус растёт с уровнем.
+const PET_LEVEL_XP := [0, 60, 200, 500, 1100]
+var pet_xp: Dictionary = {}
+
+func pet_level(id := "") -> int:
+	var pid := id if id != "" else pet
+	var x := int(pet_xp.get(pid, 0))
+	var lv := 1
+	for i in PET_LEVEL_XP.size():
+		if x >= PET_LEVEL_XP[i]:
+			lv = i + 1
+	return lv
+
+## Сила бонуса питомца: ур.1 — ×1, ур.5 — ×2.
+func pet_power() -> float:
+	return 1.0 + 0.25 * (pet_level() - 1)
+
+func _pet_gain(x: int) -> void:
+	if pet == "":
+		return
+	var before := pet_level()
+	pet_xp[pet] = int(pet_xp.get(pet, 0)) + x
+	if pet_level() > before:
+		banner.emit("pet", tr("%s grew to level %d!") % [tr(Defs.PETS[pet].name), pet_level()], tr("Its bonus got stronger."))
+
 func has_pet(id: String) -> bool:
 	return pet == id
 
@@ -141,6 +166,9 @@ func new_game() -> void:
 	blueprints = Defs.START_BLUEPRINTS.duplicate()
 	craft_jobs = {}
 	projects = {}
+	pet_xp = {}
+	storm_until = 0.0
+	storm_next = 0.0
 	owned_products = []
 	boost_until = 0.0
 	free_crate_at = 0.0
@@ -372,7 +400,7 @@ func mood_bonus() -> float:
 	for r in rooms:
 		b += float(Defs.ROOMS[r.type].get("mood", 0)) * r.level * r.size
 	if has_pet("angel"):
-		b += 10.0
+		b += 10.0 * pet_power()
 	b += 5.0 * project_stage("garden_dome")
 	return minf(50.0, b)
 
@@ -413,7 +441,7 @@ func arrival_speed() -> float:
 	return base + per_hour * ARRIVAL_INTERVAL / 3600.0
 
 func armory_bonus() -> float:
-	return (1.0 + type_power("armory") * 0.04) * (1.25 if has_pet("puffer") else 1.0)
+	return (1.0 + type_power("armory") * 0.04) * (1.0 + 0.25 * pet_power() if has_pet("puffer") else 1.0)
 
 ## Шанс удвоить сбор: удача работников отсека.
 func luck_chance(room: Dictionary) -> float:
@@ -496,11 +524,12 @@ func production_amount(room: Dictionary) -> float:
 	return def.amount * (1.0 + 0.6 * (room.level - 1)) * room.size * m
 
 func rush_chance(room: Dictionary) -> float:
-	return clampf(0.8 - room.heat * 0.15 + (0.15 if has_pet("parrot") else 0.0), 0.2, 0.95)
+	return clampf(0.8 - room.heat * 0.15 + (0.15 * pet_power() if has_pet("parrot") else 0.0), 0.2, 0.95)
 
 # ---------------------------------------------------------------- симуляция
 
 func simulate(delta: float, offline: bool) -> void:
+	_tick_storm()
 	_tick_explorations()
 	_tick_crafts()
 	if not offline:
@@ -549,7 +578,7 @@ func simulate(delta: float, offline: bool) -> void:
 	if has_research("medical_ai"):
 		heal_rate *= 3.0
 	if has_pet("tang"):
-		heal_rate *= 1.5
+		heal_rate *= 1.0 + 0.5 * pet_power()
 	var xp_mult := 1.5 if has_research("training_programs") else 1.0
 	for r in rooms:
 		xp_mult += float(Defs.ROOMS[r.type].get("xp_bonus", 0.0)) * r.level * r.size
@@ -597,7 +626,7 @@ func simulate(delta: float, offline: bool) -> void:
 	if not offline and colonists.size() >= 5:
 		incident_timer -= delta
 		if incident_timer <= 0.0:
-			var mult := (1.0 / 0.7 if has_research("reinforced_hull") else 1.0) * (0.6 if weekly_mod() == "tide" else 1.0)
+			var mult := (1.0 / 0.7 if has_research("reinforced_hull") else 1.0) * (0.6 if weekly_mod() == "tide" else 1.0) * (0.66 if storm_active() else 1.0)
 			incident_timer = rng.randf_range(300.0, 540.0) * mult * mode().incidents
 			_spawn_random_incident()
 	if not offline:
@@ -825,7 +854,7 @@ func collect(room: Dictionary, silent := false, combo_ok := true) -> void:
 		return
 	# ×2 за рекламу — только на базовые ресурсы, валюту (жемчуг, наука) не удваивает
 	var boosted: bool = boost_active() and res in ["energy", "oxygen", "food"]
-	var amount := production_amount(room) * (2.0 if boosted else 1.0) * (1.0 + (PET_BONUS if has_pet("clownfish") else 0.0))
+	var amount := production_amount(room) * (2.0 if boosted else 1.0) * (1.0 + (PET_BONUS * pet_power() if has_pet("clownfish") else 0.0))
 	if not silent and combo_ok:
 		# собираешь подряд — растёт множитель (до +50%), на жемчуг не действует
 		var tnow := Time.get_ticks_msec() / 1000.0
@@ -860,6 +889,7 @@ func collect(room: Dictionary, silent := false, combo_ok := true) -> void:
 	collected.emit(room.id, res, int(amount))
 	track("collect_" + res, int(amount))
 	track("collect")
+	_pet_gain(1)
 	changed.emit()
 
 func _collect_gear(room: Dictionary, silent: bool) -> void:
@@ -950,6 +980,33 @@ func claim_craft(room: Dictionary) -> Dictionary:
 	event.emit("upgrade")
 	changed.emit()
 	return it
+
+# ---------------------------------------------------------------- морские бури
+## Раз в 1–2 суток (по реальному времени) на 2 часа приходит буря: снаружи опаснее,
+## зато в экспедициях больше добычи; на базе чаще аварии.
+const STORM_TIME := 7200.0
+const STORM_MIN_POP := 8
+var storm_until := 0.0
+var storm_next := 0.0
+
+func storm_active() -> bool:
+	return now() < storm_until
+
+func storm_left() -> float:
+	return maxf(0.0, storm_until - now())
+
+func _tick_storm() -> void:
+	if colonists.size() < STORM_MIN_POP:
+		return
+	if storm_next <= 0.0:
+		storm_next = now() + rng.randf_range(12.0, 30.0) * 3600.0
+		return
+	if not storm_active() and now() >= storm_next:
+		storm_until = now() + STORM_TIME
+		storm_next = storm_until + rng.randf_range(24.0, 48.0) * 3600.0
+		banner.emit("storm", tr("A sea storm is coming!"), tr("For 2 hours: more danger outside, but much richer loot. More floods at the base."))
+		event.emit("incident")
+		changed.emit()
 
 # ---------------------------------------------------------------- проекты колонии
 
@@ -1501,8 +1558,8 @@ func _explore_event(e: Dictionary, t: float) -> void:
 		return
 	var hours := (t - float(e.start)) / 3600.0
 	# чем дольше снаружи, тем дальше заходят: опаснее, но и добыча богаче
-	var risk := 1.0 + hours * 0.15
-	var richer := 1.0 + hours * 0.25
+	var risk := (1.0 + hours * 0.15) * (1.3 if storm_active() else 1.0)
+	var richer := (1.0 + hours * 0.25) * (1.5 if storm_active() else 1.0)
 	var f := expedition_chance(zone_idx, alive)
 	var who_id: int = alive.pick_random()
 	var c := get_colonist(who_id)
@@ -1531,7 +1588,7 @@ func _explore_event(e: Dictionary, t: float) -> void:
 		var L: Dictionary = zone.loot
 		var got := {}
 		var lr := rng.randf()
-		var mult: float = richer * project_bonus("deep_bathyscaphe", 0.1) * (1.2 if has_pet("lion") else 1.0) * (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * mode().reward
+		var mult: float = richer * project_bonus("deep_bathyscaphe", 0.1) * (1.0 + 0.2 * pet_power() if has_pet("lion") else 1.0) * (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * mode().reward
 		# шансы складываются по очереди: ящик, снаряжение, выживший, кристалл, запасы, иначе жемчуг
 		var p_crate := (0.03 + 0.01 * zone_idx) if L.has("crate") else 0.0
 		var p_item := p_crate + 0.07 + 0.02 * zone_idx
@@ -1695,7 +1752,7 @@ func launch_expedition(dock_id: int, zone_idx: int, ids: Array) -> bool:
 		return false
 	var zone: Dictionary = Defs.ZONES[zone_idx]
 	var f := expedition_chance(zone_idx, ids)
-	var loot_mult: float = project_bonus("deep_bathyscaphe", 0.1) * (1.2 if has_pet("lion") else 1.0) * (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * mode().reward
+	var loot_mult: float = (1.3 if storm_active() else 1.0) * project_bonus("deep_bathyscaphe", 0.1) * (1.0 + 0.2 * pet_power() if has_pet("lion") else 1.0) * (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * mode().reward
 	var names := []
 	for id in ids:
 		names.append(get_colonist(id).name.split(" ")[0])
@@ -2112,7 +2169,7 @@ func start_boss() -> void:
 
 ## Урон от нажатия: растёт с уровнем колонии.
 func boss_tap_damage() -> int:
-	return int((4 + colony_level / 2) * (1.25 if has_pet("puffer") else 1.0))
+	return int((4 + colony_level / 2) * (1.0 + 0.25 * pet_power() if has_pet("puffer") else 1.0))
 
 func hit_boss() -> int:
 	if boss.is_empty():
@@ -3098,7 +3155,7 @@ func save_game() -> void:
 		"colonists": colonists, "next_id": next_id, "arrival_timer": arrival_timer,
 		"meta": {
 			"crystals": crystals, "crates": crates, "premium": premium, "no_ads": no_ads, "pet": pet, "pets_owned": pets_owned, "owned": owned_products,
-			"materials": materials, "blueprints": blueprints, "craft_jobs": craft_jobs, "projects": projects,
+			"materials": materials, "blueprints": blueprints, "craft_jobs": craft_jobs, "projects": projects, "pet_xp": pet_xp, "storm_until": storm_until, "storm_next": storm_next,
 			"boost_until": boost_until, "free_crate_at": free_crate_at,
 			"daily_day": daily_day, "daily_streak": daily_streak,
 			"expeditions": expeditions, "quests": quests, "quest_day": quest_day,
@@ -3168,6 +3225,9 @@ func load_game() -> bool:
 		materials[k] = int(meta.materials[k])
 	blueprints = meta.get("blueprints", Defs.START_BLUEPRINTS.duplicate())
 	craft_jobs = meta.get("craft_jobs", {})
+	pet_xp = meta.get("pet_xp", {})
+	storm_until = float(meta.get("storm_until", 0.0))
+	storm_next = float(meta.get("storm_next", 0.0))
 	projects = {}
 	for k in meta.get("projects", {}):
 		projects[k] = int(meta.projects[k])

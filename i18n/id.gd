@@ -782,6 +782,11 @@ const T := {
 	"A heavy armored sub. Each stage: +10% expedition loot and a 15% shorter way home.": "Kapal selam lapis baja. Tiap tahap: +10% rampasan ekspedisi dan jalan pulang 15% lebih singkat.",
 	"Pearl Monument": "Monumen Mutiara",
 	"A monument to the colony. Each stage: +5% pearls and +10% colony experience.": "Monumen untuk koloni. Tiap tahap: +5% mutiara dan +10% pengalaman koloni.",
+	"%s grew to level %d!": "%s naik ke level %d!",
+	"Its bonus got stronger.": "Bonusnya makin kuat.",
+	"A sea storm is coming!": "Badai laut datang!",
+	"For 2 hours: more danger outside, but much richer loot. More floods at the base.": "Selama 2 jam: di luar lebih berbahaya, tapi rampasan jauh lebih banyak. Lebih sering banjir di markas.",
+	"lvl %d": "lv. %d",
 }
 
 static func make() -> Translation:

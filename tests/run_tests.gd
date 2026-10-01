@@ -571,6 +571,22 @@ func _initialize() -> void:
 	check(ul.arrival_speed() > 0.0, "пустое радио слабо, но вещает")
 	ul.free()
 
+	# морская буря и уровни питомцев
+	var sb = load("res://scripts/game_state.gd").new()
+	sb.new_game()
+	while sb.colonists.size() < 8:
+		sb.colonists.append(sb._make_colonist())
+	sb.storm_next = sb.now() - 1.0
+	sb._tick_storm()
+	check(sb.storm_active() and sb.storm_left() > 7000.0, "буря началась на 2 часа")
+	check(sb.storm_next > sb.storm_until, "следующая буря — позже")
+	sb.grant_pet("clownfish")
+	sb.set_pet("clownfish")
+	check(sb.pet_level() == 1 and sb.pet_power() == 1.0, "питомец 1 уровня")
+	sb._pet_gain(600)
+	check(sb.pet_level() >= 4 and sb.pet_power() > 1.5, "питомец вырос, бонус сильнее")
+	sb.free()
+
 	# проекты колонии
 	var pj = load("res://scripts/game_state.gd").new()
 	pj.new_game()

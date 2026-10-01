@@ -776,3 +776,8 @@
 775|Kapal selam lapis baja. Tiap tahap: +10% rampasan ekspedisi dan jalan pulang 15% lebih singkat.
 776|Monumen Mutiara
 777|Monumen untuk koloni. Tiap tahap: +5% mutiara dan +10% pengalaman koloni.
+778|%s naik ke level %d!
+779|Bonusnya makin kuat.
+780|Badai laut datang!
+781|Selama 2 jam: di luar lebih berbahaya, tapi rampasan jauh lebih banyak. Lebih sering banjir di markas.
+782|lv. %d

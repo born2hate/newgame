@@ -776,3 +776,8 @@
 775|Un sottomarino corazzato. Ogni fase: +10% bottino e ritorno più breve del 15%.
 776|Monumento della perla
 777|Un monumento alla colonia. Ogni fase: +5% perle e +10% esperienza della colonia.
+778|%s è salito al livello %d!
+779|Il suo bonus è più forte.
+780|Sta arrivando una tempesta marina!
+781|Per 2 ore: più pericolo fuori, ma bottino molto più ricco. Più allagamenti alla base.
+782|liv. %d

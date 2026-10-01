@@ -777,3 +777,8 @@
 775|Un submarino blindado. Cada etapa: +10% botín de expedición y vuelta un 15% más corta.
 776|Monumento de perla
 777|Un monumento a la colonia. Cada etapa: +5% perlas y +10% experiencia de colonia.
+778|¡%s subió al nivel %d!
+779|Su bono es más fuerte.
+780|¡Se acerca una tormenta marina!
+781|Durante 2 horas: más peligro fuera, pero mucho más botín. Más inundaciones en la base.
+782|nv. %d

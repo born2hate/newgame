@@ -776,5 +776,10 @@
 "Deep Bathyscaphe",
 "A heavy armored sub. Each stage: +10% expedition loot and a 15% shorter way home.",
 "Pearl Monument",
-"A monument to the colony. Each stage: +5% pearls and +10% colony experience."
+"A monument to the colony. Each stage: +5% pearls and +10% colony experience.",
+"%s grew to level %d!",
+"Its bonus got stronger.",
+"A sea storm is coming!",
+"For 2 hours: more danger outside, but much richer loot. More floods at the base.",
+"lvl %d"
 ]

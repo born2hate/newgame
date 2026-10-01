@@ -776,3 +776,8 @@
 775|Um submarino blindado. Cada etapa: +10% de saque e volta 15% mais curta.
 776|Monumento da pérola
 777|Um monumento à colônia. Cada etapa: +5% pérolas e +10% de experiência da colônia.
+778|%s subiu para o nível %d!
+779|O bônus ficou mais forte.
+780|Uma tempestade marinha se aproxima!
+781|Por 2 horas: mais perigo lá fora, mas saque bem maior. Mais inundações na base.
+782|nv. %d

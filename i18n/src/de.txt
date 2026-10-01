@@ -776,3 +776,8 @@
 775|Ein schwer gepanzertes U-Boot. Jede Stufe: +10% Expeditionsbeute und 15% kürzerer Heimweg.
 776|Perlendenkmal
 777|Ein Denkmal der Kolonie. Jede Stufe: +5% Perlen und +10% Kolonie-Erfahrung.
+778|%s ist auf Stufe %d gewachsen!
+779|Sein Bonus ist stärker geworden.
+780|Ein Seesturm zieht auf!
+781|2 Stunden lang: draußen gefährlicher, aber viel reichere Beute. Mehr Fluten in der Basis.
+782|St. %d

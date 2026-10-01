@@ -776,3 +776,8 @@
 775|Un sous-marin blindé. Chaque étape : +10% de butin d'expédition et retour 15% plus court.
 776|Monument de perle
 777|Un monument à la colonie. Chaque étape : +5% de perles et +10% d'expérience de colonie.
+778|%s passe au niveau %d !
+779|Son bonus est plus fort.
+780|Une tempête marine approche !
+781|Pendant 2 heures : plus de danger dehors, mais un butin bien plus riche. Plus d'inondations à la base.
+782|niv. %d

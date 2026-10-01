@@ -776,3 +776,8 @@
 775|Ağır zırhlı bir denizaltı. Her aşama: +%10 keşif ganimeti ve %15 daha kısa dönüş.
 776|İnci anıtı
 777|Koloniye bir anıt. Her aşama: +%5 inci ve +%10 koloni deneyimi.
+778|%s %d. seviyeye ulaştı!
+779|Bonusu güçlendi.
+780|Bir deniz fırtınası geliyor!
+781|2 saat boyunca: dışarısı daha tehlikeli ama ganimet çok daha zengin. Üste daha çok su baskını.
+782|sv. %d

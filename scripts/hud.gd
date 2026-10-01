@@ -690,6 +690,8 @@ func _refresh_top() -> void:
 	science_label.text = str(Game.science)
 	pop_label.text = "%d/%d" % [Game.colonists.size(), Game.population_cap()]
 	boost_label.text = tr("x2 %s") % _clock(Game.boost_left()) if Game.boost_active() else ""
+	if Game.storm_active():
+		boost_label.text = (boost_label.text + "  " if boost_label.text != "" else "") + "⛈ " + _clock(Game.storm_left())
 	_refresh_expedition_button()
 	if tasks_badge:
 		tasks_badge.visible = Game.quests_ready() > 0 or Game.season_claimable() > 0 or Game.story_ready() or Game.achievements_ready() > 0
@@ -1321,8 +1323,8 @@ func open_pets() -> void:
 		row.add_child(t)
 		var vb := VBoxContainer.new()
 		vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		vb.add_child(_label(tr(d.name) if owned else "???", 21, Color(1.0, 0.9, 0.6) if owned else Color(0.6, 0.65, 0.7)))
-		var dl := _label(tr(d.desc), 16, Color(0.8, 0.9, 1.0))
+		vb.add_child(_label((tr(d.name) + "  · " + tr("lvl %d") % Game.pet_level(id)) if owned else "???", 21, Color(1.0, 0.9, 0.6) if owned else Color(0.6, 0.65, 0.7)))
+		var dl := _label(tr(d.desc) + ("  (×%.2f)" % (1.0 + 0.25 * (Game.pet_level(id) - 1)) if owned and Game.pet_level(id) > 1 else ""), 16, Color(0.8, 0.9, 1.0))
 		dl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		vb.add_child(dl)
 		row.add_child(vb)

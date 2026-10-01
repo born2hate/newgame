@@ -782,6 +782,11 @@ const T := {
 	"A heavy armored sub. Each stage: +10% expedition loot and a 15% shorter way home.": "Ağır zırhlı bir denizaltı. Her aşama: +%10 keşif ganimeti ve %15 daha kısa dönüş.",
 	"Pearl Monument": "İnci anıtı",
 	"A monument to the colony. Each stage: +5% pearls and +10% colony experience.": "Koloniye bir anıt. Her aşama: +%5 inci ve +%10 koloni deneyimi.",
+	"%s grew to level %d!": "%s %d. seviyeye ulaştı!",
+	"Its bonus got stronger.": "Bonusu güçlendi.",
+	"A sea storm is coming!": "Bir deniz fırtınası geliyor!",
+	"For 2 hours: more danger outside, but much richer loot. More floods at the base.": "2 saat boyunca: dışarısı daha tehlikeli ama ganimet çok daha zengin. Üste daha çok su baskını.",
+	"lvl %d": "sv. %d",
 }
 
 static func make() -> Translation:
