@@ -815,3 +815,6 @@
 814|−40% hari ini!
 815|Pembelian tidak selesai.
 816|Video belum siap. Coba lagi sebentar lagi.
+817|×2 pembelian pertama!
+818|Paket Pemula: paling hemat!
+819|150 kristal, 1000 mutiara, ikan badut Nemo, 2 peti perak, dan kolonis langka — di Toko.

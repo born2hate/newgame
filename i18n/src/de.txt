@@ -815,3 +815,6 @@
 814|Heute −40%!
 815|Der Kauf wurde nicht abgeschlossen.
 816|Das Video ist noch nicht bereit. Versuch es gleich noch mal.
+817|×2 beim ersten Kauf!
+818|Starterpaket: das beste Angebot!
+819|150 Kristalle, 1000 Perlen, Clownfisch Nemo, 2 Silberkisten und ein seltener Kolonist — im Shop.

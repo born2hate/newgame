@@ -821,6 +821,9 @@ const T := {
 	"−40% today!": "Bugün −%40!",
 	"Purchase was not completed.": "Satın alma tamamlanmadı.",
 	"The video is not ready yet. Try again in a moment.": "Video henüz hazır değil. Birazdan tekrar dene.",
+	"×2 first purchase!": "İlk alımda ×2!",
+	"Starter Pack: best value!": "Başlangıç paketi: en avantajlısı!",
+	"150 crystals, 1000 pearls, Nemo the clownfish, 2 Silver Crates and a Rare colonist — in the Shop.": "150 kristal, 1000 inci, palyaço balığı Nemo, 2 gümüş sandık ve nadir bir kolonist — mağazada.",
 }
 
 static func make() -> Translation:

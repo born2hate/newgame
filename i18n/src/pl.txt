@@ -815,3 +815,6 @@
 814|Dziś −40%!
 815|Zakup nie został ukończony.
 816|Film nie jest jeszcze gotowy. Spróbuj za chwilę.
+817|×2 przy pierwszym zakupie!
+818|Pakiet startowy: najlepsza oferta!
+819|150 kryształów, 1000 pereł, błazenek Nemo, 2 srebrne skrzynie i rzadki kolonista — w sklepie.

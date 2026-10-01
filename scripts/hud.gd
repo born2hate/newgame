@@ -1904,9 +1904,14 @@ func _open_shop() -> void:
 			var ic := _icon("crystals", 60 + p.pack * 6)
 			ic.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 			vb.add_child(ic)
-		var amt := _label(str(p.reward.crystals), 24, Defs.RESOURCES.crystals.color)
+		var first := Store.is_first_pack(p.id)
+		var amt := _label(str(p.reward.crystals * (2 if first else 1)), 24, Defs.RESOURCES.crystals.color)
 		amt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vb.add_child(amt)
+		if first:
+			var x2 := _label(tr("×2 first purchase!"), 15, Color(1.0, 0.85, 0.35))
+			x2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			vb.add_child(x2)
 		vb.add_child(_button(Store.price_of(p.id), Store.purchase.bind(p.id), 56))
 		grid.add_child(cell)
 

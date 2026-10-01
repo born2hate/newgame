@@ -815,3 +815,6 @@
 814|−40 % aujourd'hui !
 815|L'achat n'a pas abouti.
 816|La vidéo n'est pas encore prête. Réessaie dans un instant.
+817|×2 au premier achat !
+818|Pack de départ : la meilleure affaire !
+819|150 cristaux, 1000 perles, Nemo le poisson-clown, 2 caisses en argent et un colon rare — à la boutique.

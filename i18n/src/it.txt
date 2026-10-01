@@ -815,3 +815,6 @@
 814|−40% oggi!
 815|L'acquisto non è stato completato.
 816|Il video non è ancora pronto. Riprova tra poco.
+817|×2 al primo acquisto!
+818|Pacchetto iniziale: il più conveniente!
+819|150 cristalli, 1000 perle, il pesce pagliaccio Nemo, 2 casse d'argento e un colono raro — nel negozio.

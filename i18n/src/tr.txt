@@ -815,3 +815,6 @@
 814|Bugün −%40!
 815|Satın alma tamamlanmadı.
 816|Video henüz hazır değil. Birazdan tekrar dene.
+817|İlk alımda ×2!
+818|Başlangıç paketi: en avantajlısı!
+819|150 kristal, 1000 inci, palyaço balığı Nemo, 2 gümüş sandık ve nadir bir kolonist — mağazada.

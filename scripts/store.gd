@@ -109,6 +109,9 @@ func _on_product_details(response) -> void:
 		if pid != "" and price != "":
 			store_prices[pid] = price
 
+func is_first_pack(id: String) -> bool:
+	return not id in Game.packs_bought
+
 func price_of(id: String) -> String:
 	return str(store_prices.get(id, product(id).get("price", "")))
 
@@ -193,7 +196,11 @@ func _deliver(id: String) -> void:
 	var p := product(id)
 	if p.get("one_time", false):
 		Game.owned_products.append(id)
-	var reward: Dictionary = p.reward
+	var reward: Dictionary = p.reward.duplicate(true)
+	# первая покупка каждого пакета кристаллов — вдвое больше
+	if p.has("pack") and is_first_pack(id):
+		reward.crystals = int(reward.crystals) * 2
+		Game.packs_bought.append(id)
 	if id == "piggy_bank":
 		reward = {"crystals": Game.break_piggy()}
 	if id.begins_with("offer_"):

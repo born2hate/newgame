@@ -816,3 +816,6 @@
 814|¡−40% hoy!
 815|La compra no se completó.
 816|El vídeo aún no está listo. Inténtalo en un momento.
+817|¡×2 en la primera compra!
+818|¡Pack inicial: la mejor oferta!
+819|150 cristales, 1000 perlas, el pez payaso Nemo, 2 cofres de plata y un colono raro, en la tienda.
