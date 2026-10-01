@@ -149,7 +149,19 @@ func story_goal_text(st: Dictionary) -> String:
 			return tr("Craft %d pieces of gear") % n
 		"expedition_done":
 			return tr("Complete %d expeditions") % n
-	return tr(st.title)
+		"blueprint":
+			return tr("Learn %d new blueprints") % n
+		"raid_won":
+			return tr("Repel %d pirate raids") % n
+		"boss_won":
+			return tr("Defeat %d bosses") % n
+		"birth":
+			return tr("Welcome %d children") % n
+		"stranger":
+			return tr("Catch the stranger %d times") % n
+		"project":
+			return tr("Build %d project stages") % n
+	return tr(st.get("title", ""))
 
 ## Нажатие на плашку: забрать награду или перейти к нужному действию.
 func story_go() -> void:
@@ -248,6 +260,40 @@ func add_story_section() -> void:
 	b.disabled = not Game.story_ready()
 	b.custom_minimum_size.x = 120
 	row.add_child(b)
+
+func add_chains_section() -> void:
+	hud._section(tr("Task chains"))
+	for cd in Defs.CHAINS:
+		var step := Game.chain_step(cd)
+		var cs := Game.chain_state(cd.id)
+		var row: HBoxContainer = hud._card(Color(0.06, 0.12, 0.22, 0.92), Color(0.6, 0.8, 1.0, 0.5))
+		var info := VBoxContainer.new()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info.add_child(hud._label("%s · %d/%d" % [tr(cd.name), mini(int(cs.step) + 1, cd.steps.size()), cd.steps.size()], 21, Color(0.75, 0.9, 1.0)))
+		if step.is_empty():
+			info.add_child(hud._label(tr("Complete!"), 18, Color(0.6, 1.0, 0.6)))
+			row.add_child(info)
+			continue
+		var goal: int = step.goal[1]
+		info.add_child(hud._label(story_goal_text({"goal": step.goal}), 18, Color(0.88, 0.94, 1.0)))
+		var pb := ProgressBar.new()
+		pb.show_percentage = false
+		pb.custom_minimum_size = Vector2(0, 10)
+		pb.max_value = goal
+		pb.value = mini(goal, int(cs.count))
+		info.add_child(pb)
+		var srow := HBoxContainer.new()
+		srow.add_theme_constant_override("separation", 10)
+		srow.add_child(hud._label("%d/%d" % [mini(goal, int(cs.count)), goal], 15, Color(0.75, 0.85, 0.95)))
+		srow.add_child(hud._reward_chips(step.reward, 24, 15))
+		info.add_child(srow)
+		row.add_child(info)
+		var b: Button = hud._button(tr("Claim"), func():
+			Game.claim_chain(cd)
+			hud._open_tasks(), 56)
+		b.disabled = not Game.chain_ready(cd)
+		b.custom_minimum_size.x = 110
+		row.add_child(b)
 
 func add_weekly_section() -> void:
 	var ev := Game.weekly_event()

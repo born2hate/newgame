@@ -694,7 +694,7 @@ func _refresh_top() -> void:
 		boost_label.text = (boost_label.text + "  " if boost_label.text != "" else "") + "⛈ " + _clock(Game.storm_left())
 	_refresh_expedition_button()
 	if tasks_badge:
-		tasks_badge.visible = Game.quests_ready() > 0 or Game.season_claimable() > 0 or Game.story_ready() or Game.achievements_ready() > 0
+		tasks_badge.visible = Game.quests_ready() > 0 or Game.season_claimable() > 0 or Game.story_ready() or Game.achievements_ready() > 0 or Game.chains_ready() > 0
 		tasks_badge.queue_redraw()
 	if shop_badge:
 		shop_badge.visible = Game.daily_available() or Game.free_crate_ready()
@@ -2587,6 +2587,7 @@ func _open_tasks() -> void:
 		pjb.add_child(_badge())
 	sheet_body.add_child(pjb)
 	more.add_story_section()
+	more.add_chains_section()
 	more.add_weekly_section()
 	_section(tr("Daily tasks"))
 	for q in Game.quests:

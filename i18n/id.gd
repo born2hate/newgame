@@ -787,6 +787,17 @@ const T := {
 	"A sea storm is coming!": "Badai laut datang!",
 	"For 2 hours: more danger outside, but much richer loot. More floods at the base.": "Selama 2 jam: di luar lebih berbahaya, tapi rampasan jauh lebih banyak. Lebih sering banjir di markas.",
 	"lvl %d": "lv. %d",
+	"Task chains": "Rantai tugas",
+	"The Lost Diver": "Penyelam yang Hilang",
+	"Engineer's Notebook": "Buku Catatan Insinyur",
+	"Night Watch": "Jaga Malam",
+	"New Blood": "Darah Baru",
+	"Learn %d new blueprints": "Pelajari %d cetak biru baru",
+	"Repel %d pirate raids": "Tangkis %d serangan bajak laut",
+	"Defeat %d bosses": "Kalahkan %d bos",
+	"Welcome %d children": "Sambut %d anak",
+	"Catch the stranger %d times": "Tangkap orang asing %d kali",
+	"Build %d project stages": "Bangun %d tahap proyek",
 }
 
 static func make() -> Translation:

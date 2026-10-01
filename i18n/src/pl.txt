@@ -781,3 +781,14 @@
 780|Nadciąga sztorm!
 781|Przez 2 godziny: na zewnątrz groźniej, ale łupy dużo bogatsze. Więcej powodzi w bazie.
 782|poz. %d
+783|Łańcuchy zadań
+784|Zaginiony nurek
+785|Notatnik inżyniera
+786|Nocna straż
+787|Nowa krew
+788|Poznaj %d nowe plany
+789|Odeprzyj %d ataki piratów
+790|Pokonaj %d bossów
+791|Powitaj %d dzieci
+792|Złap nieznajomego %d razy
+793|Zbuduj %d etapy projektów

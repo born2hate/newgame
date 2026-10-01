@@ -781,3 +781,14 @@
 780|Sta arrivando una tempesta marina!
 781|Per 2 ore: più pericolo fuori, ma bottino molto più ricco. Più allagamenti alla base.
 782|liv. %d
+783|Catene di missioni
+784|Il sommozzatore scomparso
+785|Il taccuino dell'ingegnere
+786|Guardia notturna
+787|Sangue nuovo
+788|Impara %d nuovi progetti
+789|Respingi %d raid pirati
+790|Sconfiggi %d boss
+791|Accogli %d bambini
+792|Prendi lo sconosciuto %d volte
+793|Costruisci %d fasi di progetti

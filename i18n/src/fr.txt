@@ -781,3 +781,14 @@
 780|Une tempête marine approche !
 781|Pendant 2 heures : plus de danger dehors, mais un butin bien plus riche. Plus d'inondations à la base.
 782|niv. %d
+783|Chaînes de quêtes
+784|Le plongeur disparu
+785|Le carnet de l'ingénieur
+786|Garde de nuit
+787|Sang neuf
+788|Apprends %d nouveaux plans
+789|Repousse %d raids pirates
+790|Vaincs %d boss
+791|Accueille %d enfants
+792|Attrape l'inconnu %d fois
+793|Construis %d étapes de projets

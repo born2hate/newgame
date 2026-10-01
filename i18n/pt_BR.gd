@@ -787,6 +787,17 @@ const T := {
 	"A sea storm is coming!": "Uma tempestade marinha se aproxima!",
 	"For 2 hours: more danger outside, but much richer loot. More floods at the base.": "Por 2 horas: mais perigo lá fora, mas saque bem maior. Mais inundações na base.",
 	"lvl %d": "nv. %d",
+	"Task chains": "Cadeias de tarefas",
+	"The Lost Diver": "O mergulhador perdido",
+	"Engineer's Notebook": "O caderno do engenheiro",
+	"Night Watch": "Vigília noturna",
+	"New Blood": "Sangue novo",
+	"Learn %d new blueprints": "Aprenda %d projetos novos",
+	"Repel %d pirate raids": "Repila %d ataques piratas",
+	"Defeat %d bosses": "Derrote %d chefes",
+	"Welcome %d children": "Receba %d crianças",
+	"Catch the stranger %d times": "Pegue o estranho %d vezes",
+	"Build %d project stages": "Construa %d etapas de projetos",
 }
 
 static func make() -> Translation:

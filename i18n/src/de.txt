@@ -781,3 +781,14 @@
 780|Ein Seesturm zieht auf!
 781|2 Stunden lang: draußen gefährlicher, aber viel reichere Beute. Mehr Fluten in der Basis.
 782|St. %d
+783|Aufgabenketten
+784|Der verschollene Taucher
+785|Das Notizbuch des Ingenieurs
+786|Nachtwache
+787|Neues Blut
+788|Lerne %d neue Baupläne
+789|Wehre %d Piratenüberfälle ab
+790|Besiege %d Bosse
+791|Begrüße %d Kinder
+792|Erwische den Fremden %d Mal
+793|Baue %d Projektstufen

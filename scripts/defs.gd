@@ -438,6 +438,26 @@ const PROJECTS := [
 	{"id": "pearl_monument", "name": "Pearl Monument", "desc": "A monument to the colony. Each stage: +5% pearls and +10% colony experience.",
 		"level": 15, "pearls": 12000, "materials": {"shell": 20, "abyss_pearl": 2}, "color": Color(1.0, 0.75, 0.95)},
 ]
+## Цепочки заданий: небольшие истории из 3 шагов, у каждого шага награда.
+const CHAINS := [
+	{"id": "lost_diver", "name": "The Lost Diver", "steps": [
+		{"goal": ["expedition_reef", 1], "reward": {"pearls": 300}},
+		{"goal": ["expedition_wreck", 1], "reward": {"materials": {"copper": 4}}},
+		{"goal": ["expedition_done", 8], "reward": {"blueprint": "harpoon_gun:rare"}}]},
+	{"id": "engineer", "name": "Engineer's Notebook", "steps": [
+		{"goal": ["craft", 2], "reward": {"materials": {"scrap": 10}}},
+		{"goal": ["blueprint", 2], "reward": {"materials": {"copper": 6, "vent_crystal": 2}}},
+		{"goal": ["craft", 6], "reward": {"blueprint": "plasma_cutter:rare"}}]},
+	{"id": "night_watch", "name": "Night Watch", "steps": [
+		{"goal": ["incident_resolved", 6], "reward": {"pearls": 400}},
+		{"goal": ["raid_won", 2], "reward": {"crates": {"silver": 1}}},
+		{"goal": ["boss_won", 1], "reward": {"crates": {"gold": 1}}}]},
+	{"id": "new_blood", "name": "New Blood", "steps": [
+		{"goal": ["birth", 1], "reward": {"pearls": 500}},
+		{"goal": ["stranger", 3], "reward": {"crystals": 8}},
+		{"goal": ["project", 1], "reward": {"crystals": 15}}]},
+]
+
 const PROJECT_STAGES := 3
 const PROJECT_STAGE_MULT := [1.0, 2.5, 6.0]
 

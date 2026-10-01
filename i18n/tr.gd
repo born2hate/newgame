@@ -787,6 +787,17 @@ const T := {
 	"A sea storm is coming!": "Bir deniz fırtınası geliyor!",
 	"For 2 hours: more danger outside, but much richer loot. More floods at the base.": "2 saat boyunca: dışarısı daha tehlikeli ama ganimet çok daha zengin. Üste daha çok su baskını.",
 	"lvl %d": "sv. %d",
+	"Task chains": "Görev zincirleri",
+	"The Lost Diver": "Kayıp dalgıç",
+	"Engineer's Notebook": "Mühendisin defteri",
+	"Night Watch": "Gece nöbeti",
+	"New Blood": "Yeni kan",
+	"Learn %d new blueprints": "%d yeni plan öğren",
+	"Repel %d pirate raids": "%d korsan baskınını püskürt",
+	"Defeat %d bosses": "%d bosu yen",
+	"Welcome %d children": "%d çocuğu karşıla",
+	"Catch the stranger %d times": "Yabancıyı %d kez yakala",
+	"Build %d project stages": "%d proje aşaması inşa et",
 }
 
 static func make() -> Translation:

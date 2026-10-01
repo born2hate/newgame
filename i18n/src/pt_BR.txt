@@ -781,3 +781,14 @@
 780|Uma tempestade marinha se aproxima!
 781|Por 2 horas: mais perigo lá fora, mas saque bem maior. Mais inundações na base.
 782|nv. %d
+783|Cadeias de tarefas
+784|O mergulhador perdido
+785|O caderno do engenheiro
+786|Vigília noturna
+787|Sangue novo
+788|Aprenda %d projetos novos
+789|Repila %d ataques piratas
+790|Derrote %d chefes
+791|Receba %d crianças
+792|Pegue o estranho %d vezes
+793|Construa %d etapas de projetos

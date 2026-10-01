@@ -782,3 +782,14 @@
 780|¡Se acerca una tormenta marina!
 781|Durante 2 horas: más peligro fuera, pero mucho más botín. Más inundaciones en la base.
 782|nv. %d
+783|Cadenas de tareas
+784|El buzo perdido
+785|El cuaderno del ingeniero
+786|Guardia nocturna
+787|Sangre nueva
+788|Aprende %d planos nuevos
+789|Repele %d asaltos piratas
+790|Derrota a %d jefes
+791|Da la bienvenida a %d niños
+792|Atrapa al desconocido %d veces
+793|Construye %d etapas de proyectos

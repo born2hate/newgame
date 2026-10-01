@@ -571,6 +571,18 @@ func _initialize() -> void:
 	check(ul.arrival_speed() > 0.0, "пустое радио слабо, но вещает")
 	ul.free()
 
+	# цепочки заданий
+	var ch = load("res://scripts/game_state.gd").new()
+	ch.new_game()
+	var cd0: Dictionary = Defs.CHAINS[0]
+	check(not ch.chain_ready(cd0), "цепочка: шаг 1 не выполнен")
+	ch.track("expedition_reef")
+	check(ch.chain_ready(cd0), "цепочка: шаг 1 выполнен")
+	var chp: int = ch.pearls
+	ch.claim_chain(cd0)
+	check(ch.pearls == chp + 300 and int(ch.chain_state(cd0.id).step) == 1, "награда за шаг, следующий шаг")
+	ch.free()
+
 	# морская буря и уровни питомцев
 	var sb = load("res://scripts/game_state.gd").new()
 	sb.new_game()

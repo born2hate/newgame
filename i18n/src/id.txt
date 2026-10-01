@@ -781,3 +781,14 @@
 780|Badai laut datang!
 781|Selama 2 jam: di luar lebih berbahaya, tapi rampasan jauh lebih banyak. Lebih sering banjir di markas.
 782|lv. %d
+783|Rantai tugas
+784|Penyelam yang Hilang
+785|Buku Catatan Insinyur
+786|Jaga Malam
+787|Darah Baru
+788|Pelajari %d cetak biru baru
+789|Tangkis %d serangan bajak laut
+790|Kalahkan %d bos
+791|Sambut %d anak
+792|Tangkap orang asing %d kali
+793|Bangun %d tahap proyek

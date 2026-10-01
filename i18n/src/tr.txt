@@ -781,3 +781,14 @@
 780|Bir deniz fırtınası geliyor!
 781|2 saat boyunca: dışarısı daha tehlikeli ama ganimet çok daha zengin. Üste daha çok su baskını.
 782|sv. %d
+783|Görev zincirleri
+784|Kayıp dalgıç
+785|Mühendisin defteri
+786|Gece nöbeti
+787|Yeni kan
+788|%d yeni plan öğren
+789|%d korsan baskınını püskürt
+790|%d bosu yen
+791|%d çocuğu karşıla
+792|Yabancıyı %d kez yakala
+793|%d proje aşaması inşa et

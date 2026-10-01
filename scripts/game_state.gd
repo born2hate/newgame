@@ -62,6 +62,8 @@ var blueprints: Array = []
 var craft_jobs: Dictionary = {}
 ## Проекты колонии: id → построенных этапов.
 var projects: Dictionary = {}
+## Цепочки заданий: id → {"step": номер шага, "count": прогресс шага}.
+var chains: Dictionary = {}
 
 ## Уровни питомцев: опыт идёт, пока питомец с тобой (за каждый сбор). Бонус растёт с уровнем.
 const PET_LEVEL_XP := [0, 60, 200, 500, 1100]
@@ -167,6 +169,7 @@ func new_game() -> void:
 	craft_jobs = {}
 	projects = {}
 	pet_xp = {}
+	chains = {}
 	storm_until = 0.0
 	storm_next = 0.0
 	owned_products = []
@@ -980,6 +983,30 @@ func claim_craft(room: Dictionary) -> Dictionary:
 	event.emit("upgrade")
 	changed.emit()
 	return it
+
+# ---------------------------------------------------------------- цепочки заданий
+
+func chain_state(id: String) -> Dictionary:
+	return chains.get(id, {"step": 0, "count": 0})
+
+func chain_step(cd: Dictionary) -> Dictionary:
+	var st := int(chain_state(cd.id).step)
+	return cd.steps[st] if st < cd.steps.size() else {}
+
+func chain_ready(cd: Dictionary) -> bool:
+	var step := chain_step(cd)
+	return not step.is_empty() and int(chain_state(cd.id).count) >= int(step.goal[1])
+
+func chains_ready() -> int:
+	return Defs.CHAINS.filter(func(cd): return chain_ready(cd)).size()
+
+func claim_chain(cd: Dictionary) -> void:
+	if not chain_ready(cd):
+		return
+	var step := chain_step(cd)
+	var cs := chain_state(cd.id)
+	chains[cd.id] = {"step": int(cs.step) + 1, "count": 0}
+	grant(step.reward, tr(cd.name))
 
 # ---------------------------------------------------------------- морские бури
 ## Раз в 1–2 суток (по реальному времени) на 2 часа приходит буря: снаружи опаснее,
@@ -3104,6 +3131,11 @@ func track(ev: String, amount := 1) -> void:
 		story_count += amount
 	if weekly_event().goal == ev:
 		weekly_progress += amount
+	for cd in Defs.CHAINS:
+		var cs: Dictionary = chains.get(cd.id, {"step": 0, "count": 0})
+		if int(cs.step) < cd.steps.size() and cd.steps[int(cs.step)].goal[0] == ev:
+			cs.count = int(cs.count) + amount
+			chains[cd.id] = cs
 	for q in quests:
 		if q.event == ev and not q.claimed and q.progress < q.target:
 			q.progress = mini(q.target, q.progress + amount)
@@ -3155,7 +3187,7 @@ func save_game() -> void:
 		"colonists": colonists, "next_id": next_id, "arrival_timer": arrival_timer,
 		"meta": {
 			"crystals": crystals, "crates": crates, "premium": premium, "no_ads": no_ads, "pet": pet, "pets_owned": pets_owned, "owned": owned_products,
-			"materials": materials, "blueprints": blueprints, "craft_jobs": craft_jobs, "projects": projects, "pet_xp": pet_xp, "storm_until": storm_until, "storm_next": storm_next,
+			"materials": materials, "blueprints": blueprints, "craft_jobs": craft_jobs, "projects": projects, "pet_xp": pet_xp, "chains": chains, "storm_until": storm_until, "storm_next": storm_next,
 			"boost_until": boost_until, "free_crate_at": free_crate_at,
 			"daily_day": daily_day, "daily_streak": daily_streak,
 			"expeditions": expeditions, "quests": quests, "quest_day": quest_day,
@@ -3226,6 +3258,7 @@ func load_game() -> bool:
 	blueprints = meta.get("blueprints", Defs.START_BLUEPRINTS.duplicate())
 	craft_jobs = meta.get("craft_jobs", {})
 	pet_xp = meta.get("pet_xp", {})
+	chains = meta.get("chains", {})
 	storm_until = float(meta.get("storm_until", 0.0))
 	storm_next = float(meta.get("storm_next", 0.0))
 	projects = {}
