@@ -745,3 +745,5 @@
 744|{n} pegou {v}.
 745|{n} achou um projeto: {v}!
 746|Fabrica equipamento com projetos e materiais, e faz sucata sozinha. Precisa de Técnica.
+747|O misterioso estranho
+748|Peguei!

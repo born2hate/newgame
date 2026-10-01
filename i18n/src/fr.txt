@@ -745,3 +745,5 @@
 744|{n} a ramassé {v}.
 745|{n} a trouvé un plan : {v} !
 746|Fabrique de l'équipement à partir de plans et de matériaux, et produit de la ferraille. Demande de la Technique.
+747|Le mystérieux inconnu
+748|Attrapé !

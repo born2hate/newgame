@@ -745,3 +745,5 @@
 744|{n} sammelte {v} ein.
 745|{n} fand einen Bauplan: {v}!
 746|Stellt Ausrüstung aus Bauplänen und Materialien her und macht nebenbei Schrott. Braucht Technik.
+747|Der geheimnisvolle Fremde
+748|Erwischt!

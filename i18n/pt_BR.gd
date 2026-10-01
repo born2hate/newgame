@@ -751,6 +751,8 @@ const T := {
 	"{n} picked up {v}.": "{n} pegou {v}.",
 	"{n} found a blueprint: {v}!": "{n} achou um projeto: {v}!",
 	"Crafts gear from blueprints and materials, and makes scrap on its own. Needs Tech.": "Fabrica equipamento com projetos e materiais, e faz sucata sozinha. Precisa de Técnica.",
+	"The mysterious stranger": "O misterioso estranho",
+	"Gotcha!": "Peguei!",
 }
 
 static func make() -> Translation:

@@ -17,7 +17,7 @@ const EVENT_SFX := {
 	"arrive": ["arrive", 1.0], "expedition": ["launch", 1.0], "rush": ["bubbles", 1.0],
 	"error": ["error", 1.0], "incident": ["alarm", 0.9],
 	"boss": ["roar", 1.0], "raid": ["horn", 1.0], "birth": ["birth", 1.0], "repair": ["repair", 1.0],
-	"bubble": ["bubbles", 1.2], "loot_raider": ["pearls", 1.2], "boss_won": ["levelup", 0.8], "raid_won": ["levelup", 0.9],
+	"bubble": ["bubbles", 1.2], "stranger": ["arrive", 0.7], "loot_raider": ["pearls", 1.2], "boss_won": ["levelup", 0.8], "raid_won": ["levelup", 0.9],
 }
 
 var music_on := true

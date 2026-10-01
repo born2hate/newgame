@@ -746,3 +746,5 @@
 744|{n} recogió {v}.
 745|¡{n} encontró un plano: {v}!
 746|Fabrica equipo con planos y materiales, y hace chatarra por su cuenta. Necesita Técnica.
+747|El misterioso desconocido
+748|¡Te pillé!

@@ -745,3 +745,5 @@
 744|{n} şunu topladı: {v}.
 745|{n} bir plan buldu: {v}!
 746|Planlardan ve malzemelerden ekipman üretir, boşta hurda yapar. Teknik gerekir.
+747|Gizemli yabancı
+748|Yakaladım!

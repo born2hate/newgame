@@ -745,3 +745,5 @@
 744|{n} ha raccolto {v}.
 745|{n} ha trovato un progetto: {v}!
 746|Crea equipaggiamento da progetti e materiali, e produce rottami da sola. Serve Tecnica.
+747|Il misterioso sconosciuto
+748|Preso!

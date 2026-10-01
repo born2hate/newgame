@@ -745,3 +745,5 @@
 744|{n} podniósł: {v}.
 745|{n} znalazł plan: {v}!
 746|Wytwarza sprzęt z planów i materiałów, a sam robi złom. Wymaga Techniki.
+747|Tajemniczy nieznajomy
+748|Mam cię!

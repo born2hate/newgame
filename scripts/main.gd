@@ -525,6 +525,16 @@ func _dev_screenshot() -> void:
 		"zoom":
 			camera.zoom = Vector2(1.5, 1.5)
 			camera.position = Vector2(200, 120)
+		"stranger_ru":
+			Audio.set_language("ru")
+			while Game.colonists.size() < 6:
+				Game.colonists.append(Game._make_colonist())
+			Game.stranger_timer = 0.0
+			Game.simulate(0.1, false)
+			Game.stranger.room = Game.find_room_of_type("farm").id
+			camera.position = Vector2(650, 200)
+			camera.zoom = Vector2(1.6, 1.6)
+			await get_tree().create_timer(1.0).timeout
 		"workshop_ru":
 			Audio.set_language("ru")
 			var wsr := Game._add_room("workshop", 7, 1)

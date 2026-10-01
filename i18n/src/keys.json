@@ -745,5 +745,7 @@
 "Ready in %s",
 "{n} picked up {v}.",
 "{n} found a blueprint: {v}!",
-"Crafts gear from blueprints and materials, and makes scrap on its own. Needs Tech."
+"Crafts gear from blueprints and materials, and makes scrap on its own. Needs Tech.",
+"The mysterious stranger",
+"Gotcha!"
 ]

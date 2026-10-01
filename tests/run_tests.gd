@@ -569,6 +569,27 @@ func _initialize() -> void:
 	check(ul.arrival_speed() > 0.0, "пустое радио слабо, но вещает")
 	ul.free()
 
+	# таинственный незнакомец
+	var sg = load("res://scripts/game_state.gd").new()
+	sg.new_game()
+	while sg.colonists.size() < 6:
+		sg.colonists.append(sg._make_colonist())
+	sg.stranger_timer = 0.0
+	sg.simulate(1.0, false)
+	check(not sg.stranger.is_empty(), "незнакомец появился")
+	var got_s: Dictionary = sg.catch_stranger()
+	check(not got_s.is_empty() and sg.stranger.is_empty(), "поймали незнакомца — награда")
+	sg.stranger_timer = 0.0
+	sg.simulate(1.0, false)
+	sg.clock_offset += 10.0
+	sg.simulate(1.0, false)
+	check(sg.stranger.is_empty(), "незнакомец ушёл, если не успели")
+	sg.stranger_timer = 0.0
+	sg.simulate(1.0, true)
+	check(sg.stranger.is_empty(), "вне игры незнакомец не приходит")
+	sg.clock_offset -= 10.0
+	sg.free()
+
 	# крафт по чертежам
 	var cg = load("res://scripts/game_state.gd").new()
 	cg.new_game()

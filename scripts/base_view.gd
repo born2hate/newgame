@@ -326,6 +326,7 @@ func _draw_rest(depth_rows: int) -> void:
 			draw_rect(Rect2(tp, Vector2(tw + 20, 32)), Color(1.0, 0.85, 0.35), false, 2.0)
 			_text(tp + Vector2(10, 24), tag, 22, Color(1.0, 0.92, 0.6))
 	_draw_treasure()
+	_draw_stranger()
 	_draw_trader()
 	_draw_pirate_sub()
 	_draw_boss()
@@ -495,6 +496,45 @@ func _update_treasure(delta: float) -> void:
 		b.p.y -= 38.0 * delta
 		b.p.x += sin(t * 1.5 + b.ph) * 20.0 * delta
 	treasure = treasure.filter(func(b): return b.p.y > -700)
+
+func stranger_rect() -> Rect2:
+	var r := Game.get_room(int(Game.stranger.get("room", -1)))
+	if r.is_empty():
+		return Rect2()
+	var rect := room_rect(r)
+	var fx: float = rect.position.x + 22 + float(Game.stranger.x) * (rect.size.x - 44)
+	var feet := Vector2(fx, rect.end.y - WALL - 6)
+	return Rect2(feet - Vector2(26, 70), Vector2(52, 70))
+
+## Незнакомец в плаще: проявляется и тает, глаза светятся.
+func _draw_stranger() -> void:
+	if Game.stranger.is_empty():
+		return
+	var rr := stranger_rect()
+	if rr.size == Vector2.ZERO:
+		return
+	var age: float = Game.now() - float(Game.stranger.born)
+	var left: float = float(Game.stranger.until) - Game.now()
+	var a := clampf(age / 0.6, 0.0, 1.0) * clampf(left / 1.0, 0.0, 1.0)
+	var feet := Vector2(rr.get_center().x, rr.end.y)
+	draw_circle(feet + Vector2(0, -34), 40, Color(0.6, 0.4, 1.0, 0.18 * a + 0.06 * sin(t * 6.0)))
+	var tex := Art.tex("res://art/characters/stranger.png")
+	if tex:
+		var h := 74.0
+		var w := h * tex.get_width() / tex.get_height()
+		draw_texture_rect(tex, Rect2(feet - Vector2(w / 2.0, h), Vector2(w, h)), false, Color(1, 1, 1, a))
+	else:
+		var sp := Art.walk(5, 0)
+		if sp:
+			var h2 := 68.0
+			var w2 := h2 * sp.get_width() / sp.get_height()
+			draw_texture_rect(sp, Rect2(feet - Vector2(w2 / 2.0, h2), Vector2(w2, h2)), false, Color(0.18, 0.16, 0.24, a))
+		# шляпа и светящиеся глаза
+		draw_rect(Rect2(feet + Vector2(-20, -72), Vector2(40, 6)), Color(0.08, 0.06, 0.1, a))
+		draw_rect(Rect2(feet + Vector2(-11, -84), Vector2(22, 13)), Color(0.08, 0.06, 0.1, a))
+		draw_circle(feet + Vector2(-5, -56), 2.5, Color(1.0, 0.9, 0.4, a))
+		draw_circle(feet + Vector2(6, -56), 2.5, Color(1.0, 0.9, 0.4, a))
+	_text(feet + Vector2(28, -66 + sin(t * 4.0) * 3.0), "?", 22, Color(0.85, 0.7, 1.0, a), true)
 
 func _draw_treasure() -> void:
 	for b in treasure:
@@ -1636,6 +1676,12 @@ func _on_press(p: Vector2) -> void:
 			return
 	if _try_pop_treasure(world):
 		moved = true
+		return
+	if not Game.stranger.is_empty() and stranger_rect().grow(24).has_point(world):
+		moved = true
+		var sp := stranger_rect().get_center()
+		Game.catch_stranger()
+		floaters.append({"pos": sp + Vector2(0, -50), "text": tr("Gotcha!"), "icon": "", "color": Color(1.0, 0.9, 0.5), "life": 1.5})
 		return
 	if not Game.trader.is_empty() and _trader_rect().grow(50).has_point(world):
 		moved = true

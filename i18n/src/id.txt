@@ -745,3 +745,5 @@
 744|{n} memungut {v}.
 745|{n} menemukan cetak biru: {v}!
 746|Membuat perlengkapan dari cetak biru dan bahan, dan membuat rongsok sendiri. Butuh Teknik.
+747|Orang asing misterius
+748|Kena!

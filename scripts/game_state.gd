@@ -470,6 +470,8 @@ func rush_chance(room: Dictionary) -> float:
 func simulate(delta: float, offline: bool) -> void:
 	_tick_explorations()
 	_tick_crafts()
+	if not offline:
+		_tick_stranger(delta)
 	var cap := storage_cap()
 	# расход
 	var energy_use := 0.0
@@ -903,6 +905,54 @@ func claim_craft(room: Dictionary) -> Dictionary:
 	event.emit("upgrade")
 	changed.emit()
 	return it
+
+# ---------------------------------------------------------------- таинственный незнакомец
+## Как в Fallout Shelter: иногда в случайном отсеке на несколько секунд появляется
+## человек в плаще. Успел нажать — награда. Только пока игра открыта.
+const STRANGER_STAY := 8.0
+const STRANGER_MIN_POP := 6
+var stranger := {}
+var stranger_timer := 300.0
+
+func _tick_stranger(delta: float) -> void:
+	if not stranger.is_empty():
+		if now() > float(stranger.until):
+			stranger = {}
+			changed.emit()
+		return
+	if colonists.size() < STRANGER_MIN_POP:
+		return
+	stranger_timer -= delta
+	if stranger_timer > 0.0:
+		return
+	stranger_timer = rng.randf_range(360.0, 720.0)
+	var spots: Array = rooms.filter(func(r): return r.type != "elevator" and r.incident <= 0.0)
+	if spots.is_empty():
+		return
+	var r: Dictionary = spots.pick_random()
+	stranger = {"room": r.id, "x": rng.randf_range(0.2, 0.8), "until": now() + STRANGER_STAY, "born": now()}
+	event.emit("stranger")
+	changed.emit()
+
+## Нажали на незнакомца: награда растёт с колонией.
+func catch_stranger() -> Dictionary:
+	if stranger.is_empty():
+		return {}
+	stranger = {}
+	track("stranger")
+	var roll := rng.randf()
+	var r := {}
+	if roll < 0.06:
+		r["blueprint"] = random_blueprint("rare" if rng.randf() < 0.3 else "common")
+	elif roll < 0.18:
+		r["crystals"] = rng.randi_range(2, 4)
+	elif roll < 0.4:
+		var mk: String = Defs.MATERIALS.keys().slice(0, 6).pick_random()
+		r["materials"] = {mk: rng.randi_range(2, 4)}
+	else:
+		r["pearls"] = rng.randi_range(60, 140) + colony_level * 15
+	grant(r, tr("The mysterious stranger"))
+	return r
 
 ## Вещь доделана — сообщим один раз.
 func _tick_crafts() -> void:
