@@ -3,7 +3,7 @@
 All notable changes to **Deep Colony** are listed here, newest first.
 APK builds live in [`releases/`](releases/).
 
-## Unreleased
+## 0.12 — 2026-10-01
 ### Added
 - **Phone notifications** (scheduled when the game goes to the background, cancelled on return): expedition back, child grown up, research done, all rooms ready, free crate, daily reward, a gentle "we miss you" after 2 days. At most one every 30 minutes; can be turned off in Settings. Needs the native local-notification plugin in the release build.
 - **New sounds**: hits on bosses, boss roar, raid horn, rising notes while combo collecting, coins flying to the top bar, a lullaby for a newborn, repair clinks.
@@ -13,7 +13,7 @@ APK builds live in [`releases/`](releases/).
 ### Changed
 - **Shorter tutorial**: 6 hands-on steps instead of 11 — collect, build, place, drag, done.
 - **Pearl economy fixed**: no more bonus pearls from every collection; Pearl Farms have a longer cycle and a strong crew speeds them up at most ×1.5; depth and Aquarium bonuses for pearls are smaller. Late-game pearl income dropped about 4×.
-- Slower population growth: at most 1 child growing at a time (up to 3 at high colony level), babies take longer; the Radio Room attracts people more slowly.
+- Slower population growth: at most 1 child growing at a time (up to 2 at high colony level), babies take longer; the Radio Room attracts people more slowly.
 ### Fixed
 - Tapping a ready room where a colonist stands now collects instead of opening the colonist card.
 - The pet no longer swims backwards.
