@@ -126,12 +126,22 @@ func _apply() -> void:
 			p.stop()
 	ambient.volume_db = -10.0 if sfx_on else -80.0
 
+## Красивая графика (свечение, лучи, частицы). На слабых телефонах можно выключить.
+var hq_graphics := true
+signal graphics_changed
+
+func set_hq_graphics(on: bool) -> void:
+	hq_graphics = on
+	_save_settings()
+	graphics_changed.emit()
+
 func _load_settings() -> void:
 	var cfg := ConfigFile.new()
 	if cfg.load(SETTINGS_PATH) == OK:
 		music_on = cfg.get_value("audio", "music", true)
 		sfx_on = cfg.get_value("audio", "sfx", true)
 		language = cfg.get_value("general", "language", "")
+		hq_graphics = cfg.get_value("general", "hq_graphics", true)
 	if language == "":
 		# язык телефона, если он поддерживается
 		var loc := OS.get_locale()
@@ -142,8 +152,11 @@ func _load_settings() -> void:
 	TranslationServer.set_locale(language)
 
 func _save_settings() -> void:
+	# сначала читаем файл: там же хранятся другие настройки (уведомления, графика)
 	var cfg := ConfigFile.new()
+	cfg.load(SETTINGS_PATH)
 	cfg.set_value("audio", "music", music_on)
 	cfg.set_value("audio", "sfx", sfx_on)
 	cfg.set_value("general", "language", language)
+	cfg.set_value("general", "hq_graphics", hq_graphics)
 	cfg.save(SETTINGS_PATH)

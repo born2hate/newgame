@@ -716,3 +716,4 @@
 715|Personne n'est revenu de %s. Le butin est perdu.
 716|Tes explorateurs sont toujours dehors
 717|Va voir l'équipe à %s et rappelle-la avant qu'il ne soit trop tard.
+718|Meilleurs graphismes

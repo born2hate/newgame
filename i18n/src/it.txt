@@ -716,3 +716,4 @@
 715|Nessuno è tornato da %s. Il bottino è perso.
 716|I tuoi esploratori sono ancora fuori
 717|Controlla la squadra in %s e richiamala prima che sia tardi.
+718|Grafica migliore

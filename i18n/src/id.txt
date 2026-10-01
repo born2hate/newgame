@@ -716,3 +716,4 @@
 715|Tak ada yang kembali dari %s. Rampasan hilang.
 716|Penjelajahmu masih di luar
 717|Periksa tim di %s dan panggil pulang sebelum terlambat.
+718|Grafis terbaik

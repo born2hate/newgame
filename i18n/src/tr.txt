@@ -716,3 +716,4 @@
 715|%s bölgesinden kimse dönmedi. Ganimet kayıp.
 716|Kaşiflerin hâlâ dışarıda
 717|%s bölgesindeki ekibe bak ve çok geç olmadan geri çağır.
+718|En iyi grafik

@@ -2,6 +2,8 @@ extends Node
 ## Собирает сцену: фон-океан, вид колонии с камерой, интерфейс.
 
 var bg_material: ShaderMaterial
+var post_material: ShaderMaterial
+var post_rect: ColorRect
 var view: Node2D
 var camera: Camera2D
 var hud: CanvasLayer
@@ -30,8 +32,23 @@ func _ready() -> void:
 	view.add_child(camera)
 	view.camera = camera
 
+	# постобработка мира — между миром и интерфейсом
+	var post_layer := CanvasLayer.new()
+	post_layer.layer = 1
+	add_child(post_layer)
+	post_rect = ColorRect.new()
+	post_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	post_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	post_material = ShaderMaterial.new()
+	post_material.shader = load("res://shaders/post.gdshader")
+	post_rect.material = post_material
+	post_layer.add_child(post_rect)
+	post_rect.visible = Audio.hq_graphics
+	Audio.graphics_changed.connect(func(): post_rect.visible = Audio.hq_graphics)
+
 	hud = preload("res://scripts/hud.gd").new()
 	hud.view = view
+	hud.layer = 2
 	add_child(hud)
 	var uargs := Array(OS.get_cmdline_user_args())
 	var dev: bool = "--selftest" in uargs or uargs.any(func(a): return str(a).begins_with("--screenshot"))
@@ -641,6 +658,9 @@ func _process(_delta: float) -> void:
 	var depth := clampf(camera.position.y / (base_view_cell_h() * 12.0), 0.0, 1.0)
 	bg_material.set_shader_parameter("depth", depth)
 	bg_material.set_shader_parameter("cam_offset", camera.position)
+	if post_rect.visible:
+		post_material.set_shader_parameter("depth", depth)
+		post_material.set_shader_parameter("cam_offset", camera.position)
 
 func base_view_cell_h() -> float:
 	return 130.0

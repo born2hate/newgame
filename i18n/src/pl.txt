@@ -716,3 +716,4 @@
 715|Nikt nie wrócił z: %s. Łup przepadł.
 716|Twoi odkrywcy wciąż są na zewnątrz
 717|Sprawdź drużynę w: %s i wezwij ją, zanim będzie za późno.
+718|Najlepsza grafika

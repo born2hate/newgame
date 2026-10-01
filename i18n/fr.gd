@@ -722,6 +722,7 @@ const T := {
 	"Nobody came back from %s. The loot is gone.": "Personne n'est revenu de %s. Le butin est perdu.",
 	"Your explorers are still out": "Tes explorateurs sont toujours dehors",
 	"Check on the crew in %s and recall them before it's too late.": "Va voir l'équipe à %s et rappelle-la avant qu'il ne soit trop tard.",
+	"Best graphics": "Meilleurs graphismes",
 }
 
 static func make() -> Translation:

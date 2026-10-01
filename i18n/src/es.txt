@@ -717,3 +717,4 @@
 715|Nadie volvió de %s. El botín se perdió.
 716|Tus exploradores siguen fuera
 717|Revisa al equipo en %s y llámalo antes de que sea tarde.
+718|Mejores gráficos

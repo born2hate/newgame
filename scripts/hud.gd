@@ -188,6 +188,7 @@ func start_tutorial() -> void:
 	get_parent().add_child(tutorial)
 
 func _process(delta: float) -> void:
+	_tick_counters(delta)
 	refresh_timer += delta
 	if refresh_timer > 0.2:
 		refresh_timer = 0.0
@@ -359,6 +360,12 @@ func _button(text: String, cb: Callable, min_h := 72) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.custom_minimum_size = Vector2(0, min_h)
+	# «пружинка» при нажатии
+	b.button_down.connect(func():
+		b.pivot_offset = b.size / 2.0
+		b.create_tween().tween_property(b, "scale", Vector2(0.94, 0.94), 0.06))
+	b.button_up.connect(func():
+		b.create_tween().tween_property(b, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT))
 	b.pressed.connect(func(): Audio.play("tap"))
 	b.pressed.connect(cb)
 	_auto_style(b, text)
@@ -645,9 +652,35 @@ func _draw_res_bar(bar: Control, k: String) -> void:
 	bar.draw_string_outline(font, tp, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 22, 5, Color(0, 0, 0, 0.8))
 	bar.draw_string(font, tp, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 22, tc)
 
+## Числа валют «докручиваются» к новому значению — приятнее, чем прыжок.
+var shown_pearls := -1.0
+var shown_crystals := -1.0
+
+func _tick_counters(delta: float) -> void:
+	if shown_pearls < 0.0 or pearls_label == null:
+		return
+	var changed_any := false
+	for pair in [["shown_pearls", Game.pearls, pearls_label], ["shown_crystals", Game.crystals, crystals_label]]:
+		var cur: float = get(pair[0])
+		var target := float(pair[1])
+		if absf(cur - target) < 0.5:
+			if cur != target:
+				set(pair[0], target)
+				pair[2].text = str(int(target))
+			continue
+		var nv := move_toward(cur, target, maxf(2.0, absf(target - cur)) * delta * 5.0)
+		set(pair[0], nv)
+		pair[2].text = str(int(round(nv)))
+		changed_any = true
+	if changed_any:
+		pearls_label.pivot_offset = pearls_label.size / 2.0
+
 func _refresh_top() -> void:
-	pearls_label.text = str(Game.pearls)
-	crystals_label.text = str(Game.crystals)
+	if shown_pearls < 0.0:
+		shown_pearls = Game.pearls
+		shown_crystals = Game.crystals
+	pearls_label.text = str(int(round(shown_pearls)))
+	crystals_label.text = str(int(round(shown_crystals)))
 	var md: Dictionary = Game.mode()
 	mode_label.text = "" if Game.difficulty == "normal" else tr(md.name) + " "
 	mode_label.add_theme_color_override("font_color", md.color)
@@ -835,8 +868,10 @@ func _open_sheet(kind: String, height := 560) -> void:
 	scroll.scroll_vertical = 0
 	sheet.pivot_offset = Vector2(sheet.size.x / 2.0, sheet.size.y)
 	sheet.modulate.a = 0.0
-	var tw := create_tween()
+	sheet.scale = Vector2(0.94, 0.94)
+	var tw := create_tween().set_parallel(true)
 	tw.tween_property(sheet, "modulate:a", 1.0, 0.15)
+	tw.tween_property(sheet, "scale", Vector2.ONE, 0.28).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 func _restore_scroll(v: int) -> void:
 	await get_tree().process_frame
@@ -1494,6 +1529,7 @@ func _open_settings() -> void:
 	_toggle_row("Music", Audio.music_on, Audio.set_music)
 	_toggle_row("Sounds", Audio.sfx_on, Audio.set_sfx)
 	_toggle_row("Notifications", Notifier.enabled, Notifier.set_enabled)
+	_toggle_row("Best graphics", Audio.hq_graphics, Audio.set_hq_graphics)
 	_section(tr("Language"))
 	var langs := GridContainer.new()
 	langs.columns = 2

@@ -716,3 +716,4 @@
 715|Niemand kam aus %s zurück. Die Beute ist weg.
 716|Deine Erkunder sind noch draußen
 717|Sieh nach dem Trupp in %s und ruf ihn zurück, bevor es zu spät ist.
+718|Beste Grafik

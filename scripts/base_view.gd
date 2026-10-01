@@ -67,6 +67,10 @@ func _ready() -> void:
 		mat.set_shader_parameter("use_tex", true)
 	rock.show_behind_parent = true
 	add_child(rock)
+	var spill = preload("res://scripts/light_spill.gd").new()
+	spill.view = self
+	spill.show_behind_parent = true
+	add_child(spill)
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 
 func _process(delta: float) -> void:
@@ -222,6 +226,12 @@ func _draw() -> void:
 	else:
 		_draw_seabed_procedural()
 	_draw_bubbles()
+	# мягкая тень под отсеками — колония «стоит» в породе, а не наклеена
+	for r in Game.rooms:
+		var rr := room_rect(r)
+		var y0 := rr.end.y + 4.0
+		draw_polygon(PackedVector2Array([Vector2(rr.position.x - 6, y0), Vector2(rr.end.x + 6, y0), Vector2(rr.end.x + 18, y0 + 46), Vector2(rr.position.x + 10, y0 + 46)]),
+			PackedColorArray([Color(0, 0, 0, 0.55), Color(0, 0, 0, 0.55), Color(0, 0, 0, 0.0), Color(0, 0, 0, 0.0)]))
 	# выдолбленная порода вокруг отсеков
 	for r in Game.rooms:
 		draw_rect(room_rect(r).grow(10), Color(0.02, 0.02, 0.03, 0.55))
@@ -679,6 +689,22 @@ func _draw_build_slots(depth_rows: int) -> void:
 				draw_rect(rect, Color(0.3, 1.0, 0.6, 0.7), false, 3.0)
 				_text(rect.get_center() + Vector2(0, 10), "+", 44, Color(0.6, 1.0, 0.8, 0.9), true)
 
+## Блик стекла: раз в несколько секунд по фасаду отсека пробегает светлая полоса.
+func _draw_glass_sheen(r: Dictionary, inner: Rect2) -> void:
+	var ph := fmod(t * 0.11 + float(r.id) * 0.373, 1.0)
+	if ph > 0.22:
+		return
+	var k := ph / 0.22
+	var bw := inner.size.y * 0.55
+	var x := lerpf(inner.position.x - bw * 1.5, inner.end.x + bw * 0.5, k)
+	var skew := inner.size.y * 0.5
+	var a := sin(k * PI) * 0.13
+	var pts := PackedVector2Array()
+	for p in [Vector2(x + skew, inner.position.y), Vector2(x + skew + bw, inner.position.y), Vector2(x + bw, inner.end.y), Vector2(x, inner.end.y)]:
+		pts.append(Vector2(clampf(p.x, inner.position.x, inner.end.x), p.y))
+	if pts[0].x < pts[1].x or pts[3].x < pts[2].x:
+		draw_colored_polygon(pts, Color(1, 1, 1, a))
+
 func _draw_room(r: Dictionary) -> void:
 	var def: Dictionary = Defs.ROOMS[r.type]
 	var rect := room_rect(r)
@@ -771,8 +797,14 @@ func _draw_room(r: Dictionary) -> void:
 			draw_rect(bar, Color(0, 0, 0, 0.5))
 			var rc: Color = Defs.RESOURCES[def.produces].color
 			draw_rect(Rect2(bar.position, Vector2(bar.size.x * r.progress, bar.size.y)), rc)
-	# рамка
-	draw_rect(rect, Color(0.45, 0.5, 0.6), false, 2.0)
+	# рамка: металл с фаской — светлые верх и левый край, тёмные низ и правый
+	draw_rect(rect, Color(0.32, 0.36, 0.44), false, 3.0)
+	draw_line(rect.position + Vector2(1, 1), Vector2(rect.end.x - 1, rect.position.y + 1), Color(0.78, 0.84, 0.95, 0.85), 2.0)
+	draw_line(rect.position + Vector2(1, 1), Vector2(rect.position.x + 1, rect.end.y - 1), Color(0.6, 0.66, 0.78, 0.6), 2.0)
+	draw_line(Vector2(rect.position.x + 1, rect.end.y - 1), rect.end - Vector2(1, 1), Color(0.04, 0.05, 0.08, 0.9), 2.0)
+	draw_line(Vector2(rect.end.x - 1, rect.position.y + 1), rect.end - Vector2(1, 1), Color(0.06, 0.07, 0.1, 0.8), 2.0)
+	if Audio.hq_graphics and r.type != "elevator":
+		_draw_glass_sheen(r, rect.grow(-WALL))
 	if r.id == selected_room:
 		draw_rect(rect.grow(2), Color(0.5, 1.0, 1.0, 0.6 + 0.4 * sin(t * 5.0)), false, 4.0)
 	# авария

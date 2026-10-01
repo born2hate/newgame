@@ -716,3 +716,4 @@
 715|Ninguém voltou de %s. O saque se perdeu.
 716|Seus exploradores ainda estão fora
 717|Veja a equipe em %s e chame-a antes que seja tarde.
+718|Melhores gráficos
