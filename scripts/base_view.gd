@@ -600,6 +600,8 @@ func _draw_room(r: Dictionary) -> void:
 				draw_set_transform(Vector2.ZERO)
 			else:
 				draw_texture_rect(art, seg, false, Color(light, light, light))
+		if powered and r.incident <= 0.0:
+			_draw_room_ambient(r, back)
 		if r.type == "reactor" and powered:
 			# пульсация ядра поверх картинки
 			var core := inner.get_center() + Vector2(0, 4)
@@ -747,6 +749,13 @@ func _draw_hazard(r: Dictionary, inner: Rect2) -> void:
 				var u1 := (x1 - x) / tile_w * wt.get_width() * 0.5
 				draw_texture_rect_region(wt, Rect2(x0, top, x1 - x0, inner.end.y - top), Rect2(u0, 0, u1 - u0, wt.get_height()), Color(1, 1, 1, 0.9))
 				x += tile_w
+			# пока люди борются с потопом — в углу работает помпа
+			var pump := Art.tex("res://art/fx/pump.png")
+			if pump and not Game.responders(r).is_empty():
+				var pw := inner.size.y * 0.5
+				var ph2 := pw * pump.get_height() / pump.get_width()
+				var shake := sin(t * 30.0) * 1.2
+				draw_texture_rect(pump, Rect2(inner.position.x + 8 + shake, inner.end.y - ph2 - 2, pw, ph2), false)
 			# струя из пробоины и брызги там, где она бьёт в воду
 			var jet := Vector2(inner.position.x + inner.size.x * 0.7, inner.position.y + 10)
 			var hit := Vector2(jet.x - 20, inner.end.y - level)
@@ -850,6 +859,78 @@ func _star(c: Vector2, rad: float) -> void:
 		var rr := rad if i % 2 == 0 else rad * 0.45
 		pts.append(c + Vector2(cos(a), sin(a)) * rr)
 	draw_colored_polygon(pts, Color(1.0, 0.85, 0.3))
+
+## «Жизнь» поверх картинки отсека: мерцание ламп, пылинки и свой эффект у каждого типа.
+## Всё полупрозрачное и неторопливое, чтобы не отвлекать.
+func _draw_room_ambient(r: Dictionary, a: Rect2) -> void:
+	var seed_f := float(r.id) * 1.37
+	var x := func(f: float) -> float: return a.position.x + a.size.x * f
+	var y := func(f: float) -> float: return a.position.y + a.size.y * f
+	# лампы под потолком дышат
+	var lamp := 0.05 + 0.03 * sin(t * 1.7 + seed_f)
+	if fmod(t + seed_f * 3.0, 11.0) < 0.12:
+		lamp = 0.0  # редкое моргание
+	draw_rect(Rect2(a.position, Vector2(a.size.x, a.size.y * 0.18)), Color(1.0, 0.85, 0.55, lamp))
+	# пылинки в свете
+	for i in 5:
+		var ph := fmod(t * 0.05 + i * 0.21 + seed_f, 1.0)
+		var px: float = x.call(fmod(0.1 + i * 0.19 + sin(t * 0.3 + i) * 0.03, 1.0))
+		var py: float = y.call(0.2 + 0.7 * ph)
+		draw_circle(Vector2(px, py), 1.4, Color(1, 0.95, 0.85, 0.35 * sin(ph * PI)))
+	match r.type:
+		"oxygen", "aquarium", "observatory", "turbine":
+			# пузырьки в баках и аквариумах
+			for i in 8:
+				var ph := fmod(t * (0.25 + 0.05 * (i % 3)) + i * 0.13 + seed_f, 1.0)
+				var bx: float = x.call(0.15 + 0.7 * fmod(i * 0.37 + seed_f, 1.0)) + sin(t * 2.0 + i) * 3.0
+				var by: float = y.call(0.85 - 0.6 * ph)
+				draw_arc(Vector2(bx, by), 2.0 + ph * 2.0, 0, TAU, 10, Color(0.85, 1.0, 1.0, 0.55 * (1.0 - ph)), 1.2)
+			if r.type != "oxygen":
+				# блики воды
+				var cs := 0.04 + 0.03 * sin(t * 2.3 + seed_f)
+				draw_rect(Rect2(a.position + Vector2(0, a.size.y * 0.15), Vector2(a.size.x, a.size.y * 0.55)), Color(0.4, 0.85, 1.0, cs))
+		"farm", "pearl":
+			# споры / искорки над грядками
+			var col := Color(0.6, 1.0, 0.5) if r.type == "farm" else Color(1.0, 0.85, 1.0)
+			for i in 7:
+				var ph := fmod(t * 0.12 + i * 0.143 + seed_f, 1.0)
+				var sx: float = x.call(0.1 + 0.8 * fmod(i * 0.29 + seed_f, 1.0)) + sin(t + i) * 6.0
+				draw_circle(Vector2(sx, y.call(0.8 - 0.5 * ph)), 1.8, Color(col, 0.6 * sin(ph * PI)))
+		"kitchen":
+			# пар над кастрюлями
+			for i in 4:
+				var ph := fmod(t * 0.3 + i * 0.25, 1.0)
+				var sx: float = x.call(0.32 + 0.1 * (i % 2)) + sin(t * 1.5 + i) * 5.0
+				draw_circle(Vector2(sx, y.call(0.5 - 0.3 * ph)), 4.0 + ph * 8.0, Color(1, 1, 1, 0.16 * (1.0 - ph)))
+		"lab", "school", "radio", "medbay":
+			# огоньки на пультах и мерцание экранов
+			for i in 6:
+				var on := fmod(t * (0.7 + i * 0.13) + i * 0.5 + seed_f, 1.0) < 0.5
+				if on:
+					var lc := [Color(0.3, 1.0, 0.4), Color(1.0, 0.3, 0.3), Color(0.3, 0.8, 1.0)][i % 3] as Color
+					draw_circle(Vector2(x.call(0.12 + 0.15 * i), y.call(0.58 + 0.05 * (i % 2))), 2.2, Color(lc, 0.85))
+			draw_rect(Rect2(Vector2(x.call(0.25), y.call(0.25)), Vector2(a.size.x * 0.4, a.size.y * 0.3)), Color(0.4, 1.0, 0.8, 0.03 + 0.03 * absf(sin(t * 6.0 + seed_f))))
+		"lounge":
+			# неон переливается
+			var hue := fmod(t * 0.05 + seed_f, 1.0)
+			draw_rect(a, Color.from_hsv(hue, 0.7, 1.0, 0.06))
+		"workshop", "armory", "dock":
+			# редкие вспышки сварки
+			var cyc := fmod(t + seed_f * 5.0, 6.0)
+			if cyc < 0.8 and r.type == "workshop":
+				var sp := Art.tex("res://art/fx/spark_%d.png" % (int(t * 14.0) % 3))
+				if sp:
+					var ss := a.size.y * 0.25
+					draw_texture_rect(sp, Rect2(Vector2(x.call(0.38), y.call(0.52)) - Vector2(ss, ss) / 2.0, Vector2(ss, ss)), false, Color(0.7, 0.85, 1.0, 0.9))
+			# сигнальная лампа
+			draw_circle(Vector2(x.call(0.9), y.call(0.15)), 3.0, Color(1.0, 0.3, 0.2, 0.4 + 0.4 * sin(t * 4.0 + seed_f)))
+		"gym":
+			# груша покачивается — тень маятника
+			var sw := sin(t * 2.0 + seed_f) * a.size.x * 0.01
+			draw_rect(Rect2(Vector2(x.call(0.24) + sw, y.call(0.3)), Vector2(a.size.x * 0.04, a.size.y * 0.3)), Color(0, 0, 0, 0.08))
+		"living":
+			# тёплый свет торшера
+			draw_circle(Vector2(x.call(0.3), y.call(0.7)), a.size.y * 0.25, Color(1.0, 0.75, 0.4, 0.05 + 0.02 * sin(t * 1.3 + seed_f)))
 
 func _draw_elevator(inner: Rect2) -> void:
 	draw_rect(inner, Color(0.07, 0.09, 0.12))
@@ -1053,7 +1134,16 @@ func _draw_fight_fx(feet: Vector2, c: Dictionary, facing: float, h: float) -> vo
 						_star_burst(hand + Vector2(facing * 24, -6), 9.0, Color(1.0, 0.9, 0.5, 1.0 - k * 3.0))
 		"fire":
 			# огнетушитель: белая пена конусом к огню
-			draw_rect(Rect2(hand - Vector2(5, 10), Vector2(10, 20)), Color(0.85, 0.15, 0.15))
+			var ext := Art.tex("res://art/fx/extinguisher.png")
+			if ext:
+				# на картинке баллон слева, пена справа — берём левую часть, пену рисуем частицами
+				var ew := h * 0.42
+				var eh := ew * ext.get_height() / (ext.get_width() * 0.5)
+				draw_set_transform(hand + Vector2(-facing * 4, 0), 0.0, Vector2(facing, 1))
+				draw_texture_rect_region(ext, Rect2(-ew * 0.5, -eh * 0.6, ew, eh), Rect2(0, 0, ext.get_width() * 0.5, ext.get_height()))
+				draw_set_transform(Vector2.ZERO)
+			else:
+				draw_rect(Rect2(hand - Vector2(5, 10), Vector2(10, 20)), Color(0.85, 0.15, 0.15))
 			for i in 9:
 				var q := fmod(k + i / 9.0, 1.0)
 				var spread := (i % 3 - 1) * 10.0 * q
@@ -1061,7 +1151,13 @@ func _draw_fight_fx(feet: Vector2, c: Dictionary, facing: float, h: float) -> vo
 				draw_circle(p, 3.0 + 7.0 * q, Color(0.95, 0.98, 1.0, 0.85 * (1.0 - q)))
 		"flood":
 			# откачивают воду: брызги из ведра
-			draw_rect(Rect2(hand - Vector2(7, 6), Vector2(14, 12)), Color(0.55, 0.6, 0.7))
+			var bucket := Art.tex("res://art/fx/bucket.png")
+			if bucket:
+				var bw := h * 0.38
+				var bh := bw * bucket.get_height() / bucket.get_width()
+				draw_texture_rect(bucket, Rect2(hand - Vector2(bw * 0.5, bh * 0.55), Vector2(bw, bh)), false)
+			else:
+				draw_rect(Rect2(hand - Vector2(7, 6), Vector2(14, 12)), Color(0.55, 0.6, 0.7))
 			for i in 5:
 				var q := fmod(k + i / 5.0, 1.0)
 				var p := hand + Vector2(facing * (6.0 + q * 30.0) + (i - 2) * 3.0, -q * 36.0 + q * q * 40.0)
