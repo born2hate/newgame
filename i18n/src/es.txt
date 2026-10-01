@@ -698,3 +698,4 @@
 696|Llamando a supervivientes
 697|Pocos nos encontrarán por su cuenta. Construye una sala de radio: su señal guiará a nuevos supervivientes hasta la colonia.
 698|Sube el volumen de la radio y llena los pasillos. Llega a 30 colonos.
+699|o %d colonos

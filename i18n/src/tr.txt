@@ -697,3 +697,4 @@
 696|Hayatta kalanlara çağrı
 697|Bizi kendi başına bulan az olur. Bir telsiz odası kur: yayını yeni hayatta kalanları koloniye getirecek.
 698|Telsizin sesini aç ve salonları doldur. 30 koloniste ulaş.
+699|veya %d kolonist

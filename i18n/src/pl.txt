@@ -697,3 +697,4 @@
 696|Wezwanie ocalałych
 697|Niewielu znajdzie nas samych. Zbuduj radiostację: jej sygnał doprowadzi nowych ocalałych do kolonii.
 698|Podkręć radio i zapełnij korytarze. Osiągnij 30 kolonistów.
+699|lub %d kolonistów

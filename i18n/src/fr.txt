@@ -697,3 +697,4 @@
 696|Appel aux survivants
 697|Peu nous trouveront seuls. Construis une salle radio : son signal guidera de nouveaux survivants jusqu'à la colonie.
 698|Monte le son de la radio et remplis les couloirs. Atteins 30 colons.
+699|ou %d colons

@@ -697,3 +697,4 @@
 696|Memanggil Penyintas
 697|Hanya sedikit yang akan menemukan kita sendiri. Bangun Ruang Radio: siarannya akan menuntun penyintas baru ke koloni.
 698|Keraskan radio dan penuhi lorong. Capai 30 kolonis.
+699|atau %d kolonis

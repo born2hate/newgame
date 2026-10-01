@@ -703,6 +703,7 @@ const T := {
 	"Calling Survivors": "Hayatta kalanlara çağrı",
 	"Only a few will find us on their own. Build a Radio Room: its broadcast is how new survivors will reach the colony.": "Bizi kendi başına bulan az olur. Bir telsiz odası kur: yayını yeni hayatta kalanları koloniye getirecek.",
 	"Turn the radio up and fill the halls. Reach 30 colonists.": "Telsizin sesini aç ve salonları doldur. 30 koloniste ulaş.",
+	"or %d colonists": "veya %d kolonist",
 }
 
 static func make() -> Translation:

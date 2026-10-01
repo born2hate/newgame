@@ -697,3 +697,4 @@
 696|Chamando sobreviventes
 697|Poucos nos acharão sozinhos. Construa uma sala de rádio: o sinal dela vai guiar novos sobreviventes até a colônia.
 698|Aumente o volume do rádio e encha os corredores. Chegue a 30 colonos.
+699|ou %d colonos

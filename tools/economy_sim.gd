@@ -23,6 +23,7 @@ var _i0 := 0
 var _k0 := 0
 var idle_day := 0
 var idle_min := 0
+var dead_day := 0
 var trace_s := 0
 var trace_left := 16
 
@@ -105,7 +106,7 @@ func _initialize() -> void:
 	if profile == "starter":
 		g.grant(load("res://scripts/store.gd").IAP[0].reward, "")
 	print("profile=%s  sessions=%d×%d min/day" % [profile, SESSIONS_PER_DAY, SESSION_MIN])
-	print("day  pop  kids  rooms  lvl  colLv  pearls  cryst  items  story  earned_p  ads  starv  idle%")
+	print("day  pop  kids  rooms  lvl  colLv  pearls  cryst  items  story  earned_p  ads  starv  dead%")
 	var gap := 86400.0 / SESSIONS_PER_DAY - SESSION_MIN * 60.0
 	for d in days:
 		for s in SESSIONS_PER_DAY:
@@ -123,8 +124,9 @@ func _initialize() -> void:
 		var kids: int = g.colonists.filter(func(c): return c.get("child", false)).size()
 		print("%3d  %3d  %4d  %5d  %3.1f  %5d  %6d  %5d  %5d  %5d  %8d  %3d  %4d  %4.0f" % [d + 1, g.colonists.size(), kids, g.rooms.size(),
 			float(lv) / maxf(1, g.colonists.size()), g.colony_level, g.pearls, g.crystals, g.items.size(),
-			g.story_index, earned.pearls, ads_watched, starve, 100.0 * idle_day / (SESSIONS_PER_DAY * SESSION_MIN * 60)])
+			g.story_index, earned.pearls, ads_watched, starve, 100.0 * dead_day / (SESSIONS_PER_DAY * SESSION_MIN)])
 		idle_day = 0
+		dead_day = 0
 		if OS.get_cmdline_user_args().has("res"):
 			var pf := []
 			for r in g.rooms:
@@ -188,9 +190,14 @@ func _session() -> void:
 		if idle_now:
 			idle_day += 1
 			idle_min += 1
+		if i % 60 == 59:
+			if idle_min >= 45:
+				dead_day += 1
 		if OS.get_cmdline_user_args().has("trace") and i % 60 == 59 and g.stats.get("collect", 0) < 2000 and trace_left > 0:
 			var st: Dictionary = g.story_current()
 			print("  t%02d:%02d  pearls %4d  sci %3d  pop %2d/%2d  idle %2ds  ch%d %s %d/%d  cheapest %s" % [trace_s, i / 60, g.pearls, g.science, g.colonists.size(), g.population_cap(), idle_min, g.story_index, st.goal[0] if not st.is_empty() else "-", g.story_progress(), st.goal[1] if not st.is_empty() else 0, _cheapest_action()])
+			pass
+		if i % 60 == 59:
 			idle_min = 0
 		var p1: int = g.pearls
 		if g.resources.oxygen <= 0.0 or g.resources.food <= 0.0:

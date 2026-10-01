@@ -913,7 +913,7 @@ func _open_build() -> void:
 			if Game.pearls < cost:
 				b.modulate = Color(1, 1, 1, 0.55)
 		else:
-			b = _button(tr("Story chapter %d") % (Defs.unlock_chapter(type) + 1) + "\n" + tr("Needs %d colonists") % def.unlock_pop, func(): pass, 64)
+			b = _button(tr("Story chapter %d") % (Defs.unlock_chapter(type) + 1) + "\n" + tr("or %d colonists") % def.unlock_pop, func(): pass, 64)
 			b.disabled = true
 		b.custom_minimum_size.x = 150
 		hb.add_child(b)
@@ -2137,7 +2137,7 @@ func _outside_section() -> void:
 	if Game.is_unlocked("dock"):
 		sheet_body.add_child(_with_icon(_button(tr("Build a Sub Dock"), _start_build.bind("dock"), 72), "build", 44))
 	else:
-		sheet_body.add_child(_label(tr("Opens in story chapter %d") % (Defs.unlock_chapter("dock") + 1) + "  ·  " + tr("Needs %d colonists") % Defs.ROOMS.dock.unlock_pop, 20, Color(1.0, 0.75, 0.5)))
+		sheet_body.add_child(_label(tr("Opens in story chapter %d") % (Defs.unlock_chapter("dock") + 1) + " " + tr("or %d colonists") % Defs.ROOMS.dock.unlock_pop, 20, Color(1.0, 0.75, 0.5)))
 
 func _dock_section(r: Dictionary) -> void:
 	var e := Game.expedition_at(r.id)

@@ -697,3 +697,4 @@
 696|Ruf der Überlebenden
 697|Nur wenige finden uns von allein. Baue einen Funkraum: Sein Signal führt neue Überlebende zur Kolonie.
 698|Dreh das Funkgerät auf und füll die Hallen. Erreiche 30 Kolonisten.
+699|oder %d Kolonisten

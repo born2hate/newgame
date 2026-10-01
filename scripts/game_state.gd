@@ -370,8 +370,8 @@ func arrival_speed() -> float:
 	if count_of("radio") > 0:
 		# радио вещает и само, слабо; люди внутри усиливают сигнал
 		rp = maxf(rp, 3.0)
-	# сила 10 при 8 колонистах ≈ один человек в 7 часов; с ростом колонии — реже
-	var per_hour := 0.15 * pow(rp / 10.0, 0.5) * 15.0 / (colonists.size() + 7.0) if rp > 0.0 else 0.0
+	# сила 10 при 8 колонистах ≈ один человек в 10 часов; с ростом колонии — реже
+	var per_hour := 0.1 * pow(rp / 10.0, 0.5) * 15.0 / (colonists.size() + 7.0) if rp > 0.0 else 0.0
 	return base + per_hour * ARRIVAL_INTERVAL / 3600.0
 
 func armory_bonus() -> float:
@@ -1376,7 +1376,7 @@ func resolve_choice(e: Dictionary, risk: bool) -> String:
 		match ch.id:
 			"chest", "glow":
 				if ok:
-					var cr := rng.randi_range(1, 2) + zone_idx
+					var cr := 1 + zone_idx / 2
 					e.loot["crystals"] = int(e.loot.get("crystals", 0)) + cr
 					ev.loot = {"crystals": cr}
 					text = tr("{n} took the risk and found {v} crystals!").replace("{n}", who).replace("{v}", str(cr))
@@ -1593,7 +1593,7 @@ func _end_boss(won: bool) -> void:
 	var bname: String = tr(BOSSES[int(boss.get("kind", 0))].name)
 	boss = {}
 	if won:
-		var r := {"pearls": 300 + 120 * tier, "crystals": 6 + tier}
+		var r := {"pearls": 300 + 120 * tier, "crystals": 3 + tier / 2}
 		if rng.randf() < 0.35:
 			r["item"] = "legendary" if rng.randf() < 0.2 else "rare"
 		if rng.randf() < 0.25:
@@ -2210,6 +2210,9 @@ func story_progress() -> int:
 	# «построй X» засчитывается, если X уже стоит (например, построили в туториале)
 	if String(st.goal[0]).begins_with("build_"):
 		return maxi(story_count, count_of(String(st.goal[0]).trim_prefix("build_")))
+	# разовые цели («сходи в экспедицию», «улучши отсек») — если уже делал раньше, засчитано
+	if int(st.goal[1]) == 1 and int(stats.get(st.goal[0], 0)) >= 1:
+		return 1
 	return story_count
 
 func story_ready() -> bool:

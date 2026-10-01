@@ -547,6 +547,27 @@ func _initialize() -> void:
 	check(not stg.can_start_any_research(), "исследование идёт — значка нет")
 	check(stg.research_finish_cost() == 3, "ускорение 10 минут стоит 3 кристалла (%d)" % stg.research_finish_cost())
 	stg.free()
+	# открытие отсеков: глава сюжета ИЛИ население
+	var ul = load("res://scripts/game_state.gd").new()
+	ul.new_game()
+	check(not ul.is_unlocked("radio"), "радио закрыто в начале")
+	ul.story_index = Defs.unlock_chapter("radio")
+	check(ul.is_unlocked("radio"), "глава открыла радио")
+	ul.story_index = 0
+	while ul.colonists.size() < int(Defs.ROOMS.radio.unlock_pop):
+		ul.colonists.append(ul._make_colonist())
+	check(ul.is_unlocked("radio"), "радио открылось по населению без сюжета")
+	# разовая цель, выполненная заранее, засчитывается
+	ul.stats["upgrade"] = 1
+	for i in Defs.STORY.size():
+		if Defs.STORY[i].goal[0] == "upgrade":
+			ul.story_index = i
+	ul.story_count = 0
+	check(ul.story_ready(), "«улучши отсек» засчитан, если улучшал раньше")
+	check(ul.arrival_speed() == 0.0, "без радио после 8 человек никто не приходит")
+	ul._add_room("radio", 1, 1)
+	check(ul.arrival_speed() > 0.0, "пустое радио слабо, но вещает")
+	ul.free()
 
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(g.SAVE_PATH))
 	g.free(); g2.free(); g3.free()

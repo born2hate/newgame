@@ -3,6 +3,21 @@
 All notable changes to **Deep Colony** are listed here, newest first.
 APK builds live in [`releases/`](releases/).
 
+## Unreleased
+### Added
+- **Story tracker** on the main screen: the current chapter goal with progress. Tap it to jump straight to the action (build the room, plan the expedition, open research); when the goal is done it glows — tap to claim.
+- **Story opens rooms early**: each chapter unlocks new rooms ("New rooms: …" on the chapter card, a banner when they open). Players who ignore the story still unlock everything by population — nobody is kept on a leash.
+- 3 new early chapters: *Pearls of the Deep* (build a Pearl Farm), *Make It Better* (upgrade a room), *Calling Survivors* (build a Radio Room).
+### Changed
+- **Less waiting**: rooms are ready twice as often but give half per collection — same income, more to tap.
+- **Radio**: brings people faster while the colony is small and slower as it grows; an empty Radio Room still broadcasts weakly, so the colony never gets stuck at 8.
+- **Scarcer economy**: research takes 10 min – 5 h (rush: 1 crystal per 4 min); fewer crystals from expeditions, crates, chests, bosses, achievements and the story; fewer pearls from expeditions, crates and raider bodies; fewer crates from expeditions; colonists from crates are rarer; children grow for 24 h; the Workshop crafts 3× slower.
+- Calmer work animation; progress bars moved under the room name so colonists don't stand on them.
+### Fixed
+- Story chapters now count what is already done: rooms built in the tutorial, colonists already at work, a first expedition or upgrade made earlier.
+- The research badge only lights up when a research can actually be started.
+- The boss health bar stays on screen.
+
 ## 0.12 — 2026-10-01
 ### Added
 - **Phone notifications** (scheduled when the game goes to the background, cancelled on return): expedition back, child grown up, research done, all rooms ready, free crate, daily reward, a gentle "we miss you" after 2 days. At most one every 30 minutes; can be turned off in Settings. Needs the native local-notification plugin in the release build.

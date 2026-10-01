@@ -697,3 +697,4 @@
 696|Richiamo ai sopravvissuti
 697|Pochi ci troveranno da soli. Costruisci una sala radio: il suo segnale guiderà nuovi sopravvissuti alla colonia.
 698|Alza il volume della radio e riempi i corridoi. Raggiungi 30 coloni.
+699|o %d coloni
