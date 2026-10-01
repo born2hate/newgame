@@ -551,5 +551,15 @@
 "%d rooms are ready, tap them to collect!",
 "The intended experience. Fallen colonists can be revived for pearls within 2 hours.",
 "More and stronger incidents, faster resource use. The fallen can be revived only within 30 minutes and for double the price. No crystal speed-ups. +50% rewards.",
-"%d h"
+"%d h",
+"Pirate raid!",
+"Pirates are breaking through the airlock door. Drag colonists there to fight!",
+"PIRATES",
+"Pirates in %s!",
+"The pirates broke through the door!",
+"Raid repelled!",
+"The pirates got away",
+"They escaped with %d pearls.",
+"DOOR",
+"Colony entrance. New colonists arrive here. Upgrade the door to hold pirates back longer."
 ]

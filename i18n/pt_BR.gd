@@ -557,6 +557,16 @@ const T := {
 	"The intended experience. Fallen colonists can be revived for pearls within 2 hours.": "A experiência pretendida. Colonos caídos podem ser revividos com pérolas em até 2 horas.",
 	"More and stronger incidents, faster resource use. The fallen can be revived only within 30 minutes and for double the price. No crystal speed-ups. +50% rewards.": "Incidentes mais fortes e frequentes, consumo maior. Os caídos só podem ser revividos em até 30 minutos e pelo dobro do preço. Sem acelerar com cristais. +50% de recompensas.",
 	"%d h": "%d h",
+	"Pirate raid!": "Ataque pirata!",
+	"Pirates are breaking through the airlock door. Drag colonists there to fight!": "Os piratas estão arrombando a porta da eclusa. Arraste colonos para lá para lutar!",
+	"PIRATES": "PIRATAS",
+	"Pirates in %s!": "Piratas em %s!",
+	"The pirates broke through the door!": "Os piratas arrombaram a porta!",
+	"Raid repelled!": "Ataque repelido!",
+	"The pirates got away": "Os piratas fugiram",
+	"They escaped with %d pearls.": "Levaram %d pérolas.",
+	"DOOR": "PORTA",
+	"Colony entrance. New colonists arrive here. Upgrade the door to hold pirates back longer.": "Entrada da colônia. Novos colonos chegam aqui. Melhore a porta para segurar os piratas por mais tempo.",
 }
 
 static func make() -> Translation:

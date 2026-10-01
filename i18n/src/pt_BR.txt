@@ -551,3 +551,13 @@
 550|A experiência pretendida. Colonos caídos podem ser revividos com pérolas em até 2 horas.
 551|Incidentes mais fortes e frequentes, consumo maior. Os caídos só podem ser revividos em até 30 minutos e pelo dobro do preço. Sem acelerar com cristais. +50% de recompensas.
 552|%d h
+553|Ataque pirata!
+554|Os piratas estão arrombando a porta da eclusa. Arraste colonos para lá para lutar!
+555|PIRATAS
+556|Piratas em %s!
+557|Os piratas arrombaram a porta!
+558|Ataque repelido!
+559|Os piratas fugiram
+560|Levaram %d pérolas.
+561|PORTA
+562|Entrada da colônia. Novos colonos chegam aqui. Melhore a porta para segurar os piratas por mais tempo.

@@ -127,3 +127,12 @@ transparent background, no text: <объект>
 | `school.png` | `Underwater colony classroom: a big glowing holographic board with a fish diagram, small desks with tablets, shelves with books and specimen jars, a globe of the ocean floor, friendly soft blue light.` |
 | `turbine.png` | `Underwater colony current turbine room: a huge spinning turbine propeller behind thick glass, water currents with swirling bubbles, big generators with glowing blue coils, heavy pipes, powerful cool blue lighting.` |
 | `aquarium.png` | `Underwater colony aquarium hall: large glass tanks with colorful tropical fish, glowing jellyfish and corals, decorative plants, a bench for visitors, calm turquoise lighting with light ripples on the walls.` |
+
+## Пираты (налёты) → `art/creatures/`
+
+| Файл | Промт |
+|---|---|
+| `raider_0.png` | `cartoon underwater pirate raider in a rusty patched diving suit with a red bandana and harpoon gun, side view facing right, full body, standing, chibi proportions like a mobile game character, transparent background` |
+| `raider_1.png` | то же, но `with a big rusty knife and eye patch` |
+| `raider_2.png` | то же, но `a big brute with a riveted metal shield` |
+| `pirate_sub.png` | `cartoon pirate submarine, rusty dark hull with skull flag and spikes, side view facing left, transparent background, mobile game style` |

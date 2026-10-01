@@ -551,3 +551,13 @@
 550|Das vorgesehene Spielerlebnis. Gefallene Kolonisten können innerhalb von 2 Stunden für Perlen wiederbelebt werden.
 551|Mehr und stärkere Vorfälle, schnellerer Verbrauch. Gefallene können nur innerhalb von 30 Minuten und zum doppelten Preis wiederbelebt werden. Keine Beschleunigung mit Kristallen. +50% Belohnungen.
 552|%d Std.
+553|Piratenüberfall!
+554|Piraten brechen die Schleusentür auf. Zieh Kolonisten dorthin, um zu kämpfen!
+555|PIRATEN
+556|Piraten in %s!
+557|Die Piraten haben die Tür aufgebrochen!
+558|Überfall abgewehrt!
+559|Die Piraten sind entkommen
+560|Sie sind mit %d Perlen entkommen.
+561|TÜR
+562|Eingang der Kolonie. Hier kommen neue Kolonisten an. Verbessere die Tür, um Piraten länger aufzuhalten.

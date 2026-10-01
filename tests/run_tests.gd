@@ -325,6 +325,42 @@ func _initialize() -> void:
 	of._apply_offline(8 * 3600.0)
 	check(of.resources.oxygen >= 80.0 * 0.35 - 0.01 and of.resources.food >= 80.0 * 0.35 - 0.01, "офлайн 8 ч: запасы не обнулились (%.0f O₂, %.0f еды)" % [of.resources.oxygen, of.resources.food])
 	rv.free(); of.free()
+	# налёт пиратов
+	var pr = load("res://scripts/game_state.gd").new()
+	pr.new_game()
+	pr.set_difficulty("normal")
+	pr.pearls = 1000
+	for c in pr.colonists:
+		c.room = -1
+	pr.start_raid()
+	check(not pr.raid.is_empty() and pr.find_room_of_type("airlock").hazard == "raid", "налёт начался у шлюза")
+	var moved_on := false
+	for i in 120:
+		pr.resources.oxygen = 100.0
+		pr.resources.food = 100.0
+		pr.simulate(1.0, false)
+		if not pr.raid.is_empty() and int(pr.raid.room) != pr.find_room_of_type("airlock").id:
+			moved_on = true
+	check(moved_on and pr.pearls < 1000, "без защитников пираты грабят и идут дальше")
+	# сильные защитники отбивают налёт
+	var pd2 = load("res://scripts/game_state.gd").new()
+	pd2.new_game()
+	pd2.set_difficulty("normal")
+	pd2.start_raid()
+	var al2: Dictionary = pd2.find_room_of_type("airlock")
+	for c in pd2.colonists:
+		c.str = 10
+		c["end"] = 10
+		pd2.send_help(c, al2)
+	var p_before: int = pd2.pearls
+	for i in 120:
+		pd2.resources.oxygen = 100.0
+		pd2.resources.food = 100.0
+		pd2.simulate(1.0, false)
+		if pd2.raid.is_empty():
+			break
+	check(pd2.raid.is_empty() and pd2.pearls > p_before and al2.incident <= 0.0, "защитники отбили налёт и получили награду")
+	pr.free(); pd2.free()
 	# беда без людей: разгорается, перекидывается на соседа и сама выгорает
 	var bz = load("res://scripts/game_state.gd").new()
 	bz.new_game()

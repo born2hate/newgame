@@ -551,3 +551,13 @@
 550|L'esperienza prevista. I coloni caduti possono essere rianimati con le perle entro 2 ore.
 551|Incidenti più forti e frequenti, consumi maggiori. I caduti si possono rianimare solo entro 30 minuti e al doppio del prezzo. Niente accelerazioni con cristalli. +50% di ricompense.
 552|%d h
+553|Assalto pirata!
+554|I pirati stanno sfondando la porta della camera stagna. Trascina lì i coloni per combattere!
+555|PIRATI
+556|Pirati in %s!
+557|I pirati hanno sfondato la porta!
+558|Assalto respinto!
+559|I pirati sono scappati
+560|Sono fuggiti con %d perle.
+561|PORTA
+562|Ingresso della colonia. Qui arrivano i nuovi coloni. Migliora la porta per trattenere i pirati più a lungo.

@@ -396,6 +396,8 @@ func simulate(delta: float, offline: bool) -> void:
 		var def: Dictionary = Defs.ROOMS[r.type]
 		r.heat = maxf(0.0, r.heat - delta / 60.0)
 		if r.incident > 0.0:
+			if r.hazard == "raid":
+				continue
 			_tick_hazard(r, delta, offline)
 			continue
 		if def.has("produces") and not r.ready:
@@ -449,6 +451,8 @@ func simulate(delta: float, offline: bool) -> void:
 			var mult := (1.0 / 0.7 if has_research("reinforced_hull") else 1.0) * (0.6 if weekly_mod() == "tide" else 1.0)
 			incident_timer = rng.randf_range(300.0, 540.0) * mult * mode().incidents
 			_spawn_random_incident()
+	if not offline:
+		_tick_raid(delta)
 	if not offline and colonists.size() >= 6:
 		trader_timer -= delta * (2.0 if has_research("trader_beacon") else 1.0) * (1.0 + type_power("radio") * 0.03)
 		if trader_timer <= 0.0:
@@ -1214,7 +1218,187 @@ const HAZARDS := {
 	"fire": {"label": "FIRE", "msg": "Fire in %s!", "damage": 1.6},
 	"flood": {"label": "FLOOD", "msg": "Flooding in %s!", "damage": 1.2},
 	"creature": {"label": "ATTACK", "msg": "Creature attack in %s!", "damage": 2.4},
+	"raid": {"label": "PIRATES", "msg": "Pirates in %s!", "damage": 0.0},
 }
+
+# ---------------------------------------------------------------- налёты пиратов
+## Как рейдеры в Fallout: подлодка причаливает к шлюзу, пираты ломают дверь и идут
+## из отсека в отсек. Где нет людей — воруют жемчуг и запасы и идут дальше;
+## где есть — дерутся. Вне игры налётов не бывает.
+const RAID_MIN_POP := 10
+const RAID_STAY := 10.0
+var raid := {}
+var raid_timer := 900.0
+
+func raid_tier() -> int:
+	return colonists.size() / 10 + max_row() / 4
+
+func start_raid() -> void:
+	var al := find_room_of_type("airlock")
+	if al.is_empty() or not raid.is_empty() or al.incident > 0.0:
+		return
+	var tier := raid_tier()
+	var n := clampi(2 + tier / 2, 2, 5)
+	var raiders := []
+	for i in n:
+		var hp := 60.0 + 25.0 * tier
+		raiders.append({"hp": hp, "max": hp, "kind": rng.randi_range(0, 2)})
+	raid = {"raiders": raiders, "room": al.id, "door": 15.0 + 20.0 * al.level, "stay": 0.0,
+		"visited": [al.id], "stolen": 0, "atk": 1.0 + 0.35 * tier, "start_n": n}
+	al.hazard = "raid"
+	al.incident = 100.0
+	banner.emit("raid", tr("Pirate raid!"), tr("Pirates are breaking through the airlock door. Drag colonists there to fight!"))
+	event.emit("incident")
+	changed.emit()
+
+func raid_alive() -> Array:
+	return raid.get("raiders", []).filter(func(x): return x.hp > 0.0)
+
+## Сила колониста в бою: сила, выносливость, оружие (через stat) и здоровье.
+func fight_power(c: Dictionary) -> float:
+	return (stat(c, "str") + stat(c, "end") * 0.5 + 1.0) * (0.4 + 0.6 * c.health / 100.0)
+
+func _tick_raid(delta: float) -> void:
+	if raid.is_empty():
+		if colonists.size() >= RAID_MIN_POP:
+			raid_timer -= delta
+			if raid_timer <= 0.0:
+				raid_timer = rng.randf_range(1200.0, 2100.0) * mode().incidents
+				start_raid()
+		return
+	var room := get_room(int(raid.room))
+	if room.is_empty():
+		_end_raid(false)
+		return
+	var alive := raid_alive()
+	var crew := responders(room)
+	# бой: люди бьют первого пирата, пираты — случайного из людей
+	if not crew.is_empty():
+		var dps := 0.0
+		for c in crew:
+			dps += fight_power(c)
+		dps *= 0.45 * armory_bonus()
+		var dmg_left := dps * delta
+		for rd in alive:
+			if dmg_left <= 0.0:
+				break
+			var take := minf(rd.hp, dmg_left)
+			rd.hp -= take
+			dmg_left -= take
+		alive = raid_alive()
+		if alive.is_empty():
+			_end_raid(true)
+			return
+		var victim: Dictionary = crew.pick_random()
+		victim.health = maxf(health_floor(), victim.health - float(raid.atk) * alive.size() * delta * (1.0 - protection(victim)) * mode().damage)
+		raid.stay = 0.0
+	elif raid.door > 0.0:
+		pass
+	else:
+		# никого — воруют и идут дальше
+		var steal := mini(pearls, int(ceil(2.0 * alive.size() * delta)))
+		pearls -= steal
+		raid.stolen = int(raid.stolen) + steal
+		for k in ["energy", "oxygen", "food"]:
+			resources[k] = maxf(0.0, resources[k] - 0.6 * alive.size() * delta)
+		raid.stay = float(raid.stay) + delta
+		if raid.stay >= RAID_STAY:
+			raid.stay = 0.0
+			_raid_move(room)
+			return
+	if raid.door > 0.0:
+		raid.door = maxf(0.0, float(raid.door) - delta * (0.5 + 0.25 * alive.size()))
+		if raid.door <= 0.0:
+			message.emit(tr("The pirates broke through the door!"))
+	_update_raid_bar()
+
+func _update_raid_bar() -> void:
+	var room := get_room(int(raid.room))
+	var tot := 0.0
+	var mx := 0.0
+	for rd in raid.raiders:
+		tot += maxf(0.0, rd.hp)
+		mx += rd.max
+	room.incident = maxf(1.0, 100.0 * tot / maxf(1.0, mx))
+
+## Соседи для прохода пиратов: слева/справа на этаже, лифт — вверх/вниз.
+func _raid_neighbors(r: Dictionary) -> Array:
+	var out := []
+	for n in [room_at(r.col - 1, r.row), room_at(r.col + room_w(r), r.row)]:
+		if not n.is_empty():
+			out.append(n)
+	if r.type == "elevator":
+		for dr in [-1, 1]:
+			var n := room_at(r.col, r.row + dr)
+			if not n.is_empty() and n.type == "elevator":
+				out.append(n)
+	return out
+
+func _raid_move(from: Dictionary) -> void:
+	# ближайший ещё не ограбленный отсек — поиском в ширину
+	var prev := {from.id: -1}
+	var queue := [from]
+	var goal := {}
+	while not queue.is_empty():
+		var cur: Dictionary = queue.pop_front()
+		if not cur.id in raid.visited and cur.type != "elevator":
+			goal = cur
+			break
+		for n in _raid_neighbors(cur):
+			# через отсеки, где пожар или потоп, пираты не идут
+			if not prev.has(n.id) and n.incident <= 0.0:
+				prev[n.id] = cur.id
+				queue.append(n)
+	if goal.is_empty():
+		_end_raid(false)
+		return
+	# шаг к цели: первый отсек на пути
+	var step: int = goal.id
+	while prev.get(step, -1) != from.id and prev.get(step, -1) != -1:
+		step = prev[step]
+	var next := get_room(step)
+	from.hazard = ""
+	from.incident = 0.0
+	for c in colonists:
+		if c.help == from.id:
+			c.help = -1
+	_raid_move_into(next)
+
+func _raid_move_into(next: Dictionary) -> void:
+	raid.room = next.id
+	if not next.id in raid.visited:
+		raid.visited.append(next.id)
+	next.hazard = "raid"
+	_update_raid_bar()
+	if next.type != "elevator":
+		message.emit(tr(HAZARDS.raid.msg) % tr(Defs.ROOMS[next.type].name))
+	changed.emit()
+
+func _end_raid(won: bool) -> void:
+	var room := get_room(int(raid.get("room", -1)))
+	var crew := responders(room) if not room.is_empty() else []
+	if not room.is_empty():
+		room.hazard = ""
+		room.incident = 0.0
+	for c in colonists:
+		if not room.is_empty() and c.help == room.id:
+			c.help = -1
+	var stolen: int = raid.get("stolen", 0)
+	var n: int = raid.get("start_n", 2)
+	raid = {}
+	if won:
+		var reward := int((stolen + 40 * n) * mode().reward)
+		var r := {"pearls": reward}
+		if rng.randf() < 0.25:
+			r["item"] = "rare" if rng.randf() < 0.3 else "common"
+		for c in crew:
+			c.xp += 30.0
+		track("raid_won")
+		track("incident_resolved")
+		grant(r, tr("Raid repelled!"))
+	else:
+		banner.emit("raid", tr("The pirates got away"), tr("They escaped with %d pearls.") % stolen)
+	changed.emit()
 var incident_timer := 200.0
 ## Без людей: сколько секунд беда разгорается, как быстро потом гаснет и как часто перекидывается.
 const BURN_PEAK := 40.0
@@ -1848,6 +2032,12 @@ func load_game() -> bool:
 	rooms = data.rooms
 	colonists = data.colonists
 	fallen = data.get("meta", {}).get("fallen", [])
+	# налёт не сохраняется: после перезапуска пиратов уже нет
+	raid = {}
+	for r in rooms:
+		if r.get("hazard", "") == "raid":
+			r.hazard = ""
+			r.incident = 0.0
 	for fl in fallen:
 		fl.room = int(fl.room)
 		for k in ["id", "str", "tech", "bio", "end", "cha", "luck", "level", "suit"]:

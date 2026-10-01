@@ -557,6 +557,16 @@ const T := {
 	"The intended experience. Fallen colonists can be revived for pearls within 2 hours.": "Pengalaman yang dirancang. Kolonis yang gugur bisa dihidupkan dengan mutiara dalam 2 jam.",
 	"More and stronger incidents, faster resource use. The fallen can be revived only within 30 minutes and for double the price. No crystal speed-ups. +50% rewards.": "Insiden lebih sering dan kuat, konsumsi lebih cepat. Yang gugur hanya bisa dihidupkan dalam 30 menit dengan harga dua kali lipat. Tanpa percepatan kristal. Hadiah +50%.",
 	"%d h": "%d jam",
+	"Pirate raid!": "Serangan bajak laut!",
+	"Pirates are breaking through the airlock door. Drag colonists there to fight!": "Bajak laut mendobrak pintu airlock. Seret kolonis ke sana untuk melawan!",
+	"PIRATES": "BAJAK LAUT",
+	"Pirates in %s!": "Bajak laut di %s!",
+	"The pirates broke through the door!": "Bajak laut mendobrak pintu!",
+	"Raid repelled!": "Serangan dipukul mundur!",
+	"The pirates got away": "Bajak laut kabur",
+	"They escaped with %d pearls.": "Mereka kabur membawa %d mutiara.",
+	"DOOR": "PINTU",
+	"Colony entrance. New colonists arrive here. Upgrade the door to hold pirates back longer.": "Pintu masuk koloni. Kolonis baru tiba di sini. Tingkatkan pintunya agar bajak laut tertahan lebih lama.",
 }
 
 static func make() -> Translation:

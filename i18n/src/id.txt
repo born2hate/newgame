@@ -551,3 +551,13 @@
 550|Pengalaman yang dirancang. Kolonis yang gugur bisa dihidupkan dengan mutiara dalam 2 jam.
 551|Insiden lebih sering dan kuat, konsumsi lebih cepat. Yang gugur hanya bisa dihidupkan dalam 30 menit dengan harga dua kali lipat. Tanpa percepatan kristal. Hadiah +50%.
 552|%d jam
+553|Serangan bajak laut!
+554|Bajak laut mendobrak pintu airlock. Seret kolonis ke sana untuk melawan!
+555|BAJAK LAUT
+556|Bajak laut di %s!
+557|Bajak laut mendobrak pintu!
+558|Serangan dipukul mundur!
+559|Bajak laut kabur
+560|Mereka kabur membawa %d mutiara.
+561|PINTU
+562|Pintu masuk koloni. Kolonis baru tiba di sini. Tingkatkan pintunya agar bajak laut tertahan lebih lama.

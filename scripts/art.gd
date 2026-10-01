@@ -60,6 +60,9 @@ static func marker_icon(key: String) -> Texture2D:
 		"captain": return walk(CAPTAIN_SUIT, 0)
 		"pet": return tex("res://art/creatures/clownfish.png")
 		"trader": return tex("res://art/creatures/trader_sub.png")
+		"raid":
+			var ps := tex("res://art/creatures/pirate_sub.png")
+			return ps if ps else tex("res://art/creatures/bathyscaphe.png")
 	return icon(key)
 
 ## Разбирает «[ключ]текст» → [ключ, текст].

@@ -551,3 +551,13 @@
 550|Tasarlanan deneyim. Ölen sakinler 2 saat içinde inciyle diriltilebilir.
 551|Daha sık ve güçlü kazalar, daha hızlı tüketim. Ölenler yalnızca 30 dakika içinde ve iki katı fiyata diriltilebilir. Kristalle hızlandırma yok. +50% ödül.
 552|%d sa
+553|Korsan baskını!
+554|Korsanlar hava kilidinin kapısını kırıyor. Savaşmak için sakinleri oraya sürükle!
+555|KORSANLAR
+556|%s içinde korsanlar!
+557|Korsanlar kapıyı kırdı!
+558|Baskın püskürtüldü!
+559|Korsanlar kaçtı
+560|%d inciyle kaçtılar.
+561|KAPI
+562|Koloninin girişi. Yeni sakinler buraya gelir. Korsanları daha uzun tutmak için kapıyı geliştir.

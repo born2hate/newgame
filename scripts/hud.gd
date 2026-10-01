@@ -929,7 +929,7 @@ func _open_room(id: int) -> void:
 			sheet_body.add_child(_button("+ Assign colonist", _open_pick.bind(id), 64))
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 10)
-	if r.level < Defs.MAX_LEVEL and def.get("buildable", false):
+	if r.level < Defs.MAX_LEVEL and (def.get("buildable", false) or def.get("upgradable", false)):
 		var cost := Game.upgrade_cost(r)
 		var up := _button(tr("Upgrade ◉%d") % cost, func():
 			Game.upgrade(r)

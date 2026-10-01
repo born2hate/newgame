@@ -552,3 +552,13 @@
 550|La experiencia prevista. Los colonos caídos pueden revivirse con perlas durante 2 horas.
 551|Incidentes más frecuentes y fuertes, más consumo. Los caídos solo pueden revivirse durante 30 minutos y al doble de precio. Sin aceleraciones con cristales. +50% de recompensas.
 552|%d h
+553|¡Asalto pirata!
+554|Los piratas están rompiendo la puerta de la esclusa. ¡Arrastra colonos allí para luchar!
+555|PIRATAS
+556|¡Piratas en %s!
+557|¡Los piratas rompieron la puerta!
+558|¡Asalto repelido!
+559|Los piratas escaparon
+560|Se llevaron %d perlas.
+561|PUERTA
+562|Entrada de la colonia. Aquí llegan los nuevos colonos. Mejora la puerta para frenar más a los piratas.

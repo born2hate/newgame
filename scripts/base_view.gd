@@ -309,6 +309,7 @@ func _draw_rest(depth_rows: int) -> void:
 			_text(tp + Vector2(10, 24), tag, 22, Color(1.0, 0.92, 0.6))
 	_draw_treasure()
 	_draw_trader()
+	_draw_pirate_sub()
 	for fl in floaters:
 		var a := clampf(fl.life, 0.0, 1.0)
 		var ic: Texture2D = Art.marker_icon(fl.get("icon", "")) if fl.get("icon", "") != "" else null
@@ -529,6 +530,63 @@ func _draw_trader() -> void:
 	draw_arc(bp, 22, 0, TAU, 24, Color(0.5, 1.0, 0.6), 3.0)
 	_text(bp + Vector2(0, 8), "$", 24, Color(0.6, 1.0, 0.7), true)
 	_text(r.position + Vector2(r.size.x * 0.5, r.size.y + 18), _short_time(float(Game.trader.until) - Game.now()), 16, Color(0.8, 1.0, 0.85), true)
+
+## Пираты в отсеке (пока нет их картинок — водолазы в тёмных костюмах с красной банданой).
+func _draw_raiders(r: Dictionary, inner: Rect2) -> void:
+	var alive := Game.raid_alive()
+	if Game.raid.get("door", 0.0) > 0.0:
+		# ещё ломают дверь: стоят у правого края шлюза, полоска двери
+		var db := Rect2(inner.position.x + 8, inner.end.y - 22, inner.size.x - 16, 8)
+		var al := Game.find_room_of_type("airlock")
+		var full: float = 15.0 + 20.0 * al.get("level", 1)
+		draw_rect(db, Color(0, 0, 0, 0.6))
+		draw_rect(Rect2(db.position, Vector2(db.size.x * Game.raid.door / full, db.size.y)), Color(0.7, 0.75, 0.85))
+		_text(Vector2(inner.get_center().x, db.position.y - 6), tr("DOOR"), 16, Color(0.85, 0.9, 1.0), true)
+	var n := alive.size()
+	for i in n:
+		var rd: Dictionary = alive[i]
+		var fx := inner.position.x + inner.size.x * (0.55 + 0.35 * (i + 0.5) / maxf(1.0, n)) + sin(t * 2.0 + i) * 4.0
+		var feet := Vector2(fx, inner.end.y - 6)
+		var h := 64.0
+		var spr := Art.tex("res://art/creatures/raider_%d.png" % int(rd.kind))
+		var tint := Color.WHITE
+		if spr == null:
+			spr = Art.diver(3 + int(rd.kind))
+			tint = Color(0.5, 0.32, 0.32)
+		if spr:
+			var sz := Vector2(h * spr.get_width() / spr.get_height(), h)
+			var lean := 0.1 * maxf(0.0, sin(t * 9.0 + i * 1.7))
+			draw_set_transform(feet, -lean, Vector2(-1, 1))
+			draw_texture_rect(spr, Rect2(Vector2(-sz.x / 2.0, -sz.y), sz), false, tint)
+			draw_set_transform(Vector2.ZERO)
+			if tint != Color.WHITE:
+				# бандана
+				draw_rect(Rect2(feet + Vector2(-sz.x * 0.28, -h * 0.86), Vector2(sz.x * 0.56, 5)), Color(0.9, 0.12, 0.1))
+		var hb := Rect2(feet + Vector2(-16, -h - 12), Vector2(32, 5))
+		draw_rect(hb, Color(0, 0, 0, 0.7))
+		draw_rect(Rect2(hb.position, Vector2(hb.size.x * rd.hp / rd.max, hb.size.y)), Color(1.0, 0.25, 0.2))
+
+## Подлодка пиратов у шлюза, пока идёт налёт.
+func _draw_pirate_sub() -> void:
+	if Game.raid.is_empty():
+		return
+	var al := Game.find_room_of_type("airlock")
+	if al.is_empty():
+		return
+	var cx := room_rect(al).get_center().x - 250
+	var rect := Rect2(cx - 115, -150 + sin(t * 1.4) * 5, 230, 70)
+	var ship := Art.tex("res://art/creatures/pirate_sub.png")
+	if ship:
+		var hh := rect.size.x * ship.get_height() / ship.get_width()
+		draw_texture_rect(ship, Rect2(rect.position.x, rect.get_center().y - hh / 2.0, rect.size.x, hh), false)
+	else:
+		var sub := Art.tex("res://art/creatures/bathyscaphe.png")
+		if sub:
+			draw_texture_rect(sub, rect, false, Color(0.45, 0.3, 0.3))
+	var bp := rect.position + Vector2(rect.size.x * 0.5, -20 + sin(t * 3.0) * 3)
+	draw_circle(bp, 18, Color(0.3, 0.02, 0.02, 0.9))
+	draw_arc(bp, 18, 0, TAU, 24, Color(1.0, 0.3, 0.25), 3.0)
+	_text(bp + Vector2(0, 8), "!", 24, Color(1.0, 0.85, 0.8), true)
 
 func _draw_bubbles() -> void:
 	var al := Game.find_room_of_type("airlock")
@@ -786,6 +844,9 @@ func _draw_hazard(r: Dictionary, inner: Rect2) -> void:
 			# струя из пробоины
 			var jet := Vector2(inner.position.x + inner.size.x * 0.7, inner.position.y + 10)
 			draw_line(jet, jet + Vector2(-20, inner.size.y - level - 10), Color(0.6, 0.9, 1.0, 0.7), 5.0)
+		"raid":
+			draw_rect(inner, Color(0.5, 0.0, 0.0, 0.12 + 0.06 * sin(t * 5.0)))
+			_draw_raiders(r, inner)
 		"creature":
 			draw_rect(inner, Color(0.6, 0.0, 0.2, 0.15 + 0.1 * sin(t * 6.0)))
 			var fishy := Art.tex("res://art/creatures/anglerfish.png")
@@ -1087,6 +1148,8 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 func _hazard_focus_x(room: Dictionary) -> float:
 	if room.get("hazard", "") == "creature":
 		return 0.5 + sin(t * 2.5) * 0.2
+	if room.get("hazard", "") == "raid":
+		return 0.6 + sin(t * 1.5) * 0.06
 	return 0.5
 
 func _hazard_target_x(room: Dictionary, cid: int) -> float:
@@ -1104,7 +1167,7 @@ func _draw_fight_fx(feet: Vector2, c: Dictionary, facing: float, h: float) -> vo
 	var focus := Vector2(rect.position.x + 22 + _hazard_focus_x(room) * (rect.size.x - 44), hand.y)
 	var k := fmod(t * 2.2 + c.id * 0.41, 1.0)
 	match room.hazard:
-		"creature":
+		"creature", "raid":
 			var tool_id := ""
 			var uid: int = c.get("tool_item", -1)
 			if uid != -1:

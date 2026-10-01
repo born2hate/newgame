@@ -551,3 +551,13 @@
 550|Zamierzone doświadczenie. Poległych kolonistów można ożywić za perły w ciągu 2 godzin.
 551|Częstsze i silniejsze awarie, szybsze zużycie. Poległych można ożywić tylko w ciągu 30 minut i za podwójną cenę. Bez przyspieszania kryształami. +50% nagród.
 552|%d godz.
+553|Napad piratów!
+554|Piraci wyłamują drzwi śluzy. Przeciągnij tam kolonistów, by stawić opór!
+555|PIRACI
+556|Piraci w %s!
+557|Piraci wyłamali drzwi!
+558|Napad odparty!
+559|Piraci uciekli
+560|Uciekli z %d perłami.
+561|DRZWI
+562|Wejście do kolonii. Tu przybywają nowi koloniści. Ulepszaj drzwi, by dłużej powstrzymać piratów.

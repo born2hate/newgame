@@ -35,9 +35,9 @@ const STAT_COLORS := {
 ## unlock_pop — сколько колонистов нужно для открытия.
 const ROOMS := {
 	"airlock": {
-		"name": "Airlock", "width": 2, "cost": 0, "buildable": false, "slots": 0,
+		"name": "Airlock", "width": 2, "cost": 200, "buildable": false, "upgradable": true, "slots": 0,
 		"energy": 0.0, "color": Color(0.35, 0.4, 0.5), "icon": "⇅",
-		"desc": "Colony entrance. New colonists arrive here.",
+		"desc": "Colony entrance. New colonists arrive here. Upgrade the door to hold pirates back longer.",
 	},
 	"elevator": {
 		"name": "Elevator", "width": 1, "cost": 40, "buildable": true, "slots": 0,

@@ -557,6 +557,16 @@ const T := {
 	"The intended experience. Fallen colonists can be revived for pearls within 2 hours.": "Tasarlanan deneyim. Ölen sakinler 2 saat içinde inciyle diriltilebilir.",
 	"More and stronger incidents, faster resource use. The fallen can be revived only within 30 minutes and for double the price. No crystal speed-ups. +50% rewards.": "Daha sık ve güçlü kazalar, daha hızlı tüketim. Ölenler yalnızca 30 dakika içinde ve iki katı fiyata diriltilebilir. Kristalle hızlandırma yok. +50% ödül.",
 	"%d h": "%d sa",
+	"Pirate raid!": "Korsan baskını!",
+	"Pirates are breaking through the airlock door. Drag colonists there to fight!": "Korsanlar hava kilidinin kapısını kırıyor. Savaşmak için sakinleri oraya sürükle!",
+	"PIRATES": "KORSANLAR",
+	"Pirates in %s!": "%s içinde korsanlar!",
+	"The pirates broke through the door!": "Korsanlar kapıyı kırdı!",
+	"Raid repelled!": "Baskın püskürtüldü!",
+	"The pirates got away": "Korsanlar kaçtı",
+	"They escaped with %d pearls.": "%d inciyle kaçtılar.",
+	"DOOR": "KAPI",
+	"Colony entrance. New colonists arrive here. Upgrade the door to hold pirates back longer.": "Koloninin girişi. Yeni sakinler buraya gelir. Korsanları daha uzun tutmak için kapıyı geliştir.",
 }
 
 static func make() -> Translation:

@@ -310,6 +310,13 @@ func _dev_screenshot() -> void:
 			await get_tree().create_timer(0.3).timeout
 			hud._close_sheet()
 			hud.open_fallen(0)
+		"raid_ru":
+			Audio.set_language("ru")
+			Game.start_raid()
+			Game.raid.door = 0.0
+			Game.send_help(Game.colonists[0], Game.find_room_of_type("airlock"))
+			camera.position = Vector2(450, 150)
+			await get_tree().create_timer(1.5).timeout
 		"expedition_ru":
 			Audio.set_language("ru")
 			var d2 := Game._add_room("dock", 3, 1)
