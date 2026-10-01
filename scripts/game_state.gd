@@ -20,7 +20,7 @@ const NATURAL_POP := 8
 const MAX_POP := 100
 ## Дети: сколько секунд «ухаживания» в жилом отсеке (при силе обаяния 10) и сколько растёт ребёнок.
 const BREED_TIME := 43200.0
-const GROW_TIME := 28800.0
+const GROW_TIME := 86400.0
 ## Комбо-сбор: окно между сборами и множитель.
 const COMBO_WINDOW := 2.5
 var combo := 0
@@ -365,8 +365,8 @@ func arrival_speed() -> float:
 	# сила радиорубки 10 ≈ один человек в час
 	var base := 1.0 if colonists.size() < NATURAL_POP else 0.0
 	var rp := type_power("radio")
-	# сила 10 ≈ один человек в 10 часов, дальше с убывающей отдачей
-	var per_hour := 0.1 * pow(rp / 10.0, 0.5) if rp > 0.0 else 0.0
+	# сила 10 ≈ один человек в 20 часов, дальше с убывающей отдачей
+	var per_hour := 0.05 * pow(rp / 10.0, 0.5) if rp > 0.0 else 0.0
 	return base + per_hour * ARRIVAL_INTERVAL / 3600.0
 
 func armory_bonus() -> float:
@@ -1363,7 +1363,7 @@ func resolve_choice(e: Dictionary, risk: bool) -> String:
 		match ch.id:
 			"chest", "glow":
 				if ok:
-					var cr := rng.randi_range(2, 4) + zone_idx * 2
+					var cr := rng.randi_range(1, 2) + zone_idx
 					e.loot["crystals"] = int(e.loot.get("crystals", 0)) + cr
 					ev.loot = {"crystals": cr}
 					text = tr("{n} took the risk and found {v} crystals!").replace("{n}", who).replace("{v}", str(cr))
@@ -2037,6 +2037,15 @@ func research_available(id: String) -> bool:
 			return false
 	return true
 
+## Есть что изучать прямо сейчас: лаборатория свободна, исследование открыто и науки хватает.
+func can_start_any_research() -> bool:
+	if not research_current.is_empty() or count_of("lab") == 0:
+		return false
+	for rd in Defs.RESEARCH:
+		if research_available(rd.id) and science >= int(rd.cost):
+			return true
+	return false
+
 func start_research(id: String) -> bool:
 	var d := research_def(id)
 	if not research_current.is_empty() or not research_available(id):
@@ -2053,8 +2062,9 @@ func start_research(id: String) -> bool:
 func research_left() -> float:
 	return maxf(0.0, float(research_current.get("end", 0.0)) - now())
 
+## 1 кристалл за каждые 4 минуты до конца.
 func research_finish_cost() -> int:
-	return maxi(1, ceili(research_left() / 60.0))
+	return maxi(1, ceili(research_left() / 240.0))
 
 func finish_research_now() -> void:
 	if not crystal_rush_allowed():
@@ -2179,6 +2189,14 @@ func story_progress() -> int:
 			return colonists.size()
 		"depth":
 			return max_row() + 1
+		"assign":
+			# в туториале колонистов уже расставили — это тоже считается
+			return maxi(story_count, colonists.filter(func(c): return c.room >= 0 and not get_room(c.room).is_empty() and slots(get_room(c.room)) > 0).size())
+		"research":
+			return maxi(story_count, research_done.size())
+	# «построй X» засчитывается, если X уже стоит (например, построили в туториале)
+	if String(st.goal[0]).begins_with("build_"):
+		return maxi(story_count, count_of(String(st.goal[0]).trim_prefix("build_")))
 	return story_count
 
 func story_ready() -> bool:

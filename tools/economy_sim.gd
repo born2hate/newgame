@@ -13,6 +13,16 @@ var ads_watched := 0
 var starve := 0
 var src := {"collect": 0, "manage": 0, "sim": 0}
 var popsrc := {"offline": 0, "sim": 0, "manage": 0, "session_start": 0}
+var csrc := {}
+var _c0 := 0
+
+func _cs() -> void:
+	_c0 = g.crystals
+
+func _ce(key: String) -> void:
+	if g.crystals > _c0:
+		csrc[key] = csrc.get(key, 0) + g.crystals - _c0
+	_c0 = g.crystals
 
 func _initialize() -> void:
 	var args := OS.get_cmdline_user_args()
@@ -56,26 +66,32 @@ func _initialize() -> void:
 		lv[r.level] = lv.get(r.level, 0) + 1
 	print("room levels: ", lv)
 	print("pearl sources: ", src)
+	print("crystal sources: ", csrc)
 	print("pop sources: ", popsrc, " births ", g.stats.get("birth", 0))
 	quit()
 
 func _session() -> void:
 	g.refresh_daily_systems()
+	_cs()
 	if g.daily_available():
 		g.claim_daily()
+	_ce("daily")
 	var ads: bool = profile != "free"
 	if ads and g.free_crate_ready() and g.ads_left() > 0:
 		g.register_ad()
 		g.claim_free_crate()
 		ads_watched += 1
+	_ce("free_crate")
 	if ads and not g.boost_active() and g.ads_left() > 0:
 		g.register_ad()
 		g.start_boost()
 		ads_watched += 1
 	var pc: int = g.pearls
+	_cs()
 	for t in g.crates.keys():
 		while g.crates[t] > 0:
 			g.open_crate(t)
+	_ce("crates")
 	if OS.get_cmdline_user_args().has("debug") and g.pearls - pc > 1000:
 		print("  crates/daily +%d" % (g.pearls - pc))
 	var steps: int = SESSION_MIN * 60
@@ -83,7 +99,9 @@ func _session() -> void:
 		var p0: int = g.pearls
 		var n0: int = g.colonists.size()
 		g.clock_offset += 1.0
+		_cs()
 		g.simulate(1.0, false)
+		_ce("sim(boss/raid/offline)")
 		src.sim += maxi(0, g.pearls - p0)
 		popsrc.sim += g.colonists.size() - n0
 		var p1: int = g.pearls
@@ -91,9 +109,11 @@ func _session() -> void:
 			starve += 1
 		# игрок нажимает на готовые отсеки примерно раз в 4 секунды
 		if i % 4 == 0:
+			_cs()
 			for r in g.rooms:
 				if r.ready:
 					g.collect(r)
+			_ce("collect(deep)")
 		src.collect += maxi(0, g.pearls - p1)
 		var p2: int = g.pearls
 		var n2: int = g.colonists.size()
@@ -110,17 +130,26 @@ func _manage(ads: bool) -> void:
 			for c in g.colonists:
 				if not c.get("child", false) and c.room != g.ON_EXPEDITION and g.responders(r).size() < 3:
 					g.send_help(c, r)
+	_cs()
 	for q in g.quests:
 		g.claim_quest(q)
+	_ce("quests")
 	if g.story_ready():
 		g.claim_story()
+	_ce("story")
 	for a in Defs.ACHIEVEMENTS:
 		if g.achievement_ready(a):
 			g.claim_achievement(a)
+	_ce("achievements")
+	for t in g.season_tier():
+		g.claim_season(t, false)
+	_ce("season")
+	_cs()
 	for i in range(g.fallen.size() - 1, -1, -1):
 		g.revive(g.fallen[i])
 	for b in g.raider_bodies.duplicate():
 		g.loot_raider(b)
+	_ce("raider_bodies")
 	if not g.trader.is_empty():
 		for i in g.trader.offers.size():
 			if g.can_trade(i) and g.trader.offers[i].give.has("food"):
@@ -138,7 +167,9 @@ func _manage(ads: bool) -> void:
 		var e: Dictionary = g.expedition_at(r.id)
 		if not e.is_empty():
 			if g.expedition_done(e):
+				_cs()
 				g.claim_expedition(e)
+				_ce("expeditions")
 			elif ads and not e.get("ad_used", false) and g.ads_left() > 0:
 				g.register_ad()
 				g.cut_expedition(e, 1800.0)

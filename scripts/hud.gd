@@ -2401,7 +2401,7 @@ func _open_tasks() -> void:
 	nav.add_theme_constant_override("separation", 10)
 	var rb := _with_icon(_button(tr("Research"), more.open_research, 64), "expedition", 36)
 	rb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	if Game.research_current.is_empty() and Game.count_of("lab") > 0:
+	if Game.can_start_any_research():
 		rb.add_child(_badge())
 	nav.add_child(rb)
 	var ab := _with_icon(_button(tr("Achievements"), more.open_achievements, 64), "trophy", 36)

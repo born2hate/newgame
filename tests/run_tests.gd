@@ -526,6 +526,28 @@ func _initialize() -> void:
 	check(sv2.difficulty == "survival", "режим сохраняется")
 	sv.free(); sv2.free(); cm.free()
 
+	# сюжет: жилой отсек, построенный в туториале (до главы), засчитывается
+	var stg = load("res://scripts/game_state.gd").new()
+	stg.new_game()
+	stg._add_room("living", 1, 1)
+	stg.story_index = 1
+	stg.story_count = 0
+	check(stg.story_ready(), "глава «построй жилой отсек» видит уже построенный")
+	stg.story_index = 2
+	stg.story_count = 0
+	check(stg.story_ready(), "глава «поставь колониста» видит уже работающих")
+	# значок исследований: только когда реально можно начать
+	check(not stg.can_start_any_research(), "без лаборатории значка исследований нет")
+	stg._add_room("lab", 3, 1)
+	stg.science = 0
+	check(not stg.can_start_any_research(), "без науки значка исследований нет")
+	stg.science = 1000
+	check(stg.can_start_any_research(), "наука есть — значок горит")
+	stg.start_research("efficient_reactors")
+	check(not stg.can_start_any_research(), "исследование идёт — значка нет")
+	check(stg.research_finish_cost() == 3, "ускорение 10 минут стоит 3 кристалла (%d)" % stg.research_finish_cost())
+	stg.free()
+
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(g.SAVE_PATH))
 	g.free(); g2.free(); g3.free()
 	print("FAILURES: %d" % failures)

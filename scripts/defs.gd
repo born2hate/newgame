@@ -164,14 +164,14 @@ const ROOMS := {
 ## Шансы показываются игроку в магазине (требование Apple/Google).
 const CRATES := {
 	"common": {"name": "Supply Crate", "rolls": 2, "color": Color(0.55, 0.75, 0.9), "table": [
-		[50, "pearls", 80, 200], [20, "resources", 40, 80], [15, "crystals", 1, 3],
-		[12, "colonist_rare", 1, 1], [3, "colonist_legendary", 1, 1]]},
+		[50, "pearls", 80, 200], [20, "resources", 40, 80], [15, "crystals", 1, 2],
+		[4, "colonist_rare", 1, 1], [1, "colonist_legendary", 1, 1]]},
 	"silver": {"name": "Silver Crate", "rolls": 3, "color": Color(0.85, 0.9, 1.0), "table": [
-		[40, "pearls", 200, 450], [20, "resources", 80, 150], [18, "crystals", 4, 10],
-		[17, "colonist_rare", 1, 1], [5, "colonist_legendary", 1, 1], [3, "pet", 1, 1]]},
+		[40, "pearls", 200, 450], [20, "resources", 80, 150], [18, "crystals", 2, 5],
+		[8, "colonist_rare", 1, 1], [2, "colonist_legendary", 1, 1], [3, "pet", 1, 1]]},
 	"gold": {"name": "Gold Crate", "rolls": 4, "color": Color(1.0, 0.8, 0.3), "guaranteed": "colonist_rare", "table": [
-		[35, "pearls", 400, 900], [20, "resources", 150, 250], [22, "crystals", 10, 25],
-		[15, "colonist_rare", 1, 1], [8, "colonist_legendary", 1, 1], [8, "pet", 1, 1]]},
+		[35, "pearls", 400, 900], [20, "resources", 150, 250], [22, "crystals", 5, 12],
+		[10, "colonist_rare", 1, 1], [4, "colonist_legendary", 1, 1], [8, "pet", 1, 1]]},
 }
 
 ## Ежедневные награды: 7-дневный цикл, серия сбрасывается при пропуске дня.
@@ -188,16 +188,16 @@ const ZONES := [
 		"loot": {"pearls": [35, 80], "resources": [15, 35]}},
 	{"id": "reef", "name": "Coral Reef", "minutes": 30, "danger": 0.2, "power": 18, "unlock_pop": 0,
 		"desc": "Colorful and full of pearls.",
-		"loot": {"pearls": [90, 190], "crystals": [1, 2], "resources": [30, 60]}},
+		"loot": {"pearls": [90, 190], "crystals": [0, 1], "resources": [30, 60]}},
 	{"id": "wreck", "name": "Sunken Ship", "minutes": 60, "danger": 0.35, "power": 26, "unlock_pop": 8,
 		"desc": "An old wreck. Treasure and trouble.",
-		"loot": {"pearls": [180, 360], "crystals": [1, 4], "crate": "common"}},
+		"loot": {"pearls": [180, 360], "crystals": [0, 2], "crate": "common"}},
 	{"id": "vents", "name": "Hydrothermal Vents", "minutes": 120, "danger": 0.5, "power": 34, "unlock_pop": 12,
 		"desc": "Scalding water, rare minerals.",
-		"loot": {"pearls": [300, 550], "crystals": [3, 7], "crate": "silver"}},
+		"loot": {"pearls": [300, 550], "crystals": [1, 3], "crate": "silver"}},
 	{"id": "trench", "name": "Abyssal Trench", "minutes": 240, "danger": 0.7, "power": 45, "unlock_pop": 16,
 		"desc": "The deepest dark. Legends live here.",
-		"loot": {"pearls": [550, 950], "crystals": [7, 14], "crate": "gold", "survivor": 0.25}},
+		"loot": {"pearls": [550, 950], "crystals": [2, 5], "crate": "gold", "survivor": 0.25}},
 ]
 
 ## Шаблоны записей журнала экспедиции ({n} — имя члена экипажа).
@@ -340,23 +340,23 @@ const DEPTH_ZONES := [
 
 ## Дерево исследований. cost — наука, minutes — время, req — что нужно изучить раньше.
 const RESEARCH := [
-	{"id": "efficient_reactors", "tier": 1, "name": "Efficient Reactors", "desc": "+20% energy from reactors.", "cost": 40, "minutes": 2, "req": []},
-	{"id": "hydroponics", "tier": 1, "name": "Hydroponics", "desc": "+20% food from farms.", "cost": 40, "minutes": 2, "req": []},
-	{"id": "electrolysis", "tier": 1, "name": "Better Electrolysis", "desc": "+20% oxygen from generators.", "cost": 40, "minutes": 2, "req": []},
-	{"id": "reinforced_hull", "tier": 1, "name": "Reinforced Hull", "desc": "Incidents happen 30% less often.", "cost": 60, "minutes": 3, "req": []},
-	{"id": "training_programs", "tier": 2, "name": "Training Programs", "desc": "Colonists gain XP 50% faster.", "cost": 90, "minutes": 5, "req": ["hydroponics"]},
-	{"id": "sonar_mapping", "tier": 2, "name": "Sonar Mapping", "desc": "Expeditions bring 25% more loot.", "cost": 100, "minutes": 5, "req": ["electrolysis"]},
-	{"id": "fire_suppression", "tier": 2, "name": "Fire Suppression", "desc": "Incidents are handled twice as fast.", "cost": 100, "minutes": 5, "req": ["reinforced_hull"]},
-	{"id": "deep_drilling", "tier": 2, "name": "Deep Drilling", "desc": "Build in the Midnight Zone (rows 6-10).", "cost": 150, "minutes": 8, "req": ["efficient_reactors", "reinforced_hull"]},
-	{"id": "auto_collectors", "tier": 3, "name": "Auto-Collectors", "desc": "While you play, energy, oxygen and food rooms collect half their output by themselves.", "cost": 250, "minutes": 15, "req": ["efficient_reactors", "hydroponics", "electrolysis"]},
-	{"id": "medical_ai", "tier": 3, "name": "Medical AI", "desc": "Colonists heal 3 times faster.", "cost": 200, "minutes": 10, "req": ["training_programs"]},
-	{"id": "bathyscaphe_engines", "tier": 3, "name": "Turbo Engines", "desc": "Expeditions are 30% shorter.", "cost": 220, "minutes": 12, "req": ["sonar_mapping"]},
-	{"id": "storage_compression", "tier": 3, "name": "Compressed Storage", "desc": "+50% storage for all resources.", "cost": 200, "minutes": 10, "req": ["deep_drilling"]},
-	{"id": "pearl_cultivation", "tier": 3, "name": "Pearl Cultivation", "desc": "+40% pearls from pearl farms.", "cost": 220, "minutes": 12, "req": ["hydroponics"]},
-	{"id": "trader_beacon", "tier": 3, "name": "Trader Beacon", "desc": "Wandering traders visit twice as often.", "cost": 180, "minutes": 10, "req": ["sonar_mapping"]},
-	{"id": "abyssal_engineering", "tier": 4, "name": "Abyssal Engineering", "desc": "Build in The Abyss (rows 11-14).", "cost": 400, "minutes": 25, "req": ["deep_drilling", "fire_suppression"]},
-	{"id": "legendary_signal", "tier": 4, "name": "Legendary Signal", "desc": "10% of new arrivals are Rare colonists.", "cost": 350, "minutes": 20, "req": ["training_programs", "sonar_mapping"]},
-	{"id": "fusion_core", "tier": 4, "name": "Fusion Core", "desc": "All rooms use 40% less energy.", "cost": 450, "minutes": 30, "req": ["auto_collectors", "storage_compression"]},
+	{"id": "efficient_reactors", "tier": 1, "name": "Efficient Reactors", "desc": "+20% energy from reactors.", "cost": 40, "minutes": 10, "req": []},
+	{"id": "hydroponics", "tier": 1, "name": "Hydroponics", "desc": "+20% food from farms.", "cost": 40, "minutes": 10, "req": []},
+	{"id": "electrolysis", "tier": 1, "name": "Better Electrolysis", "desc": "+20% oxygen from generators.", "cost": 40, "minutes": 10, "req": []},
+	{"id": "reinforced_hull", "tier": 1, "name": "Reinforced Hull", "desc": "Incidents happen 30% less often.", "cost": 60, "minutes": 15, "req": []},
+	{"id": "training_programs", "tier": 2, "name": "Training Programs", "desc": "Colonists gain XP 50% faster.", "cost": 90, "minutes": 30, "req": ["hydroponics"]},
+	{"id": "sonar_mapping", "tier": 2, "name": "Sonar Mapping", "desc": "Expeditions bring 25% more loot.", "cost": 100, "minutes": 30, "req": ["electrolysis"]},
+	{"id": "fire_suppression", "tier": 2, "name": "Fire Suppression", "desc": "Incidents are handled twice as fast.", "cost": 100, "minutes": 30, "req": ["reinforced_hull"]},
+	{"id": "deep_drilling", "tier": 2, "name": "Deep Drilling", "desc": "Build in the Midnight Zone (rows 6-10).", "cost": 150, "minutes": 60, "req": ["efficient_reactors", "reinforced_hull"]},
+	{"id": "auto_collectors", "tier": 3, "name": "Auto-Collectors", "desc": "While you play, energy, oxygen and food rooms collect half their output by themselves.", "cost": 250, "minutes": 120, "req": ["efficient_reactors", "hydroponics", "electrolysis"]},
+	{"id": "medical_ai", "tier": 3, "name": "Medical AI", "desc": "Colonists heal 3 times faster.", "cost": 200, "minutes": 90, "req": ["training_programs"]},
+	{"id": "bathyscaphe_engines", "tier": 3, "name": "Turbo Engines", "desc": "Expeditions are 30% shorter.", "cost": 220, "minutes": 90, "req": ["sonar_mapping"]},
+	{"id": "storage_compression", "tier": 3, "name": "Compressed Storage", "desc": "+50% storage for all resources.", "cost": 200, "minutes": 90, "req": ["deep_drilling"]},
+	{"id": "pearl_cultivation", "tier": 3, "name": "Pearl Cultivation", "desc": "+40% pearls from pearl farms.", "cost": 220, "minutes": 120, "req": ["hydroponics"]},
+	{"id": "trader_beacon", "tier": 3, "name": "Trader Beacon", "desc": "Wandering traders visit twice as often.", "cost": 180, "minutes": 60, "req": ["sonar_mapping"]},
+	{"id": "abyssal_engineering", "tier": 4, "name": "Abyssal Engineering", "desc": "Build in The Abyss (rows 11-14).", "cost": 400, "minutes": 240, "req": ["deep_drilling", "fire_suppression"]},
+	{"id": "legendary_signal", "tier": 4, "name": "Legendary Signal", "desc": "10% of new arrivals are Rare colonists.", "cost": 350, "minutes": 180, "req": ["training_programs", "sonar_mapping"]},
+	{"id": "fusion_core", "tier": 4, "name": "Fusion Core", "desc": "All rooms use 40% less energy.", "cost": 450, "minutes": 300, "req": ["auto_collectors", "storage_compression"]},
 ]
 
 ## Снаряжение: база предмета. stats — какие навыки усиливает.
@@ -418,17 +418,17 @@ const STORY := [
 
 ## Достижения: stat — счётчик в Game.stats, tiers — пороги.
 const ACHIEVEMENTS := [
-	{"id": "pop", "name": "Colony Founder", "desc": "Reach %d colonists", "stat": "population", "tiers": [10, 20, 35], "reward": [3, 8, 15]},
-	{"id": "builder", "name": "Master Builder", "desc": "Build %d rooms", "stat": "build", "tiers": [5, 15, 30], "reward": [3, 6, 12]},
-	{"id": "collector", "name": "Harvester", "desc": "Collect from rooms %d times", "stat": "collect", "tiers": [50, 300, 1000], "reward": [3, 8, 15]},
-	{"id": "explorer", "name": "Explorer", "desc": "Complete %d expeditions", "stat": "expedition_done", "tiers": [3, 15, 50], "reward": [4, 10, 20]},
-	{"id": "firefighter", "name": "First Responder", "desc": "Handle %d incidents", "stat": "incident_resolved", "tiers": [5, 25, 75], "reward": [3, 8, 15]},
-	{"id": "scientist", "name": "Scientist", "desc": "Finish %d research projects", "stat": "research", "tiers": [3, 8, 17], "reward": [4, 10, 20]},
-	{"id": "deep", "name": "Deep Diver", "desc": "Build on row %d", "stat": "depth", "tiers": [5, 10, 14], "reward": [4, 10, 20]},
-	{"id": "looter", "name": "Treasure Hunter", "desc": "Open %d crates", "stat": "crate", "tiers": [5, 20, 60], "reward": [3, 8, 15]},
-	{"id": "trainer", "name": "Coach", "desc": "Level up colonists %d times", "stat": "level_up", "tiers": [10, 50, 150], "reward": [3, 8, 15]},
-	{"id": "survivor", "name": "True Survivor", "desc": "Reach %d colonists in Survival", "stat": "survival_pop", "tiers": [10, 20, 35], "reward": [6, 15, 30]},
-	{"id": "bubbles", "name": "Bubble Popper", "desc": "Pop %d treasure bubbles", "stat": "bubble", "tiers": [10, 50, 200], "reward": [3, 6, 12]},
+	{"id": "pop", "name": "Colony Founder", "desc": "Reach %d colonists", "stat": "population", "tiers": [10, 20, 35], "reward": [2, 5, 9]},
+	{"id": "builder", "name": "Master Builder", "desc": "Build %d rooms", "stat": "build", "tiers": [5, 15, 30], "reward": [2, 4, 7]},
+	{"id": "collector", "name": "Harvester", "desc": "Collect from rooms %d times", "stat": "collect", "tiers": [50, 300, 1000], "reward": [2, 5, 9]},
+	{"id": "explorer", "name": "Explorer", "desc": "Complete %d expeditions", "stat": "expedition_done", "tiers": [3, 15, 50], "reward": [2, 6, 12]},
+	{"id": "firefighter", "name": "First Responder", "desc": "Handle %d incidents", "stat": "incident_resolved", "tiers": [5, 25, 75], "reward": [2, 5, 9]},
+	{"id": "scientist", "name": "Scientist", "desc": "Finish %d research projects", "stat": "research", "tiers": [3, 8, 17], "reward": [2, 6, 12]},
+	{"id": "deep", "name": "Deep Diver", "desc": "Build on row %d", "stat": "depth", "tiers": [5, 10, 14], "reward": [2, 6, 12]},
+	{"id": "looter", "name": "Treasure Hunter", "desc": "Open %d crates", "stat": "crate", "tiers": [5, 20, 60], "reward": [2, 5, 9]},
+	{"id": "trainer", "name": "Coach", "desc": "Level up colonists %d times", "stat": "level_up", "tiers": [10, 50, 150], "reward": [2, 5, 9]},
+	{"id": "survivor", "name": "True Survivor", "desc": "Reach %d colonists in Survival", "stat": "survival_pop", "tiers": [10, 20, 35], "reward": [4, 9, 18]},
+	{"id": "bubbles", "name": "Bubble Popper", "desc": "Pop %d treasure bubbles", "stat": "bubble", "tiers": [10, 50, 200], "reward": [2, 4, 7]},
 ]
 
 ## Еженедельные события: модификатор + цель с 3 наградами.
