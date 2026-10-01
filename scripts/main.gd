@@ -638,6 +638,38 @@ func _dev_screenshot() -> void:
 			camera.zoom = Vector2(1.2, 1.2)
 			camera.position = Vector2(560, 250)
 			await get_tree().create_timer(0.6).timeout
+		"store_explore":
+			_showcase()
+			var dke := Game.find_room_of_type("dock")
+			var ce: Array = Game.colonists.filter(func(c): return c.room != dke.id).slice(0, 2)
+			for c in ce:
+				c.str = 9; c.tech = 8; c.bio = 8
+			Game.launch_exploration(dke.id, 2, [ce[0].id, ce[1].id], true)
+			Game.clock_offset += 4500.0
+			Game._tick_explorations()
+			view.room_selected.emit(dke.id)
+			await get_tree().create_timer(0.4).timeout
+			(hud.sheet.get_child(0) as ScrollContainer).scroll_vertical = 230
+		"store_craft":
+			_showcase()
+			var wsx := Game.find_room_of_type("workshop")
+			for m in ["scrap", "shell", "kelp_fiber", "coral", "copper", "vent_crystal"]:
+				Game.add_material(m, 9)
+			Game.add_material("kraken_ink", 3)
+			Game.learn_blueprint("trident:rare")
+			Game.learn_blueprint("sonic_blaster:legendary")
+			Game.learn_blueprint("abyss_armor:legendary")
+			Game.start_craft(wsx, "harpoon_gun:common" if "harpoon_gun:common" in Game.blueprints else "spear:common")
+			Game.learn_blueprint("harpoon_gun:rare")
+			view.room_selected.emit(wsx.id)
+			await get_tree().create_timer(0.4).timeout
+			(hud.sheet.get_child(0) as ScrollContainer).scroll_vertical = 140
+		"store_projects":
+			_showcase()
+			Game.projects = {"garden_dome": 2, "survivor_beacon": 1}
+			Game.colony_level = 14
+			Game.pearls = 26000
+			hud.more.open_projects()
 		"store_pets":
 			_showcase()
 			Game.grant_pet("puffer")
@@ -654,6 +686,7 @@ func _showcase() -> void:
 	hud._close_sheet()
 	Game.research_done.append("deep_drilling")
 	Game.colony_level = 14
+	Game.story_index = 15
 	Game.pearls = 18450
 	Game.crystals = 320
 	Game.science = 460

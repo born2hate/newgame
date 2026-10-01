@@ -6,28 +6,17 @@ import sys, os
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 CAPTIONS = {
- "en": ["Build your own underwater colony", "Fight giant deep-sea bosses", "Defend against pirate raids", "Put out fires, stop floods",
-        "Send crews on risky expeditions", "Gear up with weapons and armor", "Raise families, grow your colony", "Collect pets with special powers"],
- "ru": ["Построй свою подводную колонию", "Сражайся с гигантскими боссами", "Отбивай налёты пиратов", "Туши пожары, останавливай потопы",
-        "Отправляй отряды в экспедиции", "Оружие и броня для героев", "Создавай семьи, расти колонию", "Собирай питомцев с бонусами"],
- "es": ["Construye tu colonia submarina", "Lucha contra jefes gigantes", "Defiéndete de los piratas", "Apaga incendios, detén inundaciones",
-        "Envía equipos a expediciones", "Equípate con armas y armaduras", "Forma familias, haz crecer tu colonia", "Colecciona mascotas con poderes"],
- "pt_BR": ["Construa sua colônia submarina", "Enfrente chefes gigantes", "Defenda-se de ataques piratas", "Apague incêndios, pare inundações",
-        "Envie equipes em expedições", "Equipe-se com armas e armaduras", "Forme famílias, cresça a colônia", "Colecione mascotes com poderes"],
- "de": ["Baue deine Unterwasserkolonie", "Kämpfe gegen riesige Bosse", "Wehre Piratenüberfälle ab", "Lösche Brände, stoppe Fluten",
-        "Schicke Trupps auf Expeditionen", "Rüste dich mit Waffen und Rüstung", "Gründe Familien, lass die Kolonie wachsen", "Sammle Haustiere mit Boni"],
- "fr": ["Bâtis ta colonie sous-marine", "Affronte des boss géants", "Repousse les raids pirates", "Éteins les incendies, stoppe les inondations",
-        "Envoie des équipes en expédition", "Équipe-toi d'armes et d'armures", "Fonde des familles, agrandis ta colonie", "Collectionne des familiers"],
- "it": ["Costruisci la tua colonia sottomarina", "Combatti boss giganti", "Respingi i raid dei pirati", "Spegni incendi, ferma allagamenti",
-        "Invia squadre in spedizione", "Armi e armature per i tuoi eroi", "Crea famiglie, fai crescere la colonia", "Colleziona animali con poteri"],
- "tr": ["Kendi sualtı koloni̇ni kur", "Dev boslarla savaş", "Korsan baskınlarını püskürt", "Yangınları söndür, selleri durdur",
-        "Ekipleri keşiflere gönder", "Silah ve zırhla donan", "Aileler kur, koloniyi büyüt", "Güçlü evcil hayvanlar topla"],
- "pl": ["Zbuduj podwodną kolonię", "Walcz z gigantycznymi bossami", "Odpieraj ataki piratów", "Gaś pożary, zatrzymuj powodzie",
-        "Wysyłaj drużyny na wyprawy", "Broń i pancerze dla bohaterów", "Zakładaj rodziny, rozwijaj kolonię", "Zbieraj zwierzaki z bonusami"],
- "id": ["Bangun koloni bawah lautmu", "Lawan bos raksasa laut dalam", "Tangkis serangan bajak laut", "Padamkan api, hentikan banjir",
-        "Kirim tim ke ekspedisi", "Senjata dan zirah untuk timmu", "Bangun keluarga, besarkan koloni", "Kumpulkan hewan peliharaan"],
+ "en": ['Build your own underwater colony', 'Fight giant deep-sea bosses', 'Explore the deep — if you dare', 'Craft legendary weapons and armor', 'Defend against pirate raids', 'Put out fires, stop floods', 'Build wonders of the deep', 'Collect pets with special powers'],
+ "ru": ['Построй свою подводную колонию', 'Сражайся с гигантскими боссами', 'Исследуй бездну — если осмелишься', 'Создавай легендарное оружие и броню', 'Отбивай налёты пиратов', 'Туши пожары, останавливай потопы', 'Строй чудеса глубин', 'Собирай питомцев с бонусами'],
+ "es": ['Construye tu colonia submarina', 'Lucha contra jefes gigantes', 'Explora el abismo, si te atreves', 'Fabrica armas y armaduras legendarias', 'Defiéndete de los piratas', 'Apaga incendios, detén inundaciones', 'Construye maravillas del abismo', 'Colecciona mascotas con poderes'],
+ "pt_BR": ['Construa sua colônia submarina', 'Enfrente chefes gigantes', 'Explore o abismo, se tiver coragem', 'Fabrique armas e armaduras lendárias', 'Defenda-se de ataques piratas', 'Apague incêndios, pare inundações', 'Construa maravilhas das profundezas', 'Colecione mascotes com poderes'],
+ "de": ['Baue deine Unterwasserkolonie', 'Kämpfe gegen riesige Bosse', 'Erkunde die Tiefe – wenn du dich traust', 'Schmiede legendäre Waffen und Rüstungen', 'Wehre Piratenüberfälle ab', 'Lösche Brände, stoppe Fluten', 'Baue Wunder der Tiefe', 'Sammle Haustiere mit Boni'],
+ "fr": ['Bâtis ta colonie sous-marine', 'Affronte des boss géants', "Explore les abysses, si tu l'oses", 'Forge armes et armures légendaires', 'Repousse les raids pirates', 'Éteins les incendies, stoppe les inondations', 'Bâtis les merveilles des profondeurs', 'Collectionne des familiers'],
+ "it": ['Costruisci la tua colonia sottomarina', 'Combatti boss giganti', 'Esplora gli abissi, se ne hai il coraggio', 'Crea armi e armature leggendarie', 'Respingi i raid dei pirati', 'Spegni incendi, ferma allagamenti', 'Costruisci meraviglie degli abissi', 'Colleziona animali con poteri'],
+ "tr": ['Kendi sualtı kolonini kur', 'Dev boslarla savaş', 'Cesaretin varsa derinlikleri keşfet', 'Efsanevi silah ve zırhlar üret', 'Korsan baskınlarını püskürt', 'Yangınları söndür, selleri durdur', 'Derinliklerin harikalarını inşa et', 'Güçlü evcil hayvanlar topla'],
+ "pl": ['Zbuduj podwodną kolonię', 'Walcz z gigantycznymi bossami', 'Eksploruj głębiny, jeśli się odważysz', 'Wytwarzaj legendarną broń i pancerze', 'Odpieraj ataki piratów', 'Gaś pożary, zatrzymuj powodzie', 'Buduj cuda głębin', 'Zbieraj zwierzaki z bonusami'],
+ "id": ['Bangun koloni bawah lautmu', 'Lawan bos raksasa laut dalam', 'Jelajahi kedalaman, jika berani', 'Buat senjata dan zirah legendaris', 'Tangkis serangan bajak laut', 'Padamkan api, hentikan banjir', 'Bangun keajaiban laut dalam', 'Kumpulkan hewan peliharaan'],
 }
-CAPTIONS["tr"][0] = "Kendi sualtı kolonini kur"
 
 W, H, TOP, SCALE = 1080, 1920, 330, 0.8
 

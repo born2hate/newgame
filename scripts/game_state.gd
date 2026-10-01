@@ -542,7 +542,8 @@ func production_amount(room: Dictionary) -> float:
 	if res == "pearls":
 		m *= mode().reward * (1.0 + pearl_bonus())
 	if res == "gear":
-		return 1.0
+		# мастерская без заказа: металлолом
+		return float(1 + room.level / 2)
 	m *= _tap_split(def)
 	if res == "pearls":
 		# жемчуг — валюта: уровни и объединение дают меньше, чем у ресурсов
@@ -924,7 +925,7 @@ func _collect_gear(room: Dictionary, silent: bool) -> void:
 	# мастерская без заказа сама разбирает хлам на металлолом (иногда — медь)
 	room.ready = false
 	room.progress = 0.0
-	var n: int = 1 + room.level / 2
+	var n: int = int(production_amount(room))
 	add_material("scrap", n)
 	var extra: bool = rng.randf() < 0.2 + 0.05 * room.level
 	if extra:

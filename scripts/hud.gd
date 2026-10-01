@@ -1182,7 +1182,10 @@ func _refresh_room_live() -> void:
 		if r.incident > 0.0:
 			txt = "%s %d%% · %s" % [tr(Game.HAZARDS[r.hazard].label), int(r.incident), tr("Drag colonists here to help!")]
 		elif r.ready:
-			txt = tr("Ready: +%d %s. Tap the room!") % [int(Game.production_amount(r)), tr(Defs.RESOURCES[res].name).to_lower()]
+			if res == "gear":
+				txt = tr("Ready: +%d %s. Tap the room!") % [int(Game.production_amount(r)), tr("Scrap Metal").to_lower()]
+			else:
+				txt = tr("Ready: +%d %s. Tap the room!") % [int(Game.production_amount(r)), tr(Defs.RESOURCES[res].name).to_lower()]
 		else:
 			var ct := Game.cycle_time(r)
 			if ct == INF:
@@ -1709,6 +1712,9 @@ func _on_colony_lost() -> void:
 func show_toast(text: String) -> void:
 	toast.text = text
 	toast_time = 3.0
+	# под верхней панелью (её высота меняется: плашка сюжета, горизонтальный режим)
+	if top_panel:
+		toast.offset_top = top_panel.position.y + top_panel.size.y + 10.0
 
 func _on_changed() -> void:
 	_refresh_top()
