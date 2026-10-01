@@ -1079,7 +1079,7 @@ func _draw_room_props(r: Dictionary, inner: Rect2, col: Color, light: float) -> 
 				_text(Vector2(base.x, inner.position.y + 66), tr("new in %ds") % ceili(arrival), 15, Color(0.7, 0.95, 1.0, 0.8), true)
 
 func _draw_colonist(feet: Vector2, c: Dictionary, lifted: bool) -> void:
-	var sprite := Art.diver(c.suit)
+	var sprite := Art.colonist(c)
 	if sprite:
 		_draw_colonist_sprite(feet, c, lifted, sprite)
 		return
@@ -1120,14 +1120,14 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 	var fighting: bool = w.get("fighting", false) and w.get("panic", false) and not lifted
 	if fighting:
 		walking = false
-	var h := 62.0 * (1.15 if lifted else depth_scale(c)) * (0.62 if c.get("child", false) else 1.0)
+	var h := 62.0 * (1.15 if lifted else depth_scale(c)) * (0.6 if c.get("child", false) else 1.0)
 	var size := Vector2(h * sprite.get_width() / sprite.get_height(), h)
 	var bob := absf(sin(t * 10.0 + c.id)) * -3.0 if walking else sin(t * 2.0 + c.id) * 0.8
 	var facing: float = w.get("facing", 1.0)
 	if lifted:
 		draw_circle(feet + Vector2(0, 2), 16, Color(0, 0, 0, 0.3))
 	var tint := Color.WHITE if c.health >= 50.0 else Color(0.75, 0.75, 0.75)
-	if walking:
+	if walking and not c.get("child", false):
 		var frame := Art.walk_frame(c.suit, t * 11.0 + c.id)
 		if frame:
 			sprite = frame

@@ -81,8 +81,8 @@ func _deliver(id: String) -> void:
 
 ## Ящики за жемчуг — дорого, и каждая покупка за день поднимает цену на 50%.
 const PEARL_ITEMS := [
-	{"id": "pcrate_common", "title": "Supply Crate", "cost": 4000, "reward": {"crates": {"common": 1}}},
-	{"id": "pcrate_silver", "title": "Silver Crate", "cost": 12000, "reward": {"crates": {"silver": 1}}},
+	{"id": "pcrate_common", "title": "Supply Crate", "cost": 1500, "reward": {"crates": {"common": 1}}},
+	{"id": "pcrate_silver", "title": "Silver Crate", "cost": 5000, "reward": {"crates": {"silver": 1}}},
 ]
 
 func pearl_price(item: Dictionary) -> int:

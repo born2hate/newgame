@@ -497,9 +497,14 @@ func _draw_colony_bar() -> void:
 	var r := Rect2(Vector2.ZERO, colony_bar.size)
 	var font := ThemeDB.fallback_font
 	var txt := tr("Colony lvl %d") % Game.colony_level
-	var tw := font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x + 12
-	colony_bar.draw_string_outline(font, Vector2(2, 14), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, 4, Color(0, 0, 0, 0.8))
-	colony_bar.draw_string(font, Vector2(2, 14), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color(1.0, 0.85, 0.4))
+	var badge := Art.tex("res://art/ui/colony_badge.png")
+	var x0 := 2.0
+	if badge:
+		colony_bar.draw_texture_rect(badge, Rect2(Vector2(0, -6), Vector2(28, 28)), false)
+		x0 = 32.0
+	var tw := x0 + font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 15).x + 10
+	colony_bar.draw_string_outline(font, Vector2(x0, 14), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, 4, Color(0, 0, 0, 0.8))
+	colony_bar.draw_string(font, Vector2(x0, 14), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color(1.0, 0.85, 0.4))
 	var br := Rect2(tw, 5, r.size.x - tw, 8)
 	colony_bar.draw_rect(br, Color(0, 0, 0, 0.5))
 	var f := float(Game.colony_xp) / float(Game.colony_xp_needed())
@@ -1095,7 +1100,7 @@ func _open_pick(room_id: int) -> void:
 # ---------------------------------------------------------------- колонисты
 
 func _portrait(c: Dictionary, size: int) -> Control:
-	var tex := Art.diver(c.suit)
+	var tex := Art.colonist(c)
 	var t := TextureRect.new()
 	t.texture = tex
 	t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
