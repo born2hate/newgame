@@ -3,7 +3,7 @@
 All notable changes to **Deep Colony** are listed here, newest first.
 APK builds live in [`releases/`](releases/).
 
-## Unreleased
+## 0.13 — 2026-10-02
 ### Added
 - **Exploration, Fallout-style**: besides timed missions, crews can explore with no timer. Events happen over time (even while the game is closed), HP drops for real, loot grows richer the longer they stay. Recall them any time — the way back takes half the time. Optional auto turn-back when someone is badly hurt; without it the crew can die out there and the loot is lost.
 - **Crafting**: 8 materials (scrap, kelp fiber, pearl shell, coral, copper wire, vent crystal, kraken ink, abyss pearl) from zones, raiders, crates and bosses; common/rare/legendary **blueprints**; the Workshop crafts the gear you pick for materials, pearls and time, and makes scrap when idle.
@@ -16,6 +16,8 @@ APK builds live in [`releases/`](releases/).
 - **Shop**: Treasure Piggy Bank, Lucky Wheel (free daily spin, odds listed), 24-hour event bundles (Hero, Builder, Medic), daily −40% crystal deal.
 - **Premium look**: soft bloom, cinematic color grading, light shafts, bokeh, vignette, colored light from rooms onto the rock, soft shadows, bevelled frames and glass sheen, springy buttons, rolling counters. "Best graphics" can be turned off in Settings.
 - Expedition planner warns when someone may not come back.
+- **x2 pearls for a video** when collecting expedition loot; **x2 crystals** on the first purchase of each crystal pack; one Starter Pack reminder from day 2.
+- Real store hooks: Google Play Billing (local prices, restore, consume/acknowledge) and AdMob rewarded ads switch on automatically when the plugins are in the build.
 - **Story tracker** on the main screen: the current chapter goal with progress. Tap it to jump straight to the action (build the room, plan the expedition, open research); when the goal is done it glows — tap to claim.
 - **Story opens rooms early**: each chapter unlocks new rooms ("New rooms: …" on the chapter card, a banner when they open). Players who ignore the story still unlock everything by population — nobody is kept on a leash.
 - 3 new early chapters: *Pearls of the Deep* (build a Pearl Farm), *Make It Better* (upgrade a room), *Calling Survivors* (build a Radio Room).

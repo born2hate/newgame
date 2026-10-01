@@ -6,7 +6,7 @@ deep-sea monsters, send expeditions into the abyss — and go ever deeper.
 
 Built with **Godot 4.3** (GDScript). English by default, 10 languages in total.
 
-**Download the latest test build:** [DeepColony-0.12.apk](https://raw.githubusercontent.com/born2hate/newgame/claude/kind-noether-3q5ia8/releases/DeepColony-0.12.apk) · [What's new](CHANGELOG.md)
+**Download the latest test build:** [DeepColony-0.13.apk](https://raw.githubusercontent.com/born2hate/newgame/claude/kind-noether-3q5ia8/releases/DeepColony-0.13.apk) · [What's new](CHANGELOG.md)
 
 <p>
 <img src="docs/screenshots/en/base.png" width="190">
