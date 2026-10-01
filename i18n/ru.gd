@@ -541,6 +541,22 @@ const T := {
 	"XP so far: +%d · Fights: %d won, %d lost": "Опыт: +%d · Бои: побед — %d, поражений — %d",
 	"Loot so far:": "Уже нашли:",
 	"nothing yet": "пока ничего",
+	"%s has died. Revive within %s for %d pearls.": "%s погибает. Оживить можно в течение %s за %d жемчуга.",
+	"Gone forever": "Потерян навсегда",
+	"%s could not be saved.": "%s уже не спасти.",
+	"Revived!": "Снова в строю!",
+	"%s is back on their feet.": "%s снова на ногах.",
+	"Fallen: %s": "Павший: %s",
+	"Can be revived for %s more": "Оживить можно ещё %s",
+	"After that they are lost forever. The cost grows with their level.": "Потом колонист будет потерян навсегда. Цена растёт с уровнем.",
+	"Revive ◉%d": "Оживить ◉%d",
+	"Bury": "Похоронить",
+	"Fallen — revive them before it's too late": "Павшие — оживите, пока не поздно",
+	"While you were away (%s): %s": "Пока вас не было (%s): %s",
+	"%d rooms are ready, tap them to collect!": "Готово отсеков: %d, нажмите на них, чтобы собрать!",
+	"The intended experience. Fallen colonists can be revived for pearls within 2 hours.": "Задуманный баланс. Павших колонистов можно оживить за жемчуг в течение 2 часов.",
+	"More and stronger incidents, faster resource use. The fallen can be revived only within 30 minutes and for double the price. No crystal speed-ups. +50% rewards.": "Больше и сильнее аварии, быстрее расход ресурсов. Павших можно оживить только в течение 30 минут и вдвое дороже. Без ускорений за кристаллы. Награды +50%.",
+	"%d h": "%d ч",
 }
 
 static func make() -> Translation:

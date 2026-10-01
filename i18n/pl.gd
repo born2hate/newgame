@@ -541,6 +541,22 @@ const T := {
 	"XP so far: +%d · Fights: %d won, %d lost": "PD: +%d · Walki: %d wygranych, %d przegranych",
 	"Loot so far:": "Łup do tej pory:",
 	"nothing yet": "jeszcze nic",
+	"%s has died. Revive within %s for %d pearls.": "%s ginie. Ożyw w ciągu %s za %d pereł.",
+	"Gone forever": "Stracony na zawsze",
+	"%s could not be saved.": "%s nie da się już uratować.",
+	"Revived!": "Ożywiony!",
+	"%s is back on their feet.": "%s znów stoi na nogach.",
+	"Fallen: %s": "Poległy: %s",
+	"Can be revived for %s more": "Można ożywić jeszcze przez %s",
+	"After that they are lost forever. The cost grows with their level.": "Potem przepadnie na zawsze. Koszt rośnie z poziomem.",
+	"Revive ◉%d": "Ożyw ◉%d",
+	"Bury": "Pochowaj",
+	"Fallen — revive them before it's too late": "Polegli — ożyw ich, zanim będzie za późno",
+	"While you were away (%s): %s": "Gdy cię nie było (%s): %s",
+	"%d rooms are ready, tap them to collect!": "Gotowe pomieszczenia: %d, dotknij, aby zebrać!",
+	"The intended experience. Fallen colonists can be revived for pearls within 2 hours.": "Zamierzone doświadczenie. Poległych kolonistów można ożywić za perły w ciągu 2 godzin.",
+	"More and stronger incidents, faster resource use. The fallen can be revived only within 30 minutes and for double the price. No crystal speed-ups. +50% rewards.": "Częstsze i silniejsze awarie, szybsze zużycie. Poległych można ożywić tylko w ciągu 30 minut i za podwójną cenę. Bez przyspieszania kryształami. +50% nagród.",
+	"%d h": "%d godz.",
 }
 
 static func make() -> Translation:

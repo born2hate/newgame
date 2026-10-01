@@ -541,6 +541,22 @@ const T := {
 	"XP so far: +%d · Fights: %d won, %d lost": "XP: +%d · Pertarungan: %d menang, %d kalah",
 	"Loot so far:": "Rampasan sejauh ini:",
 	"nothing yet": "belum ada",
+	"%s has died. Revive within %s for %d pearls.": "%s gugur. Hidupkan kembali dalam %s seharga %d mutiara.",
+	"Gone forever": "Hilang selamanya",
+	"%s could not be saved.": "%s tidak bisa diselamatkan lagi.",
+	"Revived!": "Hidup kembali!",
+	"%s is back on their feet.": "%s kembali berdiri.",
+	"Fallen: %s": "Gugur: %s",
+	"Can be revived for %s more": "Masih bisa dihidupkan %s lagi",
+	"After that they are lost forever. The cost grows with their level.": "Setelah itu hilang selamanya. Biaya naik sesuai level.",
+	"Revive ◉%d": "Hidupkan ◉%d",
+	"Bury": "Kuburkan",
+	"Fallen — revive them before it's too late": "Yang gugur — hidupkan sebelum terlambat",
+	"While you were away (%s): %s": "Selama kamu pergi (%s): %s",
+	"%d rooms are ready, tap them to collect!": "%d ruangan siap, ketuk untuk mengumpulkan!",
+	"The intended experience. Fallen colonists can be revived for pearls within 2 hours.": "Pengalaman yang dirancang. Kolonis yang gugur bisa dihidupkan dengan mutiara dalam 2 jam.",
+	"More and stronger incidents, faster resource use. The fallen can be revived only within 30 minutes and for double the price. No crystal speed-ups. +50% rewards.": "Insiden lebih sering dan kuat, konsumsi lebih cepat. Yang gugur hanya bisa dihidupkan dalam 30 menit dengan harga dua kali lipat. Tanpa percepatan kristal. Hadiah +50%.",
+	"%d h": "%d jam",
 }
 
 static func make() -> Translation:

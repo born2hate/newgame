@@ -5,6 +5,7 @@ signal room_selected(room_id: int)
 signal build_finished
 signal colonist_selected(colonist_id: int)
 signal trader_tapped
+signal fallen_tapped(index: int)
 signal outside_tapped
 
 const CELL_W := 100.0
@@ -271,6 +272,7 @@ func _draw_rest(depth_rows: int) -> void:
 	for r in Game.rooms:
 		_draw_room(r)
 	_draw_doors()
+	_draw_fallen()
 	# дальние рисуем первыми, ближние — поверх
 	var order := Game.colonists.filter(func(c): return c.id != drag_colonist and c.room != Game.ON_EXPEDITION)
 	order.sort_custom(func(a, b): return walkers.get(a.id, {}).get("z", 0.5) > walkers.get(b.id, {}).get("z", 0.5))
@@ -1156,6 +1158,38 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			_zoom_by(1.0 / 1.1)
 
+## Где лежит тело павшего колониста (в отсеке, где он погиб).
+func fallen_pos(i: int) -> Vector2:
+	var f: Dictionary = Game.fallen[i]
+	var r := Game.get_room(int(f.room))
+	if r.is_empty():
+		r = Game.find_room_of_type("airlock")
+	if r.is_empty():
+		return Vector2(200, CELL_H - 12)
+	var rect := room_rect(r)
+	var k := fmod(float(f.c.id) * 0.37, 1.0)
+	return Vector2(rect.position.x + rect.size.x * (0.25 + 0.5 * k), rect.end.y - 14)
+
+func _draw_fallen() -> void:
+	for i in Game.fallen.size():
+		var f: Dictionary = Game.fallen[i]
+		var p := fallen_pos(i)
+		var sprite := Art.diver(int(f.c.suit))
+		if sprite:
+			var h := 58.0
+			var sz := Vector2(h * sprite.get_width() / sprite.get_height(), h)
+			# лежит на боку, серый
+			draw_set_transform(p + Vector2(0, -sz.x * 0.5 + 4), -PI / 2.0, Vector2.ONE)
+			draw_texture_rect(sprite, Rect2(Vector2(-sz.x / 2.0, -sz.y / 2.0), sz), false, Color(0.55, 0.55, 0.6))
+			draw_set_transform(Vector2.ZERO)
+		var pulse := 0.5 + 0.5 * sin(t * 4.0 + i)
+		var bp := p + Vector2(0, -52)
+		draw_circle(bp, 17, Color(0.25, 0.02, 0.05, 0.85))
+		draw_arc(bp, 17, 0, TAU, 24, Color(1.0, 0.35, 0.35, 0.6 + 0.4 * pulse), 3.0)
+		draw_rect(Rect2(bp - Vector2(3, 10), Vector2(6, 20)), Color(1.0, 0.85, 0.85))
+		draw_rect(Rect2(bp - Vector2(9, 4), Vector2(18, 6)), Color(1.0, 0.85, 0.85))
+		_text(bp + Vector2(0, -24), _short_time(float(f.until) - Game.now()), 15, Color(1.0, 0.75, 0.75), true)
+
 func _on_press(p: Vector2) -> void:
 	press_pos = p
 	moved = false
@@ -1163,6 +1197,11 @@ func _on_press(p: Vector2) -> void:
 	if build_type != "":
 		return
 	var world := screen_to_world(p)
+	for i in Game.fallen.size():
+		if world.distance_to(fallen_pos(i) + Vector2(0, -30)) < 40.0:
+			moved = true
+			fallen_tapped.emit(i)
+			return
 	if _try_pop_treasure(world):
 		moved = true
 		return

@@ -59,13 +59,14 @@ func _ready() -> void:
 	add_child(more)
 	view.trader_tapped.connect(func(): more.open_trader())
 	view.outside_tapped.connect(open_outside)
+	view.fallen_tapped.connect(func(i): open_fallen(i))
 	_build_expedition_button()
 	_build_popup()
 	_build_ad_overlay()
 	_refresh_top()
 	apply_safe_area()
 	get_viewport().size_changed.connect(apply_safe_area)
-	if Game.mode().permadeath and Game.colonists.is_empty():
+	if Game.colony_lost:
 		_on_colony_lost.call_deferred()
 	elif not Game.mode_chosen:
 		open_mode_picker.call_deferred()
@@ -1040,9 +1041,55 @@ func _where(c: Dictionary) -> String:
 		return tr("Idle (in airlock)")
 	return tr(Defs.ROOMS[Game.get_room(c.room).type].name)
 
+## Павший колонист: оживить за жемчуг, пока не вышло время, или похоронить.
+func open_fallen(i: int) -> void:
+	if i < 0 or i >= Game.fallen.size():
+		return
+	var f: Dictionary = Game.fallen[i]
+	_open_sheet("fallen", 420)
+	_header(tr("Fallen: %s") % f.c.name)
+	_fallen_card(f, true)
+
+## Карточка сама добавляется в меню (как все _card).
+func _fallen_card(f: Dictionary, big: bool) -> void:
+	var card := _card(Color(0.2, 0.04, 0.06, 0.92), Color(1.0, 0.35, 0.35, 0.8))
+	var por := _portrait(f.c, 76)
+	por.modulate = Color(0.55, 0.55, 0.6)
+	card.add_child(por)
+	var vb := VBoxContainer.new()
+	vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vb.add_child(_label(tr("%s · lvl %d") % [f.c.name, int(f.c.level)], 22, Color(1.0, 0.8, 0.8)))
+	var tl := _label(tr("Can be revived for %s more") % _clock(float(f.until) - Game.now()), 17, Color(1.0, 0.65, 0.6))
+	tl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vb.add_child(tl)
+	if big:
+		var hint := _label(tr("After that they are lost forever. The cost grows with their level."), 16, Color(0.8, 0.8, 0.85))
+		hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(hint)
+	card.add_child(vb)
+	var col := VBoxContainer.new()
+	var cost := Game.revive_cost(f)
+	var rb := _button("", func():
+		if Game.revive(f):
+			_close_sheet() if sheet_kind == "fallen" else _open_colonists(), 60)
+	set_cost_text(rb, tr("Revive ◉%d") % cost)
+	_gold(rb)
+	rb.disabled = Game.pearls < cost
+	rb.custom_minimum_size.x = 190
+	col.add_child(rb)
+	if big:
+		col.add_child(_button(tr("Bury"), func():
+			Game.bury(f)
+			_close_sheet(), 50))
+	card.add_child(col)
+
 func _open_colonists() -> void:
 	_open_sheet("colonists", 700)
 	_header(tr("Colonists (%d/%d)") % [Game.colonists.size(), Game.population_cap()])
+	if not Game.fallen.is_empty():
+		sheet_body.add_child(_label(tr("Fallen — revive them before it's too late"), 20, Color(1.0, 0.55, 0.5)))
+		for f in Game.fallen:
+			_fallen_card(f, false)
 	sheet_body.add_child(_label(tr("Tap a colonist to see their stats"), 19, Color(0.7, 0.82, 0.92)))
 	for c in Game.colonists:
 		var card := PanelContainer.new()

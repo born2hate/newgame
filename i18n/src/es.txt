@@ -536,3 +536,19 @@
 534|XP: +%d · Combates: %d ganados, %d perdidos
 535|Botín hasta ahora:
 536|nada aún
+537|%s ha muerto. Revívelo en %s por %d perlas.
+538|Perdido para siempre
+539|%s ya no se puede salvar.
+540|¡Revivido!
+541|%s vuelve a estar en pie.
+542|Caído: %s
+543|Se puede revivir durante %s más
+544|Después se perderá para siempre. El coste crece con su nivel.
+545|Revivir ◉%d
+546|Enterrar
+547|Caídos: revívelos antes de que sea tarde
+548|Mientras no estabas (%s): %s
+549|%d salas listas, ¡tócalas para recoger!
+550|La experiencia prevista. Los colonos caídos pueden revivirse con perlas durante 2 horas.
+551|Incidentes más frecuentes y fuertes, más consumo. Los caídos solo pueden revivirse durante 30 minutos y al doble de precio. Sin aceleraciones con cristales. +50% de recompensas.
+552|%d h

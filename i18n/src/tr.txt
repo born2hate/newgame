@@ -535,3 +535,19 @@
 534|TP: +%d · Dövüşler: %d galibiyet, %d mağlubiyet
 535|Şimdiye kadarki ganimet:
 536|henüz hiçbir şey
+537|%s öldü. %s içinde %d inciye diriltebilirsin.
+538|Sonsuza dek kayıp
+539|%s artık kurtarılamaz.
+540|Dirildi!
+541|%s yeniden ayakta.
+542|Ölen: %s
+543|%s daha diriltilebilir
+544|Sonra sonsuza dek kaybolur. Bedel seviyeyle artar.
+545|Dirilt ◉%d
+546|Göm
+547|Ölenler: çok geç olmadan dirilt
+548|Sen yokken (%s): %s
+549|%d oda hazır, toplamak için dokun!
+550|Tasarlanan deneyim. Ölen sakinler 2 saat içinde inciyle diriltilebilir.
+551|Daha sık ve güçlü kazalar, daha hızlı tüketim. Ölenler yalnızca 30 dakika içinde ve iki katı fiyata diriltilebilir. Kristalle hızlandırma yok. +50% ödül.
+552|%d sa

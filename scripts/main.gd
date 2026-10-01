@@ -301,6 +301,15 @@ func _dev_screenshot() -> void:
 			camera.position = Vector2(1600, 200)
 			hud._start_build("living")
 			await get_tree().create_timer(0.6).timeout
+		"fallen_ru":
+			Audio.set_language("ru")
+			Game.set_difficulty("normal")
+			Game.colonists[1].health = 0.0
+			Game._check_deaths()
+			camera.position = Vector2(600, 250)
+			await get_tree().create_timer(0.3).timeout
+			hud._close_sheet()
+			hud.open_fallen(0)
 		"expedition_ru":
 			Audio.set_language("ru")
 			var d2 := Game._add_room("dock", 3, 1)

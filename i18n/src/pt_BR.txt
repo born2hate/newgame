@@ -535,3 +535,19 @@
 534|XP: +%d · Lutas: %d vitórias, %d derrotas
 535|Saque até agora:
 536|nada ainda
+537|%s morreu. Reviva em até %s por %d pérolas.
+538|Perdido para sempre
+539|%s não pode mais ser salvo.
+540|Revivido!
+541|%s está de pé novamente.
+542|Caído: %s
+543|Pode ser revivido por mais %s
+544|Depois disso, será perdido para sempre. O custo cresce com o nível.
+545|Reviver ◉%d
+546|Enterrar
+547|Caídos: reviva-os antes que seja tarde
+548|Enquanto você estava fora (%s): %s
+549|%d salas prontas, toque nelas para coletar!
+550|A experiência pretendida. Colonos caídos podem ser revividos com pérolas em até 2 horas.
+551|Incidentes mais fortes e frequentes, consumo maior. Os caídos só podem ser revividos em até 30 minutos e pelo dobro do preço. Sem acelerar com cristais. +50% de recompensas.
+552|%d h

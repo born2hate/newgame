@@ -535,3 +535,19 @@
 534|PD: +%d · Walki: %d wygranych, %d przegranych
 535|Łup do tej pory:
 536|jeszcze nic
+537|%s ginie. Ożyw w ciągu %s za %d pereł.
+538|Stracony na zawsze
+539|%s nie da się już uratować.
+540|Ożywiony!
+541|%s znów stoi na nogach.
+542|Poległy: %s
+543|Można ożywić jeszcze przez %s
+544|Potem przepadnie na zawsze. Koszt rośnie z poziomem.
+545|Ożyw ◉%d
+546|Pochowaj
+547|Polegli — ożyw ich, zanim będzie za późno
+548|Gdy cię nie było (%s): %s
+549|Gotowe pomieszczenia: %d, dotknij, aby zebrać!
+550|Zamierzone doświadczenie. Poległych kolonistów można ożywić za perły w ciągu 2 godzin.
+551|Częstsze i silniejsze awarie, szybsze zużycie. Poległych można ożywić tylko w ciągu 30 minut i za podwójną cenę. Bez przyspieszania kryształami. +50% nagród.
+552|%d godz.

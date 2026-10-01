@@ -293,12 +293,15 @@ const SEASON_TIERS := [
 const DIFFICULTY := {
 	"calm": {"name": "Calm", "desc": "Fewer and weaker incidents, slower resource use, no harm from hunger. Just build and relax.",
 		"incidents": 2.0, "damage": 0.5, "consume": 0.7, "hunger": false, "permadeath": false, "crystal_rush": true, "reward": 1.0,
+		"death": false, "revive_window": 0.0, "revive_mult": 1.0,
 		"color": Color(0.5, 0.95, 0.6)},
-	"normal": {"name": "Normal", "desc": "The intended experience.",
+	"normal": {"name": "Normal", "desc": "The intended experience. Fallen colonists can be revived for pearls within 2 hours.",
 		"incidents": 1.0, "damage": 1.0, "consume": 1.0, "hunger": true, "permadeath": false, "crystal_rush": true, "reward": 1.0,
+		"death": true, "revive_window": 7200.0, "revive_mult": 1.0,
 		"color": Color(0.45, 0.85, 1.0)},
-	"survival": {"name": "Survival", "desc": "More and stronger incidents, faster resource use. Colonists can die forever. No crystal speed-ups. +50% rewards.",
+	"survival": {"name": "Survival", "desc": "More and stronger incidents, faster resource use. The fallen can be revived only within 30 minutes and for double the price. No crystal speed-ups. +50% rewards.",
 		"incidents": 0.6, "damage": 1.5, "consume": 1.3, "hunger": true, "permadeath": true, "crystal_rush": false, "reward": 1.5,
+		"death": true, "revive_window": 1800.0, "revive_mult": 2.0,
 		"color": Color(1.0, 0.4, 0.35)},
 }
 

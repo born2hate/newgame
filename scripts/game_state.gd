@@ -113,6 +113,7 @@ func new_game() -> void:
 	mode_chosen = false
 	rooms = []
 	colonists = []
+	fallen = []
 	next_id = 1
 	arrival_timer = 0.0
 	_add_room("reactor", 1, 0).progress = 0.93
@@ -384,7 +385,7 @@ func simulate(delta: float, offline: bool) -> void:
 		energy_use += Defs.ROOMS[r.type].energy / PACE * r.level * r.size * (0.6 if has_research("fusion_core") else 1.0)
 	resources.energy = maxf(0.0, resources.energy - energy_use * delta)
 	var pop := colonists.size()
-	var consume: float = mode().consume
+	var consume: float = mode().consume * (OFFLINE_CONSUME if offline else 1.0)
 	resources.oxygen = maxf(0.0, resources.oxygen - O2_PER_COLONIST * pop * delta * consume)
 	resources.food = maxf(0.0, resources.food - FOOD_PER_COLONIST * pop * delta * consume)
 	var powered: bool = resources.energy > 0.0
@@ -431,7 +432,7 @@ func simulate(delta: float, offline: bool) -> void:
 			_tick_training(c, here, delta, offline)
 		if starving and not offline and mode().hunger:
 			c.health = maxf(health_floor(), c.health - 0.35 * delta * mode().damage)
-		elif not starving:
+		elif not starving and c.health > 0.0:
 			c.health = minf(100.0, c.health + heal_rate * delta)
 		if c.room >= 0:
 			c.xp += delta * xp_mult
@@ -1173,6 +1174,9 @@ func claim_expedition(e: Dictionary) -> void:
 			continue
 		c.room = -1
 		c.health = maxf(health_floor(), c.health - e.damage.get(str(id), 0) * (1.0 - protection(c)) * mode().damage)
+		if c.health <= 0.0:
+			# погиб в походе — тело привозят в док
+			c["died_in"] = e.dock
 		# опыт: за время в пути и за всё, что случилось в журнале
 		c.xp += zone.minutes * 1.0 + expedition_so_far_all(e)
 		while c.xp >= _xp_needed(c):
@@ -1823,6 +1827,7 @@ func save_game() -> void:
 			"story_index": story_index, "story_count": story_count, "weekly_week": weekly_week,
 			"weekly_progress": weekly_progress, "weekly_claimed": weekly_claimed, "trader": trader,
 			"tutorial_done": tutorial_done, "difficulty": difficulty, "mode_chosen": mode_chosen,
+			"fallen": fallen,
 		},
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -1842,6 +1847,12 @@ func load_game() -> bool:
 	pearls = int(data.pearls)
 	rooms = data.rooms
 	colonists = data.colonists
+	fallen = data.get("meta", {}).get("fallen", [])
+	for fl in fallen:
+		fl.room = int(fl.room)
+		for k in ["id", "str", "tech", "bio", "end", "cha", "luck", "level", "suit"]:
+			if fl.c.has(k):
+				fl.c[k] = int(fl.c[k])
 	next_id = int(data.next_id)
 	arrival_timer = data.arrival_timer
 	var meta: Dictionary = data.get("meta", {})
@@ -1923,19 +1934,37 @@ func load_game() -> bool:
 	_apply_offline(Time.get_unix_time_from_system() - float(data.time))
 	return true
 
+## Как в Fallout: пока игрока нет, отсеки делают цикл и ждут сбора (нажатия),
+## а колонисты тратят заметно меньше и запасы не уходят в ноль.
+const OFFLINE_CONSUME := 0.25
+## Ниже этой доли от запаса на момент выхода ресурс вне игры не опускается.
+const OFFLINE_KEEP := 0.35
+const OFFLINE_FLOOR := 10.0
+const OFFLINE_STEP := 10.0
+
 func _apply_offline(elapsed: float) -> void:
 	elapsed = clampf(elapsed, 0.0, MAX_OFFLINE_PREMIUM if premium else MAX_OFFLINE)
 	if elapsed < 30.0:
 		return
 	var before := colonists.size()
-	var steps := int(elapsed)
+	var start_res := resources.duplicate()
+	# шагами по 10 с: точности хватает, а вход после долгого перерыва не тормозит
+	var steps := int(elapsed / OFFLINE_STEP)
 	for i in steps:
-		simulate(1.0, true)
-	var ready := 0
-	for r in rooms:
-		if r.ready:
-			ready += 1
-	var text := tr("While you were away (%s): %d rooms ready") % [_fmt_time(elapsed), ready]
+		simulate(OFFLINE_STEP, true)
+		# совсем в ноль за время отсутствия не уходим
+		for k in ["energy", "oxygen", "food"]:
+			var keep := maxf(float(start_res[k]) * OFFLINE_KEEP, minf(OFFLINE_FLOOR, float(start_res[k])))
+			if resources[k] < keep:
+				resources[k] = keep
+	var parts := []
+	for k in ["energy", "oxygen", "food"]:
+		var d := int(resources[k] - start_res[k])
+		parts.append("%s %s%d" % [tr(Defs.RESOURCES[k].name), "+" if d >= 0 else "", d])
+	var ready := rooms.filter(func(r): return r.ready).size()
+	var text := tr("While you were away (%s): %s") % [_fmt_time(elapsed), ", ".join(parts)]
+	if ready > 0:
+		text += ". " + tr("%d rooms are ready, tap them to collect!") % ready
 	if colonists.size() > before:
 		text += tr(", %d new colonists") % (colonists.size() - before)
 	call_deferred("emit_signal", "message", text)
@@ -1956,21 +1985,74 @@ func crystal_rush_allowed() -> bool:
 
 ## В Выживании здоровье может упасть до нуля.
 func health_floor() -> float:
-	return 0.0 if mode().permadeath else 10.0
+	return 0.0 if mode().get("death", mode().permadeath) else 10.0
+
+## Павшие колонисты: тело лежит в отсеке, где погиб. Пока не вышло время,
+## его можно оживить за жемчуг (дороже с уровнем), потом — потерян навсегда.
+var fallen: Array = []
 
 func _check_deaths() -> void:
-	if not mode().permadeath:
+	if not mode().get("death", mode().permadeath):
 		return
 	for c in colonists.duplicate():
 		if c.health <= 0.0 and c.room != ON_EXPEDITION:
+			var where: int = c.get("died_in", -1)
+			if where == -1:
+				where = c.help if c.get("help", -1) != -1 else c.room
+			c.erase("died_in")
 			colonists.erase(c)
+			c.room = -1
+			c.help = -1
+			c.health = 0.0
+			fallen.append({"c": c, "room": where, "until": now() + float(mode().revive_window)})
 			stats["deaths"] = stats.get("deaths", 0) + 1
-			banner.emit("suit_%d" % c.suit, tr("Colonist lost"), tr("%s has died. The colony mourns.") % c.name)
+			banner.emit("suit_%d" % c.suit, tr("Colonist lost"), tr("%s has died. Revive within %s for %d pearls.") % [c.name, (tr("%d h") % int(float(mode().revive_window) / 3600.0) if float(mode().revive_window) >= 3600.0 else tr("%d min") % int(float(mode().revive_window) / 60.0)), revive_cost(fallen[-1])])
 			event.emit("breach")
 			changed.emit()
-	if colonists.is_empty() and not colony_lost:
+	_expire_fallen()
+	if colonists.is_empty() and not colony_lost and (fallen.is_empty() or pearls < _cheapest_revive()):
 		colony_lost = true
 		lost.emit()
+
+func _expire_fallen() -> void:
+	for f in fallen.duplicate():
+		if now() > float(f.until):
+			fallen.erase(f)
+			banner.emit("suit_%d" % f.c.suit, tr("Gone forever"), tr("%s could not be saved.") % f.c.name)
+			changed.emit()
+
+func revive_cost(f: Dictionary) -> int:
+	return int((100 + 60 * (int(f.c.level) - 1)) * float(mode().get("revive_mult", 1.0)))
+
+func _cheapest_revive() -> int:
+	var m := 1 << 30
+	for f in fallen:
+		m = mini(m, revive_cost(f))
+	return m
+
+func revive(f: Dictionary) -> bool:
+	if not f in fallen:
+		return false
+	var cost := revive_cost(f)
+	if pearls < cost:
+		message.emit(tr("Not enough pearls"))
+		event.emit("error")
+		return false
+	pearls -= cost
+	fallen.erase(f)
+	var c: Dictionary = f.c
+	c.health = 40.0
+	c.room = -1
+	colonists.append(c)
+	colony_lost = false
+	banner.emit("suit_%d" % c.suit, tr("Revived!"), tr("%s is back on their feet.") % c.name)
+	event.emit("level_up")
+	changed.emit()
+	return true
+
+func bury(f: Dictionary) -> void:
+	fallen.erase(f)
+	changed.emit()
 
 ## Колонисты, чей отсек исчез, возвращаются в шлюз.
 func _fix_orphans() -> void:

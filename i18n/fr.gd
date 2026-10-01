@@ -541,6 +541,22 @@ const T := {
 	"XP so far: +%d · Fights: %d won, %d lost": "XP : +%d · Combats : %d gagnés, %d perdus",
 	"Loot so far:": "Butin pour l'instant :",
 	"nothing yet": "rien encore",
+	"%s has died. Revive within %s for %d pearls.": "%s est mort. Ranime-le dans les %s pour %d perles.",
+	"Gone forever": "Perdu à jamais",
+	"%s could not be saved.": "%s ne peut plus être sauvé.",
+	"Revived!": "Ranimé !",
+	"%s is back on their feet.": "%s est de nouveau sur pied.",
+	"Fallen: %s": "Tombé : %s",
+	"Can be revived for %s more": "Peut encore être ranimé pendant %s",
+	"After that they are lost forever. The cost grows with their level.": "Ensuite, il sera perdu à jamais. Le prix augmente avec son niveau.",
+	"Revive ◉%d": "Ranimer ◉%d",
+	"Bury": "Enterrer",
+	"Fallen — revive them before it's too late": "Tombés : ranime-les avant qu'il ne soit trop tard",
+	"While you were away (%s): %s": "Pendant ton absence (%s) : %s",
+	"%d rooms are ready, tap them to collect!": "%d salles prêtes, touche-les pour récolter !",
+	"The intended experience. Fallen colonists can be revived for pearls within 2 hours.": "L'expérience prévue. Les colons tombés peuvent être ranimés contre des perles pendant 2 heures.",
+	"More and stronger incidents, faster resource use. The fallen can be revived only within 30 minutes and for double the price. No crystal speed-ups. +50% rewards.": "Incidents plus forts et fréquents, consommation accrue. Les tombés ne peuvent être ranimés que pendant 30 minutes et pour le double du prix. Pas d'accélération en cristaux. +50% de récompenses.",
+	"%d h": "%d h",
 }
 
 static func make() -> Translation:

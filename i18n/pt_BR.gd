@@ -541,6 +541,22 @@ const T := {
 	"XP so far: +%d · Fights: %d won, %d lost": "XP: +%d · Lutas: %d vitórias, %d derrotas",
 	"Loot so far:": "Saque até agora:",
 	"nothing yet": "nada ainda",
+	"%s has died. Revive within %s for %d pearls.": "%s morreu. Reviva em até %s por %d pérolas.",
+	"Gone forever": "Perdido para sempre",
+	"%s could not be saved.": "%s não pode mais ser salvo.",
+	"Revived!": "Revivido!",
+	"%s is back on their feet.": "%s está de pé novamente.",
+	"Fallen: %s": "Caído: %s",
+	"Can be revived for %s more": "Pode ser revivido por mais %s",
+	"After that they are lost forever. The cost grows with their level.": "Depois disso, será perdido para sempre. O custo cresce com o nível.",
+	"Revive ◉%d": "Reviver ◉%d",
+	"Bury": "Enterrar",
+	"Fallen — revive them before it's too late": "Caídos: reviva-os antes que seja tarde",
+	"While you were away (%s): %s": "Enquanto você estava fora (%s): %s",
+	"%d rooms are ready, tap them to collect!": "%d salas prontas, toque nelas para coletar!",
+	"The intended experience. Fallen colonists can be revived for pearls within 2 hours.": "A experiência pretendida. Colonos caídos podem ser revividos com pérolas em até 2 horas.",
+	"More and stronger incidents, faster resource use. The fallen can be revived only within 30 minutes and for double the price. No crystal speed-ups. +50% rewards.": "Incidentes mais fortes e frequentes, consumo maior. Os caídos só podem ser revividos em até 30 minutos e pelo dobro do preço. Sem acelerar com cristais. +50% de recompensas.",
+	"%d h": "%d h",
 }
 
 static func make() -> Translation:

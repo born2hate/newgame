@@ -541,6 +541,22 @@ const T := {
 	"XP so far: +%d · Fights: %d won, %d lost": "TP: +%d · Dövüşler: %d galibiyet, %d mağlubiyet",
 	"Loot so far:": "Şimdiye kadarki ganimet:",
 	"nothing yet": "henüz hiçbir şey",
+	"%s has died. Revive within %s for %d pearls.": "%s öldü. %s içinde %d inciye diriltebilirsin.",
+	"Gone forever": "Sonsuza dek kayıp",
+	"%s could not be saved.": "%s artık kurtarılamaz.",
+	"Revived!": "Dirildi!",
+	"%s is back on their feet.": "%s yeniden ayakta.",
+	"Fallen: %s": "Ölen: %s",
+	"Can be revived for %s more": "%s daha diriltilebilir",
+	"After that they are lost forever. The cost grows with their level.": "Sonra sonsuza dek kaybolur. Bedel seviyeyle artar.",
+	"Revive ◉%d": "Dirilt ◉%d",
+	"Bury": "Göm",
+	"Fallen — revive them before it's too late": "Ölenler: çok geç olmadan dirilt",
+	"While you were away (%s): %s": "Sen yokken (%s): %s",
+	"%d rooms are ready, tap them to collect!": "%d oda hazır, toplamak için dokun!",
+	"The intended experience. Fallen colonists can be revived for pearls within 2 hours.": "Tasarlanan deneyim. Ölen sakinler 2 saat içinde inciyle diriltilebilir.",
+	"More and stronger incidents, faster resource use. The fallen can be revived only within 30 minutes and for double the price. No crystal speed-ups. +50% rewards.": "Daha sık ve güçlü kazalar, daha hızlı tüketim. Ölenler yalnızca 30 dakika içinde ve iki katı fiyata diriltilebilir. Kristalle hızlandırma yok. +50% ödül.",
+	"%d h": "%d sa",
 }
 
 static func make() -> Translation:

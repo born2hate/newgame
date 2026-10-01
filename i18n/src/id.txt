@@ -535,3 +535,19 @@
 534|XP: +%d · Pertarungan: %d menang, %d kalah
 535|Rampasan sejauh ini:
 536|belum ada
+537|%s gugur. Hidupkan kembali dalam %s seharga %d mutiara.
+538|Hilang selamanya
+539|%s tidak bisa diselamatkan lagi.
+540|Hidup kembali!
+541|%s kembali berdiri.
+542|Gugur: %s
+543|Masih bisa dihidupkan %s lagi
+544|Setelah itu hilang selamanya. Biaya naik sesuai level.
+545|Hidupkan ◉%d
+546|Kuburkan
+547|Yang gugur — hidupkan sebelum terlambat
+548|Selama kamu pergi (%s): %s
+549|%d ruangan siap, ketuk untuk mengumpulkan!
+550|Pengalaman yang dirancang. Kolonis yang gugur bisa dihidupkan dengan mutiara dalam 2 jam.
+551|Insiden lebih sering dan kuat, konsumsi lebih cepat. Yang gugur hanya bisa dihidupkan dalam 30 menit dengan harga dua kali lipat. Tanpa percepatan kristal. Hadiah +50%.
+552|%d jam

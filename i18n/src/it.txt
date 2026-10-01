@@ -535,3 +535,19 @@
 534|EXP: +%d · Scontri: %d vinti, %d persi
 535|Bottino finora:
 536|ancora niente
+537|%s è morto. Rianimalo entro %s per %d perle.
+538|Perso per sempre
+539|%s non può più essere salvato.
+540|Rianimato!
+541|%s è di nuovo in piedi.
+542|Caduto: %s
+543|Si può rianimare ancora per %s
+544|Dopo sarà perso per sempre. Il costo cresce con il livello.
+545|Rianima ◉%d
+546|Seppellisci
+547|Caduti: rianimali prima che sia tardi
+548|Mentre eri via (%s): %s
+549|%d stanze pronte, toccale per raccogliere!
+550|L'esperienza prevista. I coloni caduti possono essere rianimati con le perle entro 2 ore.
+551|Incidenti più forti e frequenti, consumi maggiori. I caduti si possono rianimare solo entro 30 minuti e al doppio del prezzo. Niente accelerazioni con cristalli. +50% di ricompense.
+552|%d h

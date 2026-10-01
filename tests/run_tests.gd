@@ -283,6 +283,7 @@ func _initialize() -> void:
 		sv.simulate(1.0, false)
 	check(sv.colonists.size() == n0 - 1, "выживание: колонист погибает")
 	sv.colonists = [sv.colonists[0]]
+	sv.pearls = 0
 	sv.colonists[0].health = 0.0
 	sv.simulate(1.0, false)
 	check(sv.colony_lost, "выживание: колония потеряна, когда погибли все")
@@ -294,6 +295,36 @@ func _initialize() -> void:
 	cm.resources.food = 0.0
 	cm.simulate(5.0, false)
 	check(cm.colonists[0].health >= 50.0, "спокойный: голод не ранит")
+	# гибель и воскрешение
+	var rv = load("res://scripts/game_state.gd").new()
+	rv.new_game()
+	rv.set_difficulty("normal")
+	var vic2: Dictionary = rv.colonists[1]
+	vic2.health = 0.0
+	rv.resources.oxygen = 100.0
+	rv.resources.food = 100.0
+	rv.simulate(1.0, false)
+	check(rv.fallen.size() == 1 and not vic2 in rv.colonists, "обычный режим: погибший лежит среди павших")
+	var rcost: int = rv.revive_cost(rv.fallen[0])
+	rv.pearls = rcost + 5
+	check(rv.revive(rv.fallen[0]) and vic2 in rv.colonists and rv.pearls == 5 and vic2.health > 0.0, "оживление за жемчуг")
+	rv.colonists[0].health = 0.0
+	rv.simulate(1.0, false)
+	rv.fallen[0].until = rv.now() - 1.0
+	rv.simulate(1.0, false)
+	check(rv.fallen.is_empty() and rv.colonists.size() == 3, "время вышло — потерян навсегда")
+	rv.colonists[0].level = 5
+	rv.colonists[0].health = 0.0
+	rv.simulate(1.0, false)
+	check(rv.revive_cost(rv.fallen[0]) > rcost, "оживление дороже с уровнем")
+	# офлайн: запасы не уходят в ноль, отсеки ждут сбора
+	var of = load("res://scripts/game_state.gd").new()
+	of.new_game()
+	of.set_difficulty("normal")
+	of.resources = {"energy": 80.0, "oxygen": 80.0, "food": 80.0}
+	of._apply_offline(8 * 3600.0)
+	check(of.resources.oxygen >= 80.0 * 0.35 - 0.01 and of.resources.food >= 80.0 * 0.35 - 0.01, "офлайн 8 ч: запасы не обнулились (%.0f O₂, %.0f еды)" % [of.resources.oxygen, of.resources.food])
+	rv.free(); of.free()
 	# беда без людей: разгорается, перекидывается на соседа и сама выгорает
 	var bz = load("res://scripts/game_state.gd").new()
 	bz.new_game()
@@ -302,6 +333,7 @@ func _initialize() -> void:
 		c.room = -1
 	bz.start_hazard(oxr, "fire")
 	var spread_seen := false
+	var burned_out := false
 	for i in 400:
 		bz.resources.oxygen = 100.0
 		bz.resources.food = 100.0
@@ -310,12 +342,15 @@ func _initialize() -> void:
 			c.help = -1
 		if bz.rooms.filter(func(r): return r.incident > 0.0 and r.id != oxr.id).size() > 0:
 			spread_seen = true
+		if oxr.incident <= 0.0:
+			burned_out = true
 	check(spread_seen, "пожар без людей перекинулся на соседний отсек")
-	check(oxr.incident <= 0.0, "пожар без людей в отсеке выгорел сам")
+	check(burned_out, "пожар без людей в отсеке выгорел сам")
 	bz.free()
 	# новые отсеки и характеристики
 	var nw = load("res://scripts/game_state.gd").new()
 	nw.new_game()
+	nw.set_difficulty("calm")
 	var nc: Dictionary = nw.colonists[0]
 	check(nc.has("end") and nc.has("cha") and nc.has("luck") and nc.has("mood"), "у колониста выносливость, обаяние, удача, настроение")
 	check(not nw.can_build_at("turbine", 7, 1), "турбина не строится выше 7-го ряда")

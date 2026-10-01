@@ -535,3 +535,19 @@
 534|EP: +%d · Kämpfe: %d gewonnen, %d verloren
 535|Bisherige Beute:
 536|noch nichts
+537|%s ist gestorben. Wiederbeleben innerhalb von %s für %d Perlen.
+538|Für immer verloren
+539|%s ist nicht mehr zu retten.
+540|Wiederbelebt!
+541|%s ist wieder auf den Beinen.
+542|Gefallen: %s
+543|Wiederbelebung noch %s möglich
+544|Danach ist der Kolonist für immer verloren. Der Preis steigt mit dem Level.
+545|Wiederbeleben ◉%d
+546|Bestatten
+547|Gefallene – belebe sie wieder, bevor es zu spät ist
+548|Während du weg warst (%s): %s
+549|%d Räume sind bereit, tippe zum Einsammeln!
+550|Das vorgesehene Spielerlebnis. Gefallene Kolonisten können innerhalb von 2 Stunden für Perlen wiederbelebt werden.
+551|Mehr und stärkere Vorfälle, schnellerer Verbrauch. Gefallene können nur innerhalb von 30 Minuten und zum doppelten Preis wiederbelebt werden. Keine Beschleunigung mit Kristallen. +50% Belohnungen.
+552|%d Std.

@@ -535,5 +535,21 @@
 "%s: the danger has passed.",
 "XP so far: +%d · Fights: %d won, %d lost",
 "Loot so far:",
-"nothing yet"
+"nothing yet",
+"%s has died. Revive within %s for %d pearls.",
+"Gone forever",
+"%s could not be saved.",
+"Revived!",
+"%s is back on their feet.",
+"Fallen: %s",
+"Can be revived for %s more",
+"After that they are lost forever. The cost grows with their level.",
+"Revive ◉%d",
+"Bury",
+"Fallen — revive them before it's too late",
+"While you were away (%s): %s",
+"%d rooms are ready, tap them to collect!",
+"The intended experience. Fallen colonists can be revived for pearls within 2 hours.",
+"More and stronger incidents, faster resource use. The fallen can be revived only within 30 minutes and for double the price. No crystal speed-ups. +50% rewards.",
+"%d h"
 ]
