@@ -1,41 +1,44 @@
 
 profile=ads  sessions=4×12 min/day
 day  pop  kids  rooms  lvl  colLv  pearls  cryst  items  story  earned_p  ads  starv  dead%
-  1    8     0     16  6.4      4     144     52      3      8       952   11     0    17
-  2    9     0     18  7.1      5     203     73      4      8      1783   24     0     0
-  3   12     0     18  7.4      6     187     84      8      8      3923   36     0     4
-  4   13     0     19  8.5      7     324    118     13     10      6744   48     0     4
-  5   15     0     20  9.4      8    1009    151     16     10     11298   60     0     0
-  6   18     0     26  10.1      9     150    208     24     12     14559   72     0    25
-  7   22     0     30  10.9      9     517    248     29     15     20941   84     0    12
-  8   25     0     31  11.3     10     734    273     40     16     26850   96     0    15
-  9   28     0     31  12.2     10     672    294     49     16     33408  108     0    23
- 10   32     0     32  12.4     10     377    322     55     16     38918  120     0    35
- 11   34     0     35  13.2     11     223    348     63     18     46314  132     0    19
- 12   40     0     40  13.4     11     775    415     74     20     53589  144     0    23
- 13   44     1     40  13.9     11     168    446     82     20     61012  156     0    27
- 14   51     2     40  13.9     12     953    460     90     20     69127  168     0    17
- 15   57     2     41  14.3     12    3146    485    100     20     79719  180     0    17
- 16   69     2     42  14.1     13    2184    515    119     20     89945  192     0    17
- 17   76     2     42  14.7     13    1869    595    130     23    100910  204     0    10
- 18   81     2     42  15.3     13    4125    644    140     23    114498  216     0     2
- 19   86     2     43  15.9     14    5327    672    151     23    125938  228     0     2
- 20   89     2     43  16.5     14    9392    682    159     23    137922  240     0     0
- 21   92     2     43  17.2     14   11582    693    170     23    152886  252    13     0
- 22   97     2     43  17.5     15   24179    740    183     23    169643  264    38     0
- 23  100     0     43  18.0     15   38907    755    191     23    184647  276   133     0
- 24  100     0     43  18.9     15   50695    778    200     23    199972  288   245     0
- 25  100     0     43  19.7     15   65798    795    210     23    215910  300   349     0
- 26  100     0     43  20.4     16    7428    837    219     23    233565  312   349     0
- 27  100     0     43  20.9     16    6961    854    229     23    249504  324   349     2
- 28  100     0     43  21.5     16    7408    872    239     23    264734  336   349     2
- 29  100     0     43  22.1     16    8019    882    251     23    279235  348   349     2
- 30  100     0     43  22.6     17     863    914    261     23    296140  360   349     6
-rooms: { "reactor": 4, "airlock": 1, "elevator": 11, "oxygen": 2, "farm": 2, "living": 6, "pearl": 3, "dock": 1, "lab": 1, "radio": 1, "storage": 1, "medbay": 1, "kitchen": 1, "gym": 1, "school": 1, "lounge": 1, "workshop": 1, "armory": 1, "aquarium": 1, "turbine": 1, "observatory": 1 }
-room levels: { 5: 25, 1: 12, 4: 6 }
-pearl sources: { "collect": 152519, "manage": 117519, "sim": 31810 }
-pearl by source: { "daily": 1520, "free_crate": 12477, "story": 3050, "collect": 152519, "sim(boss/raid/offline)": 31810, "season": 1400, "crates": 18862, "expeditions": 61498, "quests": 1750, "raider_bodies": 13331 }
-crystal sources: { "crates": 148, "quests": 110, "achievements": 141, "story": 91, "season": 30, "free_crate": 56, "daily": 42, "expeditions": 208, "raider_bodies": 2, "sim(boss/raid/offline)": 51, "collect": 4 }
-item sources: { "crates": 40, "free_crate": 33, "expeditions": 34, "raider_bodies": 49, "sim(boss/raid/offline)": 13, "collect": 92 }
-crate sources: { "free_crate": 120, "story": 6, "expeditions": 27, "season": 3, "daily": 8 }
-pop sources: { "offline": 45, "sim": -89, "manage": 106, "session_start": 0 } births 19
+  1    8     0     17  6.2      4     220     55      2      8      2484   14     0     4
+  2   10     0     17  6.6      5     359     82      6      8      3931   26     0     0
+  3   12     0     18  7.8      7    1313    115      7     10      7256   38     0     2
+  4   14     0     18  9.2      7    2001    142     14     10     11018   50     0     0
+  5   16     0     24  10.5      8     173    186     18     12     13919   62     0    17
+  6   20     0     27  10.8      9    1639    222     24     14     19423   74     0     6
+  7   23     0     29  11.2      9     950    259     30     16     24229   86     0     8
+  8   26     0     29  12.2      9     325    263     41     16     28628   98     0    12
+  9   29     0     29  12.6     10     486    271     46     16     33639  110     0     8
+ 10   32     0     30  13.2     10     472    286     54     16     39147  122     0     6
+ 11   38     1     38  13.2     11     785    370     67     20     45961  134     0     6
+ 12   44     1     38  13.2     11    1467    386     77     20     52658  146     0    10
+ 13   46     0     38  14.3     11    1167    406     90     20     59457  158     0     6
+ 14   49     2     38  14.8     12     523    416    103     20     66123  170     0     8
+ 15   52     2     38  15.4     12    2143    432    110     20     75113  182     0     6
+ 16   59     2     39  15.3     12    3780    507    117     23     83347  194     0     0
+ 17   64     2     39  15.8     13    3182    548    127     23     89916  206     0     4
+ 18   71     2     39  15.9     13    2797    579    140     23    100554  218     0     4
+ 19   77     2     40  16.1     14    2340    609    152     23    109666  230     0     8
+ 20   81     2     40  16.7     14    3093    618    165     23    118397  242     0     4
+ 21   85     2     40  17.1     14    3007    647    175     23    129447  254     0     0
+ 22   89     2     40  17.5     14    3422    655    186     23    141712  266     0     6
+ 23   92     2     40  18.1     15    3605    677    199     23    155473  278     0     6
+ 24  100     0     40  18.0     15    4856    706    214     23    169256  290     0     2
+ 25  100     0     40  19.0     15    1591    733    225     23    184458  302     0     0
+ 26  100     0     40  19.7     16    4754    753    238     23    197052  314     0     0
+ 27  100     0     40  20.4     16    6028    783    253     23    210280  326     0     0
+ 28  100     0     40  21.1     16    2348    802    267     23    222790  338     0     2
+ 29  100     0     40  21.6     16    3531    835    283     23    236666  350     0     0
+ 30  100     0     40  22.2     16    3050    851    300     23    247360  362     0     0
+rooms: { "reactor": 3, "airlock": 1, "elevator": 11, "oxygen": 2, "farm": 1, "living": 5, "pearl": 3, "dock": 1, "lab": 1, "radio": 1, "storage": 1, "medbay": 1, "kitchen": 1, "gym": 1, "school": 1, "lounge": 1, "workshop": 1, "armory": 1, "aquarium": 1, "turbine": 1, "observatory": 1 }
+room levels: { 5: 15, 1: 12, 4: 10, 3: 3 }
+pearl sources: { "collect": 136378, "manage": 94505, "sim": 30715 }
+pearl by source: { "daily": 1520, "crates": 24631, "story": 3050, "collect": 136378, "sim(boss/raid/offline)": 30715, "quests": 2990, "season": 1600, "expeditions": 66309, "free_crate": 14058, "raider_bodies": 12506 }
+pearl spent on: { "upgrade": 224005, "build": 17285, "project": 3000, "craft": 130400 }
+projects: { "garden_dome": 1 } materials: { "shell": 0, "coral": 62, "kelp_fiber": 0, "scrap": 583, "copper": 0, "vent_crystal": 211, "kraken_ink": 161, "abyss_pearl": 13 } blueprints: 24 crafted: 135
+deaths: 0 {  }  starve secs: { "oxygen": 0, "food": 0, "energy0": 17 }
+crystal sources: { "free_crate": 37, "quests": 90, "achievements": 141, "story": 91, "season": 30, "expeditions": 204, "daily": 42, "crates": 130, "raider_bodies": 7, "sim(boss/raid/offline)": 48, "collect": 3 }
+item sources: { "expeditions": 49, "crates": 44, "free_crate": 30, "sim(boss/raid/offline)": 8, "raider_bodies": 34 }
+crate sources: { "free_crate": 120, "story": 6, "season": 3, "expeditions": 32, "daily": 8, "sim(boss/raid/offline)": 2 }
+pop sources: { "offline": 47, "sim": 8, "manage": 15, "session_start": 0 } births 22
