@@ -1609,6 +1609,11 @@ func _on_release(p: Vector2) -> void:
 				else:
 					Game.assign(c, room)
 			return
+		# короткое нажатие на колониста в готовом отсеке — это сбор, как в Fallout
+		var here := Game.room_at(cell.x, cell.y)
+		if not here.is_empty() and here.ready:
+			Game.collect(here)
+			return
 		colonist_selected.emit(c.id)
 		return
 	if moved:

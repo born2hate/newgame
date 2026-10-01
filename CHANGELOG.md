@@ -10,6 +10,8 @@ APK builds live in [`releases/`](releases/).
 - **Tense music** fades in during pirate raids and boss fights.
 ### Changed
 - **Shorter tutorial**: 6 hands-on steps instead of 11 — collect, build, place, drag, done.
+### Fixed
+- Tapping a ready room where a colonist stands now collects instead of opening the colonist card.
 
 ## 0.11 — 2026-10-01
 ### Added
