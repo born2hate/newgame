@@ -60,6 +60,16 @@ func open_research(focus := "") -> void:
 			border = Color(1.0, 0.82, 0.3)
 			bg = Color(0.25, 0.17, 0.04, 0.95)
 		var row: HBoxContainer = hud._card(bg, border)
+		var ric := Art.tex("res://art/research/%s.png" % d.id)
+		if ric:
+			var rt := TextureRect.new()
+			rt.texture = ric
+			rt.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			rt.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			rt.custom_minimum_size = Vector2(64, 64)
+			if not done and not avail:
+				rt.modulate = Color(0.45, 0.45, 0.5)
+			row.add_child(rt)
 		if d.id in path and (scroll_to == null or avail):
 			if scroll_to == null or not scroll_to.has_meta("avail"):
 				scroll_to = row.get_parent()

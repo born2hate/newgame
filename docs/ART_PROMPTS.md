@@ -185,3 +185,8 @@ transparent background, no text: <объект>
 0 — оранжевый, 1 — жёлтый, 2 — синий, 3 — розовый, 4 — зелёный, 5 — белый, 6 — капитан (золото).
 
 `same chibi character style as the attached diver, but without helmet and air tank, wearing a fitted <color> jumpsuit with white panels, relaxed happy pose, side view facing right, full body, standing, transparent background`
+
+## Research icons → `art/research/<id>.png`
+
+Square, transparent background, glossy cartoon game icon in a round brass frame. A 4×5 grid on one sheet is fine — I'll cut it.
+Order: efficient_reactors, hydroponics, electrolysis, reinforced_hull, training_programs, sonar_mapping, fire_suppression, deep_drilling, auto_collectors, medical_ai, bathyscaphe_engines, storage_compression, pearl_cultivation, trader_beacon, abyssal_engineering, legendary_signal, fusion_core.
