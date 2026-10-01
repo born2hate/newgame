@@ -6,9 +6,9 @@ const GRID_COLS := 14
 const MAX_DEPTH := 14
 const MAX_LEVEL := 5
 ## Уровень колонии, с которого можно улучшать отсеки до 4 и 5 уровня.
-const LEVEL_GATE := {4: 10, 5: 16}
+const LEVEL_GATE := {4: 8, 5: 12}
 ## Множитель цены улучшения: 1→2, 2→3, 3→4, 4→5 (от базовой цены отсека).
-const UPGRADE_MULT := [1.5, 4.0, 12.0, 30.0]
+const UPGRADE_MULT := [1.5, 4.0, 18.0, 45.0]
 
 const RESOURCES := {
 	"energy": {"name": "Energy", "short": "E", "color": Color(1.0, 0.82, 0.3)},
