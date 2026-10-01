@@ -26,6 +26,9 @@ Deep Colony to przytulna, ale pełna napięcia gra o budowie kolonii w duchu kla
 • Gigantyczni bossowie: Żabnica, Kraken, Wąż morski i Krab tytan — stukaj i walczcie razem
 
 🗺️ ODKRYWAJ
+• Eksploruj bez limitu czasu jak w Fallout: im dłużej na zewnątrz, tym bogatsze łupy — byle wezwać drużynę na czas
+• Wytwarzaj broń i pancerze z planów i rzadkich materiałów
+• Buduj wielkie projekty: kopułę ogrodu, latarnię ocalałych i więcej
 • Wysyłaj drużyny na wyprawy do lasów wodorostów, raf koralowych i wraków
 • Podejmuj ryzykowne decyzje: otworzyć zapieczętowaną skrzynię czy ją zostawić?
 • Przywoź perły, kryształy, rzadki sprzęt i zwierzaki do kolekcji

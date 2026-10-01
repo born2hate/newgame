@@ -26,6 +26,9 @@ Deep Colony ist ein gemütliches, aber spannendes Kolonie-Aufbauspiel im Geist k
 • Riesige Bosse: Anglerfisch, Krake, Seeschlange und Titankrabbe – tippe und kämpft gemeinsam
 
 🗺️ ERKUNDE
+• Erkunde ohne Timer wie in Fallout: Je länger draußen, desto reicher die Beute – ruf deinen Trupp rechtzeitig zurück
+• Stelle Waffen und Rüstungen aus Bauplänen und seltenen Materialien her
+• Baue große Projekte: Gartenkuppel, Überlebenden-Leuchtfeuer und mehr
 • Schicke Trupps auf Expeditionen in Kelpwälder, Korallenriffe und zu Schiffswracks
 • Triff riskante Entscheidungen: die versiegelte Truhe öffnen oder liegen lassen?
 • Bringe Perlen, Kristalle, seltene Ausrüstung und Haustiere mit

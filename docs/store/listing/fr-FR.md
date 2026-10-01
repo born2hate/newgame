@@ -26,6 +26,9 @@ Deep Colony est un jeu de gestion de colonie à la fois douillet et tendu, dans 
 • Boss géants : Baudroie, Kraken, Serpent de mer et Crabe titan — touche pour combattre ensemble
 
 🗺️ EXPLORE
+• Explore sans minuteur, façon Fallout : plus l'équipe reste dehors, plus le butin est riche — rappelle-la à temps
+• Fabrique armes et armures avec des plans et des matériaux rares
+• Construis de grands projets : dôme jardin, phare des survivants et plus
 • Envoie des équipes en expédition : forêts de varech, récifs de corail, épaves
 • Fais des choix risqués : ouvrir le coffre scellé ou le laisser ?
 • Rapporte perles, cristaux, équipement rare et familiers à collectionner

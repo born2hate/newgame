@@ -26,6 +26,9 @@ Deep Colony is a cozy-but-tense colony builder in the spirit of classic shelter 
 • Giant bosses: Anglerfish, Kraken, Sea Serpent and Titan Crab — tap to fight together
 
 🗺️ EXPLORE
+• Explore with no timer, Fallout-style: stay out longer for richer loot — and recall your crew before it's too late
+• Craft weapons and armor from blueprints and rare materials
+• Build huge colony projects: a Garden Dome, a Survivor Beacon and more
 • Send crews on expeditions to kelp forests, coral reefs and sunken ships
 • Make risky choices on the way: open the sealed chest or leave it?
 • Bring back pearls, crystals, rare gear and collectible pets

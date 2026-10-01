@@ -26,6 +26,9 @@ Deep Colony è un gestionale di colonie accogliente ma teso, nello spirito dei c
 • Boss giganti: Rana pescatrice, Kraken, Serpente marino e Granchio titano: tocca per combattere insieme
 
 🗺️ ESPLORA
+• Esplora senza timer, stile Fallout: più resti fuori, più ricco il bottino — ma richiama la squadra in tempo
+• Crea armi e armature da progetti e materiali rari
+• Costruisci grandi progetti: cupola giardino, faro dei sopravvissuti e altro
 • Invia squadre in spedizione tra foreste di alghe, barriere coralline e relitti
 • Fai scelte rischiose: aprire lo scrigno sigillato o lasciarlo?
 • Riporta perle, cristalli, equipaggiamento raro e animali da collezione

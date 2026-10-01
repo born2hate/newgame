@@ -26,6 +26,9 @@ Deep Colony adalah game membangun koloni yang santai tapi menegangkan, terinspir
 • Bos raksasa: Ikan Pemancing, Kraken, Ular Laut, dan Kepiting Titan — ketuk untuk bertarung bersama
 
 🗺️ JELAJAHI
+• Jelajahi tanpa batas waktu ala Fallout: makin lama di luar, makin kaya rampasan — panggil timmu tepat waktu
+• Buat senjata dan zirah dari cetak biru dan bahan langka
+• Bangun proyek besar: kubah taman, mercusuar penyintas, dan lainnya
 • Kirim tim ekspedisi ke hutan kelp, terumbu karang, dan kapal karam
 • Ambil keputusan berisiko: buka peti tersegel atau biarkan?
 • Bawa pulang mutiara, kristal, perlengkapan langka, dan hewan peliharaan

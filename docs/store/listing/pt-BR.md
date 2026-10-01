@@ -26,6 +26,9 @@ Deep Colony é um jogo de construção de colônia aconchegante, mas tenso, no e
 • Chefes gigantes: Peixe-diabo, Kraken, Serpente marinha e Caranguejo titã; toque para lutar juntos
 
 🗺️ EXPLORE
+• Explore sem limite de tempo, estilo Fallout: quanto mais tempo fora, melhor o saque — mas chame a equipe a tempo
+• Fabrique armas e armaduras com projetos e materiais raros
+• Construa grandes projetos: cúpula jardim, farol dos sobreviventes e mais
 • Envie equipes em expedições a florestas de algas, recifes de coral e navios naufragados
 • Faça escolhas arriscadas: abrir o baú lacrado ou deixá-lo?
 • Traga pérolas, cristais, equipamentos raros e mascotes colecionáveis

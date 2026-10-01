@@ -26,6 +26,9 @@ Deep Colony, klasik sığınak oyunlarının ruhunu taşıyan, sıcak ama gerili
 • Dev boslar: Fener Balığı, Kraken, Deniz Yılanı ve Titan Yengeç; dokun ve birlikte savaş
 
 🗺️ KEŞFET
+• Fallout gibi süresiz keşfet: dışarıda ne kadar kalırsan ganimet o kadar zengin — ekibini zamanında geri çağır
+• Planlardan ve nadir malzemelerden silah ve zırh üret
+• Büyük koloni projeleri kur: bahçe kubbesi, hayatta kalan feneri ve dahası
 • Ekipleri yosun ormanlarına, mercan resiflerine ve batık gemilere gönder
 • Riskli kararlar ver: mühürlü sandığı açmak mı, bırakmak mı?
 • İnci, kristal, nadir ekipman ve evcil hayvanlarla dön
