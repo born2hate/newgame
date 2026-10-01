@@ -491,8 +491,52 @@ func _build_top_bar() -> void:
 	colony_bar.custom_minimum_size = Vector2(0, 18)
 	colony_bar.draw.connect(_draw_colony_bar)
 	vb.add_child(colony_bar)
+	# текущая глава сюжета: что делать дальше; нажатие ведёт прямо к делу
+	story_pill = Control.new()
+	story_pill.custom_minimum_size = Vector2(0, 44)
+	story_pill.mouse_filter = Control.MOUSE_FILTER_STOP
+	story_pill.draw.connect(_draw_story_pill)
+	story_pill.gui_input.connect(func(ev: InputEvent):
+		if (ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT) or (ev is InputEventScreenTouch and ev.pressed):
+			Audio.play("tap")
+			more.story_go())
+	vb.add_child(story_pill)
 
 var colony_bar: Control
+var story_pill: Control
+
+func _draw_story_pill() -> void:
+	var r := Rect2(Vector2.ZERO, story_pill.size)
+	var st := Game.story_current()
+	story_pill.visible = not st.is_empty() and Game.tutorial_done
+	if st.is_empty():
+		return
+	var ready := Game.story_ready()
+	var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 220.0)
+	var sb := StyleBoxFlat.new()
+	sb.set_corner_radius_all(12)
+	sb.bg_color = Color(0.35, 0.25, 0.05, 0.95).lerp(Color(0.55, 0.4, 0.08, 0.95), pulse) if ready else Color(0.04, 0.1, 0.2, 0.92)
+	sb.border_color = Color(1.0, 0.82, 0.35, 0.6 + 0.4 * pulse) if ready else Color(1.0, 0.8, 0.4, 0.55)
+	sb.set_border_width_all(2)
+	story_pill.draw_style_box(sb, r)
+	var font := ThemeDB.fallback_font
+	var tex := Art.tex("res://art/characters/reyes.png")
+	var x := 10.0
+	if tex:
+		story_pill.draw_texture_rect(tex, Rect2(6, 3, r.size.y - 6, r.size.y - 6), false)
+		x = r.size.y + 4
+	var right := tr("Claim!") if ready else "%d/%d  ›" % [mini(st.goal[1], Game.story_progress()), st.goal[1]]
+	var rw := font.get_string_size(right, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
+	var txt := "%d. %s" % [Game.story_index + 1, more.story_goal_text(st)]
+	var maxw := r.size.x - x - rw - 24
+	var fs := 20
+	while fs > 14 and font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > maxw:
+		fs -= 1
+	story_pill.draw_string_outline(font, Vector2(x, r.size.y / 2.0 + fs * 0.35), txt, HORIZONTAL_ALIGNMENT_LEFT, maxw, fs, 4, Color(0, 0, 0, 0.7))
+	story_pill.draw_string(font, Vector2(x, r.size.y / 2.0 + fs * 0.35), txt, HORIZONTAL_ALIGNMENT_LEFT, maxw, fs, Color(1.0, 0.92, 0.7))
+	var rc := Color(1.0, 0.95, 0.6) if ready else Color(0.75, 0.88, 1.0)
+	story_pill.draw_string_outline(font, Vector2(r.size.x - rw - 12, r.size.y / 2.0 + 7), right, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, 4, Color(0, 0, 0, 0.7))
+	story_pill.draw_string(font, Vector2(r.size.x - rw - 12, r.size.y / 2.0 + 7), right, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, rc)
 
 func _draw_colony_bar() -> void:
 	var r := Rect2(Vector2.ZERO, colony_bar.size)
@@ -624,6 +668,8 @@ func _refresh_top() -> void:
 		res_bars[k].queue_redraw()
 	if colony_bar:
 		colony_bar.queue_redraw()
+	if story_pill:
+		story_pill.queue_redraw()
 
 # ---------------------------------------------------------------- нижняя панель
 
@@ -867,7 +913,7 @@ func _open_build() -> void:
 			if Game.pearls < cost:
 				b.modulate = Color(1, 1, 1, 0.55)
 		else:
-			b = _button(tr("Needs %d colonists") % def.unlock_pop, func(): pass, 64)
+			b = _button(tr("Story chapter %d") % (Defs.unlock_chapter(type) + 1) + "\n" + tr("Needs %d colonists") % def.unlock_pop, func(): pass, 64)
 			b.disabled = true
 		b.custom_minimum_size.x = 150
 		hb.add_child(b)
@@ -2084,7 +2130,6 @@ func _outside_section() -> void:
 	if not dock.is_empty():
 		sheet_body.add_child(_with_icon(_button(tr("Plan an expedition"), func(): _open_room(dock.id), 72), "expedition", 44))
 		return
-	var need: int = Defs.ROOMS.dock.unlock_pop
 	var txt := tr("To go outside, build a Sub Dock. Crews sail from it on expeditions for loot.")
 	var l := _label(txt, 19, Color(0.85, 0.92, 1.0))
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -2092,7 +2137,7 @@ func _outside_section() -> void:
 	if Game.is_unlocked("dock"):
 		sheet_body.add_child(_with_icon(_button(tr("Build a Sub Dock"), _start_build.bind("dock"), 72), "build", 44))
 	else:
-		sheet_body.add_child(_label(tr("Needs %d colonists") % need + "  (%d/%d)" % [Game.colonists.size(), need], 20, Color(1.0, 0.75, 0.5)))
+		sheet_body.add_child(_label(tr("Opens in story chapter %d") % (Defs.unlock_chapter("dock") + 1) + "  ·  " + tr("Needs %d colonists") % Defs.ROOMS.dock.unlock_pop, 20, Color(1.0, 0.75, 0.5)))
 
 func _dock_section(r: Dictionary) -> void:
 	var e := Game.expedition_at(r.id)

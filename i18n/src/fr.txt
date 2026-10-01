@@ -682,3 +682,18 @@
 681|La colonie s'ennuie de toi, superviseur. Ça se complique en bas !
 682|Nécessite le niveau de colonie %d
 683|De beaux poissons : meilleur moral pour tous et +5% de perles par niveau.
+684|Chapitre %d de l'histoire
+685|S'ouvre au chapitre %d
+686|Construis : %s
+687|Expédition : %s
+688|Affecte un colon à une salle
+689|Récupérer !
+690|Nouvelles salles débloquées !
+691|Nouvelles salles : %s
+692|Perles des profondeurs
+693|Ici, on commerce et on construit avec des perles. Construis une ferme perlière et mets quelqu'un au travail.
+694|Améliore
+695|Chaque salle peut être améliorée : plus de production, plus de postes. Améliore n'importe quelle salle une fois.
+696|Appel aux survivants
+697|Peu nous trouveront seuls. Construis une salle radio : son signal guidera de nouveaux survivants jusqu'à la colonie.
+698|Monte le son de la radio et remplis les couloirs. Atteins 30 colons.

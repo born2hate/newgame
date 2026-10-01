@@ -682,3 +682,18 @@
 681|Die Kolonie vermisst dich, Aufseher. Hier unten wird es ungemütlich!
 682|Benötigt Kolonie-Stufe %d
 683|Schöne Fische: bessere Laune für alle und +5% Perlen pro Stufe.
+684|Story-Kapitel %d
+685|Öffnet sich in Kapitel %d
+686|Baue: %s
+687|Expedition: %s
+688|Weise einen Kolonisten einem Raum zu
+689|Abholen!
+690|Neue Räume freigeschaltet!
+691|Neue Räume: %s
+692|Perlen der Tiefe
+693|Hier unten handeln und bauen wir mit Perlen. Baue eine Perlenfarm und setze jemanden dort zur Arbeit ein.
+694|Mach es besser
+695|Jeder Raum lässt sich verbessern: mehr Ertrag, mehr Arbeitsplätze. Verbessere einen beliebigen Raum einmal.
+696|Ruf der Überlebenden
+697|Nur wenige finden uns von allein. Baue einen Funkraum: Sein Signal führt neue Überlebende zur Kolonie.
+698|Dreh das Funkgerät auf und füll die Hallen. Erreiche 30 Kolonisten.

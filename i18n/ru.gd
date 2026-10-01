@@ -688,6 +688,21 @@ const T := {
 	"The colony misses you, Overseer. Things are getting rough down here!": "Колония скучает, смотритель. Здесь становится неспокойно!",
 	"Needs colony level %d": "Нужен уровень колонии %d",
 	"Beautiful fish: better mood for all and +5% pearls per level.": "Красивые рыбы: настроение лучше у всех и +5% жемчуга за уровень.",
+	"Story chapter %d": "Глава сюжета %d",
+	"Opens in story chapter %d": "Откроется в главе %d",
+	"Build: %s": "Построй: %s",
+	"Expedition: %s": "Экспедиция: %s",
+	"Assign a colonist to a room": "Поставь колониста в отсек",
+	"Claim!": "Забрать!",
+	"New rooms unlocked!": "Открыты новые отсеки!",
+	"New rooms: %s": "Новые отсеки: %s",
+	"Pearls of the Deep": "Жемчуг глубин",
+	"Pearls are what we trade and build with down here. Build a Pearl Farm and put someone to work in it.": "Жемчуг — наша валюта здесь, внизу: на него торгуем и строим. Построй жемчужную ферму и поставь туда работника.",
+	"Make It Better": "Сделай лучше",
+	"Every room can be improved: more output, more work slots. Upgrade any room once.": "Любой отсек можно улучшить: больше добычи и рабочих мест. Улучши любой отсек один раз.",
+	"Calling Survivors": "Зов выживших",
+	"Only a few will find us on their own. Build a Radio Room: its broadcast is how new survivors will reach the colony.": "Сами нас найдут немногие. Построй радиорубку: по её сигналу к колонии будут выходить новые выжившие.",
+	"Turn the radio up and fill the halls. Reach 30 colonists.": "Сделай радио громче и заполни залы. Доведи колонию до 30 человек.",
 }
 
 static func make() -> Translation:

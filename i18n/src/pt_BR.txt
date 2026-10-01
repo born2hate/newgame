@@ -682,3 +682,18 @@
 681|A colônia sente sua falta, supervisor. As coisas estão complicadas aqui embaixo!
 682|Requer nível de colônia %d
 683|Peixes lindos: mais ânimo para todos e +5% de pérolas por nível.
+684|Capítulo %d da história
+685|Abre no capítulo %d
+686|Construa: %s
+687|Expedição: %s
+688|Coloque um colono numa sala
+689|Resgatar!
+690|Novas salas liberadas!
+691|Novas salas: %s
+692|Pérolas das profundezas
+693|Aqui embaixo negociamos e construímos com pérolas. Construa uma fazenda de pérolas e coloque alguém para trabalhar nela.
+694|Melhore
+695|Toda sala pode ser melhorada: mais produção e mais vagas. Melhore qualquer sala uma vez.
+696|Chamando sobreviventes
+697|Poucos nos acharão sozinhos. Construa uma sala de rádio: o sinal dela vai guiar novos sobreviventes até a colônia.
+698|Aumente o volume do rádio e encha os corredores. Chegue a 30 colonos.

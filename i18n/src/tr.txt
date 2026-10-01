@@ -682,3 +682,18 @@
 681|Koloni seni özledi, gözetmen. Aşağıda işler karışıyor!
 682|Koloni seviyesi %d gerekir
 683|Güzel balıklar: herkese daha iyi moral ve seviye başına +%5 inci.
+684|Hikâye bölümü %d
+685|%d. bölümde açılır
+686|İnşa et: %s
+687|Keşif: %s
+688|Bir kolonisti odaya yerleştir
+689|Al!
+690|Yeni odalar açıldı!
+691|Yeni odalar: %s
+692|Derinlerin incileri
+693|Burada inciyle ticaret yapar, inciyle inşa ederiz. Bir inci çiftliği kur ve içine bir çalışan yerleştir.
+694|Daha iyisini yap
+695|Her oda geliştirilebilir: daha fazla üretim, daha fazla iş yeri. Herhangi bir odayı bir kez geliştir.
+696|Hayatta kalanlara çağrı
+697|Bizi kendi başına bulan az olur. Bir telsiz odası kur: yayını yeni hayatta kalanları koloniye getirecek.
+698|Telsizin sesini aç ve salonları doldur. 30 koloniste ulaş.

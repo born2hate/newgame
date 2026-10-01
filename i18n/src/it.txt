@@ -682,3 +682,18 @@
 681|La colonia sente la tua mancanza, supervisore. Quaggiù si mette male!
 682|Serve livello colonia %d
 683|Pesci bellissimi: umore migliore per tutti e +5% di perle per livello.
+684|Capitolo %d della storia
+685|Si apre al capitolo %d
+686|Costruisci: %s
+687|Spedizione: %s
+688|Assegna un colono a una stanza
+689|Riscuoti!
+690|Nuove stanze sbloccate!
+691|Nuove stanze: %s
+692|Perle degli abissi
+693|Quaggiù si commercia e si costruisce con le perle. Costruisci una coltivazione di perle e mettici qualcuno al lavoro.
+694|Miglioralo
+695|Ogni stanza si può migliorare: più produzione, più posti di lavoro. Migliora una stanza qualsiasi una volta.
+696|Richiamo ai sopravvissuti
+697|Pochi ci troveranno da soli. Costruisci una sala radio: il suo segnale guiderà nuovi sopravvissuti alla colonia.
+698|Alza il volume della radio e riempi i corridoi. Raggiungi 30 coloni.

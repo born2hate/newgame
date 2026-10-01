@@ -28,7 +28,7 @@ var combo_until := 0.0
 ## Уровень колонии: опыт за всё, что происходит в колонии.
 var colony_level := 1
 var colony_xp := 0
-const COLONY_XP := {"collect": 2, "build": 25, "upgrade": 20, "expedition_done": 30, "incident_resolved": 15,
+const COLONY_XP := {"collect": 1, "build": 25, "upgrade": 20, "expedition_done": 30, "incident_resolved": 15,
 	"raid_won": 60, "research": 40, "level_up": 5, "craft": 15, "trade": 10, "birth": 40, "bubble": 3}
 signal colony_level_up(level: int)
 signal combo_changed(count: int, mult: float)
@@ -272,8 +272,11 @@ func build_cost(type: String) -> int:
 	var total := rooms.filter(func(r): return r.type != "elevator" and r.type != "airlock").size()
 	return int(base * (1.0 + 0.6 * count_of(type)) * (1.0 + 0.04 * total))
 
+## Сюжет открывает отсек раньше (награда за задания), но и без сюжета
+## отсек откроется по числу колонистов — игрока никто не держит на поводке.
+## Уже построенный тип (старые сохранения) остаётся доступным.
 func is_unlocked(type: String) -> bool:
-	return colonists.size() >= Defs.ROOMS[type].get("unlock_pop", 0)
+	return story_index >= Defs.unlock_chapter(type) or colonists.size() >= int(Defs.ROOMS[type].get("unlock_pop", 0)) or count_of(type) > 0
 
 func max_row() -> int:
 	var m := 0
@@ -362,11 +365,13 @@ func trade_discount() -> float:
 ## потом — редко; основной приток даёт радиорубка (и дети).
 func arrival_speed() -> float:
 	# первые NATURAL_POP человек приходят сами (каждые ARRIVAL_INTERVAL с), дальше — только по радио:
-	# сила радиорубки 10 ≈ один человек в час
 	var base := 1.0 if colonists.size() < NATURAL_POP else 0.0
 	var rp := type_power("radio")
-	# сила 10 ≈ один человек в 20 часов, дальше с убывающей отдачей
-	var per_hour := 0.05 * pow(rp / 10.0, 0.5) if rp > 0.0 else 0.0
+	if count_of("radio") > 0:
+		# радио вещает и само, слабо; люди внутри усиливают сигнал
+		rp = maxf(rp, 3.0)
+	# сила 10 при 8 колонистах ≈ один человек в 7 часов; с ростом колонии — реже
+	var per_hour := 0.15 * pow(rp / 10.0, 0.5) * 15.0 / (colonists.size() + 7.0) if rp > 0.0 else 0.0
 	return base + per_hour * ARRIVAL_INTERVAL / 3600.0
 
 func armory_bonus() -> float:
@@ -403,6 +408,13 @@ func room_effect(r: Dictionary) -> String:
 			parts.append(tr("Fighting incidents +%d%%") % int((armory_bonus() - 1.0) * 100))
 	return "\n".join(parts)
 
+## Отсеки готовы вдвое чаще, но дают вдвое меньше за раз: скорость добычи та же,
+## а нажимать есть на что — меньше пустого ожидания. Мастерская (снаряжение) не делится.
+const TAP_SPLIT := 0.5
+
+func _tap_split(def: Dictionary) -> float:
+	return 1.0 if def.get("produces", "") == "gear" else TAP_SPLIT
+
 func cycle_time(room: Dictionary) -> float:
 	var def: Dictionary = Defs.ROOMS[room.type]
 	var power := room_power(room)
@@ -417,7 +429,7 @@ func cycle_time(room: Dictionary) -> float:
 	# и потолок ×3 — иначе прокачанные отсеки печатают ресурсы без меры
 	# жемчуг — валюта: сильная команда ускоряет ферму не больше чем в 1.5 раза
 	var cap := 1.5 if def.get("produces", "") == "pearls" else 3.0
-	var t: float = def.cycle * PACE / minf(cap, pow(power / 5.0, 0.6))
+	var t: float = def.cycle * PACE * _tap_split(def) / minf(cap, pow(power / 5.0, 0.6))
 	return t * (2.0 if room.get("damaged", false) else 1.0)
 
 func production_amount(room: Dictionary) -> float:
@@ -437,6 +449,7 @@ func production_amount(room: Dictionary) -> float:
 		m *= mode().reward * (1.0 + pearl_bonus())
 	if res == "gear":
 		return 1.0
+	m *= _tap_split(def)
 	if res == "pearls":
 		# жемчуг — валюта: уровни и объединение дают меньше, чем у ресурсов
 		return def.amount * (1.0 + 0.25 * (room.level - 1)) * (1.0 + 0.6 * (room.size - 1)) * m
@@ -1192,7 +1205,7 @@ func launch_expedition(dock_id: int, zone_idx: int, ids: Array) -> bool:
 		loot.item = rarity
 		# предмет выбираем сразу, чтобы в журнале было видно, что именно нашли
 		loot["item_base"] = Defs.ITEMS.pick_random().id
-	if L.has("crate") and rng.randf() < 0.15 + 0.3 * f:
+	if L.has("crate") and rng.randf() < 0.08 + 0.17 * f:
 		loot.crates = {L.crate: 1}
 	if L.has("survivor") and rng.randf() < L.survivor * f:
 		loot.colonist = "rare"
@@ -1631,7 +1644,7 @@ func loot_raider(body: Dictionary) -> Dictionary:
 		return {}
 	raider_bodies.erase(body)
 	var tier: int = body.get("tier", 0)
-	var r := {"pearls": rng.randi_range(8, 20) * (1 + tier)}
+	var r := {"pearls": rng.randi_range(4, 10) * (1 + tier)}
 	var roll := rng.randf()
 	if roll < 0.04 + 0.02 * tier:
 		r["item"] = "rare" if rng.randf() < 0.15 + 0.05 * tier else "common"
@@ -2210,6 +2223,10 @@ func claim_story() -> void:
 	story_index += 1
 	story_count = 0
 	grant(st.reward, tr(st.title))
+	var nxt := story_current()
+	if not nxt.is_empty() and not nxt.get("unlocks", []).is_empty():
+		var names: Array = nxt.unlocks.map(func(t): return tr(Defs.ROOMS[t].name))
+		banner.emit("build", tr("New rooms unlocked!"), ", ".join(names))
 
 func stat_value(key: String) -> int:
 	match key:

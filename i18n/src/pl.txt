@@ -682,3 +682,18 @@
 681|Kolonia tęskni, nadzorco. Na dole robi się nieciekawie!
 682|Wymaga poziomu kolonii %d
 683|Piękne ryby: lepszy nastrój dla wszystkich i +5% pereł na poziom.
+684|Rozdział %d fabuły
+685|Otworzy się w rozdziale %d
+686|Zbuduj: %s
+687|Wyprawa: %s
+688|Przydziel kolonistę do pomieszczenia
+689|Odbierz!
+690|Odblokowano nowe pomieszczenia!
+691|Nowe pomieszczenia: %s
+692|Perły głębin
+693|Tu na dole handlujemy i budujemy za perły. Zbuduj farmę pereł i postaw tam kogoś do pracy.
+694|Ulepsz to
+695|Każde pomieszczenie można ulepszyć: więcej produkcji i miejsc pracy. Ulepsz dowolne pomieszczenie raz.
+696|Wezwanie ocalałych
+697|Niewielu znajdzie nas samych. Zbuduj radiostację: jej sygnał doprowadzi nowych ocalałych do kolonii.
+698|Podkręć radio i zapełnij korytarze. Osiągnij 30 kolonistów.

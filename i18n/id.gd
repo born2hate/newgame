@@ -688,6 +688,21 @@ const T := {
 	"The colony misses you, Overseer. Things are getting rough down here!": "Koloni merindukanmu, pengawas. Keadaan di bawah mulai sulit!",
 	"Needs colony level %d": "Butuh level koloni %d",
 	"Beautiful fish: better mood for all and +5% pearls per level.": "Ikan cantik: suasana hati lebih baik untuk semua dan +5% mutiara per level.",
+	"Story chapter %d": "Bab cerita %d",
+	"Opens in story chapter %d": "Terbuka di bab %d",
+	"Build: %s": "Bangun: %s",
+	"Expedition: %s": "Ekspedisi: %s",
+	"Assign a colonist to a room": "Tempatkan kolonis di ruangan",
+	"Claim!": "Ambil!",
+	"New rooms unlocked!": "Ruangan baru terbuka!",
+	"New rooms: %s": "Ruangan baru: %s",
+	"Pearls of the Deep": "Mutiara Kedalaman",
+	"Pearls are what we trade and build with down here. Build a Pearl Farm and put someone to work in it.": "Di bawah sini kita berdagang dan membangun dengan mutiara. Bangun Kebun Mutiara dan tempatkan seseorang bekerja di sana.",
+	"Make It Better": "Jadikan Lebih Baik",
+	"Every room can be improved: more output, more work slots. Upgrade any room once.": "Setiap ruangan bisa ditingkatkan: hasil lebih banyak, slot kerja lebih banyak. Tingkatkan ruangan apa pun sekali.",
+	"Calling Survivors": "Memanggil Penyintas",
+	"Only a few will find us on their own. Build a Radio Room: its broadcast is how new survivors will reach the colony.": "Hanya sedikit yang akan menemukan kita sendiri. Bangun Ruang Radio: siarannya akan menuntun penyintas baru ke koloni.",
+	"Turn the radio up and fill the halls. Reach 30 colonists.": "Keraskan radio dan penuhi lorong. Capai 30 kolonis.",
 }
 
 static func make() -> Translation:

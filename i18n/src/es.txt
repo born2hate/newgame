@@ -683,3 +683,18 @@
 681|La colonia te echa de menos, supervisor. ¡Las cosas se complican aquí abajo!
 682|Requiere nivel de colonia %d
 683|Peces preciosos: mejor ánimo para todos y +5% de perlas por nivel.
+684|Capítulo %d de la historia
+685|Se abre en el capítulo %d
+686|Construye: %s
+687|Expedición: %s
+688|Asigna un colono a una sala
+689|¡Reclamar!
+690|¡Nuevas salas desbloqueadas!
+691|Nuevas salas: %s
+692|Perlas del abismo
+693|Aquí abajo comerciamos y construimos con perlas. Construye una granja de perlas y pon a alguien a trabajar en ella.
+694|Mejóralo
+695|Cada sala se puede mejorar: más producción y más puestos. Mejora cualquier sala una vez.
+696|Llamando a supervivientes
+697|Pocos nos encontrarán por su cuenta. Construye una sala de radio: su señal guiará a nuevos supervivientes hasta la colonia.
+698|Sube el volumen de la radio y llena los pasillos. Llega a 30 colonos.

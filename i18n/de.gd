@@ -688,6 +688,21 @@ const T := {
 	"The colony misses you, Overseer. Things are getting rough down here!": "Die Kolonie vermisst dich, Aufseher. Hier unten wird es ungemütlich!",
 	"Needs colony level %d": "Benötigt Kolonie-Stufe %d",
 	"Beautiful fish: better mood for all and +5% pearls per level.": "Schöne Fische: bessere Laune für alle und +5% Perlen pro Stufe.",
+	"Story chapter %d": "Story-Kapitel %d",
+	"Opens in story chapter %d": "Öffnet sich in Kapitel %d",
+	"Build: %s": "Baue: %s",
+	"Expedition: %s": "Expedition: %s",
+	"Assign a colonist to a room": "Weise einen Kolonisten einem Raum zu",
+	"Claim!": "Abholen!",
+	"New rooms unlocked!": "Neue Räume freigeschaltet!",
+	"New rooms: %s": "Neue Räume: %s",
+	"Pearls of the Deep": "Perlen der Tiefe",
+	"Pearls are what we trade and build with down here. Build a Pearl Farm and put someone to work in it.": "Hier unten handeln und bauen wir mit Perlen. Baue eine Perlenfarm und setze jemanden dort zur Arbeit ein.",
+	"Make It Better": "Mach es besser",
+	"Every room can be improved: more output, more work slots. Upgrade any room once.": "Jeder Raum lässt sich verbessern: mehr Ertrag, mehr Arbeitsplätze. Verbessere einen beliebigen Raum einmal.",
+	"Calling Survivors": "Ruf der Überlebenden",
+	"Only a few will find us on their own. Build a Radio Room: its broadcast is how new survivors will reach the colony.": "Nur wenige finden uns von allein. Baue einen Funkraum: Sein Signal führt neue Überlebende zur Kolonie.",
+	"Turn the radio up and fill the halls. Reach 30 colonists.": "Dreh das Funkgerät auf und füll die Hallen. Erreiche 30 Kolonisten.",
 }
 
 static func make() -> Translation:

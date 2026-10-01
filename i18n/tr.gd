@@ -688,6 +688,21 @@ const T := {
 	"The colony misses you, Overseer. Things are getting rough down here!": "Koloni seni özledi, gözetmen. Aşağıda işler karışıyor!",
 	"Needs colony level %d": "Koloni seviyesi %d gerekir",
 	"Beautiful fish: better mood for all and +5% pearls per level.": "Güzel balıklar: herkese daha iyi moral ve seviye başına +%5 inci.",
+	"Story chapter %d": "Hikâye bölümü %d",
+	"Opens in story chapter %d": "%d. bölümde açılır",
+	"Build: %s": "İnşa et: %s",
+	"Expedition: %s": "Keşif: %s",
+	"Assign a colonist to a room": "Bir kolonisti odaya yerleştir",
+	"Claim!": "Al!",
+	"New rooms unlocked!": "Yeni odalar açıldı!",
+	"New rooms: %s": "Yeni odalar: %s",
+	"Pearls of the Deep": "Derinlerin incileri",
+	"Pearls are what we trade and build with down here. Build a Pearl Farm and put someone to work in it.": "Burada inciyle ticaret yapar, inciyle inşa ederiz. Bir inci çiftliği kur ve içine bir çalışan yerleştir.",
+	"Make It Better": "Daha iyisini yap",
+	"Every room can be improved: more output, more work slots. Upgrade any room once.": "Her oda geliştirilebilir: daha fazla üretim, daha fazla iş yeri. Herhangi bir odayı bir kez geliştir.",
+	"Calling Survivors": "Hayatta kalanlara çağrı",
+	"Only a few will find us on their own. Build a Radio Room: its broadcast is how new survivors will reach the colony.": "Bizi kendi başına bulan az olur. Bir telsiz odası kur: yayını yeni hayatta kalanları koloniye getirecek.",
+	"Turn the radio up and fill the halls. Reach 30 colonists.": "Telsizin sesini aç ve salonları doldur. 30 koloniste ulaş.",
 }
 
 static func make() -> Translation:

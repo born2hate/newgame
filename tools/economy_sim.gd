@@ -14,15 +14,79 @@ var starve := 0
 var src := {"collect": 0, "manage": 0, "sim": 0}
 var popsrc := {"offline": 0, "sim": 0, "manage": 0, "session_start": 0}
 var csrc := {}
+var psrc := {}
+var _p0 := 0
+var isrc := {}
+var ksrc := {}
 var _c0 := 0
+var _i0 := 0
+var _k0 := 0
+var idle_day := 0
+var idle_min := 0
+var trace_s := 0
+var trace_left := 16
+
+func _cheapest_action() -> String:
+	var best := ""
+	var bc := 999999
+	for t in Defs.ROOMS:
+		if Defs.ROOMS[t].get("buildable", false) and g.is_unlocked(t) and t != "elevator" and g.build_cost(t) < bc:
+			bc = g.build_cost(t)
+			best = "build %s %d" % [t, bc]
+	for r in g.rooms:
+		if _can_up(r) and g.upgrade_cost(r) < bc:
+			bc = g.upgrade_cost(r)
+			best = "up %s %d" % [r.type, bc]
+	return best
+var idle_total := []
+
+func _crates_total() -> int:
+	var n := 0
+	for t in g.crates:
+		n += int(g.crates[t])
+	return n
 
 func _cs() -> void:
+	_p0 = g.pearls
 	_c0 = g.crystals
+	_i0 = g.items.size()
+	_k0 = _crates_total() + int(g.stats.get("crate", 0))
 
 func _ce(key: String) -> void:
+	if g.pearls > _p0:
+		psrc[key] = psrc.get(key, 0) + g.pearls - _p0
 	if g.crystals > _c0:
 		csrc[key] = csrc.get(key, 0) + g.crystals - _c0
-	_c0 = g.crystals
+	if g.items.size() > _i0:
+		isrc[key] = isrc.get(key, 0) + g.items.size() - _i0
+	var k := _crates_total() + int(g.stats.get("crate", 0))
+	if k > _k0:
+		ksrc[key] = ksrc.get(key, 0) + k - _k0
+	_cs()
+
+## Есть ли сейчас у игрока хоть какое-то дело.
+func _has_something_to_do() -> bool:
+	for r in g.rooms:
+		if r.ready:
+			return true
+	if g.quests_ready() > 0 or g.story_ready() or g.achievements_ready() > 0:
+		return true
+	for r in g.rooms:
+		if r.type == "dock":
+			var e: Dictionary = g.expedition_at(r.id)
+			if e.is_empty() and g.available_crew().size() >= 2:
+				return true
+			if not e.is_empty() and g.expedition_done(e):
+				return true
+	if g.can_start_any_research():
+		return true
+	for t in Defs.ROOMS:
+		if Defs.ROOMS[t].get("buildable", false) and g.is_unlocked(t) and g.pearls >= g.build_cost(t) and not g.build_spots(t).is_empty():
+			return true
+	for r in g.rooms:
+		if r.level < Defs.MAX_LEVEL and Defs.ROOMS[r.type].get("buildable", false) and r.type != "elevator" and g.colony_level >= int(Defs.LEVEL_GATE.get(r.level + 1, 0)) and g.pearls >= g.upgrade_cost(r):
+			return true
+	return false
 
 func _initialize() -> void:
 	var args := OS.get_cmdline_user_args()
@@ -35,10 +99,13 @@ func _initialize() -> void:
 	g.set_difficulty("normal")
 	g.mode_chosen = true
 	g.tutorial_done = true
+	# как в туториале: собрать реактор и построить жилой отсек
+	var lsp: Array = g.build_spots("living")
+	g.build("living", lsp[0].x, lsp[0].y)
 	if profile == "starter":
 		g.grant(load("res://scripts/store.gd").IAP[0].reward, "")
 	print("profile=%s  sessions=%d×%d min/day" % [profile, SESSIONS_PER_DAY, SESSION_MIN])
-	print("day  pop  kids  rooms  lvl  colLv  pearls  cryst  items  story  earned_p  ads  starv")
+	print("day  pop  kids  rooms  lvl  colLv  pearls  cryst  items  story  earned_p  ads  starv  idle%")
 	var gap := 86400.0 / SESSIONS_PER_DAY - SESSION_MIN * 60.0
 	for d in days:
 		for s in SESSIONS_PER_DAY:
@@ -54,9 +121,16 @@ func _initialize() -> void:
 		for c in g.colonists:
 			lv += int(c.level)
 		var kids: int = g.colonists.filter(func(c): return c.get("child", false)).size()
-		print("%3d  %3d  %4d  %5d  %3.1f  %5d  %6d  %5d  %5d  %5d  %8d  %3d  %4d" % [d + 1, g.colonists.size(), kids, g.rooms.size(),
+		print("%3d  %3d  %4d  %5d  %3.1f  %5d  %6d  %5d  %5d  %5d  %8d  %3d  %4d  %4.0f" % [d + 1, g.colonists.size(), kids, g.rooms.size(),
 			float(lv) / maxf(1, g.colonists.size()), g.colony_level, g.pearls, g.crystals, g.items.size(),
-			g.story_index, earned.pearls, ads_watched, starve])
+			g.story_index, earned.pearls, ads_watched, starve, 100.0 * idle_day / (SESSIONS_PER_DAY * SESSION_MIN * 60)])
+		idle_day = 0
+		if OS.get_cmdline_user_args().has("res"):
+			var pf := []
+			for r in g.rooms:
+				if r.type == "pearl":
+					pf.append("L%d w%d ct%.0f %s" % [r.level, g.workers_in(r).size(), g.cycle_time(r), "dmg" if r.get("damaged", false) else ""])
+			print("   E%.0f O%.0f F%.0f cap%.0f  pearl farms: %s" % [g.resources.energy, g.resources.oxygen, g.resources.food, g.storage_cap(), pf])
 	var have := {}
 	for r in g.rooms:
 		have[r.type] = have.get(r.type, 0) + 1
@@ -66,11 +140,17 @@ func _initialize() -> void:
 		lv[r.level] = lv.get(r.level, 0) + 1
 	print("room levels: ", lv)
 	print("pearl sources: ", src)
+	print("pearl by source: ", psrc)
 	print("crystal sources: ", csrc)
+	print("item sources: ", isrc)
+	print("crate sources: ", ksrc)
 	print("pop sources: ", popsrc, " births ", g.stats.get("birth", 0))
 	quit()
 
 func _session() -> void:
+	trace_s += 1
+	if trace_s > 1:
+		trace_left -= 0
 	g.refresh_daily_systems()
 	_cs()
 	if g.daily_available():
@@ -104,6 +184,14 @@ func _session() -> void:
 		_ce("sim(boss/raid/offline)")
 		src.sim += maxi(0, g.pearls - p0)
 		popsrc.sim += g.colonists.size() - n0
+		var idle_now := not _has_something_to_do()
+		if idle_now:
+			idle_day += 1
+			idle_min += 1
+		if OS.get_cmdline_user_args().has("trace") and i % 60 == 59 and g.stats.get("collect", 0) < 2000 and trace_left > 0:
+			var st: Dictionary = g.story_current()
+			print("  t%02d:%02d  pearls %4d  sci %3d  pop %2d/%2d  idle %2ds  ch%d %s %d/%d  cheapest %s" % [trace_s, i / 60, g.pearls, g.science, g.colonists.size(), g.population_cap(), idle_min, g.story_index, st.goal[0] if not st.is_empty() else "-", g.story_progress(), st.goal[1] if not st.is_empty() else 0, _cheapest_action()])
+			idle_min = 0
 		var p1: int = g.pearls
 		if g.resources.oxygen <= 0.0 or g.resources.food <= 0.0:
 			starve += 1
@@ -113,7 +201,7 @@ func _session() -> void:
 			for r in g.rooms:
 				if r.ready:
 					g.collect(r)
-			_ce("collect(deep)")
+			_ce("collect")
 		src.collect += maxi(0, g.pearls - p1)
 		var p2: int = g.pearls
 		var n2: int = g.colonists.size()
@@ -186,28 +274,51 @@ func _manage(ads: bool) -> void:
 	_staff()
 	_build()
 
+const STAFF_ORDER := ["reactor", "oxygen", "farm", "pearl", "lab", "radio", "living", "medbay", "kitchen", "workshop", "gym", "school", "lounge", "armory"]
+
+## Как живой игрок: сначала по одному человеку в важные отсеки, потом по второму и т. д.
+## Уже работающих не трогаем без нужды (перевод сбрасывает опыт).
 func _staff() -> void:
-	# пара в жилом отсеке, если есть место для ребёнка
-	if g.colonists.size() < g.population_cap():
-		for r in g.rooms:
-			if r.type == "living" and g.workers_in(r).size() < 2:
-				var idle: Array = g.colonists.filter(func(c): return c.room == -1 and not c.get("child", false) and c.get("help", -1) == -1)
-				if idle.is_empty():
-					idle = g.colonists.filter(func(c): return not c.get("child", false) and c.room >= 0 and g.get_room(c.room).type in ["reactor", "farm", "oxygen"] and g.workers_in(g.get_room(c.room)).size() > 1)
-				if not idle.is_empty():
-					g.assign(idle[0], r)
-				break
-	for c in g.colonists:
-		if c.room != -1 or c.get("child", false) or c.get("help", -1) != -1:
+	var adults: Array = g.colonists.filter(func(c): return not c.get("child", false) and c.room != g.ON_EXPEDITION and c.get("help", -1) == -1)
+	var want := {}
+	var left := adults.size()
+	var pass_n := 1
+	while left > 0 and pass_n <= 6:
+		for t in STAFF_ORDER:
+			for r in g.rooms:
+				if left <= 0:
+					break
+				if r.type != t or g.slots(r) < pass_n:
+					continue
+				# жилой отсек — только пара, и только если есть место для ребёнка
+				if t == "living" and (pass_n > 2 or g.colonists.size() >= g.population_cap()):
+					continue
+				want[r.id] = want.get(r.id, 0) + 1
+				left -= 1
+		pass_n += 1
+	# снимаем лишних
+	for r in g.rooms:
+		var ws: Array = g.workers_in(r)
+		var extra: int = ws.size() - int(want.get(r.id, 0))
+		for i in maxi(0, extra):
+			ws[i].room = -1
+	# расставляем свободных
+	for c in adults:
+		if c.room != -1:
 			continue
-		var best: Dictionary = g.best_room_for(c)
+		var best := {}
+		var best_score := -1.0
+		for r in g.rooms:
+			var need: int = int(want.get(r.id, 0)) - g.workers_in(r).size()
+			if need <= 0:
+				continue
+			var st: String = Defs.ROOMS[r.type].get("stat", "")
+			var score: float = 1.0 + (g.stat(c, st) if st != "" else 0.0) + need * 0.1
+			if score > best_score:
+				best_score = score
+				best = r
 		if not best.is_empty():
 			g.assign(c, best)
-			continue
-		for r in g.rooms:
-			if g.slots(r) > g.workers_in(r).size() and Defs.ROOMS[r.type].has("stat"):
-				g.assign(c, r)
-				break
 
 func _rate(res: String) -> float:
 	var t := 0.0
@@ -225,53 +336,106 @@ func _staffed(t: String) -> bool:
 			return false
 	return true
 
-func _build() -> void:
-	var need := ""
+func _use(res: String) -> float:
 	var pop: int = g.colonists.size()
-	var use_o2: float = g.O2_PER_COLONIST * pop
-	var use_food: float = g.FOOD_PER_COLONIST * pop
-	if pop >= g.population_cap() - 1 and pop < g.MAX_POP:
-		need = "living"
-	elif _rate("oxygen") < use_o2 * 1.3 and _staffed("oxygen"):
-		need = "oxygen"
-	elif _rate("food") < use_food * 1.3 and _staffed("farm"):
-		need = "farm"
-	elif g.resources.energy < 30.0 and _staffed("reactor"):
-		need = "reactor"
-	elif g.is_unlocked("pearl") and g.count_of("pearl") < 2:
-		need = "pearl"
-	else:
-		for t in ["dock", "lab", "storage", "pearl", "medbay", "radio", "kitchen", "gym", "school", "lounge", "workshop", "armory", "aquarium", "turbine", "observatory"]:
-			if g.is_unlocked(t) and g.count_of(t) == 0:
-				need = t
-				break
-		if need == "" and g.is_unlocked("pearl") and g.count_of("pearl") < 3:
-			need = "pearl"
-	if OS.get_cmdline_user_args().has("debug2"):
-		print("need=", need, " unlocked=", g.is_unlocked(need) if need != "" else false, " cost=", g.build_cost(need) if need != "" else 0, " spots=", g.build_spots(need).size() if need != "" else 0, " pearls=", g.pearls)
-	if need != "" and g.is_unlocked(need):
-		var cost: int = g.build_cost(need)
-		if g.pearls >= cost:
-			var spots: Array = g.build_spots(need)
-			if not spots.is_empty():
-				g.build(need, spots[0].x, spots[0].y)
-				return
-			# мест нет — лифт на этаж ниже
+	match res:
+		"oxygen":
+			return g.O2_PER_COLONIST * pop
+		"food":
+			return g.FOOD_PER_COLONIST * pop
+		"energy":
+			var e := 0.0
+			for r in g.rooms:
+				e += Defs.ROOMS[r.type].energy / g.PACE * r.level * r.size * (0.6 if g.has_research("fusion_core") else 1.0)
+			return e
+	return 0.0
+
+const RES_ROOM := {"energy": "reactor", "oxygen": "oxygen", "food": "farm"}
+
+func _try_build(type: String) -> bool:
+	if not g.is_unlocked(type) or g.pearls < g.build_cost(type):
+		return false
+	var spots: Array = g.build_spots(type)
+	if not spots.is_empty():
+		return g.build(type, spots[0].x, spots[0].y)
+	# мест нет — лифт на этаж ниже
+	var el: Array = g.build_spots("elevator")
+	el.sort_custom(func(a, b): return a.y > b.y)
+	if not el.is_empty() and g.pearls >= g.build_cost("elevator"):
+		g.build("elevator", el[0].x, el[0].y)
+	elif el.is_empty() and g.research_current.is_empty():
+		for rd in Defs.RESEARCH:
+			if rd.id.begins_with("deep") and g.research_available(rd.id) and g.science >= rd.cost:
+				g.start_research(rd.id)
+	return false
+
+func _can_up(r: Dictionary) -> bool:
+	return r.level < Defs.MAX_LEVEL and Defs.ROOMS[r.type].get("buildable", false) and r.type != "elevator" and g.colony_level >= int(Defs.LEVEL_GATE.get(r.level + 1, 0))
+
+func _build() -> void:
+	# сюжет: копать вглубь, когда глава просит
+	var st: Dictionary = g.story_current()
+	if not st.is_empty() and st.goal[0] == "depth" and g.max_row() + 1 < int(st.goal[1]):
+		var nr: String = g.next_depth_research()
+		var needs_res: bool = nr != "" and g.max_row() + 1 >= Defs.DEPTH_ZONES[1].from and not g.has_research(nr)
+		if needs_res:
+			if g.research_current.is_empty() and g.science >= Defs.RESEARCH.filter(func(rd): return rd.id == nr)[0].cost:
+				g.start_research(nr)
+		else:
 			var el: Array = g.build_spots("elevator")
 			el.sort_custom(func(a, b): return a.y > b.y)
 			if not el.is_empty() and g.pearls >= g.build_cost("elevator"):
 				g.build("elevator", el[0].x, el[0].y)
-			elif el.is_empty() and g.research_current.is_empty():
-				# глубже — нужна исследованная зона
-				for rd in Defs.RESEARCH:
-					if rd.id.begins_with("deep") and g.research_available(rd.id) and g.science >= rd.cost:
-						g.start_research(rd.id)
+				return
+	# 1) нехватка воздуха / еды / энергии — сначала улучшить, потом строить новый
+	for res in ["oxygen", "food", "energy"]:
+		var unstaffed := false
+		for r in g.rooms:
+			if r.type == RES_ROOM[res] and g.workers_in(r).is_empty():
+				unstaffed = true
+		if unstaffed:
+			continue
+		if _rate(res) < _use(res) * 1.25:
+			var cheapest := {}
+			for r in g.rooms:
+				if r.type == RES_ROOM[res] and _can_up(r) and (cheapest.is_empty() or g.upgrade_cost(r) < g.upgrade_cost(cheapest)):
+					cheapest = r
+			var bc: int = g.build_cost(RES_ROOM[res])
+			if not cheapest.is_empty() and g.upgrade_cost(cheapest) <= bc:
+				if g.pearls >= g.upgrade_cost(cheapest):
+					g.upgrade(cheapest)
+				return
+			_try_build(RES_ROOM[res])
+			return
+	# сюжет просит улучшить отсек
+	if not st.is_empty() and st.goal[0] == "upgrade":
+		var ch := {}
+		for r in g.rooms:
+			if _can_up(r) and (ch.is_empty() or g.upgrade_cost(r) < g.upgrade_cost(ch)):
+				ch = r
+		if not ch.is_empty() and g.pearls >= g.upgrade_cost(ch):
+			g.upgrade(ch)
 		return
-	# иначе улучшаем самое дешёвое
-	var cheapest := {}
+	# 2) жильё
+	var pop: int = g.colonists.size()
+	if pop >= g.population_cap() - 1 and pop < g.MAX_POP:
+		_try_build("living")
+		return
+	# 3) новые отсеки по одному
+	if g.is_unlocked("pearl") and g.count_of("pearl") < 1:
+		_try_build("pearl")
+		return
+	for t in ["dock", "lab", "radio", "storage", "medbay", "kitchen", "gym", "school", "lounge", "workshop", "armory", "aquarium", "turbine", "observatory"]:
+		if g.is_unlocked(t) and g.count_of(t) == 0:
+			_try_build(t)
+			return
+	if g.is_unlocked("pearl") and g.count_of("pearl") < mini(3, 1 + g.colonists.size() / 8):
+		_try_build("pearl")
+		return
+	# 4) иначе улучшаем самое дешёвое
+	var cheapest2 := {}
 	for r in g.rooms:
-		if r.level < Defs.MAX_LEVEL and Defs.ROOMS[r.type].get("buildable", false) and r.type != "elevator" and g.colony_level >= int(Defs.LEVEL_GATE.get(r.level + 1, 0)):
-			if cheapest.is_empty() or g.upgrade_cost(r) < g.upgrade_cost(cheapest):
-				cheapest = r
-	if not cheapest.is_empty() and g.pearls >= g.upgrade_cost(cheapest):
-		g.upgrade(cheapest)
+		if _can_up(r) and (cheapest2.is_empty() or g.upgrade_cost(r) < g.upgrade_cost(cheapest2)):
+			cheapest2 = r
+	if not cheapest2.is_empty() and g.pearls >= g.upgrade_cost(cheapest2):
+		g.upgrade(cheapest2)

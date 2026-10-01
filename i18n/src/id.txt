@@ -682,3 +682,18 @@
 681|Koloni merindukanmu, pengawas. Keadaan di bawah mulai sulit!
 682|Butuh level koloni %d
 683|Ikan cantik: suasana hati lebih baik untuk semua dan +5% mutiara per level.
+684|Bab cerita %d
+685|Terbuka di bab %d
+686|Bangun: %s
+687|Ekspedisi: %s
+688|Tempatkan kolonis di ruangan
+689|Ambil!
+690|Ruangan baru terbuka!
+691|Ruangan baru: %s
+692|Mutiara Kedalaman
+693|Di bawah sini kita berdagang dan membangun dengan mutiara. Bangun Kebun Mutiara dan tempatkan seseorang bekerja di sana.
+694|Jadikan Lebih Baik
+695|Setiap ruangan bisa ditingkatkan: hasil lebih banyak, slot kerja lebih banyak. Tingkatkan ruangan apa pun sekali.
+696|Memanggil Penyintas
+697|Hanya sedikit yang akan menemukan kita sendiri. Bangun Ruang Radio: siarannya akan menuntun penyintas baru ke koloni.
+698|Keraskan radio dan penuhi lorong. Capai 30 kolonis.

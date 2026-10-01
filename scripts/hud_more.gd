@@ -115,6 +115,103 @@ func _scroll_to(c: Control) -> void:
 
 # ---------------------------------------------------------------- сюжет, событие недели, достижения (в «Заданиях»)
 
+## Короткая цель главы для плашки на главном экране.
+func story_goal_text(st: Dictionary) -> String:
+	var g: String = st.goal[0]
+	var n: int = st.goal[1]
+	if g.begins_with("build_"):
+		return tr("Build: %s") % tr(Defs.ROOMS[g.trim_prefix("build_")].name)
+	if g.begins_with("expedition_") and g != "expedition_done":
+		var zid := g.trim_prefix("expedition_")
+		for z in Defs.ZONES:
+			if z.id == zid:
+				return tr("Expedition: %s") % tr(z.name)
+	match g:
+		"collect_energy":
+			return tr("Collect %d energy") % n
+		"assign":
+			return tr("Assign a colonist to a room")
+		"upgrade":
+			return tr("Upgrade %d rooms") % n
+		"population":
+			return tr("Reach %d colonists") % n
+		"expedition":
+			return tr("Send %d expeditions") % n
+		"research":
+			return tr("Finish %d research projects") % n
+		"incident_resolved":
+			return tr("Handle %d incidents") % n
+		"depth":
+			return tr("Build on row %d") % n
+		"level_up":
+			return tr("Level up colonists %d times") % n
+		"craft":
+			return tr("Craft %d pieces of gear") % n
+		"expedition_done":
+			return tr("Complete %d expeditions") % n
+	return tr(st.title)
+
+## Нажатие на плашку: забрать награду или перейти к нужному действию.
+func story_go() -> void:
+	var st := Game.story_current()
+	if st.is_empty():
+		return
+	if Game.story_ready():
+		Game.claim_story()
+		return
+	var g: String = st.goal[0]
+	if g.begins_with("build_"):
+		hud._start_build(g.trim_prefix("build_"))
+		return
+	if g.begins_with("expedition"):
+		var dock := Game.find_room_of_type("dock")
+		if dock.is_empty():
+			hud._start_build("dock")
+		else:
+			var zi := 0
+			for i in Defs.ZONES.size():
+				if g == "expedition_" + Defs.ZONES[i].id:
+					zi = i
+			hud._open_planner(dock.id, zi)
+		return
+	match g:
+		"research":
+			if Game.count_of("lab") == 0:
+				hud._start_build("lab")
+			else:
+				open_research()
+			return
+		"depth":
+			var nr := Game.next_depth_research()
+			if nr != "" and not Game.has_research(nr):
+				open_research(nr)
+			else:
+				hud._start_build("elevator")
+			return
+		"upgrade":
+			var best := {}
+			for r in Game.rooms:
+				if r.level < Defs.MAX_LEVEL and Defs.ROOMS[r.type].get("buildable", false) and r.type != "elevator" and (best.is_empty() or Game.upgrade_cost(r) < Game.upgrade_cost(best)):
+					best = r
+			if not best.is_empty():
+				hud.view.room_selected.emit(best.id)
+				return
+		"craft":
+			var ws := Game.find_room_of_type("workshop")
+			if ws.is_empty():
+				hud._start_build("workshop")
+			else:
+				hud.view.room_selected.emit(ws.id)
+			return
+		"population":
+			if Game.colonists.size() >= Game.NATURAL_POP and Game.count_of("radio") == 0 and Game.is_unlocked("radio"):
+				hud._start_build("radio")
+				return
+			if Game.colonists.size() >= Game.population_cap():
+				hud._start_build("living")
+				return
+	hud._open_tasks()
+
 func add_story_section() -> void:
 	var st := Game.story_current()
 	if st.is_empty():
@@ -129,6 +226,9 @@ func add_story_section() -> void:
 	var txt: Label = hud._label("«" + tr(st.text) + "»", 17, Color(0.85, 0.92, 1.0))
 	txt.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	info.add_child(txt)
+	if not st.get("unlocks", []).is_empty():
+		var names: Array = st.unlocks.map(func(t): return tr(Defs.ROOMS[t].name))
+		info.add_child(hud._label(tr("New rooms: %s") % ", ".join(names), 16, Color(0.6, 1.0, 0.7)))
 	var goal: int = st.goal[1]
 	var pb := ProgressBar.new()
 	pb.show_percentage = false
