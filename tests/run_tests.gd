@@ -403,6 +403,18 @@ func _initialize() -> void:
 		pt.grant_pet()
 	check(pt.pets_owned.size() == Defs.PETS.size(), "все питомцы собраны, дальше — кристаллы")
 	pt.free()
+	# оружие и новая броня
+	var wq = load("res://scripts/game_state.gd").new()
+	wq.new_game()
+	var wc: Dictionary = wq.colonists[0]
+	var fp0: float = wq.fight_power(wc)
+	var wpn: Dictionary = wq.add_item("legendary", "trident")
+	wq.equip(wc, wpn.uid)
+	check(wc.weapon_item == wpn.uid and wq.fight_power(wc) > fp0 + 5.0, "трезубец усиливает в бою")
+	var arm2: Dictionary = wq.add_item("rare", "abyss_armor")
+	wq.equip(wc, arm2.uid)
+	check(absf(wq.protection(wc) - minf(0.8, wq.stat(wc, "end") * 0.02 + 0.3 + 0.15)) < 0.001, "броня бездны защищает сильнее")
+	wq.free()
 	# налёт пиратов
 	var pr = load("res://scripts/game_state.gd").new()
 	pr.new_game()

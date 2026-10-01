@@ -627,3 +627,17 @@
 626|Hasarlı: onarılana kadar yarı hızda çalışır.
 627|Onar ◉%d
 628|%s onarıldı!
+629|Silah
+630|Bir silah seç
+631|Silahlar korsanlara, canavarlara ve patronlara karşı yardım eder.
+632|+%d saldırı
+633|Yosun yeleği
+634|Mercan zırh
+635|Titan giysi
+636|Uçurum zırhı
+637|Kemik mızrak
+638|Zıpkın tüfeği
+639|Şok copu
+640|Trident
+641|Plazma kesici
+642|Sonik blaster

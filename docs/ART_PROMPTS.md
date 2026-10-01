@@ -160,3 +160,20 @@ transparent background, no text: <объект>
 | `pet_lion.png` | `cute chibi lionfish pet wearing a tiny explorer hat, side view facing right, glossy cartoon mobile game style, transparent background` |
 | `pet_parrot.png` | `cute chibi parrotfish pet, rainbow scales, cheeky smile, side view facing right, glossy cartoon mobile game style, transparent background` |
 | `pet_tang.png` | `cute chibi yellow tang fish pet with a tiny red cross medic badge, side view facing right, glossy cartoon mobile game style, transparent background` |
+
+## Оружие и новая броня → `art/items/<id>.png`
+
+Как остальные предметы: квадрат, прозрачный фон, блестящий мультяшный стиль, лежит по диагонали.
+
+| Файл | Промт |
+|---|---|
+| `spear.png` | `cartoon underwater bone spear weapon with a shark tooth tip and rope wrapping, game item icon, transparent background` |
+| `harpoon_gun.png` | `cartoon brass harpoon gun with a barbed harpoon loaded, game item icon, transparent background` |
+| `shock_baton.png` | `cartoon electric shock baton with glowing blue coils and sparks, game item icon, transparent background` |
+| `trident.png` | `cartoon golden trident with glowing aqua gems, game item icon, transparent background` |
+| `plasma_cutter.png` | `cartoon sci-fi plasma cutter tool with an orange glowing blade, game item icon, transparent background` |
+| `sonic_blaster.png` | `cartoon sonic blaster gun with a purple glowing dish emitter, game item icon, transparent background` |
+| `kelp_vest.png` | `cartoon woven kelp vest armor, green and brown, game item icon, transparent background` |
+| `coral_plate.png` | `cartoon armor chestplate made of pink and orange coral pieces, game item icon, transparent background` |
+| `titan_suit.png` | `cartoon heavy titanium diving armor suit, silver with rivets, game item icon, transparent background` |
+| `abyss_armor.png` | `cartoon dark abyss armor with glowing bioluminescent blue lines and anglerfish motifs, game item icon, transparent background` |

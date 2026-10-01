@@ -627,3 +627,17 @@
 626|Rusak: bekerja setengah kecepatan sampai diperbaiki.
 627|Perbaiki ◉%d
 628|%s diperbaiki!
+629|Senjata
+630|Pilih senjata
+631|Senjata membantu melawan bajak laut, monster, dan bos.
+632|+%d serangan
+633|Rompi rumput laut
+634|Pelat karang
+635|Pakaian titan
+636|Zirah jurang
+637|Tombak tulang
+638|Senapan tombak
+639|Tongkat setrum
+640|Trisula
+641|Pemotong plasma
+642|Blaster sonik

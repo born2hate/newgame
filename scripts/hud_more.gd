@@ -253,9 +253,10 @@ func _offer_chip(d: Dictionary, size: int) -> HBoxContainer:
 func add_gear_section(c: Dictionary) -> void:
 	hud._section(tr("Gear"))
 	var row := GridContainer.new()
-	row.columns = 3
+	row.columns = 2
 	row.add_theme_constant_override("h_separation", 8)
-	for kind in ["suit", "tool", "armor"]:
+	row.add_theme_constant_override("v_separation", 8)
+	for kind in ["suit", "tool", "weapon", "armor"]:
 		var uid: int = c.get(kind + "_item", -1)
 		var it := Game.get_item(uid) if uid != -1 else {}
 		var txt: String = slot_name(kind) + ":\n"
@@ -282,19 +283,25 @@ func add_gear_section(c: Dictionary) -> void:
 	_body().add_child(row)
 
 func slot_name(kind: String) -> String:
-	return {"suit": tr("Suit"), "tool": tr("Tool"), "armor": tr("Armor")}[kind]
+	return {"suit": tr("Suit"), "tool": tr("Tool"), "armor": tr("Armor"), "weapon": tr("Weapon")}[kind]
 
 func item_effect(it: Dictionary) -> String:
 	var b := Game.item_base(it)
 	if b.kind == "armor":
-		return tr("-%d%% damage") % int(Game.ARMOR_PROTECTION[it.rarity] * 100)
+		return tr("-%d%% damage") % int((Game.ARMOR_PROTECTION[it.rarity] + float(b.get("prot", 0.0))) * 100)
+	if b.kind == "weapon":
+		return tr("+%d attack") % int(round(float(b.atk) * Game.WEAPON_RARITY[it.rarity]))
 	var st: Array = b.stats.map(func(k): return tr(Defs.STATS[k]))
 	return "+%d %s" % [Game.item_bonus(it), "/".join(st)]
 
 func open_gear_picker(cid: int, kind: String) -> void:
 	var c := Game.get_colonist(cid)
 	hud._open_sheet("gear", 700)
-	hud._header({"suit": tr("Choose a suit"), "tool": tr("Choose a tool"), "armor": tr("Choose armor")}[kind])
+	hud._header({"suit": tr("Choose a suit"), "tool": tr("Choose a tool"), "armor": tr("Choose armor"), "weapon": tr("Choose a weapon")}[kind])
+	if kind == "weapon":
+		var wh: Label = hud._label(tr("Weapons help against pirates, monsters and bosses."), 18, Color(0.75, 0.85, 0.95))
+		wh.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_body().add_child(wh)
 	if kind == "armor":
 		var hint: Label = hud._label(tr("Armor reduces damage from incidents and expeditions."), 18, Color(0.75, 0.85, 0.95))
 		hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

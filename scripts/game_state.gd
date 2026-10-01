@@ -196,7 +196,7 @@ func _make_colonist() -> Dictionary:
 		"str": rng.randi_range(1, 4), "tech": rng.randi_range(1, 4), "bio": rng.randi_range(1, 4),
 		"end": rng.randi_range(1, 4), "cha": rng.randi_range(1, 4), "luck": rng.randi_range(1, 4),
 		"mood": 70.0, "train": 0.0,
-		"level": 1, "xp": 0.0, "health": 100.0, "room": -1, "help": -1, "suit_item": -1, "tool_item": -1, "armor_item": -1,
+		"level": 1, "xp": 0.0, "health": 100.0, "room": -1, "help": -1, "suit_item": -1, "tool_item": -1, "armor_item": -1, "weapon_item": -1,
 		"suit": rng.randi_range(0, 5),
 	}
 	next_id += 1
@@ -1645,7 +1645,7 @@ func raid_alive() -> Array:
 
 ## Сила колониста в бою: сила, выносливость, оружие (через stat) и здоровье.
 func fight_power(c: Dictionary) -> float:
-	return (stat(c, "str") + stat(c, "end") * 0.5 + 1.0) * (0.4 + 0.6 * c.health / 100.0)
+	return (stat(c, "str") + stat(c, "end") * 0.5 + 1.0 + weapon_power(c)) * (0.4 + 0.6 * c.health / 100.0)
 
 func _tick_raid(delta: float) -> void:
 	if not raider_bodies.is_empty():
@@ -1871,7 +1871,9 @@ func responders(room: Dictionary) -> Array:
 func hazard_power(room: Dictionary) -> float:
 	var p := 0.0
 	for c in responders(room):
-		p += (stat(c, "str") + stat(c, "tech") + stat(c, "bio")) / 3.0 * (0.4 + 0.6 * c.health / 100.0)
+		# с чудовищем помогает оружие
+		var wp := weapon_power(c) if room.hazard == "creature" else 0.0
+		p += ((stat(c, "str") + stat(c, "tech") + stat(c, "bio")) / 3.0 + wp) * (0.4 + 0.6 * c.health / 100.0)
 	return p * armory_bonus()
 
 func send_help(colonist: Dictionary, room: Dictionary) -> void:
@@ -2064,7 +2066,7 @@ func get_item(uid: int) -> Dictionary:
 
 func item_owner(uid: int) -> Dictionary:
 	for c in colonists:
-		if c.suit_item == uid or c.tool_item == uid or c.get("armor_item", -1) == uid:
+		if c.suit_item == uid or c.tool_item == uid or c.get("armor_item", -1) == uid or c.get("weapon_item", -1) == uid:
 			return c
 	return {}
 
@@ -2088,8 +2090,20 @@ func protection(c: Dictionary) -> float:
 	if uid != -1:
 		var it := get_item(uid)
 		if not it.is_empty():
-			p += ARMOR_PROTECTION[it.rarity]
+			p += ARMOR_PROTECTION[it.rarity] + float(item_base(it).get("prot", 0.0))
 	return minf(0.8, p)
+
+const WEAPON_RARITY := {"common": 1.0, "rare": 1.6, "legendary": 2.5}
+
+## Сила оружия колониста (0 — без оружия, дерётся кулаками).
+func weapon_power(c: Dictionary) -> float:
+	var uid: int = c.get("weapon_item", -1)
+	if uid == -1:
+		return 0.0
+	var it := get_item(uid)
+	if it.is_empty():
+		return 0.0
+	return float(item_base(it).get("atk", 0)) * WEAPON_RARITY[it.rarity]
 
 func equip(c: Dictionary, uid: int) -> void:
 	var it := get_item(uid)
@@ -2542,6 +2556,7 @@ func load_game() -> bool:
 		c["suit_item"] = c.get("suit_item", -1)
 		c["tool_item"] = c.get("tool_item", -1)
 		c["armor_item"] = c.get("armor_item", -1)
+		c["weapon_item"] = c.get("weapon_item", -1)
 		for k in ["end", "cha", "luck"]:
 			if not c.has(k):
 				c[k] = rng.randi_range(1, 4)
@@ -2549,7 +2564,7 @@ func load_game() -> bool:
 		c["train"] = float(c.get("train", 0.0))
 		if c.has("grow"):
 			c.grow = float(c.grow)
-		for k in ["id", "str", "tech", "bio", "end", "cha", "luck", "level", "room", "suit", "help", "suit_item", "tool_item", "armor_item"]:
+		for k in ["id", "str", "tech", "bio", "end", "cha", "luck", "level", "room", "suit", "help", "suit_item", "tool_item", "armor_item", "weapon_item"]:
 			c[k] = int(c[k])
 	_fix_orphans()
 	_apply_offline(Time.get_unix_time_from_system() - float(data.time))

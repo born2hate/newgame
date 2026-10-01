@@ -633,6 +633,20 @@ const T := {
 	"Damaged: works at half speed until repaired.": "Rusak: bekerja setengah kecepatan sampai diperbaiki.",
 	"Repair ◉%d": "Perbaiki ◉%d",
 	"%s repaired!": "%s diperbaiki!",
+	"Weapon": "Senjata",
+	"Choose a weapon": "Pilih senjata",
+	"Weapons help against pirates, monsters and bosses.": "Senjata membantu melawan bajak laut, monster, dan bos.",
+	"+%d attack": "+%d serangan",
+	"Kelp Vest": "Rompi rumput laut",
+	"Coral Plate": "Pelat karang",
+	"Titan Suit": "Pakaian titan",
+	"Abyss Armor": "Zirah jurang",
+	"Bone Spear": "Tombak tulang",
+	"Harpoon Gun": "Senapan tombak",
+	"Shock Baton": "Tongkat setrum",
+	"Trident": "Trisula",
+	"Plasma Cutter": "Pemotong plasma",
+	"Sonic Blaster": "Blaster sonik",
 }
 
 static func make() -> Translation:

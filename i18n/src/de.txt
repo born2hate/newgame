@@ -627,3 +627,17 @@
 626|Beschädigt: arbeitet halb so schnell bis zur Reparatur.
 627|Reparieren ◉%d
 628|%s repariert!
+629|Waffe
+630|Wähle eine Waffe
+631|Waffen helfen gegen Piraten, Monster und Bosse.
+632|+%d Angriff
+633|Tangweste
+634|Korallenplatte
+635|Titananzug
+636|Abgrundrüstung
+637|Knochenspeer
+638|Harpunengewehr
+639|Schockstab
+640|Dreizack
+641|Plasmaschneider
+642|Schallblaster

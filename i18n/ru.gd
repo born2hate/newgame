@@ -633,6 +633,20 @@ const T := {
 	"Damaged: works at half speed until repaired.": "Повреждён: работает вдвое медленнее, пока не починят.",
 	"Repair ◉%d": "Починить ◉%d",
 	"%s repaired!": "%s: починено!",
+	"Weapon": "Оружие",
+	"Choose a weapon": "Выберите оружие",
+	"Weapons help against pirates, monsters and bosses.": "Оружие помогает против пиратов, чудовищ и боссов.",
+	"+%d attack": "+%d к атаке",
+	"Kelp Vest": "Жилет из водорослей",
+	"Coral Plate": "Коралловая броня",
+	"Titan Suit": "Титановый костюм",
+	"Abyss Armor": "Броня бездны",
+	"Bone Spear": "Костяное копьё",
+	"Harpoon Gun": "Гарпунное ружьё",
+	"Shock Baton": "Шокер",
+	"Trident": "Трезубец",
+	"Plasma Cutter": "Плазменный резак",
+	"Sonic Blaster": "Звуковой бластер",
 }
 
 static func make() -> Translation:

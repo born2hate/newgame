@@ -1258,7 +1258,33 @@ func _draw_fight_fx(feet: Vector2, c: Dictionary, facing: float, h: float) -> vo
 			var uid: int = c.get("tool_item", -1)
 			if uid != -1:
 				tool_id = Game.get_item(uid).get("base", "")
+			# оружие важнее инструмента: своя анимация и картинка в руке
+			var wuid: int = c.get("weapon_item", -1)
+			if wuid != -1:
+				var wit := Game.get_item(wuid)
+				if not wit.is_empty():
+					tool_id = str(Game.item_base(wit).get("anim", "melee"))
+					var wtex := Art.tex("res://art/items/%s.png" % wit.base)
+					if wtex:
+						var ws := h * 0.42
+						draw_set_transform(hand, -0.4 * facing + sin(t * 9.0 + c.id) * 0.25 * facing, Vector2(facing, 1))
+						draw_texture_rect(wtex, Rect2(-ws * 0.3, -ws * 0.5, ws, ws), false)
+						draw_set_transform(Vector2.ZERO)
 			match tool_id:
+				"shock":
+					# электрические дуги к цели
+					if k < 0.6:
+						var pts := PackedVector2Array([hand])
+						for i in 6:
+							var q := (i + 1) / 6.0
+							pts.append(hand.lerp(focus, q * 0.6) + Vector2(0, randf_range(-8, 8)))
+						draw_polyline(pts, Color(0.6, 0.85, 1.0, 1.0 - k), 3.0)
+						draw_polyline(pts, Color(1, 1, 1, 0.8 - k), 1.2)
+				"sonic":
+					for i in 3:
+						var q := fmod(k + i / 3.0, 1.0)
+						var cpos := hand.lerp(focus, q * 0.7)
+						draw_arc(cpos, 6.0 + 14.0 * q, -0.9, 0.9, 10, Color(0.75, 0.6, 1.0, 1.0 - q), 3.0) if facing > 0 else draw_arc(cpos, 6.0 + 14.0 * q, PI - 0.9, PI + 0.9, 10, Color(0.75, 0.6, 1.0, 1.0 - q), 3.0)
 				"harpoon":
 					# гарпун летит к чудовищу
 					var p := hand.lerp(focus, k)

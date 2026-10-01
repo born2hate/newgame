@@ -633,6 +633,20 @@ const T := {
 	"Damaged: works at half speed until repaired.": "Danneggiato: funziona a metà velocità finché non viene riparato.",
 	"Repair ◉%d": "Ripara ◉%d",
 	"%s repaired!": "%s riparato!",
+	"Weapon": "Arma",
+	"Choose a weapon": "Scegli un'arma",
+	"Weapons help against pirates, monsters and bosses.": "Le armi aiutano contro pirati, mostri e boss.",
+	"+%d attack": "+%d attacco",
+	"Kelp Vest": "Gilet di alghe",
+	"Coral Plate": "Piastra di corallo",
+	"Titan Suit": "Tuta di titanio",
+	"Abyss Armor": "Armatura abissale",
+	"Bone Spear": "Lancia d'osso",
+	"Harpoon Gun": "Fucile arpione",
+	"Shock Baton": "Manganello elettrico",
+	"Trident": "Tridente",
+	"Plasma Cutter": "Taglierina al plasma",
+	"Sonic Blaster": "Blaster sonico",
 }
 
 static func make() -> Translation:

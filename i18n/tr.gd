@@ -633,6 +633,20 @@ const T := {
 	"Damaged: works at half speed until repaired.": "Hasarlı: onarılana kadar yarı hızda çalışır.",
 	"Repair ◉%d": "Onar ◉%d",
 	"%s repaired!": "%s onarıldı!",
+	"Weapon": "Silah",
+	"Choose a weapon": "Bir silah seç",
+	"Weapons help against pirates, monsters and bosses.": "Silahlar korsanlara, canavarlara ve patronlara karşı yardım eder.",
+	"+%d attack": "+%d saldırı",
+	"Kelp Vest": "Yosun yeleği",
+	"Coral Plate": "Mercan zırh",
+	"Titan Suit": "Titan giysi",
+	"Abyss Armor": "Uçurum zırhı",
+	"Bone Spear": "Kemik mızrak",
+	"Harpoon Gun": "Zıpkın tüfeği",
+	"Shock Baton": "Şok copu",
+	"Trident": "Trident",
+	"Plasma Cutter": "Plazma kesici",
+	"Sonic Blaster": "Sonik blaster",
 }
 
 static func make() -> Translation:

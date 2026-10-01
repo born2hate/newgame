@@ -627,3 +627,17 @@
 626|Uszkodzony: działa o połowę wolniej do naprawy.
 627|Napraw ◉%d
 628|%s naprawiony!
+629|Broń
+630|Wybierz broń
+631|Broń pomaga przeciw piratom, potworom i bossom.
+632|+%d ataku
+633|Kamizelka z wodorostów
+634|Koralowy pancerz
+635|Kombinezon tytanowy
+636|Pancerz otchłani
+637|Kościana włócznia
+638|Kusza harpunowa
+639|Pałka elektryczna
+640|Trójząb
+641|Przecinarka plazmowa
+642|Blaster dźwiękowy

@@ -377,6 +377,14 @@ func _dev_screenshot() -> void:
 			Game.grant_pet("puffer")
 			Game.grant_pet("lion")
 			hud.open_pets()
+		"weapons_ru":
+			Audio.set_language("ru")
+			var cw: Dictionary = Game.colonists[0]
+			Game.equip(cw, Game.add_item("legendary", "trident").uid)
+			Game.equip(cw, Game.add_item("rare", "titan_suit").uid)
+			hud._open_colonist(cw.id)
+			await get_tree().process_frame
+			(hud.sheet.get_child(0) as ScrollContainer).scroll_vertical = 700
 		"expedition_ru":
 			Audio.set_language("ru")
 			var d2 := Game._add_room("dock", 3, 1)

@@ -627,3 +627,17 @@
 626|Endommagé : fonctionne à mi-vitesse jusqu'à réparation.
 627|Réparer ◉%d
 628|%s réparé !
+629|Arme
+630|Choisis une arme
+631|Les armes aident contre les pirates, monstres et boss.
+632|+%d attaque
+633|Gilet d'algues
+634|Plaque de corail
+635|Combinaison en titane
+636|Armure abyssale
+637|Lance en os
+638|Fusil-harpon
+639|Matraque électrique
+640|Trident
+641|Découpeur plasma
+642|Blaster sonique

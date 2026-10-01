@@ -369,6 +369,18 @@ const ITEMS := [
 	{"id": "diving_armor", "kind": "armor", "name": "Diving Armor", "stats": []},
 	{"id": "shark_mesh", "kind": "armor", "name": "Shark Mesh", "stats": []},
 	{"id": "heat_plate", "kind": "armor", "name": "Heat Shield Plate", "stats": []},
+	## броня: prot — добавка к защите сверх редкости
+	{"id": "kelp_vest", "kind": "armor", "name": "Kelp Vest", "stats": [], "prot": 0.0},
+	{"id": "coral_plate", "kind": "armor", "name": "Coral Plate", "stats": [], "prot": 0.05},
+	{"id": "titan_suit", "kind": "armor", "name": "Titan Suit", "stats": [], "prot": 0.1},
+	{"id": "abyss_armor", "kind": "armor", "name": "Abyss Armor", "stats": [], "prot": 0.15},
+	## оружие: atk — сила в бою с пиратами, чудовищами и боссами; anim — как бьёт
+	{"id": "spear", "kind": "weapon", "name": "Bone Spear", "stats": [], "atk": 2, "anim": "melee"},
+	{"id": "harpoon_gun", "kind": "weapon", "name": "Harpoon Gun", "stats": [], "atk": 3, "anim": "harpoon"},
+	{"id": "shock_baton", "kind": "weapon", "name": "Shock Baton", "stats": [], "atk": 3, "anim": "shock"},
+	{"id": "trident", "kind": "weapon", "name": "Trident", "stats": [], "atk": 4, "anim": "melee"},
+	{"id": "plasma_cutter", "kind": "weapon", "name": "Plasma Cutter", "stats": [], "atk": 5, "anim": "torch"},
+	{"id": "sonic_blaster", "kind": "weapon", "name": "Sonic Blaster", "stats": [], "atk": 5, "anim": "sonic"},
 ]
 const ITEM_RARITY := {
 	"common": {"name": "Common", "bonus": 1, "color": Color(0.8, 0.85, 0.9)},

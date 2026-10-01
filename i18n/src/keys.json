@@ -627,5 +627,19 @@
 "Colonists heal 50% faster",
 "Damaged: works at half speed until repaired.",
 "Repair ◉%d",
-"%s repaired!"
+"%s repaired!",
+"Weapon",
+"Choose a weapon",
+"Weapons help against pirates, monsters and bosses.",
+"+%d attack",
+"Kelp Vest",
+"Coral Plate",
+"Titan Suit",
+"Abyss Armor",
+"Bone Spear",
+"Harpoon Gun",
+"Shock Baton",
+"Trident",
+"Plasma Cutter",
+"Sonic Blaster"
 ]

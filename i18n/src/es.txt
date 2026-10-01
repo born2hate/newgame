@@ -628,3 +628,17 @@
 626|Dañado: funciona a mitad de velocidad hasta repararlo.
 627|Reparar ◉%d
 628|¡%s reparado!
+629|Arma
+630|Elige un arma
+631|Las armas ayudan contra piratas, monstruos y jefes.
+632|+%d de ataque
+633|Chaleco de algas
+634|Placa de coral
+635|Traje de titanio
+636|Armadura abisal
+637|Lanza de hueso
+638|Arpón
+639|Bastón eléctrico
+640|Tridente
+641|Cortador de plasma
+642|Bláster sónico
