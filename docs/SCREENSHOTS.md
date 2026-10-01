@@ -1,33 +1,24 @@
-# Deep Colony — все экраны
+# Deep Colony — screenshots
 
-Скриншоты сняты автоматически (720×1280). Пометка **🎨 нужен арт** значит, что на экране есть
-элемент, нарисованный кодом, и его стоит заменить картинкой.
-
-| | | |
-|---|---|---|
-| ![](screenshots/main.png)<br>**База** | ![](screenshots/lab.png)<br>**Лаборатория, док, склад** | ![](screenshots/deep.png)<br>**Глубина, объединённая ферма 2×, торговец, пузыри с сокровищами**<br>🎨 спрайт пузыря (по желанию) |
-| ![](screenshots/room.png)<br>**Карточка отсека** | ![](screenshots/build.png)<br>**Стройка**<br>Мини-картинки отсеков | ![](screenshots/buildmode.png)<br>**Выбор места** |
-| ![](screenshots/colonists.png)<br>**Экипаж** | ![](screenshots/colonist.png)<br>**Карточка колониста** | ![](screenshots/gear.png)<br>**Снаряжение** |
-| ![](screenshots/planner.png)<br>**План экспедиции** | ![](screenshots/expedition.png)<br>**Экспедиция и журнал** | ![](screenshots/fire.png)<br>**Пожар, потоп, удильщик** |
-| ![](screenshots/tasks.png)<br>**Задания, сюжет, событие недели** | ![](screenshots/research.png)<br>**Исследования**<br>🎨 иконки исследований (по желанию) | ![](screenshots/achievements.png)<br>**Достижения** |
-| ![](screenshots/shop.png)<br>**Магазин** | ![](screenshots/shop1.png)<br>**Наборы** | ![](screenshots/shop2.png)<br>**Кристаллы** |
-| ![](screenshots/crate.png)<br>**Открытие ящика** | ![](screenshots/daily.png)<br>**Ежедневная награда**<br>🎨 иконки наград по дням | ![](screenshots/trader.png)<br>**Торговец** |
-| ![](screenshots/loading.png)<br>**Экран загрузки** |
-| ![](screenshots/mode.png)<br>**Выбор сложности** | ![](screenshots/settings.png)<br>**Настройки, 10 языков** | ![](screenshots/tut1.png)<br>**Обучение** | ![](screenshots/tut3.png)<br>**Обучение: подсветка цели** |
-
-## Что ещё нарисовать (по важности)
-
-1. **Research Lab** — отсек 16:10, как остальные: `underwater research laboratory, glowing specimen tanks, microscopes, holographic screens, purple light, no people`.
-2. **Портрет командира Рейес** (квадрат, прозрачный фон): `portrait of Commander Reyes, confident woman in her 40s, navy captain uniform with trident emblem, diving helmet under arm, friendly but tough`.
-3. **Иконки 12 предметов** одним листом, прозрачный фон: wrench, harpoon, welding torch, bio scanner, coral knife, reactor suit (orange), engineer suit (blue), medic suit (white-red), explorer suit (gold), diving armor (heavy brass plates), shark mesh (chainmail vest), heat shield plate (glowing red chest plate).
-4. **Иконка науки** (как иконка кристалла): `glowing purple science flask with bubbles`.
-5. **Кубки** бронзовый / серебряный / золотой — три отдельные иконки.
-6. **Корабль торговца** (сбоку, смотрит влево, прозрачный фон): `green merchant submarine with cargo nets, lanterns and a shop sign`.
-7. **Картинки 5 зон экспедиций** (16:9): kelp forest, coral reef, sunken ship, hydrothermal vents, abyssal trench.
-8. Пузырь с сокровищем, иконки отсеков для меню стройки — по желанию.
-
-## Горизонтальный экран
+All screens captured automatically at 720×1280 (portrait) and 1280×720 (landscape), English UI.
 
 | | | |
 |---|---|---|
-| ![](screenshots/landscape_main.png)<br>**База** | ![](screenshots/landscape_room.png)<br>**Меню справа** | ![](screenshots/landscape_tut3.png)<br>**Обучение** |
+| ![](screenshots/en/base.png)<br>**Base** | ![](screenshots/en/room.png)<br>**Room card** | ![](screenshots/en/build.png)<br>**Build menu** |
+| ![](screenshots/en/buildmode.png)<br>**Placing a room** | ![](screenshots/en/colonists.png)<br>**Crew** | ![](screenshots/en/colonist.png)<br>**Colonist card** |
+| ![](screenshots/en/gear.png)<br>**Gear: weapons and armor** | ![](screenshots/en/pets.png)<br>**Pets** | ![](screenshots/en/family.png)<br>**Children and combo** |
+| ![](screenshots/en/rest.png)<br>**Relaxing without helmets** | ![](screenshots/en/deck.png)<br>**Observation Deck** | ![](screenshots/en/expedition.png)<br>**Expedition log** |
+| ![](screenshots/en/choice.png)<br>**Expedition choice** | ![](screenshots/en/planner.png)<br>**Expedition planner** | ![](screenshots/en/raid.png)<br>**Pirate raid** |
+| ![](screenshots/en/boss.png)<br>**Deep boss** | ![](screenshots/en/creature.png)<br>**Monster attack** | ![](screenshots/en/fire.png)<br>**Fire and flood** |
+| ![](screenshots/en/fallen.png)<br>**Fallen colonist** | ![](screenshots/en/trader.png)<br>**Wandering trader** | ![](screenshots/en/shop.png)<br>**Shop** |
+| ![](screenshots/en/crate.png)<br>**Opening a crate** | ![](screenshots/en/tasks.png)<br>**Tasks and story** | ![](screenshots/en/research.png)<br>**Research path to the depths** |
+| ![](screenshots/en/achievements.png)<br>**Achievements** | ![](screenshots/en/stats.png)<br>**Colony stats** | ![](screenshots/en/levelup.png)<br>**Colony level up** |
+| ![](screenshots/en/outside.png)<br>**Airlock** | ![](screenshots/en/mode.png)<br>**Difficulty** | ![](screenshots/en/tutorial.png)<br>**Tutorial** |
+
+## Landscape
+
+![](screenshots/en/landscape_main.png)
+
+![](screenshots/en/landscape_room_ru.png)
+
+![](screenshots/en/landscape_boss_ru.png)

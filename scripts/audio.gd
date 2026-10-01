@@ -85,7 +85,12 @@ func set_sfx(on: bool) -> void:
 	_apply()
 	_save_settings()
 
+## Для скриншотов: --force-lang=en перебивает любые переключения языка.
+var forced_lang := ""
+
 func set_language(code: String) -> void:
+	if forced_lang != "":
+		code = forced_lang
 	language = code
 	TranslationServer.set_locale(code)
 	_save_settings()

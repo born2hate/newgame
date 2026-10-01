@@ -645,3 +645,21 @@
 644|Bir sonraki derinlik bölgesinde inşa etmek için %s araştır.
 645|Vurgulananlar: adım adım ne araştırılmalı.
 646|%s saldırıyor: %s!
+647|Koloni istatistikleri
+648|Koloni seviyesi
+649|Kuruluştan bu yana gün
+650|Şimdiki sakin / rekor
+651|İnşa edilen odalar
+652|Geliştirilen odalar
+653|Toplamalar
+654|Toplanan inci
+655|Doğan çocuklar
+656|Seviye atlamaları
+657|Çözülen kazalar
+658|Püskürtülen korsan baskınları
+659|Yenilen patronlar
+660|Tamamlanan keşifler
+661|Tamamlanan araştırmalar
+662|Üretilen ekipman
+663|Açılan sandıklar
+664|Kaybedilen / diriltilen sakinler

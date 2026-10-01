@@ -66,6 +66,10 @@ func _dev_screenshot() -> void:
 			scene = a.trim_prefix("--scene=")
 	if path == "":
 		return
+	for a2 in OS.get_cmdline_user_args():
+		if a2.begins_with("--force-lang="):
+			Audio.forced_lang = a2.trim_prefix("--force-lang=")
+			Audio.set_language(Audio.forced_lang)
 	if scene != "mode":
 		Game.mode_chosen = true
 	if not scene.begins_with("tut"):
@@ -412,6 +416,10 @@ func _dev_screenshot() -> void:
 			camera.position = Vector2(700, 300)
 			camera.zoom = Vector2(0.5, 0.5)
 			await get_tree().create_timer(0.8).timeout
+		"stats":
+			Game.stats.merge({"build": 23, "upgrade": 11, "collect": 812, "collect_pearls": 9450, "birth": 4, "level_up": 57, "incident_resolved": 19, "raid_won": 3, "boss_won": 1, "expedition_done": 14, "research": 6, "craft": 2, "crate": 9, "deaths": 2, "revive": 1, "max_pop": 27, "founded": Game.today() - 5}, true)
+			Game.colony_level = 8
+			hud.open_stats()
 		"expedition_ru":
 			Audio.set_language("ru")
 			var d2 := Game._add_room("dock", 3, 1)

@@ -1,93 +1,98 @@
-# Deep Colony (Глубина)
+# Deep Colony
 
-Мобильная игра на английском (Android / iOS) — симулятор подводной колонии в разрезе, в духе Fallout Shelter.
-Строй отсеки на дне океана, распределяй колонистов, следи за энергией, кислородом и едой, опускайся всё глубже.
+A cosy-but-dangerous **underwater colony builder** for Android and iOS, inspired by *Fallout Shelter*.
+Dig rooms into the sea floor, keep your colonists breathing, fed and happy, fight off pirates and
+deep-sea monsters, send expeditions into the abyss — and go ever deeper.
+
+Built with **Godot 4.3** (GDScript). English by default, 10 languages in total.
+
+**Download the latest test build:** [DeepColony-0.11.apk](https://raw.githubusercontent.com/born2hate/newgame/claude/kind-noether-3q5ia8/releases/DeepColony-0.11.apk) · [What's new](CHANGELOG.md)
 
 <p>
-<img src="docs/screenshots/base.png" width="200">
-<img src="docs/screenshots/room.png" width="200">
-<img src="docs/screenshots/build.png" width="200">
-<img src="docs/screenshots/colonists.png" width="200">
+<img src="docs/screenshots/en/base.png" width="190">
+<img src="docs/screenshots/en/boss.png" width="190">
+<img src="docs/screenshots/en/raid.png" width="190">
+<img src="docs/screenshots/en/expedition.png" width="190">
+</p>
+<p>
+<img src="docs/screenshots/en/colonist.png" width="190">
+<img src="docs/screenshots/en/family.png" width="190">
+<img src="docs/screenshots/en/build.png" width="190">
+<img src="docs/screenshots/en/pets.png" width="190">
 </p>
 
-## Что уже есть (прототип)
+<img src="docs/screenshots/en/landscape_main.png" width="780">
 
-- База в разрезе: вода с рыбами и лучами света, морское дно, скала (шейдеры), отсеки с анимацией.
-- Ресурсы: энергия, кислород, еда + валюта **жемчуг**.
-- Отсеки: шлюз, лифт, жилой отсек, реактор, генератор O₂, ферма водорослей, склад, жемчужная ферма, медотсек.
-  Открываются по мере роста колонии, улучшаются до 3 уровня.
-- Колонисты с характеристиками (сила / техника / биология), здоровьем и уровнями.
-  Назначение перетаскиванием пальцем или через карточку отсека.
-- Производство циклами: готовый отсек показывает пузырь — нажми, чтобы собрать.
-- «Ускорить» — мгновенно завершить цикл с риском аварии (пробоина).
-- Новые колонисты прибывают через шлюз, пока есть места.
-- Автосохранение и офлайн-прогресс (до 8 часов).
-- Управление: перетаскивание — камера, щипок / колесо — масштаб.
+More screens: **[full gallery](docs/SCREENSHOTS.md)**.
 
-## Экспедиции, задания, сезон
+## Gameplay
 
-- **Док батискафа** (открывается с 5 колонистами): экипаж до 3 человек уходит в одну из 5 зон
-  (10 мин – 4 ч). Сила экипажа против рекомендуемой влияет на добычу и травмы. Живой журнал
-  событий, ускорение за кристаллы или рекламу (−30 мин). Результат считается при отправке, поэтому
-  одинаков онлайн и офлайн.
-- **Ежедневные задания**: 3 случайных в день, награды и опыт сезона.
-- **Сезонный пропуск** на 30 дней: 10 уровней, бесплатная и платная ($4.99) ветки.
+### Build the colony
+- A cross-section base on the ocean floor, 14 columns wide and 14 floors deep.
+- **20 room types**: Airlock, Elevator, Living Quarters, Reactor, O₂ Generator, Algae Farm, Storage, Pearl Farm, Sub Dock, Research Lab, Medbay, Kitchen, Gym, School, Radio Room, Lounge, Workshop, Armory, Aquarium, Current Turbine, Observation Deck.
+- Rooms unlock as the colony grows, upgrade to level 3, and merge with an identical neighbour into a wider room.
+- **Depth zones**: Twilight Shelf → Midnight Zone → The Abyss. Deeper floors produce more and drop crystals, but incidents are more frequent and nastier. Each zone is unlocked by research.
 
-## Инциденты, колонисты, звук, языки
+### Colonists
+- Six stats: **Strength, Tech, Biology, Endurance, Charm, Luck**, plus **Mood** that changes work speed.
+- Drag a colonist into a room to assign them; they work at their stations with little animations.
+- XP and levels, training rooms (Gym, School, Lounge), crystal training.
+- **Gear**: suits, tools, weapons and armor in common / rare / legendary rarity.
+- **Children**: a couple in Living Quarters may have a child who grows into a new colonist.
+- Colonists take their helmets off when they relax.
+- After 8 colonists, newcomers arrive only through the **Radio Room**.
 
-- **Инциденты**: пожары, затопления, нападения удильщика. Производство в отсеке стоит, колонисты
-  паникуют (жёлтый «!»), теряют здоровье и тушат беду. Можно перетащить на помощь любого колониста.
-  Без людей беда растёт и перекидывается на соседние отсеки. За устранение даётся жемчуг и опыт.
-- **Карточка колониста** (нажать на персонажа): уровень, редкость, опыт, здоровье, навыки с полосками,
-  лучшая работа, тренировка навыков и лечение за кристаллы, «в лучший отсек».
-- **Звук**: все эффекты и музыка синтезированы `tools/make_audio.py` (без сторонних лицензий).
-- **Настройки** (шестерёнка): музыка, звуки, язык (English / Русский), начать заново.
-  Перевод — `i18n/ru.gd`, новые языки добавляются так же.
+### Danger
+- **Incidents**: fires, floods and monster attacks. Send colonists to fight them — or watch them spread to other rooms and burn out, leaving the room damaged.
+- **Pirate raids**: raiders break through the airlock door and loot room by room.
+- **Deep bosses**: Giant Anglerfish, Kraken, Sea Serpent and Titan Crab appear above the dome — tap to fight.
+- **Death and revival**: fallen colonists can be revived for pearls for a limited time.
+- Three difficulty modes: **Calm**, **Normal**, **Survival**.
 
-## Монетизация (тестовый режим)
+### Adventure and progression
+- **Expeditions** by bathyscaphe to 5 zones, with a live log of fights and finds and choices to make on the way.
+- **Research tree** (17 projects), **story** with Commander Reyes (20 chapters), **achievements**, **daily quests**, **weekly event**, **season pass**.
+- **Colony level**, **combo collecting**, **pets** with bonuses, a **wandering trader**, treasure bubbles.
+- **Colony stats** screen.
 
-- Вторая валюта **кристаллы**: безопасное ускорение, ящики, жемчуг.
-- Ящики припасов (обычный / серебряный / золотой) с показанными шансами.
-- Ежедневная награда (7-дневная серия), бесплатный ящик раз в 4 часа за рекламу, ×2 сбор на 30 минут за рекламу.
-- Наборы: стартовый ($1.99), No Ads ($2.99), Premium ($4.99, включает No Ads и капитана), кристаллы $0.99–$99.99.
-- `scripts/store.gd`: `DEV_MODE = true` — покупки бесплатны, реклама — заглушка. Для релиза подключить
-  Google Play Billing, StoreKit (InAppStore) и AdMob, места помечены `TODO`.
+### Monetisation (test mode)
+Crystals, crates, Starter Pack, Premium, No Ads, Season Pass; rewarded ads (max 12 per day). All purchases are free in the test build.
 
-## Запуск
+## Project layout
 
-1. Установи [Godot 4.3+](https://godotengine.org/download).
-2. Открой папку проекта в Godot (Import → `project.godot`) и нажми ▶.
+| Path | What it is |
+|---|---|
+| `scripts/game_state.gd` | The whole simulation: rooms, colonists, economy, incidents, raids, bosses, expeditions, saving |
+| `scripts/defs.gd` | Static data: rooms, items, zones, research, story, quests, pets |
+| `scripts/base_view.gd` | Drawing the base and handling touch input |
+| `scripts/hud.gd`, `scripts/hud_more.gd` | All menus and UI (built in code) |
+| `scripts/tutorial.gd` | First-time tutorial |
+| `scripts/store.gd` | Shop, purchases and rewarded ads (stubbed in test mode) |
+| `i18n/` | Translations; edit `i18n/src/*.txt` and run `python3 tools/build_i18n.py` |
+| `art/` | All artwork; missing files fall back to code-drawn placeholders |
+| `docs/ART_PROMPTS.md` | Prompts used to generate the art |
+| `tests/run_tests.gd` | Logic tests |
+| `scripts/selftest.gd` | Automated UI test that taps through the whole game |
+| `tools/economy_sim.gd` | Bot that plays a week to check the economy |
 
-Тесты логики:
+## Running and testing
 
-```sh
+```bash
+# open in the Godot 4.3 editor, or run directly:
+godot --path .
+
+# logic tests
 godot --headless --path . --script res://tests/run_tests.gd
+
+# automated UI test (portrait or landscape, any language)
+godot --path . --resolution 720x1280 -- --selftest --lang=en
+
+# economy simulation: free / ads / starter, number of days
+godot --headless --path . --script res://tools/economy_sim.gd -- free 14
+
+# screenshot of any dev scene
+godot --path . --resolution 720x1280 -- --screenshot=out.png --scene=boss_ru --force-lang=en
 ```
 
-Скриншот для разработки: `godot --path . -- --screenshot=out.png --scene=build|room|colonists|deep`.
-
-## Сборка под телефоны
-
-Готовый пресет `export_presets.cfg` (Android, arm64, пакет `com.deepcolony.game`).
-`godot --headless --export-debug "Android" build/DeepColony.apk` — нужны шаблоны экспорта 4.3,
-Android SDK (build-tools) и JDK 17+; для релиза — свой keystore вместо отладочного.
-
-
-- **Android:** Editor → Manage Export Templates → установить; Project → Export → Android (нужен Android SDK и keystore).
-- **iOS:** Project → Export → iOS, затем собрать сгенерированный Xcode-проект на Mac.
-
-## Структура
-
-| Файл | Что внутри |
-|---|---|
-| `scripts/defs.gd` | Данные: типы отсеков, ресурсы, имена |
-| `scripts/game_state.gd` | Автозагрузка `Game`: симуляция, действия, сохранения |
-| `scripts/base_view.gd` | Отрисовка колонии, колонисты, касания и камера |
-| `scripts/hud.gd` | Интерфейс |
-| `scripts/icons.gd` | Векторные иконки ресурсов |
-| `shaders/` | Океан и скальная порода |
-
-## Дальше по плану
-
-Экспедиции на батискафе, случайные события (протечки, чудовища), дерево исследований,
-глубинные уровни с бонусами, редкая валюта, задания, звук и музыка, настоящие арт-ассеты.
+## Languages
+English, Russian, Spanish, Portuguese (Brazil), German, French, Italian, Turkish, Polish, Indonesian.

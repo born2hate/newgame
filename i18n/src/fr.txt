@@ -645,3 +645,21 @@
 644|Recherche %s pour construire dans la zone de profondeur suivante.
 645|En surbrillance : ce qu'il faut rechercher, étape par étape.
 646|%s attaque : %s !
+647|Statistiques de la colonie
+648|Niveau de la colonie
+649|Jours depuis la fondation
+650|Colons actuels / record
+651|Salles construites
+652|Salles améliorées
+653|Récoltes
+654|Perles récoltées
+655|Enfants nés
+656|Montées de niveau
+657|Incidents gérés
+658|Raids pirates repoussés
+659|Boss vaincus
+660|Expéditions terminées
+661|Recherches terminées
+662|Équipement fabriqué
+663|Caisses ouvertes
+664|Colons perdus / ranimés

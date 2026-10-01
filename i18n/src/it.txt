@@ -645,3 +645,21 @@
 644|Ricerca %s per costruire nella zona di profondità successiva.
 645|Evidenziato: cosa ricercare, passo dopo passo.
 646|%s attacca: %s!
+647|Statistiche della colonia
+648|Livello della colonia
+649|Giorni dalla fondazione
+650|Coloni ora / record
+651|Stanze costruite
+652|Stanze migliorate
+653|Raccolte
+654|Perle raccolte
+655|Bambini nati
+656|Aumenti di livello
+657|Incidenti risolti
+658|Assalti pirati respinti
+659|Boss sconfitti
+660|Spedizioni completate
+661|Ricerche completate
+662|Equipaggiamento creato
+663|Casse aperte
+664|Coloni persi / rianimati

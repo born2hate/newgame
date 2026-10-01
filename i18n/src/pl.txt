@@ -645,3 +645,21 @@
 644|Zbadaj %s, by budować w następnej strefie głębokości.
 645|Podświetlone: co badać, krok po kroku.
 646|%s atakuje: %s!
+647|Statystyki kolonii
+648|Poziom kolonii
+649|Dni od założenia
+650|Koloniści teraz / rekord
+651|Zbudowane pomieszczenia
+652|Ulepszone pomieszczenia
+653|Zbiory
+654|Zebrane perły
+655|Urodzone dzieci
+656|Awanse poziomu
+657|Opanowane awarie
+658|Odparte napady piratów
+659|Pokonani bossowie
+660|Ukończone wyprawy
+661|Ukończone badania
+662|Wytworzony sprzęt
+663|Otwarte skrzynie
+664|Straceni / ożywieni koloniści

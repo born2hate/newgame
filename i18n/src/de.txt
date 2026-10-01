@@ -645,3 +645,21 @@
 644|Erforsche %s, um in der nächsten Tiefenzone zu bauen.
 645|Hervorgehoben: was du Schritt für Schritt erforschen musst.
 646|%s greift an: %s!
+647|Kolonie-Statistik
+648|Kolonie-Stufe
+649|Tage seit Gründung
+650|Kolonisten jetzt / Rekord
+651|Gebaute Räume
+652|Verbesserte Räume
+653|Ernten
+654|Geerntete Perlen
+655|Geborene Kinder
+656|Stufenaufstiege
+657|Bewältigte Vorfälle
+658|Abgewehrte Piratenüberfälle
+659|Besiegte Bosse
+660|Abgeschlossene Expeditionen
+661|Abgeschlossene Forschung
+662|Hergestellte Ausrüstung
+663|Geöffnete Kisten
+664|Verlorene / wiederbelebte Kolonisten

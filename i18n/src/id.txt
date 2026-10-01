@@ -645,3 +645,21 @@
 644|Teliti %s untuk membangun di zona kedalaman berikutnya.
 645|Disorot: apa yang perlu diteliti, langkah demi langkah.
 646|%s menyerang: %s!
+647|Statistik koloni
+648|Level koloni
+649|Hari sejak didirikan
+650|Kolonis sekarang / rekor
+651|Ruangan dibangun
+652|Ruangan ditingkatkan
+653|Panen
+654|Mutiara dipanen
+655|Anak lahir
+656|Naik level
+657|Insiden ditangani
+658|Serangan bajak laut dipukul mundur
+659|Bos dikalahkan
+660|Ekspedisi selesai
+661|Riset selesai
+662|Perlengkapan dibuat
+663|Peti dibuka
+664|Kolonis gugur / dihidupkan

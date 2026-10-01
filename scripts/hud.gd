@@ -2337,6 +2337,54 @@ func _danger_text(d: float) -> String:
 	if d < 0.6: return tr("high")
 	return tr("extreme")
 
+# ---------------------------------------------------------------- статистика
+
+func open_stats() -> void:
+	_open_sheet("stats", 900)
+	_header(tr("Colony stats"))
+	var st: Dictionary = Game.stats
+	var days := Game.today() - int(st.get("founded", Game.today())) + 1
+	var rows := [
+		["colony_badge", tr("Colony level"), str(Game.colony_level)],
+		["calendar", tr("Days since founding"), str(days)],
+		["people", tr("Colonists now / record"), "%d / %d" % [Game.colonists.size(), int(st.get("max_pop", Game.colonists.size()))]],
+		["build", tr("Rooms built"), str(int(st.get("build", 0)))],
+		["upgrade", tr("Rooms upgraded"), str(int(st.get("upgrade", 0)))],
+		["collect", tr("Collections"), str(int(st.get("collect", 0)))],
+		["pearls", tr("Pearls harvested"), str(int(st.get("collect_pearls", 0)))],
+		["heart", tr("Children born"), str(int(st.get("birth", 0)))],
+		["level", tr("Colonist level-ups"), str(int(st.get("level_up", 0)))],
+		["fire", tr("Incidents handled"), str(int(st.get("incident_resolved", 0)))],
+		["raid", tr("Pirate raids repelled"), str(int(st.get("raid_won", 0)))],
+		["leviathan", tr("Bosses defeated"), str(int(st.get("boss_won", 0)))],
+		["expedition", tr("Expeditions completed"), str(int(st.get("expedition_done", 0)))],
+		["research", tr("Research finished"), str(int(st.get("research", 0)))],
+		["craft", tr("Gear crafted"), str(int(st.get("craft", 0)))],
+		["crate", tr("Crates opened"), str(int(st.get("crate", 0)))],
+		["skull", tr("Colonists lost / revived"), "%d / %d" % [int(st.get("deaths", 0)), int(st.get("revive", 0))]],
+	]
+	var icons := {"colony_badge": "res://art/ui/colony_badge.png", "pearls": "res://art/icons/pearls.png", "raid": "res://art/creatures/raider_0.png",
+		"leviathan": "res://art/creatures/boss_angler.png", "fire": "res://art/fx/fire_4.png", "heart": "res://art/characters/kid_1.png",
+		"expedition": "res://art/creatures/bathyscaphe.png", "research": "res://art/icons/science.png", "crate": "res://art/ui/shop/crate_silver.png",
+		"craft": "res://art/items/wrench.png", "build": "res://art/ui/icons/build.png", "people": "res://art/ui/icons/crew.png",
+		"calendar": "res://art/ui/icons/tasks.png", "upgrade": "res://art/ui/icons/speed.png", "collect": "res://art/ui/icons/gift.png",
+		"level": "res://art/ui/stats/str.png", "skull": "res://art/ui/stats/mood_sad.png"}
+	for i in rows.size():
+		var r: Array = rows[i]
+		var row := _card(Color(0.05, 0.12, 0.2, 0.9) if i % 2 == 0 else Color(0.07, 0.15, 0.24, 0.9), Color(ACCENT, 0.25))
+		var tex: Texture2D = Art.tex(icons[r[0]]) if icons.has(r[0]) else null
+		var tr_ := TextureRect.new()
+		tr_.texture = tex
+		tr_.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tr_.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		tr_.custom_minimum_size = Vector2(40, 40)
+		row.add_child(tr_)
+		var l := _label(r[1], 20)
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(l)
+		row.add_child(_label(r[2], 24, Color(1.0, 0.88, 0.5)))
+	sheet_body.add_child(_button(tr("Back"), _open_tasks, 56))
+
 # ---------------------------------------------------------------- задания и сезон
 
 func _open_tasks() -> void:
@@ -2355,6 +2403,7 @@ func _open_tasks() -> void:
 		ab.add_child(_badge())
 	nav.add_child(ab)
 	sheet_body.add_child(nav)
+	sheet_body.add_child(_with_icon(_button(tr("Colony stats"), open_stats, 60), "crew", 34))
 	more.add_story_section()
 	more.add_weekly_section()
 	_section(tr("Daily tasks"))

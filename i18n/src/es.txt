@@ -646,3 +646,21 @@
 644|Investiga %s para construir en la siguiente zona de profundidad.
 645|Resaltado: qué investigar, paso a paso.
 646|¡%s ataca: %s!
+647|Estadísticas de la colonia
+648|Nivel de la colonia
+649|Días desde la fundación
+650|Colonos ahora / récord
+651|Salas construidas
+652|Salas mejoradas
+653|Recolecciones
+654|Perlas cosechadas
+655|Niños nacidos
+656|Subidas de nivel
+657|Incidentes resueltos
+658|Asaltos piratas repelidos
+659|Jefes derrotados
+660|Expediciones completadas
+661|Investigaciones terminadas
+662|Equipo fabricado
+663|Cofres abiertos
+664|Colonos perdidos / revividos

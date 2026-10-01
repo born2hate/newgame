@@ -496,6 +496,10 @@ func simulate(delta: float, offline: bool) -> void:
 		xp_mult += float(Defs.ROOMS[r.type].get("xp_bonus", 0.0)) * r.level * r.size
 	var mood_target := 60.0 + mood_bonus() - (35.0 if starving else 0.0) - (15.0 if not powered else 0.0)
 	_tick_family(delta, offline)
+	if colonists.size() > int(stats.get("max_pop", 0)):
+		stats["max_pop"] = colonists.size()
+	if not stats.has("founded"):
+		stats["founded"] = today()
 	for c in colonists:
 		var mt := mood_target
 		var here := get_room(c.room) if c.room >= 0 else {}
@@ -2709,6 +2713,7 @@ func revive(f: Dictionary) -> bool:
 		event.emit("error")
 		return false
 	pearls -= cost
+	track("revive")
 	fallen.erase(f)
 	var c: Dictionary = f.c
 	c.health = 40.0
