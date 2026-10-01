@@ -723,12 +723,12 @@ func _draw_room(r: Dictionary) -> void:
 			draw_circle(core, inner.size.y * 0.32, Color(1.0, 0.75, 0.3, 0.10 + 0.08 * pulse))
 			draw_circle(core, inner.size.y * 0.16, Color(1.0, 0.9, 0.6, 0.08 + 0.08 * pulse))
 		if def.has("produces"):
-			var bar0 := Rect2(inner.position.x + 8, inner.end.y - 14, inner.size.x - 16, 7)
+			var bar0 := Rect2(inner.position.x + 4, inner.position.y + 27, inner.size.x - 8, 5)
 			draw_rect(bar0, Color(0, 0, 0, 0.55))
 			draw_rect(Rect2(bar0.position, Vector2(bar0.size.x * r.progress, bar0.size.y)), Defs.RESOURCES[def.produces].color)
 		if def.get("breeds", false) and Game.workers_in(r).size() >= 2 and r.incident <= 0.0:
 			# пара в жилом отсеке: розовая полоска и сердечки
-			var bar1 := Rect2(inner.position.x + 8, inner.end.y - 14, inner.size.x - 16, 7)
+			var bar1 := Rect2(inner.position.x + 4, inner.position.y + 27, inner.size.x - 8, 5)
 			draw_rect(bar1, Color(0, 0, 0, 0.55))
 			draw_rect(Rect2(bar1.position, Vector2(bar1.size.x * r.progress, bar1.size.y)), Color(1.0, 0.45, 0.7))
 			for i in 3:
@@ -767,7 +767,7 @@ func _draw_room(r: Dictionary) -> void:
 			_star(Vector2(inner.end.x - 12 - i * 16, inner.position.y + 34), 6.0)
 		# прогресс производства
 		if def.has("produces"):
-			var bar := Rect2(inner.position.x + 8, inner.end.y - 16, inner.size.x - 16, 7)
+			var bar := Rect2(inner.position.x + 4, inner.position.y + 46, inner.size.x - 8, 5)
 			draw_rect(bar, Color(0, 0, 0, 0.5))
 			var rc: Color = Defs.RESOURCES[def.produces].color
 			draw_rect(Rect2(bar.position, Vector2(bar.size.x * r.progress, bar.size.y)), rc)
@@ -1244,6 +1244,7 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 			bob = 0.0
 	var squash := 1.0
 	var lean := 0.0
+	var work_amt := 0.0
 	if fighting:
 		# резкие удары / отдача от выстрела
 		var hit := sin(t * 12.0 + c.id * 2.3)
@@ -1251,16 +1252,16 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 		squash = 1.0 - 0.04 * absf(hit)
 		bob = 0.0
 	elif working:
-		# ритмичные движения: наклон и «работа руками»
-		var beat := sin(t * 7.0 + c.id * 1.7)
-		squash = 1.0 - 0.05 * maxf(0.0, beat)
-		lean = 0.07 * beat * facing
+		# спокойно дышит, а раз в пару секунд плавно тянется к пульту — у каждого в свой момент
+		work_amt = _work_action(c)
+		lean = 0.05 * work_amt * facing
+		squash = 1.0 - 0.02 * work_amt + 0.008 * sin(t * 2.2 + c.id)
 		bob = 0.0
 	draw_set_transform(feet + Vector2(0, bob), lean, Vector2(facing, squash))
 	draw_texture_rect(sprite, Rect2(Vector2(-size.x / 2.0, -size.y), size), false, tint)
 	draw_set_transform(Vector2.ZERO)
-	if working:
-		_draw_work_fx(feet, c, facing, h)
+	if working and work_amt > 0.05:
+		_draw_work_fx(feet, c, facing, h, work_amt)
 	if fighting:
 		_draw_fight_fx(feet, c, facing, h)
 	if c.room == -1 and c.get("help", -1) == -1 and not lifted:
@@ -1410,7 +1411,12 @@ func _star_burst(c: Vector2, r: float, col: Color) -> void:
 	draw_colored_polygon(pts, col)
 
 ## Эффект работы у рук колониста — по типу отсека.
-func _draw_work_fx(feet: Vector2, c: Dictionary, facing: float, h: float) -> void:
+## 0 → 1 → 0 в начале каждого рабочего цикла (~3 с), остальное время — покой.
+func _work_action(c: Dictionary) -> float:
+	var cyc := fmod(t * (0.3 + 0.04 * (c.id % 4)) + c.id * 0.618, 1.0)
+	return sin(clampf(cyc / 0.35, 0.0, 1.0) * PI)
+
+func _draw_work_fx(feet: Vector2, c: Dictionary, facing: float, h: float, amt := 1.0) -> void:
 	var room := Game.get_room(c.room)
 	if room.is_empty():
 		return
@@ -1423,23 +1429,23 @@ func _draw_work_fx(feet: Vector2, c: Dictionary, facing: float, h: float) -> voi
 				var a: float = (i * 1.7 + c.id) + t * 9.0
 				var r := 8.0 + 24.0 * fmod(k + i * 0.25, 1.0)
 				var p := hand + Vector2(cos(a) * r * facing, sin(a) * r * 0.6 - r * 0.3)
-				draw_circle(p, 3.4, Color(1.0, 0.85 - 0.3 * fmod(k + i * 0.25, 1.0), 0.3, 1.0 - fmod(k + i * 0.25, 1.0)))
+				draw_circle(p, 3.0, Color(1.0, 0.85 - 0.3 * fmod(k + i * 0.25, 1.0), 0.3, (1.0 - fmod(k + i * 0.25, 1.0)) * amt))
 		"oxygen":
 			for i in 3:
 				var q := fmod(k + i * 0.33, 1.0)
-				draw_arc(hand + Vector2(sin(t * 3.0 + i) * 4.0, -q * 48.0), 4.5 + q * 3.0, 0, TAU, 10, Color(0.8, 1.0, 1.0, 0.95 * (1.0 - q)), 2.5)
+				draw_arc(hand + Vector2(sin(t * 3.0 + i) * 4.0, -q * 48.0), 4.5 + q * 3.0, 0, TAU, 10, Color(0.8, 1.0, 1.0, 0.95 * (1.0 - q) * amt), 2.5)
 		"farm", "pearl", "medbay", "kitchen":
 			for i in 3:
 				var q := fmod(k + i * 0.33, 1.0)
 				var col: Color = {"farm": Color(0.5, 1.0, 0.5), "pearl": Color(1.0, 0.8, 0.95), "kitchen": Color(1.0, 0.9, 0.7)}.get(room.type, Color(1.0, 0.5, 0.5))
 				var p := hand + Vector2((i - 1) * 10.0, -q * 38.0)
-				draw_circle(p, 5.0 * (1.0 - q) + 1.5, Color(col, 1.0 - q))
+				draw_circle(p, 5.0 * (1.0 - q) + 1.5, Color(col, (1.0 - q) * amt))
 		"lab", "school", "radio", "lounge":
 			for i in 4:
 				var q := fmod(k + i * 0.25, 1.0)
 				var a := i * TAU / 4.0 + t * 2.0
 				var lc: Color = Defs.ROOMS[room.type].color.lightened(0.2)
-				draw_circle(hand + Vector2(cos(a), sin(a)) * (6.0 + 16.0 * q), 3.2, Color(lc, 1.0 - q))
+				draw_circle(hand + Vector2(cos(a), sin(a)) * (6.0 + 16.0 * q), 3.2, Color(lc, (1.0 - q) * amt))
 
 func _text(pos: Vector2, text: String, size: int, col: Color, centered := false) -> void:
 	var p := pos

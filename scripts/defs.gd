@@ -167,10 +167,10 @@ const CRATES := {
 		[50, "pearls", 80, 200], [20, "resources", 40, 80], [15, "crystals", 1, 2],
 		[4, "colonist_rare", 1, 1], [1, "colonist_legendary", 1, 1]]},
 	"silver": {"name": "Silver Crate", "rolls": 3, "color": Color(0.85, 0.9, 1.0), "table": [
-		[40, "pearls", 200, 450], [20, "resources", 80, 150], [18, "crystals", 2, 5],
+		[40, "pearls", 200, 450], [20, "resources", 80, 150], [18, "crystals", 2, 4],
 		[8, "colonist_rare", 1, 1], [2, "colonist_legendary", 1, 1], [3, "pet", 1, 1]]},
 	"gold": {"name": "Gold Crate", "rolls": 4, "color": Color(1.0, 0.8, 0.3), "guaranteed": "colonist_rare", "table": [
-		[35, "pearls", 400, 900], [20, "resources", 150, 250], [22, "crystals", 5, 12],
+		[35, "pearls", 400, 900], [20, "resources", 150, 250], [22, "crystals", 4, 10],
 		[10, "colonist_rare", 1, 1], [4, "colonist_legendary", 1, 1], [8, "pet", 1, 1]]},
 }
 
@@ -191,13 +191,13 @@ const ZONES := [
 		"loot": {"pearls": [90, 190], "crystals": [0, 1], "resources": [30, 60]}},
 	{"id": "wreck", "name": "Sunken Ship", "minutes": 60, "danger": 0.35, "power": 26, "unlock_pop": 8,
 		"desc": "An old wreck. Treasure and trouble.",
-		"loot": {"pearls": [180, 360], "crystals": [0, 2], "crate": "common"}},
+		"loot": {"pearls": [180, 360], "crystals": [0, 1], "crate": "common"}},
 	{"id": "vents", "name": "Hydrothermal Vents", "minutes": 120, "danger": 0.5, "power": 34, "unlock_pop": 12,
 		"desc": "Scalding water, rare minerals.",
-		"loot": {"pearls": [300, 550], "crystals": [1, 3], "crate": "silver"}},
+		"loot": {"pearls": [300, 550], "crystals": [0, 2], "crate": "silver"}},
 	{"id": "trench", "name": "Abyssal Trench", "minutes": 240, "danger": 0.7, "power": 45, "unlock_pop": 16,
 		"desc": "The deepest dark. Legends live here.",
-		"loot": {"pearls": [550, 950], "crystals": [2, 5], "crate": "gold", "survivor": 0.25}},
+		"loot": {"pearls": [550, 950], "crystals": [1, 4], "crate": "gold", "survivor": 0.25}},
 ]
 
 ## Шаблоны записей журнала экспедиции ({n} — имя члена экипажа).
