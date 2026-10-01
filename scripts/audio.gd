@@ -16,6 +16,8 @@ const EVENT_SFX := {
 	"level_up": ["levelup", 1.0], "crate": ["crate", 1.0], "breach": ["alarm", 1.0],
 	"arrive": ["arrive", 1.0], "expedition": ["launch", 1.0], "rush": ["bubbles", 1.0],
 	"error": ["error", 1.0], "incident": ["alarm", 0.9],
+	"boss": ["roar", 1.0], "raid": ["horn", 1.0], "birth": ["birth", 1.0], "repair": ["repair", 1.0],
+	"bubble": ["bubbles", 1.2], "loot_raider": ["pearls", 1.2], "boss_won": ["levelup", 0.8], "raid_won": ["levelup", 0.9],
 }
 
 var music_on := true
@@ -25,6 +27,9 @@ var streams := {}
 var players: Array[AudioStreamPlayer] = []
 var music: AudioStreamPlayer
 var ambient: AudioStreamPlayer
+## Тревожная тема плавно сменяет обычную, пока идёт налёт или бой с боссом.
+var danger: AudioStreamPlayer
+var _danger_mix := 0.0
 var _next := 0
 var _mute_until := 0
 
@@ -44,12 +49,30 @@ func _ready() -> void:
 		players.append(p)
 	music = _looped("res://audio/music/theme.ogg", -8.0)
 	ambient = _looped("res://audio/music/ambient.ogg", -10.0)
+	danger = _looped("res://audio/music/danger.ogg", -80.0)
 	_apply()
 	# при загрузке сохранения офлайн-события не озвучиваем
 	_mute_until = Time.get_ticks_msec() + 1500
 	Game.event.connect(_on_event)
 	Game.rewards_granted.connect(func(_t, _l): play("reward"))
 	Store.purchase_finished.connect(func(_id, ok): if ok: play("purchase"))
+
+func _process(delta: float) -> void:
+	if danger == null:
+		return
+	var want := 1.0 if (not Game.raid.is_empty() or not Game.boss.is_empty()) and music_on else 0.0
+	_danger_mix = move_toward(_danger_mix, want, delta / 1.5)
+	if _danger_mix > 0.0 and not danger.playing:
+		danger.play()
+	elif _danger_mix <= 0.0 and danger.playing:
+		danger.stop()
+	danger.volume_db = linear_to_db(maxf(0.0001, _danger_mix)) - 7.0
+	if music:
+		music.volume_db = -8.0 + linear_to_db(maxf(0.0001, 1.0 - _danger_mix))
+
+## Комбо: каждый следующий сбор подряд звучит на полтона выше.
+func play_combo(count: int) -> void:
+	play("combo", pow(2.0, minf(count - 1, 12) / 12.0))
 
 func _looped(path: String, db: float) -> AudioStreamPlayer:
 	var p := AudioStreamPlayer.new()

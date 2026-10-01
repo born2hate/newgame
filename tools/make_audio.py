@@ -421,10 +421,111 @@ def music_loop():
     return body
 
 
+
+# ---------------------------------------------------------------- бои, налёты, семья
+
+def sfx_hit():
+    b = np.zeros(int(0.5 * SR))
+    th = np.sin(2 * np.pi * np.cumsum(np.linspace(180, 60, int(0.18 * SR))) / SR) * env(int(0.18 * SR), 0.002, 0.15, 0.0, 0.02)
+    place(b, th * 0.9, 0)
+    cr = bandpass(noise(0.08), 1500, 6000) * env(int(0.08 * SR), 0.001, 0.07, 0.0, 0.01) * 0.6
+    place(b, cr, 0)
+    save("hit", reverb(b, 0.6, 0.15), -5)
+
+
+def sfx_roar():
+    dur = 2.2
+    tt = t_(dur)
+    f = 70 + 25 * np.sin(2 * np.pi * 3.5 * tt) + 30 * np.exp(-tt * 2)
+    gr = signal.sawtooth(2 * np.pi * np.cumsum(f) / SR) + 0.5 * signal.sawtooth(2 * np.pi * np.cumsum(f * 1.5) / SR)
+    gr = lowpass(gr, 700) * env(len(tt), 0.15, 0.0, 1.0, 0.8, dur - 1.0)
+    rumble = lowpass(noise(dur), 300) * env(len(tt), 0.2, 0.0, 1.0, 0.8, dur - 1.0) * 1.5
+    x = gr * 0.6 + rumble
+    for i in range(14):
+        place(x, bubble(rng.uniform(150, 350), rng.uniform(500, 900), 0.08) * 0.2, rng.random() * 1.8)
+    save("roar", reverb(x, 2.2, 0.4, tone=2000), -3)
+
+
+def sfx_horn():
+    b = np.zeros(int(2.4 * SR))
+    for k, n in enumerate([50, 50, 53]):
+        tt = t_(0.6 if k < 2 else 1.0)
+        f = note(n) * (1 + 0.01 * np.sin(2 * np.pi * 5 * tt))
+        s = signal.sawtooth(2 * np.pi * np.cumsum(f) / SR) + 0.5 * signal.square(2 * np.pi * np.cumsum(f * 0.5) / SR)
+        place(b, lowpass(s, 1400) * env(len(tt), 0.05, 0.0, 1.0, 0.2, len(tt) / SR - 0.3) * 0.5, k * 0.65)
+    save("horn", reverb(b, 1.8, 0.35, tone=3000), -4)
+
+
+def sfx_combo():
+    # короткий яркий щипок; высоту поднимает игра (pitch) с каждым сбором подряд
+    b = np.zeros(int(0.6 * SR))
+    place(b, marimba(note(84), 0.5) * 0.6, 0)
+    place(b, bell(note(96), 0.4, 0.8, 0.25) * 0.25, 0.01)
+    save("combo", reverb(b, 0.8, 0.2), -6)
+
+
+def sfx_coin():
+    b = np.zeros(int(0.25 * SR))
+    place(b, bell(note(100), 0.2, 1.0, 0.08) * 0.5, 0)
+    save("coin", b, -12)
+
+
+def sfx_birth():
+    b = np.zeros(int(2.6 * SR))
+    for i, n in enumerate([72, 76, 79, 84, 79, 84]):
+        place(b, bell(note(n), 1.4, 0.4, 0.8) * 0.35, i * 0.22)
+    save("birth", reverb(b, 2.4, 0.45))
+
+
+def sfx_repair():
+    b = np.zeros(int(1.0 * SR))
+    for i in range(3):
+        cl = bandpass(noise(0.06), 1800, 7000) * env(int(0.06 * SR), 0.001, 0.05, 0.0, 0.01)
+        ring = bell(rng.uniform(1700, 2300), 0.3, 1.0, 0.1) * 0.3
+        place(b, cl * 0.7 + np.pad(ring, (0, max(0, len(cl) - len(ring))))[:len(cl)], i * 0.18)
+        place(b, ring, i * 0.18)
+    place(b, bell(note(84), 0.6, 0.5, 0.3) * 0.3, 0.6)
+    save("repair", reverb(b, 0.9, 0.2), -5)
+
+
+def danger_loop():
+    """Тревожная тема на время налётов и боссов: пульс баса и стаккато."""
+    bpm = 120
+    beat = 60 / bpm
+    bars = 8
+    total = bars * 4 * beat
+    x = np.zeros(int((total + 2) * SR))
+    roots = [45, 45, 46, 44]
+    for bi in range(bars):
+        root = roots[bi % 4]
+        for st in range(8):
+            at = (bi * 4 + st * 0.5) * beat
+            bs = signal.sawtooth(2 * np.pi * note(root - 12) * t_(beat * 0.45))
+            bs = lowpass(bs, 500) * env(len(bs), 0.005, 0.15, 0.3, 0.05, 0.05) * (0.5 if st % 2 else 0.7)
+            place(x, bs, at)
+        hit = lowpass(noise(0.25), 200) * env(int(0.25 * SR), 0.002, 0.2, 0.0, 0.02) * 1.2
+        place(x, hit, bi * 4 * beat)
+        place(x, hit * 0.7, (bi * 4 + 2) * beat)
+        for st in [1, 3]:
+            hh = highpass(noise(0.05), 6000) * env(int(0.05 * SR), 0.001, 0.04, 0.0, 0.01) * 0.25
+            place(x, hh, (bi * 4 + st) * beat)
+        if bi % 2 == 1:
+            st_n = [root + 12, root + 15, root + 13, root + 12][bi % 4]
+            for k in range(4):
+                tt = t_(beat * 0.3)
+                s = signal.square(2 * np.pi * note(st_n) * tt) * env(len(tt), 0.005, 0.2, 0.0, 0.05) * 0.18
+                place(x, lowpass(s, 2500), (bi * 4 + k) * beat)
+    wet = reverb(x, 1.5, 0.25, tone=4000, stereo=False)
+    loop_n = int(total * SR)
+    body, tail = wet[:loop_n].copy(), wet[loop_n:]
+    body[: len(tail)] += tail[: loop_n]
+    return np.stack([body, body], axis=1)
+
 if __name__ == "__main__":
     for fn in [sfx_tap, sfx_open, sfx_close, sfx_error, sfx_collect, sfx_pearls, sfx_build, sfx_upgrade,
                sfx_levelup, sfx_crate, sfx_reward, sfx_purchase, sfx_alarm, sfx_arrive, sfx_sonar,
-               sfx_launch, sfx_bubbles]:
+               sfx_launch, sfx_bubbles, sfx_hit, sfx_roar, sfx_horn, sfx_combo, sfx_coin, sfx_birth, sfx_repair]:
         fn()
     save("ambient", ambient_loop(), -12, folder="music")
     save("theme", music_loop(), -6, folder="music")
+    save("danger", danger_loop(), -6, folder="music")

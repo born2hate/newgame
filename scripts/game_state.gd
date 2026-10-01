@@ -610,7 +610,7 @@ func _birth(r: Dictionary, a: Dictionary, b: Dictionary, offline: bool) -> void:
 	track("birth")
 	if not offline:
 		banner.emit("suit_%d" % kid.suit, tr("A child is born!"), tr("%s and %s welcome %s.") % [a.name.split(" ")[0], b.name.split(" ")[0], kid.name.split(" ")[0]])
-		event.emit("arrive")
+		event.emit("birth")
 	changed.emit()
 
 func _tick_training(c: Dictionary, room: Dictionary, delta: float, offline: bool) -> void:
@@ -708,7 +708,7 @@ func repair(room: Dictionary) -> bool:
 	room.erase("damaged")
 	track("repair")
 	message.emit(tr("%s repaired!") % tr(Defs.ROOMS[room.type].name))
-	event.emit("upgrade")
+	event.emit("repair")
 	changed.emit()
 	return true
 
@@ -1519,7 +1519,7 @@ func start_boss() -> void:
 	var hp := (400.0 + 220.0 * tier) * float(BOSSES[kind].hp)
 	boss = {"hp": hp, "max": hp, "until": now() + BOSS_TIME, "attack": BOSS_ATTACK, "tier": tier, "kind": kind}
 	banner.emit("leviathan", tr("%s approaches!") % tr(BOSSES[kind].name), tr("Tap the monster to fight it off. Every colonist helps!"))
-	event.emit("breach")
+	event.emit("boss")
 	changed.emit()
 
 ## Урон от нажатия: растёт с уровнем колонии.
@@ -1608,7 +1608,7 @@ func start_raid() -> void:
 	al.hazard = "raid"
 	al.incident = 100.0
 	banner.emit("raid", tr("Pirate raid!"), tr("Pirates are breaking through the airlock door. Drag colonists there to fight!"))
-	event.emit("incident")
+	event.emit("raid")
 	changed.emit()
 
 ## Обыскать тело пирата: немного жемчуга, иногда запасы, кристалл или простое снаряжение.

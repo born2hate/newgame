@@ -1555,7 +1555,7 @@ func _on_press(p: Vector2) -> void:
 		var dmg := Game.hit_boss()
 		boss_hit = 1.0
 		add_shake(4.0)
-		Audio.play("tap", 0.7)
+		Audio.play("hit", randf_range(0.85, 1.15))
 		floaters.append({"pos": world + Vector2(randf_range(-20, 20), -20), "text": "-%d" % dmg, "icon": "", "color": Color(1.0, 0.5, 0.4), "life": 0.9})
 		return
 	for b in Game.raider_bodies:

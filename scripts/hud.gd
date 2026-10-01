@@ -516,6 +516,7 @@ func _draw_colony_bar() -> void:
 var combo_label: Label
 
 func _on_combo(count: int, mult: float) -> void:
+	Audio.play_combo(count)
 	if count < 2:
 		return
 	if combo_label == null:
@@ -565,7 +566,9 @@ func _on_collected(room_id: int, res: String, amount: int) -> void:
 		tw.tween_interval(i * 0.04)
 		tw.tween_property(ic, "position", to - ic.size / 2.0, 0.55).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 		tw.parallel().tween_property(ic, "scale", Vector2(0.6, 0.6), 0.55)
-		tw.tween_callback(ic.queue_free)
+		tw.tween_callback(func():
+			Audio.play("coin", 1.0 + i * 0.05, -4.0)
+			ic.queue_free())
 	var pulse := create_tween()
 	target_ctrl.pivot_offset = target_ctrl.size / 2.0
 	pulse.tween_interval(0.55)
