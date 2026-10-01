@@ -479,3 +479,59 @@
 478|Pont d'observation
 479|Vue sur les abysses : excellent moral pour tous et +10% d'expérience par niveau.
 480|XP des colons +%d%%
+481|Récolte %d perles dans les fermes perlières
+482|Produis %d de science
+483|Ramène %d expéditions
+484|Explore le Récif de corail %d fois
+485|Fais %d affaires avec le marchand
+486|Fabrique %d pièces d'équipement
+487|Repas chauds
+488|Le moral baisse. Construis une cuisine pour que la colonie mange de nouveau correctement.
+489|Plus forts ensemble
+490|Entraîne tes gens. Fais monter de niveau des colons 25 fois.
+491|Acier et étincelles
+492|Il nous faut du meilleur équipement. Construis un atelier et fabrique 3 pièces.
+493|Tenir bon
+494|Les abysses s'énervent. Gère 25 incidents.
+495|Ramène-les
+496|Construis une salle radio et atteins 30 colons.
+497|Explorateurs aguerris
+498|Ramène 20 expéditions.
+499|L'énergie des abysses
+500|Construis une turbine à courants dans l'obscurité.
+501|Une ville sous la mer
+502|Atteins 45 colons. La commandante Reyes serait fière.
+503|Crabe furieux
+504|Murène
+505|Essaim de méduses
+506|Requin de récif
+507|Poisson-lion
+508|Barracuda
+509|Crabe géant
+510|Anguille géante
+511|Crabe-araignée
+512|Serpent de mer
+513|Pieuvre fantôme
+514|Crabe de lave
+515|Requin d'os
+516|Ver des sources
+517|Baudroie
+518|Calmar géant
+519|Serpent abyssal
+520|{n} a combattu « {e} » et gagné. −{h} PV, +{x} XP
+521|« {e} » a attaqué ! {n} l'a repoussé. −{h} PV, +{x} XP
+522|« {e} » a tendu une embuscade ! {n} s'en est tiré de justesse. −{h} PV, +{x} XP
+523|{n} a perdu contre « {e} » et a dû reculer. −{h} PV, +{x} XP
+524|{n} a trouvé {v} perles.
+525|{n} a extrait {v} cristaux.
+526|L'équipage a récupéré {v} provisions.
+527|{n} a trouvé de l'équipement : {v} !
+528|{n} a remonté : {v} !
+529|{n} a sauvé un survivant ! Il rejoindra la colonie.
+530|Le feu dans %s s'est éteint seul. Des provisions sont perdues.
+531|L'eau de %s s'est retirée. Des provisions sont perdues.
+532|La créature a quitté %s. Des provisions sont perdues.
+533|%s : le danger est passé.
+534|XP : +%d · Combats : %d gagnés, %d perdus
+535|Butin pour l'instant :
+536|rien encore

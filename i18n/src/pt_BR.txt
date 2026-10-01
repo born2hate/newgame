@@ -479,3 +479,59 @@
 478|Mirante
 479|Vista das profundezas: ótimo ânimo para todos e +10% de experiência por nível.
 480|Experiência dos colonos +%d%%
+481|Colha %d pérolas nas fazendas de pérolas
+482|Produza %d de ciência
+483|Traga %d expedições para casa
+484|Explore o Recife de Coral %d vezes
+485|Faça %d negócios com o comerciante
+486|Fabrique %d peças de equipamento
+487|Comida quente
+488|O ânimo está baixo. Construa uma cozinha para a colônia voltar a comer direito.
+489|Mais fortes juntos
+490|Treine seu pessoal. Suba o nível dos colonos 25 vezes.
+491|Aço e faíscas
+492|Precisamos de equipamento melhor. Construa uma oficina e fabrique 3 peças.
+493|Segurar a linha
+494|O abismo está furioso. Resolva 25 incidentes.
+495|Chame-os para casa
+496|Construa uma sala de rádio e chegue a 30 colonos.
+497|Exploradores experientes
+498|Traga 20 expedições para casa.
+499|Energia do abismo
+500|Construa uma turbina de correntes na escuridão.
+501|Uma cidade sob o mar
+502|Chegue a 45 colonos. A comandante Reyes ficaria orgulhosa.
+503|Caranguejo bravo
+504|Moreia
+505|Enxame de águas-vivas
+506|Tubarão de recife
+507|Peixe-leão
+508|Barracuda
+509|Caranguejo gigante
+510|Enguia gigante
+511|Caranguejo-aranha
+512|Serpente marinha
+513|Polvo fantasma
+514|Caranguejo de lava
+515|Tubarão de ossos
+516|Verme de fonte
+517|Peixe-diabo
+518|Lula gigante
+519|Serpente abissal
+520|{n} lutou contra «{e}» e venceu. −{h} PV, +{x} XP
+521|«{e}» atacou! {n} o espantou. −{h} PV, +{x} XP
+522|«{e}» emboscou a tripulação! {n} escapou por pouco. −{h} PV, +{x} XP
+523|{n} perdeu para «{e}» e recuou. −{h} PV, +{x} XP
+524|{n} achou {v} pérolas.
+525|{n} extraiu {v} cristais.
+526|A tripulação recuperou {v} suprimentos.
+527|{n} achou equipamento: {v}!
+528|{n} puxou: {v}!
+529|{n} resgatou um sobrevivente! Ele vai se juntar à colônia.
+530|O fogo em %s se apagou sozinho. Suprimentos perdidos.
+531|A água de %s escoou. Suprimentos perdidos.
+532|A criatura deixou %s. Suprimentos perdidos.
+533|%s: o perigo passou.
+534|XP: +%d · Lutas: %d vitórias, %d derrotas
+535|Saque até agora:
+536|nada ainda

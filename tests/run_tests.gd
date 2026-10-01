@@ -86,7 +86,7 @@ func _initialize() -> void:
 	check(eco.daily_available(), "ежедневная награда доступна")
 	var pd: int = eco.pearls
 	eco.claim_daily()
-	check(eco.pearls == pd + 100 and not eco.daily_available(), "награда дня 1 получена, повторно нельзя")
+	check(eco.pearls == pd + int(Defs.DAILY[0].pearls) and not eco.daily_available(), "награда дня 1 получена, повторно нельзя")
 	eco.daily_day -= 1
 	check(eco.daily_available() and eco.daily_next_index() == 1, "следующий день продолжает серию")
 	eco.daily_day -= 2
@@ -137,7 +137,7 @@ func _initialize() -> void:
 	check(ex.expeditions.is_empty() and ex.colonists[0].room == -1, "экипаж вернулся")
 	check(ex.pearls > pb, "добыча получена")
 	ex.refresh_daily_systems()
-	check(ex.quests.size() == 3, "3 ежедневных задания")
+	check(ex.quests.size() == Defs.QUESTS_PER_DAY, "ежедневные задания выданы")
 	var q: Dictionary = ex.quests[0]
 	ex.track(q.event, 1000)
 	check(q.progress == q.target, "прогресс задания")
@@ -158,7 +158,7 @@ func _initialize() -> void:
 	ex.save_game()
 	var ex2 = load("res://scripts/game_state.gd").new()
 	ex2.load_game()
-	check(ex2.season_xp == 250 and ex2.season_pass and ex2.quests.size() == 3, "сезон и задания сохраняются")
+	check(ex2.season_xp == 250 and ex2.season_pass and ex2.quests.size() == Defs.QUESTS_PER_DAY, "сезон и задания сохраняются")
 	ex.free(); ex2.free()
 
 	# инциденты
@@ -294,6 +294,25 @@ func _initialize() -> void:
 	cm.resources.food = 0.0
 	cm.simulate(5.0, false)
 	check(cm.colonists[0].health >= 50.0, "спокойный: голод не ранит")
+	# беда без людей: разгорается, перекидывается на соседа и сама выгорает
+	var bz = load("res://scripts/game_state.gd").new()
+	bz.new_game()
+	var oxr: Dictionary = bz.find_room_of_type("oxygen")
+	for c in bz.colonists:
+		c.room = -1
+	bz.start_hazard(oxr, "fire")
+	var spread_seen := false
+	for i in 400:
+		bz.resources.oxygen = 100.0
+		bz.resources.food = 100.0
+		bz.simulate(1.0, false)
+		for c in bz.colonists:
+			c.help = -1
+		if bz.rooms.filter(func(r): return r.incident > 0.0 and r.id != oxr.id).size() > 0:
+			spread_seen = true
+	check(spread_seen, "пожар без людей перекинулся на соседний отсек")
+	check(oxr.incident <= 0.0, "пожар без людей в отсеке выгорел сам")
+	bz.free()
 	# новые отсеки и характеристики
 	var nw = load("res://scripts/game_state.gd").new()
 	nw.new_game()
@@ -326,7 +345,7 @@ func _initialize() -> void:
 		nw.resources.food = 100.0
 		nw.resources.energy = 100.0
 		nw.simulate(1.0, false)
-	check(nw.mood_bonus() >= 10.0 and nw.colonists[1].mood > 65.0, "комната отдыха поднимает настроение (%.0f → %.0f)" % [mood0, nw.colonists[1].mood])
+	check(nw.mood_bonus() >= 10.0 and nw.colonists[1].mood > mood0 + 20.0, "комната отдыха поднимает настроение (%.0f → %.0f)" % [mood0, nw.colonists[1].mood])
 	nw.free()
 	sv.save_game()
 	var sv2 = load("res://scripts/game_state.gd").new()

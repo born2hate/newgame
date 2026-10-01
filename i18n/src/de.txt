@@ -479,3 +479,59 @@
 478|Aussichtsdeck
 479|Blick in die Tiefe: tolle Laune für alle und +10% Erfahrung pro Stufe.
 480|Kolonisten-EP +%d%%
+481|Ernte %d Perlen auf Perlenfarmen
+482|Erzeuge %d Forschung
+483|Bring %d Expeditionen nach Hause
+484|Erkunde das Korallenriff %d-mal
+485|Mache %d Geschäfte mit dem Händler
+486|Fertige %d Ausrüstungsteile
+487|Warme Mahlzeiten
+488|Die Moral sinkt. Baue eine Küche, damit die Kolonie wieder richtig isst.
+489|Gemeinsam stärker
+490|Trainiere deine Leute. Steigere Kolonisten 25-mal im Level.
+491|Stahl und Funken
+492|Wir brauchen bessere Ausrüstung. Baue eine Werkstatt und fertige 3 Teile.
+493|Die Stellung halten
+494|Die Tiefe wird zorniger. Bewältige 25 Vorfälle.
+495|Ruf sie heim
+496|Baue einen Funkraum und erreiche 30 Kolonisten.
+497|Erfahrene Entdecker
+498|Bring 20 Expeditionen nach Hause.
+499|Kraft aus der Tiefe
+500|Baue eine Strömungsturbine unten in der Dunkelheit.
+501|Eine Stadt unter dem Meer
+502|Erreiche 45 Kolonisten. Kommandantin Reyes wäre stolz.
+503|Wütende Krabbe
+504|Muräne
+505|Quallenschwarm
+506|Riffhai
+507|Rotfeuerfisch
+508|Barrakuda
+509|Riesenkrabbe
+510|Riesenaal
+511|Seespinne
+512|Seeschlange
+513|Geisterkrake
+514|Lavakrabbe
+515|Knochenhai
+516|Schlotwurm
+517|Anglerfisch
+518|Riesenkalmar
+519|Abgrundschlange
+520|{n} kämpfte gegen «{e}» und siegte. −{h} LP, +{x} EP
+521|«{e}» griff an! {n} vertrieb es. −{h} LP, +{x} EP
+522|«{e}» überfiel die Crew! {n} entkam knapp. −{h} LP, +{x} EP
+523|{n} verlor gegen «{e}» und zog sich zurück. −{h} LP, +{x} EP
+524|{n} fand {v} Perlen.
+525|{n} grub {v} Kristalle aus.
+526|Die Crew barg {v} Vorräte.
+527|{n} fand Ausrüstung: {v}!
+528|{n} zog hoch: {v}!
+529|{n} rettete einen Überlebenden! Er schließt sich der Kolonie an.
+530|Das Feuer in %s ist ausgebrannt. Vorräte gingen verloren.
+531|Das Wasser in %s ist abgelaufen. Vorräte gingen verloren.
+532|Das Wesen hat %s verlassen. Vorräte gingen verloren.
+533|%s: Die Gefahr ist vorbei.
+534|EP: +%d · Kämpfe: %d gewonnen, %d verloren
+535|Bisherige Beute:
+536|noch nichts

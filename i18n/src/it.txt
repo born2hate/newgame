@@ -479,3 +479,59 @@
 478|Ponte d'osservazione
 479|Vista sugli abissi: ottimo umore per tutti e +10% di esperienza per livello.
 480|EXP dei coloni +%d%%
+481|Raccogli %d perle dalle fattorie di perle
+482|Produci %d di scienza
+483|Riporta a casa %d spedizioni
+484|Esplora la Barriera corallina %d volte
+485|Fai %d affari con il mercante
+486|Costruisci %d pezzi di equipaggiamento
+487|Pasti caldi
+488|Il morale è basso. Costruisci una cucina perché la colonia torni a mangiare bene.
+489|Più forti insieme
+490|Allena la tua gente. Fai salire di livello i coloni 25 volte.
+491|Acciaio e scintille
+492|Serve equipaggiamento migliore. Costruisci un'officina e crea 3 pezzi.
+493|Tenere duro
+494|L'abisso è sempre più arrabbiato. Gestisci 25 incidenti.
+495|Richiamali a casa
+496|Costruisci una sala radio e raggiungi 30 coloni.
+497|Esploratori esperti
+498|Riporta a casa 20 spedizioni.
+499|Energia dagli abissi
+500|Costruisci una turbina delle correnti nel buio.
+501|Una città sotto il mare
+502|Raggiungi 45 coloni. La comandante Reyes sarebbe fiera.
+503|Granchio arrabbiato
+504|Murena
+505|Sciame di meduse
+506|Squalo di barriera
+507|Pesce leone
+508|Barracuda
+509|Granchio gigante
+510|Anguilla gigante
+511|Granchio ragno
+512|Serpente marino
+513|Polpo fantasma
+514|Granchio di lava
+515|Squalo d'ossa
+516|Verme delle sorgenti
+517|Rana pescatrice
+518|Calamaro gigante
+519|Serpente abissale
+520|{n} ha combattuto «{e}» e ha vinto. −{h} PS, +{x} EXP
+521|«{e}» ha attaccato! {n} l'ha respinto. −{h} PS, +{x} EXP
+522|«{e}» ha teso un agguato! {n} si è salvato per un pelo. −{h} PS, +{x} EXP
+523|{n} ha perso contro «{e}» e si è ritirato. −{h} PS, +{x} EXP
+524|{n} ha trovato {v} perle.
+525|{n} ha estratto {v} cristalli.
+526|L'equipaggio ha recuperato {v} provviste.
+527|{n} ha trovato equipaggiamento: {v}!
+528|{n} ha tirato su: {v}!
+529|{n} ha salvato un sopravvissuto! Si unirà alla colonia.
+530|L'incendio in %s si è spento da solo. Provviste perse.
+531|L'acqua in %s è defluita. Provviste perse.
+532|La creatura ha lasciato %s. Provviste perse.
+533|%s: il pericolo è passato.
+534|EXP: +%d · Scontri: %d vinti, %d persi
+535|Bottino finora:
+536|ancora niente

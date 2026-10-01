@@ -59,7 +59,6 @@ func _ready() -> void:
 	add_child(more)
 	view.trader_tapped.connect(func(): more.open_trader())
 	view.outside_tapped.connect(open_outside)
-	_build_trader_button()
 	_build_expedition_button()
 	_build_popup()
 	_build_ad_overlay()
@@ -523,10 +522,6 @@ func _refresh_top() -> void:
 	pop_label.text = "%d/%d" % [Game.colonists.size(), Game.population_cap()]
 	boost_label.text = tr("x2 %s") % _clock(Game.boost_left()) if Game.boost_active() else ""
 	_refresh_expedition_button()
-	if trader_btn:
-		trader_btn.visible = not Game.trader.is_empty() and not sheet.visible
-		if trader_btn.visible:
-			trader_btn.text = "%s %s" % [tr("Trader"), _clock(float(Game.trader.until) - Game.now())]
 	if tasks_badge:
 		tasks_badge.visible = Game.quests_ready() > 0 or Game.season_claimable() > 0 or Game.story_ready() or Game.achievements_ready() > 0
 		tasks_badge.queue_redraw()
@@ -573,23 +568,6 @@ func _build_bottom_bar() -> void:
 				shop_badge.draw_arc(Vector2.ZERO, 11 * pulse, 0, TAU, 20, Color.WHITE, 2.0))
 			b.add_child(shop_badge)
 
-# кнопка торговца: видна, пока торговец у шлюза
-var trader_btn: Button
-
-func _build_trader_button() -> void:
-	trader_btn = _button("", func(): more.open_trader(), 64)
-	_green(trader_btn)
-	trader_btn.icon = Art.tex("res://art/creatures/trader_sub.png")
-	trader_btn.expand_icon = true
-	trader_btn.add_theme_constant_override("icon_max_width", 90)
-	trader_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	trader_btn.offset_left = -300
-	trader_btn.offset_right = -16
-	trader_btn.offset_top = 270
-	trader_btn.offset_bottom = 334
-	trader_btn.visible = false
-	root.add_child(trader_btn)
-
 # кнопка экспедиции: видна, пока экипаж в море или ждёт с добычей
 var exp_btn: Button
 
@@ -628,8 +606,7 @@ func _refresh_expedition_button() -> void:
 		exp_btn.text = "%s %s" % [tr(Defs.ZONES[e.zone].name), _clock(float(e.end) - Game.now())]
 		exp_btn.scale = Vector2.ONE
 	exp_btn.pivot_offset = exp_btn.size / 2.0
-	# если торговца нет — поднимаемся на его место
-	exp_btn.offset_top = 344 if (trader_btn and trader_btn.visible) else 270
+	exp_btn.offset_top = 270
 	exp_btn.offset_bottom = exp_btn.offset_top + 64
 
 func _collect_all() -> void:
@@ -1652,10 +1629,11 @@ func _reward_items(r: Dictionary) -> Array:
 	var out := []
 	if r.has("pearls"): out.append(["pearls", str(r.pearls)])
 	if r.has("crystals"): out.append(["crystals", str(r.crystals)])
+	if r.get("resources", 0) > 0: out.append(["food", str(r.resources)])
 	for k in r.get("crates", {}):
 		out.append(["crate_" + k, "×%d" % r.crates[k]])
 	if r.has("colonist"): out.append(["colonist" if r.colonist != "legendary" else "captain", tr(r.colonist.capitalize())])
-	if r.has("item"): out.append(["item_diving_armor", tr(r.item.capitalize())])
+	if r.has("item"): out.append(["item_" + str(r.get("item_base", "diving_armor")), tr(r.item.capitalize())])
 	return out
 
 ## Награда картинками: [иконка] 100  [иконка] ×1
@@ -1911,8 +1889,13 @@ func _dock_section(r: Dictionary) -> void:
 	sheet_body.add_child(pb)
 	var st := _label("", 20)
 	sheet_body.add_child(st)
+	# сводка: опыт, бои, здоровье экипажа и что уже нашли
+	var summary := VBoxContainer.new()
+	summary.add_theme_constant_override("separation", 6)
+	sheet_body.add_child(summary)
 	var logbox := VBoxContainer.new()
 	logbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	logbox.add_theme_constant_override("separation", 6)
 	sheet_body.add_child(_label(tr("Expedition log"), 20, ACCENT))
 	var logscroll := ScrollContainer.new()
 	logscroll.scroll_deadzone = 24
@@ -1941,7 +1924,7 @@ func _dock_section(r: Dictionary) -> void:
 		Game.claim_expedition(e)
 		_close_sheet(), 76)
 	sheet_body.add_child(claim)
-	room_live_labels["exp"] = {"e": e, "bar": pb, "status": st, "log": logbox, "scroll": logscroll, "fin": fin, "ad": ad, "claim": claim, "shown": -1}
+	room_live_labels["exp"] = {"e": e, "bar": pb, "status": st, "log": logbox, "summary": summary, "scroll": logscroll, "fin": fin, "ad": ad, "claim": claim, "shown": -1}
 	_refresh_dock_live(r)
 
 func _refresh_dock_live(_r: Dictionary) -> void:
@@ -1954,20 +1937,73 @@ func _refresh_dock_live(_r: Dictionary) -> void:
 	d.ad.visible = not done
 	d.claim.visible = done
 	set_cost_text(d.fin, tr("Finish ◆ %d") % Game.finish_cost(e) if not done else "")
-	var lines := Game.visible_log(e)
-	if lines.size() != d.shown:
-		d.shown = lines.size()
+	var evs := Game.visible_events(e)
+	if evs.size() != d.shown:
+		d.shown = evs.size()
+		_fill_expedition_summary(d.summary, e)
 		for ch in d.log.get_children():
 			ch.queue_free()
-		if lines.is_empty():
+		if evs.is_empty():
 			d.log.add_child(_label(tr("The sub just left the dock…"), 18, Color(0.7, 0.8, 0.9)))
-		for line in lines:
-			var l := _label("• " + line, 18, Color(0.85, 0.92, 1.0))
-			l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			d.log.add_child(l)
+		for ev in evs:
+			d.log.add_child(_log_row(ev))
 		# новые записи внизу — прокручиваем к ним
 		var sc: ScrollContainer = d.scroll
 		get_tree().process_frame.connect(func(): sc.scroll_vertical = int(sc.get_v_scroll_bar().max_value), CONNECT_ONE_SHOT)
+
+## Строка журнала: значок (бой, находка) и текст.
+func _log_row(ev: Dictionary) -> Control:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	var kind: String = ev.get("kind", "")
+	var icon_key := ""
+	var col := Color(0.85, 0.92, 1.0)
+	if kind == "fight":
+		col = Color(0.6, 1.0, 0.65) if ev.get("won", false) else Color(1.0, 0.6, 0.55)
+	elif kind == "find":
+		col = Color(1.0, 0.92, 0.6)
+		var items := _reward_items(ev.get("loot", {}))
+		if not items.is_empty():
+			icon_key = items[0][0]
+	var tex: Texture2D = Art.tex("res://art/fx/spark_1.png") if kind == "fight" else (Art.marker_icon(icon_key) if icon_key != "" else null)
+	if tex:
+		var t := TextureRect.new()
+		t.texture = tex
+		t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		t.custom_minimum_size = Vector2(30, 30)
+		row.add_child(t)
+	else:
+		row.add_child(_label("•", 18, col))
+	var l := _label(ev.text, 18, col)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(l)
+	return row
+
+func _fill_expedition_summary(box: VBoxContainer, e: Dictionary) -> void:
+	for ch in box.get_children():
+		ch.queue_free()
+	var so := Game.expedition_so_far(e)
+	box.add_child(_label(tr("XP so far: +%d · Fights: %d won, %d lost") % [so.xp, so.won, so.lost], 19, Color(0.75, 0.9, 1.0)))
+	var hp_parts := []
+	for id in e.crew:
+		var c := Game.get_colonist(id)
+		if c.is_empty():
+			continue
+		var dmg: float = so.hp.get(str(id), 0) * (1.0 - Game.protection(c)) * Game.mode().damage
+		hp_parts.append("%s ♥ %d" % [c.name.split(" ")[0], maxi(1, int(c.health - dmg))])
+	var hl := _label(", ".join(hp_parts), 18, Color(1.0, 0.7, 0.7))
+	hl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(hl)
+	var lr := HBoxContainer.new()
+	lr.add_theme_constant_override("separation", 10)
+	lr.add_child(_label(tr("Loot so far:"), 19, Color(1.0, 0.88, 0.5)))
+	if so.loot.is_empty():
+		lr.add_child(_label(tr("nothing yet"), 18, Color(0.7, 0.8, 0.9)))
+	else:
+		lr.add_child(_reward_chips(so.loot, 28, 18))
+	box.add_child(lr)
 
 func _open_planner(dock_id: int, zone_idx: int) -> void:
 	plan_zone = zone_idx

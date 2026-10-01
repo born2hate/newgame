@@ -296,6 +296,21 @@ func _dev_screenshot() -> void:
 			e.start = Game.now() - 1100.0
 			e.end = Game.now() + 700.0
 			view.room_selected.emit(d.id)
+		"bounds":
+			camera.zoom = Vector2(0.45, 0.45)
+			camera.position = Vector2(1600, 200)
+			hud._start_build("living")
+			await get_tree().create_timer(0.6).timeout
+		"expedition_ru":
+			Audio.set_language("ru")
+			var d2 := Game._add_room("dock", 3, 1)
+			Game.launch_expedition(d2.id, 2, [Game.colonists[3].id, Game.colonists[0].id])
+			var e2 := Game.expedition_at(d2.id)
+			e2.start = Game.now() - 2900.0
+			e2.end = Game.now() + 700.0
+			view.room_selected.emit(d2.id)
+			await get_tree().create_timer(0.4).timeout
+			(hud.sheet.get_child(0) as ScrollContainer).scroll_vertical = 300
 		"pet":
 			hud._close_sheet()
 			Store.purchase("starter_pack")

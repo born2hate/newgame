@@ -171,7 +171,7 @@ const CRATES := {
 
 ## Ежедневные награды: 7-дневный цикл, серия сбрасывается при пропуске дня.
 const DAILY := [
-	{"pearls": 100}, {"pearls": 200}, {"crystals": 5}, {"pearls": 350},
+	{"pearls": 60}, {"pearls": 100}, {"crystals": 3}, {"pearls": 180},
 	{"crates": {"common": 1}}, {"crystals": 15}, {"crates": {"silver": 1}},
 ]
 
@@ -180,19 +180,19 @@ const DAILY := [
 const ZONES := [
 	{"id": "kelp", "name": "Kelp Forest", "minutes": 10, "danger": 0.1, "power": 10, "unlock_pop": 0,
 		"desc": "Calm and shallow. A good first trip.",
-		"loot": {"pearls": [60, 140], "resources": [20, 50]}},
+		"loot": {"pearls": [35, 80], "resources": [15, 35]}},
 	{"id": "reef", "name": "Coral Reef", "minutes": 30, "danger": 0.2, "power": 18, "unlock_pop": 0,
 		"desc": "Colorful and full of pearls.",
-		"loot": {"pearls": [150, 320], "crystals": [2, 6], "resources": [40, 90]}},
+		"loot": {"pearls": [90, 190], "crystals": [1, 3], "resources": [30, 60]}},
 	{"id": "wreck", "name": "Sunken Ship", "minutes": 60, "danger": 0.35, "power": 26, "unlock_pop": 8,
 		"desc": "An old wreck. Treasure and trouble.",
-		"loot": {"pearls": [300, 600], "crystals": [5, 12], "crate": "common"}},
+		"loot": {"pearls": [180, 360], "crystals": [3, 7], "crate": "common"}},
 	{"id": "vents", "name": "Hydrothermal Vents", "minutes": 120, "danger": 0.5, "power": 34, "unlock_pop": 12,
 		"desc": "Scalding water, rare minerals.",
-		"loot": {"pearls": [500, 900], "crystals": [10, 25], "crate": "silver"}},
+		"loot": {"pearls": [300, 550], "crystals": [6, 14], "crate": "silver"}},
 	{"id": "trench", "name": "Abyssal Trench", "minutes": 240, "danger": 0.7, "power": 45, "unlock_pop": 16,
 		"desc": "The deepest dark. Legends live here.",
-		"loot": {"pearls": [900, 1600], "crystals": [25, 50], "crate": "gold", "survivor": 0.35}},
+		"loot": {"pearls": [550, 950], "crystals": [14, 28], "crate": "gold", "survivor": 0.25}},
 ]
 
 ## Шаблоны записей журнала экспедиции ({n} — имя члена экипажа).
@@ -223,19 +223,55 @@ const LOG_DANGER := [
 	"{n} got tangled in kelp and scraped an arm.", "Strong currents rocked the sub. {n} bumped a head.",
 ]
 
-## Ежедневные задания: event — что считаем, target — [мин, макс], reward.
-const QUEST_POOL := [
-	{"event": "collect_energy", "text": "Collect %d energy", "target": [60, 150], "reward": {"pearls": 120}, "xp": 40},
-	{"event": "collect_oxygen", "text": "Collect %d oxygen", "target": [60, 150], "reward": {"pearls": 120}, "xp": 40},
-	{"event": "collect_food", "text": "Collect %d food", "target": [60, 150], "reward": {"pearls": 120}, "xp": 40},
-	{"event": "build", "text": "Build %d rooms", "target": [1, 2], "reward": {"crystals": 5}, "xp": 60},
-	{"event": "upgrade", "text": "Upgrade %d rooms", "target": [1, 2], "reward": {"crystals": 5}, "xp": 60},
-	{"event": "expedition", "text": "Send %d expeditions", "target": [1, 2], "reward": {"crystals": 8}, "xp": 80},
-	{"event": "rush", "text": "Rush rooms %d times", "target": [2, 4], "reward": {"pearls": 150}, "xp": 40},
-	{"event": "crate", "text": "Open %d crates", "target": [1, 2], "reward": {"pearls": 200}, "xp": 50},
-	{"event": "level_up", "text": "Level up colonists %d times", "target": [1, 3], "reward": {"crystals": 5}, "xp": 60},
+## Существа, с которыми экипаж может подраться в каждой зоне.
+const ENEMIES := {
+	"kelp": ["Angry Crab", "Moray Eel", "Jellyfish Swarm"],
+	"reef": ["Reef Shark", "Lionfish", "Barracuda", "Giant Crab"],
+	"wreck": ["Giant Eel", "Spider Crab", "Sea Snake", "Ghost Octopus"],
+	"vents": ["Lava Crab", "Bone Shark", "Vent Worm"],
+	"trench": ["Anglerfish", "Giant Squid", "Abyssal Serpent"],
+}
+## Записи журнала с цифрами: {n} — кто, {e} — существо, {h} — урон, {x} — опыт, {v} — находка.
+const LOG_FIGHT_WIN := [
+	"{n} fought a {e} and won. −{h} HP, +{x} XP",
+	"A {e} attacked! {n} drove it off. −{h} HP, +{x} XP",
 ]
-const QUESTS_PER_DAY := 3
+const LOG_FIGHT_LOSE := [
+	"A {e} ambushed the crew! {n} barely escaped. −{h} HP, +{x} XP",
+	"{n} lost a fight with a {e} and had to retreat. −{h} HP, +{x} XP",
+]
+const LOG_LOOT := {
+	"pearls": "{n} found {v} pearls.",
+	"crystals": "{n} dug out {v} crystals.",
+	"resources": "The crew salvaged {v} supplies.",
+	"item": "{n} found gear: {v}!",
+	"crate": "{n} hauled up a {v}!",
+	"colonist": "{n} rescued a survivor! They will join the colony.",
+}
+
+## Ежедневные задания: event — что считаем, target — [мин, макс], reward.
+## needs — отсек, без которого задание не выдаётся; scales — цель растёт с размером колонии.
+const QUEST_POOL := [
+	{"event": "collect_energy", "text": "Collect %d energy", "target": [250, 450], "scales": true, "reward": {"pearls": 60}, "xp": 40},
+	{"event": "collect_oxygen", "text": "Collect %d oxygen", "target": [250, 450], "scales": true, "reward": {"pearls": 60}, "xp": 40},
+	{"event": "collect_food", "text": "Collect %d food", "target": [250, 450], "scales": true, "reward": {"pearls": 60}, "xp": 40},
+	{"event": "collect_pearls", "text": "Harvest %d pearls from pearl farms", "target": [150, 300], "scales": true, "needs": "pearl", "reward": {"crystals": 4}, "xp": 60},
+	{"event": "collect_science", "text": "Produce %d science", "target": [60, 120], "scales": true, "needs": "lab", "reward": {"pearls": 120}, "xp": 60},
+	{"event": "build", "text": "Build %d rooms", "target": [2, 3], "reward": {"crystals": 4}, "xp": 60},
+	{"event": "upgrade", "text": "Upgrade %d rooms", "target": [2, 3], "reward": {"crystals": 4}, "xp": 60},
+	{"event": "expedition", "text": "Send %d expeditions", "target": [2, 3], "needs": "dock", "reward": {"crystals": 5}, "xp": 80},
+	{"event": "expedition_done", "text": "Bring %d expeditions home", "target": [2, 3], "needs": "dock", "reward": {"pearls": 150}, "xp": 80},
+	{"event": "expedition_reef", "text": "Explore the Coral Reef %d times", "target": [1, 2], "needs": "dock", "reward": {"crystals": 6}, "xp": 90},
+	{"event": "incident_resolved", "text": "Handle %d incidents", "target": [2, 4], "reward": {"crystals": 5}, "xp": 70},
+	{"event": "rush", "text": "Rush rooms %d times", "target": [4, 8], "reward": {"pearls": 80}, "xp": 40},
+	{"event": "bubble", "text": "Pop %d treasure bubbles", "target": [4, 8], "reward": {"pearls": 80}, "xp": 40},
+	{"event": "trade", "text": "Make %d deals with the trader", "target": [1, 2], "reward": {"crystals": 5}, "xp": 60},
+	{"event": "level_up", "text": "Level up colonists %d times", "target": [3, 6], "reward": {"crystals": 5}, "xp": 60},
+	{"event": "research", "text": "Finish %d research projects", "target": [1, 1], "needs": "lab", "reward": {"crystals": 6}, "xp": 80},
+	{"event": "craft", "text": "Craft %d pieces of gear", "target": [1, 2], "needs": "workshop", "reward": {"crystals": 8}, "xp": 90},
+	{"event": "crate", "text": "Open %d crates", "target": [1, 2], "reward": {"pearls": 100}, "xp": 50},
+]
+const QUESTS_PER_DAY := 4
 
 ## Сезонный пропуск: уровень каждые SEASON_XP_PER_TIER очков.
 const SEASON_DAYS := 30
@@ -332,6 +368,14 @@ const STORY := [
 	{"title": "A Real Home", "text": "Merge rooms: build a room right next to one of the same type and level. Reach 15 colonists.", "goal": ["population", 15], "reward": {"crystals": 30}},
 	{"title": "Signal from the Abyss", "text": "Something is calling from the deep. Reach The Abyss (row 11).", "goal": ["depth", 11], "reward": {"crates": {"gold": 1}}},
 	{"title": "Legend of the Trench", "text": "Send a crew to the Abyssal Trench. Bring back whatever sings down there.", "goal": ["expedition_trench", 1], "reward": {"crystals": 60, "colonist": "legendary"}},
+	{"title": "Hot Meals", "text": "Morale is low. Build a Kitchen so the colony eats like people again.", "goal": ["build_kitchen", 1], "reward": {"pearls": 500}},
+	{"title": "Stronger Together", "text": "Train our people. Level up colonists 25 times.", "goal": ["level_up", 25], "reward": {"crystals": 30}},
+	{"title": "Steel and Sparks", "text": "We need better gear. Build a Workshop and craft 3 pieces.", "goal": ["craft", 3], "reward": {"crates": {"silver": 1}}},
+	{"title": "Hold the Line", "text": "The deep is getting angrier. Handle 25 incidents.", "goal": ["incident_resolved", 25], "reward": {"crystals": 40}},
+	{"title": "Call Them Home", "text": "Build a Radio Room and reach 30 colonists.", "goal": ["population", 30], "reward": {"crates": {"gold": 1}}},
+	{"title": "Seasoned Explorers", "text": "Bring 20 expeditions home safely.", "goal": ["expedition_done", 20], "reward": {"crystals": 60}},
+	{"title": "Power from the Deep", "text": "Build a Current Turbine down in the dark.", "goal": ["build_turbine", 1], "reward": {"pearls": 1500}},
+	{"title": "A City Under the Sea", "text": "Reach 45 colonists. Commander Reyes would be proud.", "goal": ["population", 45], "reward": {"crystals": 100, "colonist": "legendary"}},
 ]
 
 ## Достижения: stat — счётчик в Game.stats, tiers — пороги.
@@ -378,4 +422,4 @@ static func room_slots(type: String, level: int) -> int:
 	return base + level - 1
 
 static func upgrade_cost(type: String, level: int) -> int:
-	return int(ROOMS[type]["cost"] * (level + 0.5))
+	return int(ROOMS[type]["cost"] * (level + 0.5) * 1.5)

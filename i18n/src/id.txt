@@ -479,3 +479,59 @@
 478|Dek observasi
 479|Pemandangan laut dalam: suasana hati hebat untuk semua dan +10% pengalaman per level.
 480|Pengalaman kolonis +%d%%
+481|Panen %d mutiara dari kebun mutiara
+482|Hasilkan %d sains
+483|Pulangkan %d ekspedisi
+484|Jelajahi Terumbu Karang %d kali
+485|Lakukan %d transaksi dengan pedagang
+486|Buat %d perlengkapan
+487|Makanan hangat
+488|Semangat menurun. Bangun dapur agar koloni bisa makan layak lagi.
+489|Bersama lebih kuat
+490|Latih orang-orangmu. Naikkan level kolonis 25 kali.
+491|Baja dan percikan
+492|Kita butuh perlengkapan lebih baik. Bangun bengkel dan buat 3 perlengkapan.
+493|Bertahan
+494|Laut dalam makin marah. Tangani 25 insiden.
+495|Panggil mereka pulang
+496|Bangun ruang radio dan capai 30 kolonis.
+497|Penjelajah berpengalaman
+498|Pulangkan 20 ekspedisi.
+499|Tenaga dari kedalaman
+500|Bangun turbin arus di kegelapan dasar laut.
+501|Kota di bawah laut
+502|Capai 45 kolonis. Komandan Reyes pasti bangga.
+503|Kepiting marah
+504|Belut moray
+505|Kawanan ubur-ubur
+506|Hiu karang
+507|Ikan singa
+508|Barakuda
+509|Kepiting raksasa
+510|Belut raksasa
+511|Kepiting laba-laba
+512|Ular laut
+513|Gurita hantu
+514|Kepiting lava
+515|Hiu tulang
+516|Cacing ventilasi
+517|Ikan sungut ganda
+518|Cumi raksasa
+519|Ular jurang
+520|{n} melawan «{e}» dan menang. −{h} HP, +{x} XP
+521|«{e}» menyerang! {n} mengusirnya. −{h} HP, +{x} XP
+522|«{e}» menyergap kru! {n} nyaris lolos. −{h} HP, +{x} XP
+523|{n} kalah melawan «{e}» dan mundur. −{h} HP, +{x} XP
+524|{n} menemukan {v} mutiara.
+525|{n} menggali {v} kristal.
+526|Kru menyelamatkan {v} perbekalan.
+527|{n} menemukan perlengkapan: {v}!
+528|{n} mengangkat: {v}!
+529|{n} menyelamatkan seorang penyintas! Ia akan bergabung dengan koloni.
+530|Api di %s padam sendiri. Perbekalan hilang.
+531|Air di %s surut. Perbekalan hilang.
+532|Makhluk itu meninggalkan %s. Perbekalan hilang.
+533|%s: bahaya sudah lewat.
+534|XP: +%d · Pertarungan: %d menang, %d kalah
+535|Rampasan sejauh ini:
+536|belum ada

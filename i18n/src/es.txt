@@ -480,3 +480,59 @@
 478|Mirador
 479|Vista del abismo: gran ánimo para todos y +10% de experiencia por nivel.
 480|Experiencia de colonos +%d%%
+481|Cosecha %d perlas en granjas de perlas
+482|Produce %d de ciencia
+483|Trae a casa %d expediciones
+484|Explora el Arrecife de Coral %d veces
+485|Haz %d tratos con el comerciante
+486|Fabrica %d piezas de equipo
+487|Comida caliente
+488|El ánimo está bajo. Construye una cocina para que la colonia vuelva a comer como es debido.
+489|Más fuertes juntos
+490|Entrena a tu gente. Sube de nivel a los colonos 25 veces.
+491|Acero y chispas
+492|Necesitamos mejor equipo. Construye un taller y fabrica 3 piezas.
+493|Resistir
+494|El abismo se enfurece. Resuelve 25 incidentes.
+495|Llámalos a casa
+496|Construye una sala de radio y llega a 30 colonos.
+497|Exploradores curtidos
+498|Trae a casa 20 expediciones.
+499|Energía del abismo
+500|Construye una turbina de corrientes en la oscuridad.
+501|Una ciudad bajo el mar
+502|Llega a 45 colonos. La comandante Reyes estaría orgullosa.
+503|Cangrejo furioso
+504|Morena
+505|Enjambre de medusas
+506|Tiburón de arrecife
+507|Pez león
+508|Barracuda
+509|Cangrejo gigante
+510|Anguila gigante
+511|Cangrejo araña
+512|Serpiente marina
+513|Pulpo fantasma
+514|Cangrejo de lava
+515|Tiburón óseo
+516|Gusano de fumarola
+517|Rape abisal
+518|Calamar gigante
+519|Serpiente abisal
+520|{n} luchó contra «{e}» y ganó. −{h} PS, +{x} XP
+521|¡Atacó «{e}»! {n} lo ahuyentó. −{h} PS, +{x} XP
+522|¡«{e}» emboscó a la tripulación! {n} escapó por poco. −{h} PS, +{x} XP
+523|{n} perdió contra «{e}» y tuvo que retirarse. −{h} PS, +{x} XP
+524|{n} encontró {v} perlas.
+525|{n} extrajo {v} cristales.
+526|La tripulación recuperó {v} suministros.
+527|¡{n} encontró equipo: {v}!
+528|¡{n} sacó: {v}!
+529|¡{n} rescató a un superviviente! Se unirá a la colonia.
+530|El fuego en %s se apagó solo. Se perdieron suministros.
+531|El agua de %s se drenó. Se perdieron suministros.
+532|La criatura abandonó %s. Se perdieron suministros.
+533|%s: el peligro pasó.
+534|XP: +%d · Combates: %d ganados, %d perdidos
+535|Botín hasta ahora:
+536|nada aún

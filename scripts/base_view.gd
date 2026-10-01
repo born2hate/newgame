@@ -9,6 +9,7 @@ signal outside_tapped
 
 const CELL_W := 100.0
 const CELL_H := 130.0
+const WORLD_PAD := 4000.0
 const WALL := 6.0
 const SUIT_COLORS := [
 	Color(1.0, 0.55, 0.2), Color(0.95, 0.85, 0.25), Color(0.4, 0.8, 1.0),
@@ -51,7 +52,10 @@ func _ready() -> void:
 		})
 	Game.floating_text.connect(_on_floating_text)
 	var rock := Polygon2D.new()
-	rock.polygon = PackedVector2Array([Vector2(-1400, 0), Vector2(2200, 0), Vector2(2200, 4000), Vector2(-1400, 4000)])
+	# порода и дно с большим запасом по бокам, чтобы при отдалении и в горизонтальном
+	# положении не было видно обрыва картинки
+	rock.polygon = PackedVector2Array([Vector2(-WORLD_PAD, 0), Vector2(Defs.GRID_COLS * CELL_W + WORLD_PAD, 0),
+		Vector2(Defs.GRID_COLS * CELL_W + WORLD_PAD, 5000), Vector2(-WORLD_PAD, 5000)])
 	var mat := ShaderMaterial.new()
 	mat.shader = load("res://shaders/rock.gdshader")
 	rock.material = mat
@@ -223,8 +227,8 @@ func _draw_seabed_art() -> void:
 	var w := h * tex.get_width() / tex.get_height()
 	var top := -185.0
 	var i := 0
-	var x := -1400.0
-	while x < 2200.0:
+	var x := -WORLD_PAD
+	while x < Defs.GRID_COLS * CELL_W + WORLD_PAD:
 		# каждую вторую полосу зеркалим, чтобы не было видно стыков
 		if i % 2 == 1:
 			draw_set_transform(Vector2(x + w, top), 0.0, Vector2(-1, 1))
@@ -261,6 +265,7 @@ func _draw_seabed_procedural() -> void:
 
 func _draw_rest(depth_rows: int) -> void:
 	_draw_depth_zones(depth_rows)
+	_draw_bounds()
 	if build_type != "":
 		_draw_build_slots(Defs.MAX_DEPTH)
 	for r in Game.rooms:
@@ -300,7 +305,6 @@ func _draw_rest(depth_rows: int) -> void:
 			draw_rect(Rect2(tp, Vector2(tw + 20, 32)), Color(0.05, 0.1, 0.18, 0.92))
 			draw_rect(Rect2(tp, Vector2(tw + 20, 32)), Color(1.0, 0.85, 0.35), false, 2.0)
 			_text(tp + Vector2(10, 24), tag, 22, Color(1.0, 0.92, 0.6))
-	_draw_pet()
 	_draw_treasure()
 	_draw_trader()
 	for fl in floaters:
@@ -314,7 +318,7 @@ func _draw_rest(depth_rows: int) -> void:
 		else:
 			_text(fl.pos, fl.text, 30, Color(fl.color, a), true)
 
-## Питомец плавает восьмёркой перед отсеками верхних уровней.
+## Питомец плавает в воде над дном, позади купола — не заслоняя отсеки.
 func _draw_pet() -> void:
 	if Game.pet == "":
 		return
@@ -322,9 +326,8 @@ func _draw_pet() -> void:
 	if tex == null:
 		return
 	var span := Defs.GRID_COLS * CELL_W
-	var rows := maxf(1.0, Game.max_row() + 1.0)
 	var px := span * 0.5 + sin(t * 0.25) * span * 0.42
-	var py := CELL_H * rows * 0.5 + sin(t * 0.5) * CELL_H * rows * 0.35
+	var py := -330.0 + sin(t * 0.5) * 60.0
 	var dir := signf(cos(t * 0.25))
 	var fw := 64.0
 	var fh := fw * tex.get_height() / tex.get_width()
@@ -337,6 +340,7 @@ func _draw_pet() -> void:
 		draw_arc(Vector2(px - dir * (fw * 0.5 + ph * 10), py - ph * 40), 2.5 + ph * 2, 0, TAU, 10, Color(0.8, 0.95, 1.0, 0.7 * (1.0 - ph)), 1.2)
 
 func _draw_water_life() -> void:
+	_draw_pet()
 	var fishy := Art.tex("res://art/creatures/anglerfish.png")
 	if fishy:
 		# редко проплывает вдалеке
@@ -414,6 +418,27 @@ func _draw_corals() -> void:
 		draw_arc(c, 70, PI, TAU, 32, Color(0.6, 0.95, 1.0, 0.6), 4.0)
 		var blink := 0.5 + 0.5 * sin(t * 3.0)
 		draw_circle(c + Vector2(0, -74), 6, Color(1.0, 0.3, 0.3, blink))
+
+## Порода за пределами участка колонии затемнена: там строить нельзя.
+## В режиме стройки граница видна сильнее.
+func _draw_bounds() -> void:
+	var gw := Defs.GRID_COLS * CELL_W
+	var gh := Defs.MAX_DEPTH * CELL_H
+	var a := 0.62 if build_type != "" else 0.4
+	var shade := Color(0.0, 0.0, 0.02, a)
+	draw_rect(Rect2(-WORLD_PAD, 0, WORLD_PAD, 5000), shade)
+	draw_rect(Rect2(gw, 0, WORLD_PAD, 5000), shade)
+	draw_rect(Rect2(0, gh, gw, 5000), shade)
+	var line := Color(1.0, 0.85, 0.35, 0.55 if build_type != "" else 0.18)
+	for x in [0.0, gw]:
+		var y := 0.0
+		while y < gh:
+			draw_line(Vector2(x, y), Vector2(x, minf(gh, y + 24.0)), line, 3.0)
+			y += 40.0
+	var y2 := 0.0
+	while y2 < gw:
+		draw_line(Vector2(y2, gh), Vector2(minf(gw, y2 + 24.0), gh), line, 3.0)
+		y2 += 40.0
 
 ## Границы зон глубины и замок, если зона не исследована.
 func _draw_depth_zones(depth_rows: int) -> void:

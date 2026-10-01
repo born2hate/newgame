@@ -15,7 +15,7 @@ const PACE := 3.0
 const O2_PER_COLONIST := 0.07 / PACE
 const FOOD_PER_COLONIST := 0.05 / PACE
 ## Сколько секунд нужно работнику спортзала/школы/комнаты отдыха на +1 к навыку (1 уровень).
-const TRAIN_TIME := 900.0
+const TRAIN_TIME := 1800.0
 
 var resources := {}
 var pearls := 0
@@ -77,7 +77,7 @@ func _notification(what: int) -> void:
 
 func new_game() -> void:
 	resources = {"energy": 60.0, "oxygen": 60.0, "food": 60.0}
-	pearls = 300
+	pearls = 250
 	crystals = 25
 	crates = {"common": 1, "silver": 0, "gold": 0}
 	premium = false
@@ -217,7 +217,7 @@ func count_of(type: String) -> int:
 
 func build_cost(type: String) -> int:
 	var base: int = Defs.ROOMS[type].cost
-	return int(base * (1.0 + 0.35 * count_of(type)))
+	return int(base * (1.0 + 0.6 * count_of(type)))
 
 func is_unlocked(type: String) -> bool:
 	return colonists.size() >= Defs.ROOMS[type].get("unlock_pop", 0)
@@ -499,7 +499,8 @@ func _tick_training(c: Dictionary, room: Dictionary, delta: float, offline: bool
 	changed.emit()
 
 func _xp_needed(c: Dictionary) -> float:
-	return 200.0 * c.level
+	# каждый следующий уровень заметно дольше: 4 мин, 16 мин, 36 мин, ~1 ч, ~1.7 ч…
+	return 240.0 * c.level * c.level
 
 func _level_up(c: Dictionary) -> void:
 	c.xp = 0.0
@@ -512,7 +513,7 @@ func _level_up(c: Dictionary) -> void:
 	if stat == "":
 		stat = Defs.ALL_STATS.pick_random()
 	c[stat] = mini(10, c[stat] + 1)
-	pearls += 15
+	pearls += 5
 	banner.emit("suit_%d" % c.suit, tr("Level %d") % c.level, tr("%s reached level %d! %s +1") % [c.name, c.level, tr(Defs.STATS[stat])])
 	changed.emit()
 
@@ -592,8 +593,8 @@ func collect(room: Dictionary, silent := false) -> void:
 		science += int(amount)
 	else:
 		resources[res] = minf(storage_cap(), resources[res] + amount)
-	var bonus: int = 1 + room.level
-	pearls += bonus
+	# немного жемчуга за сбор только с улучшенных отсеков
+	pearls += room.level - 1
 	room.ready = false
 	room.progress = 0.0
 	var zone := depth_zone(room.row)
@@ -624,6 +625,7 @@ func _collect_gear(room: Dictionary, silent: bool) -> void:
 		rarity = "rare"
 	var it := add_item(rarity)
 	track("collect")
+	track("craft")
 	if not silent:
 		floating_text.emit(room.id, "[item_%s]+1" % it.base, Defs.ITEM_RARITY[rarity].color)
 		banner.emit("item_" + it.base, tr("New gear crafted!"), "%s (%s)" % [item_name(it), tr(rarity.capitalize())])
@@ -758,7 +760,7 @@ func grant(reward: Dictionary, title: String) -> void:
 	if reward.has("colonist"):
 		lines.append("[colonist]" + _grant_colonist(reward.colonist))
 	if reward.has("item"):
-		var it := add_item(reward.item)
+		var it := add_item(reward.item, reward.get("item_base", ""))
 		lines.append("[item_%s]" % it.base + tr("New gear: %s") % item_name(it))
 	if reward.has("pet"):
 		pet = reward.pet
@@ -963,37 +965,25 @@ func launch_expedition(dock_id: int, zone_idx: int, ids: Array) -> bool:
 		loot.crystals = int(rng.randi_range(L.crystals[0], L.crystals[1]) * f * loot_mult)
 	if L.has("resources"):
 		loot.resources = int(rng.randi_range(L.resources[0], L.resources[1]) * f * loot_mult)
-	if rng.randf() < 0.25 + 0.1 * zone_idx:
+	if rng.randf() < 0.06 + 0.07 * zone_idx:
 		var roll := rng.randf()
 		var rarity := "common"
-		if roll < 0.04 * zone_idx:
+		if roll < 0.02 * zone_idx:
 			rarity = "legendary"
-		elif roll < 0.12 + 0.12 * zone_idx:
+		elif roll < 0.08 + 0.08 * zone_idx:
 			rarity = "rare"
 		loot.item = rarity
-	if L.has("crate") and rng.randf() < 0.3 + 0.4 * f:
+		# предмет выбираем сразу, чтобы в журнале было видно, что именно нашли
+		loot["item_base"] = Defs.ITEMS.pick_random().id
+	if L.has("crate") and rng.randf() < 0.15 + 0.3 * f:
 		loot.crates = {L.crate: 1}
 	if L.has("survivor") and rng.randf() < L.survivor * f:
 		loot.colonist = "rare"
-	var events := []
+	var events := _plan_expedition(zone_idx, ids, f, loot)
 	var damage := {}
-	var n := clampi(3 + zone.minutes / 20, 3, 10)
-	for i in n:
-		var who: String = names.pick_random()
-		var roll := rng.randf()
-		var text := ""
-		if roll < zone.danger * (1.3 - 0.5 * f):
-			var victim: int = ids.pick_random()
-			damage[str(victim)] = damage.get(str(victim), 0) + rng.randi_range(8, 25)
-			who = get_colonist(victim).name.split(" ")[0]
-			text = Defs.LOG_DANGER.pick_random()
-		elif roll < 0.45:
-			text = Defs.LOG_FIND.pick_random()
-		elif roll < 0.75:
-			text = Defs.LOG_ZONE[zone.id].pick_random()
-		else:
-			text = Defs.LOG_CALM.pick_random()
-		events.append({"at": (i + 1.0) / (n + 1.0), "text": tr(text).replace("{n}", who)})
+	for ev in events:
+		for k in ev.get("hp", {}):
+			damage[k] = damage.get(k, 0) + ev.hp[k]
 	for id in ids:
 		get_colonist(id).room = ON_EXPEDITION
 		get_colonist(id).help = -1
@@ -1011,9 +1001,145 @@ func launch_expedition(dock_id: int, zone_idx: int, ids: Array) -> bool:
 	save_game()
 	return true
 
-func visible_log(e: Dictionary) -> Array:
+## Расписание экспедиции, как журнал в Fallout: бои с конкретными существами (урон и опыт),
+## находки по ходу (жемчуг, кристаллы, снаряжение, ящик), спокойные записи.
+## Добыча из loot раскладывается по находкам, так что «налутили уже» всегда сходится с итогом.
+func _plan_expedition(zone_idx: int, ids: Array, f: float, loot: Dictionary) -> Array:
+	var zone: Dictionary = Defs.ZONES[zone_idx]
+	var n := clampi(4 + zone.minutes / 15, 4, 14)
+	var kinds := []
+	for i in n:
+		var roll := rng.randf()
+		if roll < zone.danger * 1.1 + 0.12:
+			kinds.append("fight")
+		elif roll < 0.6:
+			kinds.append("find")
+		else:
+			kinds.append("calm")
+	# находок должно хватить на всю добычу
+	var drops := []
+	for k in ["pearls", "crystals", "resources"]:
+		if loot.get(k, 0) > 0:
+			drops.append(k)
+	for k in ["item", "crates", "colonist"]:
+		if loot.has(k):
+			drops.append(k)
+	var finds := []
+	for i in n:
+		if kinds[i] == "find":
+			finds.append(i)
+	var i2 := n - 1
+	while finds.size() < mini(drops.size(), n) and i2 >= 0:
+		if kinds[i2] != "find":
+			kinds[i2] = "find"
+			finds.append(i2)
+		i2 -= 1
+	finds.sort()
+	# разложим: редкое — ближе к концу, жемчуг и кристаллы — частями
+	var slot_loot := {}
+	for idx in finds:
+		slot_loot[idx] = {}
+	var late: Array = finds.duplicate()
+	late.reverse()
+	var li := 0
+	for k in ["colonist", "crates", "item"]:
+		if loot.has(k) and li < late.size():
+			slot_loot[late[li]][k] = loot[k]
+			if k == "item":
+				slot_loot[late[li]]["item_base"] = loot.get("item_base", "")
+			li += 1
+	for k in ["pearls", "crystals", "resources"]:
+		var total: int = loot.get(k, 0)
+		if total <= 0 or finds.is_empty():
+			continue
+		var parts := finds.filter(func(x): return slot_loot[x].is_empty() or rng.randf() < 0.4)
+		if parts.is_empty():
+			parts = [finds[0]]
+		var left := total
+		for j in parts.size():
+			var part := left if j == parts.size() - 1 else int(total / float(parts.size()) * rng.randf_range(0.6, 1.4))
+			part = clampi(part, 0, left)
+			left -= part
+			if part > 0:
+				slot_loot[parts[j]][k] = slot_loot[parts[j]].get(k, 0) + part
+	var events := []
+	var used := []
+	for i in n:
+		var at := (i + 1.0) / (n + 1.0)
+		var who_id: int = ids.pick_random()
+		var who: String = get_colonist(who_id).name.split(" ")[0]
+		var ev := {"at": at, "kind": kinds[i], "xp": 0, "hp": {}, "loot": {}}
+		match kinds[i]:
+			"fight":
+				var foe: String = tr(Defs.ENEMIES[zone.id].pick_random())
+				var win := rng.randf() < clampf(0.15 + f * 0.85 - zone.danger * 0.25, 0.2, 0.95)
+				var dmg := int(rng.randi_range(5, 14) * (1.0 + zone_idx * 0.4) * (1.0 if win else 1.8))
+				var xp := (12 + zone_idx * 8) if win else (5 + zone_idx * 4)
+				ev.hp = {str(who_id): dmg}
+				ev.xp = xp
+				ev["won"] = win
+				var tpl: String = (Defs.LOG_FIGHT_WIN if win else Defs.LOG_FIGHT_LOSE).pick_random()
+				ev.text = tr(tpl).replace("{n}", who).replace("{e}", foe).replace("{h}", str(dmg)).replace("{x}", str(xp))
+			"find":
+				var got: Dictionary = slot_loot.get(i, {})
+				ev.loot = got
+				ev.xp = 3
+				var lines := []
+				for k in got:
+					var v := ""
+					match k:
+						"pearls", "crystals", "resources": v = str(got[k])
+						"item":
+							var base := {"id": got.get("item_base", ""), "rarity": got[k], "uid": -1, "base": got.get("item_base", "")}
+							v = item_name(base) if base.base != "" else tr(Defs.ITEM_RARITY[got[k]].name)
+						"item_base": continue
+						"crates": v = tr(Defs.CRATES[got[k].keys()[0]].name)
+					var key: String = "crate" if k == "crates" else k
+					lines.append(tr(Defs.LOG_LOOT[key]).replace("{n}", who).replace("{v}", v))
+				if lines.is_empty():
+					var zl: Array = Defs.LOG_ZONE[zone.id].filter(func(x): return not x in used)
+					var zline: String = zl.pick_random() if not zl.is_empty() else Defs.LOG_CALM.pick_random()
+					used.append(zline)
+					lines.append(tr(zline).replace("{n}", who))
+				ev.text = " ".join(lines)
+			_:
+				# без повторов: каждая спокойная запись — не больше одного раза за поход
+				var pool: Array = (Defs.LOG_ZONE[zone.id] if rng.randf() < 0.6 else Defs.LOG_CALM).filter(func(x): return not x in used)
+				if pool.is_empty():
+					pool = Defs.LOG_CALM.filter(func(x): return not x in used)
+				var line: String = pool.pick_random() if not pool.is_empty() else Defs.LOG_CALM[0]
+				used.append(line)
+				ev.text = tr(line).replace("{n}", who)
+		events.append(ev)
+	return events
+
+func visible_events(e: Dictionary) -> Array:
 	var p := expedition_progress(e)
-	return e.events.filter(func(ev): return ev.at <= p).map(func(ev): return ev.text)
+	return e.events.filter(func(ev): return ev.at <= p)
+
+func visible_log(e: Dictionary) -> Array:
+	return visible_events(e).map(func(ev): return ev.text)
+
+## Что уже случилось в экспедиции: опыт, бои, урон по каждому, добыча.
+func expedition_so_far(e: Dictionary) -> Dictionary:
+	var out := {"xp": 0, "won": 0, "lost": 0, "hp": {}, "loot": {}}
+	for ev in visible_events(e):
+		out.xp += int(ev.get("xp", 0))
+		if ev.get("kind", "") == "fight":
+			if ev.get("won", false):
+				out.won += 1
+			else:
+				out.lost += 1
+		var hp: Dictionary = ev.get("hp", {})
+		for k in hp:
+			out.hp[k] = out.hp.get(k, 0) + hp[k]
+		var lt: Dictionary = ev.get("loot", {})
+		for k in lt:
+			if lt[k] is int or lt[k] is float:
+				out.loot[k] = out.loot.get(k, 0) + int(lt[k])
+			else:
+				out.loot[k] = lt[k]
+	return out
 
 func finish_cost(e: Dictionary) -> int:
 	return maxi(1, ceili((float(e.end) - now()) / 120.0))
@@ -1047,13 +1173,14 @@ func claim_expedition(e: Dictionary) -> void:
 			continue
 		c.room = -1
 		c.health = maxf(health_floor(), c.health - e.damage.get(str(id), 0) * (1.0 - protection(c)) * mode().damage)
-		c.xp += zone.minutes * 4.0
+		# опыт: за время в пути и за всё, что случилось в журнале
+		c.xp += zone.minutes * 1.0 + expedition_so_far_all(e)
 		while c.xp >= _xp_needed(c):
 			c.xp -= _xp_needed(c)
 			var keep: float = c.xp
 			_level_up(c)
 			c.xp = keep
-	stats["expedition_done"] = stats.get("expedition_done", 0) + 1
+	track("expedition_done")
 	var reward := loot.duplicate()
 	reward.erase("resources")
 	if reward.get("pearls", 0) <= 0: reward.erase("pearls")
@@ -1070,6 +1197,13 @@ func claim_expedition(e: Dictionary) -> void:
 
 var _pending_lines: Array = []
 
+## Опыт со всех записей журнала (для выдачи при возвращении).
+func expedition_so_far_all(e: Dictionary) -> int:
+	var x := 0
+	for ev in e.events:
+		x += int(ev.get("xp", 0))
+	return x
+
 # ---------------------------------------------------------------- инциденты
 
 const HAZARDS := {
@@ -1078,6 +1212,15 @@ const HAZARDS := {
 	"creature": {"label": "ATTACK", "msg": "Creature attack in %s!", "damage": 2.4},
 }
 var incident_timer := 200.0
+## Без людей: сколько секунд беда разгорается, как быстро потом гаснет и как часто перекидывается.
+const BURN_PEAK := 40.0
+const BURN_OUT_RATE := 0.6
+const SPREAD_UNATTENDED := 30.0
+const BURNED_MSG := {
+	"fire": "The fire in %s burned out. Supplies were lost.",
+	"flood": "The water in %s drained away. Supplies were lost.",
+	"creature": "The creature left %s. Supplies were lost.",
+}
 
 # прогрессия: наука, исследования, снаряжение, сюжет, достижения, события, торговцы
 var science := 0
@@ -1108,6 +1251,7 @@ func start_hazard(room: Dictionary, kind: String, hp := 100.0) -> void:
 	room.hazard = kind
 	room.incident = hp
 	room.spread = 0.0
+	room["burn"] = 0.0
 	message.emit(tr(HAZARDS[kind].msg) % tr(Defs.ROOMS[room.type].name))
 	event.emit("incident")
 	changed.emit()
@@ -1159,7 +1303,21 @@ func _tick_hazard(r: Dictionary, delta: float, offline: bool) -> void:
 	else:
 		var crew := responders(r)
 		if crew.is_empty():
-			r.incident = minf(100.0, r.incident + 1.5 * delta)
+			# как в Fallout: без людей беда разгорается, перекидывается на соседей,
+			# а в самом отсеке со временем выгорает сама (но без награды)
+			r["burn"] = float(r.get("burn", 0.0)) + delta
+			if r.burn < BURN_PEAK:
+				r.incident = minf(100.0, r.incident + 2.5 * delta)
+			else:
+				r.incident -= BURN_OUT_RATE * delta
+				if r.incident <= 0.0:
+					_resolve_hazard(r, offline, true)
+					return
+			r.spread += delta
+			if r.spread > SPREAD_UNATTENDED and r.incident > 60.0:
+				r.spread = 0.0
+				_spread_hazard(r)
+			return
 		else:
 			r.incident -= hazard_power(r) * 1.6 * delta * (2.0 if has_research("fire_suppression") else 1.0) / depth_zone(r.row).danger
 			var dmg: float = HAZARDS[r.hazard].damage * delta
@@ -1173,10 +1331,15 @@ func _tick_hazard(r: Dictionary, delta: float, offline: bool) -> void:
 		_resolve_hazard(r, offline)
 
 func _spread_hazard(r: Dictionary) -> void:
-	var w := Defs.room_width(r.type)
+	var w := room_w(r)
 	var near := []
-	for n in [room_at(r.col - 1, r.row), room_at(r.col + w, r.row)]:
-		if can_have_hazard(n) and n.incident <= 0.0:
+	var cand := [room_at(r.col - 1, r.row), room_at(r.col + w, r.row)]
+	# и на этаж выше/ниже — по всей ширине отсека
+	for dc in w:
+		cand.append(room_at(r.col + dc, r.row - 1))
+		cand.append(room_at(r.col + dc, r.row + 1))
+	for n in cand:
+		if can_have_hazard(n) and n.incident <= 0.0 and not n in near:
 			near.append(n)
 	if near.is_empty():
 		return
@@ -1184,14 +1347,22 @@ func _spread_hazard(r: Dictionary) -> void:
 	start_hazard(target, r.hazard, 50.0)
 	message.emit(tr("Incident spread to %s!") % tr(Defs.ROOMS[target.type].name))
 
-func _resolve_hazard(r: Dictionary, offline: bool) -> void:
+func _resolve_hazard(r: Dictionary, offline: bool, burned := false) -> void:
 	var crew := responders(r)
+	var kind: String = r.hazard
 	r.incident = 0.0
 	r.hazard = ""
 	for c in colonists:
 		if c.help == r.id:
 			c.help = -1
 	if offline:
+		return
+	if burned:
+		# выгорело само: отсек цел, но запасы пострадали
+		for k in ["energy", "oxygen", "food"]:
+			resources[k] = maxf(0.0, resources[k] - 10.0)
+		message.emit(tr(BURNED_MSG.get(kind, "%s: the danger has passed.")) % tr(Defs.ROOMS[r.type].name))
+		changed.emit()
 		return
 	var reward: int = int((10 + 10 * r.level) * (2 if weekly_mod() == "tide" else 1) * mode().reward)
 	pearls += reward
@@ -1265,7 +1436,7 @@ func _finish_research(offline: bool) -> void:
 	var id: String = research_current.id
 	research_current = {}
 	research_done.append(id)
-	stats["research"] = stats.get("research", 0) + 1
+	track("research")
 	if story_index < Defs.STORY.size() and Defs.STORY[story_index].goal[0] == "research":
 		story_count += 1
 	if not offline:
@@ -1424,14 +1595,13 @@ func claim_weekly(tier: int) -> void:
 # ---------------------------------------------------------------- пузыри с сокровищами и торговцы
 
 func pop_bubble(rich: bool) -> Dictionary:
-	stats["bubble"] = stats.get("bubble", 0) + 1
-	event.emit("bubble")
+	track("bubble")
 	if rich:
-		var cr := rng.randi_range(2, 5)
+		var cr := rng.randi_range(1, 2)
 		crystals += cr
 		changed.emit()
 		return {"text": "[crystals]+%d" % cr, "color": Defs.RESOURCES.crystals.color}
-	var p := rng.randi_range(15, 45) + max_row() * 3
+	var p := rng.randi_range(8, 20) + max_row() * 2
 	pearls += p
 	changed.emit()
 	return {"text": "[pearls]+%d" % p, "color": Defs.RESOURCES.pearls.color}
@@ -1489,6 +1659,7 @@ func trade(idx: int) -> bool:
 		else:
 			resources[k] -= o.give[k]
 	trader.bought.append(idx)
+	track("trade")
 	var g: Dictionary = o.get.duplicate()
 	if g.has("science"):
 		science += g.science
@@ -1558,12 +1729,18 @@ func refresh_daily_systems() -> void:
 	if quest_day != today():
 		quest_day = today()
 		quests = []
-		var pool := range(Defs.QUEST_POOL.size())
+		# только выполнимые задания: для «экспедиций» нужен док, для «крафта» — мастерская и т. д.
+		var pool: Array = Defs.QUEST_POOL.filter(func(q): return not q.has("needs") or count_of(q.needs) > 0)
 		pool.shuffle()
-		for i in Defs.QUESTS_PER_DAY:
-			var q: Dictionary = Defs.QUEST_POOL[pool[i]]
+		# цели растут вместе с колонией
+		var scale := 1.0 + colonists.size() / 15.0
+		for i in mini(Defs.QUESTS_PER_DAY, pool.size()):
+			var q: Dictionary = pool[i]
+			var target := rng.randi_range(q.target[0], q.target[1])
+			if q.get("scales", false):
+				target = int(target * scale)
 			quests.append({
-				"event": q.event, "text": q.text, "target": rng.randi_range(q.target[0], q.target[1]),
+				"event": q.event, "text": q.text, "target": target,
 				"progress": 0, "reward": q.reward, "xp": q.xp, "claimed": false,
 			})
 	var week := int(now() / 604800.0)

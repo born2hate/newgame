@@ -479,3 +479,59 @@
 478|Taras widokowy
 479|Widok na głębiny: świetny nastrój dla wszystkich i +10% doświadczenia na poziom.
 480|Doświadczenie kolonistów +%d%%
+481|Zbierz %d pereł z farm pereł
+482|Wytwórz %d nauki
+483|Sprowadź do domu %d wypraw
+484|Zbadaj Rafę koralową %d razy
+485|Zawrzyj %d transakcji z kupcem
+486|Wytwórz %d elementów sprzętu
+487|Ciepłe posiłki
+488|Morale spada. Zbuduj kuchnię, żeby kolonia znów jadła po ludzku.
+489|Razem silniejsi
+490|Trenuj ludzi. Podnieś poziom kolonistów 25 razy.
+491|Stal i iskry
+492|Potrzebujemy lepszego sprzętu. Zbuduj warsztat i wytwórz 3 elementy.
+493|Utrzymać linię
+494|Głębina coraz bardziej się złości. Opanuj 25 awarii.
+495|Wezwij ich do domu
+496|Zbuduj radiostację i osiągnij 30 kolonistów.
+497|Doświadczeni odkrywcy
+498|Sprowadź do domu 20 wypraw.
+499|Moc głębin
+500|Zbuduj turbinę prądów w ciemnościach.
+501|Miasto pod morzem
+502|Osiągnij 45 kolonistów. Komandor Reyes byłaby dumna.
+503|Wściekły krab
+504|Murena
+505|Rój meduz
+506|Rekin rafowy
+507|Skrzydlica
+508|Barakuda
+509|Olbrzymi krab
+510|Olbrzymi węgorz
+511|Krab pająk
+512|Wąż morski
+513|Ośmiornica widmo
+514|Krab lawowy
+515|Kościany rekin
+516|Robak kominowy
+517|Żabnica
+518|Olbrzymia kałamarnica
+519|Wąż otchłani
+520|{n} walczył z «{e}» i wygrał. −{h} PŻ, +{x} PD
+521|«{e}» zaatakował! {n} go przegonił. −{h} PŻ, +{x} PD
+522|«{e}» zaatakował z zasadzki! {n} ledwo uciekł. −{h} PŻ, +{x} PD
+523|{n} przegrał walkę z «{e}» i musiał się wycofać. −{h} PŻ, +{x} PD
+524|{n} znalazł {v} pereł.
+525|{n} wydobył {v} kryształów.
+526|Załoga odzyskała {v} zapasów.
+527|{n} znalazł sprzęt: {v}!
+528|{n} wyciągnął: {v}!
+529|{n} uratował ocalałego! Dołączy do kolonii.
+530|Pożar w %s sam się wypalił. Stracono zapasy.
+531|Woda z %s spłynęła. Stracono zapasy.
+532|Stwór opuścił %s. Stracono zapasy.
+533|%s: niebezpieczeństwo minęło.
+534|PD: +%d · Walki: %d wygranych, %d przegranych
+535|Łup do tej pory:
+536|jeszcze nic

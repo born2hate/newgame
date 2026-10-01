@@ -243,10 +243,14 @@ func run() -> void:
 	hud._close_sheet()
 	# 5. торговец: кнопка и сделка
 	await wait(0.3)
-	if hud.trader_btn and hud.trader_btn.visible:
-		await tap(hud.trader_btn.get_global_rect().get_center())
+	if not Game.trader.is_empty():
+		# торговца открывают нажатием на значок «$» над его кораблём
+		var tr_rect: Rect2 = view._trader_rect()
+		view.camera.position = tr_rect.get_center() + Vector2(0, 150)
+		await wait(0.4)
+		await tap(world_to_screen(tr_rect.position + Vector2(tr_rect.size.x * 0.5, -22)))
 		if hud.sheet_kind != "trader":
-			issue("trader button did not open trader")
+			issue("tap on trader $ did not open trader")
 		else:
 			Game.resources.food = 200
 			Game.resources.energy = 200
@@ -259,7 +263,7 @@ func run() -> void:
 				issue("trader deal did nothing")
 		hud._close_sheet()
 	else:
-		issue("trader button not visible")
+		issue("no trader for the test")
 	# 6. сюжетная награда (одна строка с иконкой)
 	Game.track("collect_energy", 50)
 	Game.claim_story()

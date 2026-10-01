@@ -479,3 +479,59 @@
 478|Seyir güvertesi
 479|Derinlik manzarası: herkese harika moral ve seviye başına +10% deneyim.
 480|Sakin deneyimi +%d%%
+481|İnci çiftliklerinden %d inci topla
+482|%d bilim üret
+483|%d keşfi eve getir
+484|Mercan Resifi'ni %d kez keşfet
+485|Tüccarla %d anlaşma yap
+486|%d ekipman üret
+487|Sıcak yemek
+488|Moral düşük. Koloni yeniden insan gibi yesin diye bir mutfak kur.
+489|Birlikte daha güçlü
+490|İnsanlarını eğit. Sakinlerin seviyesini 25 kez yükselt.
+491|Çelik ve kıvılcım
+492|Daha iyi ekipman lazım. Bir atölye kur ve 3 parça üret.
+493|Hattı koru
+494|Derinlik öfkeleniyor. 25 kazayla başa çık.
+495|Onları eve çağır
+496|Bir telsiz odası kur ve 30 sakine ulaş.
+497|Tecrübeli kaşifler
+498|20 keşfi eve getir.
+499|Derinliğin gücü
+500|Karanlığın dibinde bir akıntı türbini kur.
+501|Deniz altında bir şehir
+502|45 sakine ulaş. Komutan Reyes gurur duyardı.
+503|Kızgın yengeç
+504|Müren
+505|Denizanası sürüsü
+506|Resif köpekbalığı
+507|Aslan balığı
+508|Barakuda
+509|Dev yengeç
+510|Dev yılanbalığı
+511|Örümcek yengeç
+512|Deniz yılanı
+513|Hayalet ahtapot
+514|Lav yengeci
+515|Kemik köpekbalığı
+516|Baca solucanı
+517|Fener balığı
+518|Dev kalamar
+519|Uçurum yılanı
+520|{n}, «{e}» ile dövüştü ve kazandı. −{h} CP, +{x} TP
+521|«{e}» saldırdı! {n} onu kovaladı. −{h} CP, +{x} TP
+522|«{e}» ekibe pusu kurdu! {n} kıl payı kurtuldu. −{h} CP, +{x} TP
+523|{n}, «{e}» ile dövüşü kaybetti ve geri çekildi. −{h} CP, +{x} TP
+524|{n} {v} inci buldu.
+525|{n} {v} kristal çıkardı.
+526|Ekip {v} malzeme kurtardı.
+527|{n} ekipman buldu: {v}!
+528|{n} çıkardı: {v}!
+529|{n} bir hayatta kalanı kurtardı! Koloniye katılacak.
+530|%s içindeki yangın kendi kendine söndü. Malzeme kaybedildi.
+531|%s içindeki su çekildi. Malzeme kaybedildi.
+532|Yaratık %s odasını terk etti. Malzeme kaybedildi.
+533|%s: tehlike geçti.
+534|TP: +%d · Dövüşler: %d galibiyet, %d mağlubiyet
+535|Şimdiye kadarki ganimet:
+536|henüz hiçbir şey
