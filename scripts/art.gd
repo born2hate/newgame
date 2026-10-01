@@ -26,12 +26,20 @@ static func room_of(r: Dictionary) -> Texture2D:
 	return room(r.type)
 
 ## Картинка колониста: у детей — свои (kid_0..2), у взрослых — костюм.
-static func colonist(c: Dictionary) -> Texture2D:
+static func colonist(c: Dictionary, resting := false) -> Texture2D:
 	if c.get("child", false):
 		var k := tex("res://art/characters/kid_%d.png" % (int(c.id) % 3))
 		if k:
 			return k
+	if resting:
+		var r := rest(int(c.suit))
+		if r:
+			return r
 	return diver(int(c.suit))
+
+## Без шлема, в комбинезоне — для отдыха (жилой отсек, бар, обзорная палуба).
+static func rest(suit: int) -> Texture2D:
+	return tex("res://art/characters/rest/rest_%d.png" % suit)
 
 ## Картинка питомца: своя pet_<id>.png, если нарисована, иначе рыба из аквариума.
 static func pet(id: String) -> Texture2D:

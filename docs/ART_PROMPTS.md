@@ -177,3 +177,11 @@ transparent background, no text: <объект>
 | `coral_plate.png` | `cartoon armor chestplate made of pink and orange coral pieces, game item icon, transparent background` |
 | `titan_suit.png` | `cartoon heavy titanium diving armor suit, silver with rivets, game item icon, transparent background` |
 | `abyss_armor.png` | `cartoon dark abyss armor with glowing bioluminescent blue lines and anglerfish motifs, game item icon, transparent background` |
+
+## Колонисты без шлема (отдых) → `art/characters/rest/rest_<0..6>.png`
+
+Тот же персонаж, что в скафандре (art/characters/walk/walk_N_0.png), но без шлема и баллона —
+в облегающем комбинезоне того же цвета, стоит боком, смотрит вправо, прозрачный фон.
+0 — оранжевый, 1 — жёлтый, 2 — синий, 3 — розовый, 4 — зелёный, 5 — белый, 6 — капитан (золото).
+
+`same chibi character style as the attached diver, but without helmet and air tank, wearing a fitted <color> jumpsuit with white panels, relaxed happy pose, side view facing right, full body, standing, transparent background`

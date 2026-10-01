@@ -1139,8 +1139,15 @@ func _draw_room_props(r: Dictionary, inner: Rect2, col: Color, light: float) -> 
 			if arrival >= 0.0:
 				_text(Vector2(base.x, inner.position.y + 66), tr("new in %ds") % ceili(arrival), 15, Color(0.7, 0.95, 1.0, 0.8), true)
 
+## Колонист отдыхает: в жилом отсеке, баре или на палубе, и там спокойно — шлем можно снять.
+func is_resting(c: Dictionary) -> bool:
+	if c.get("help", -1) != -1 or c.room < 0:
+		return false
+	var r := Game.get_room(c.room)
+	return not r.is_empty() and r.type in ["living", "lounge", "observatory"] and r.incident <= 0.0
+
 func _draw_colonist(feet: Vector2, c: Dictionary, lifted: bool) -> void:
-	var sprite := Art.colonist(c)
+	var sprite := Art.colonist(c, is_resting(c) and not lifted)
 	if sprite:
 		_draw_colonist_sprite(feet, c, lifted, sprite)
 		return
@@ -1188,7 +1195,8 @@ func _draw_colonist_sprite(feet: Vector2, c: Dictionary, lifted: bool, sprite: T
 	if lifted:
 		draw_circle(feet + Vector2(0, 2), 16, Color(0, 0, 0, 0.3))
 	var tint := Color.WHITE if c.health >= 50.0 else Color(0.75, 0.75, 0.75)
-	if walking and not c.get("child", false):
+	var rest_art: bool = is_resting(c) and not lifted and Art.rest(int(c.suit)) != null
+	if walking and not c.get("child", false) and not rest_art:
 		var frame := Art.walk_frame(c.suit, t * 11.0 + c.id)
 		if frame:
 			sprite = frame
