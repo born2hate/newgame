@@ -385,6 +385,15 @@ func _dev_screenshot() -> void:
 			hud._open_colonist(cw.id)
 			await get_tree().process_frame
 			(hud.sheet.get_child(0) as ScrollContainer).scroll_vertical = 700
+		"rest":
+			var home := Game._add_room("living", 7, 1)
+			Game.colonists[2].room = home.id
+			Game.colonists[3].room = home.id
+			Game.colonists[2].suit = 3
+			Game.colonists[3].suit = 2
+			camera.position = Vector2(780, 220)
+			camera.zoom = Vector2(1.8, 1.8)
+			await get_tree().create_timer(0.6).timeout
 		"expedition_ru":
 			Audio.set_language("ru")
 			var d2 := Game._add_room("dock", 3, 1)
