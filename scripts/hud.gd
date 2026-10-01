@@ -1436,6 +1436,7 @@ func _open_settings() -> void:
 	_header(tr("Settings"))
 	_toggle_row("Music", Audio.music_on, Audio.set_music)
 	_toggle_row("Sounds", Audio.sfx_on, Audio.set_sfx)
+	_toggle_row("Notifications", Notifier.enabled, Notifier.set_enabled)
 	_section(tr("Language"))
 	var langs := GridContainer.new()
 	langs.columns = 2

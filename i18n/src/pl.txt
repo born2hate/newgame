@@ -670,3 +670,13 @@
 669|Przeciągnij wolnego kolonistę do pomieszczenia z wolnym miejscem.
 670|Masz talent! Wykonuj moje misje w Zadaniach. Powodzenia!
 671|Do dzieła!
+672|Powiadomienia
+673|Batyskaf wrócił!
+674|Twoja załoga wróciła z łupem z: %s.
+675|Badanie ukończone
+676|Twoja kolonia czeka
+677|Wszystkie pomieszczenia skończyły. Wpadnij zebrać!
+678|Darmowa skrzynia
+679|W sklepie czeka darmowa skrzynia zaopatrzenia.
+680|Twoja nagroda dzienna czeka, nadzorco!
+681|Kolonia tęskni, nadzorco. Na dole robi się nieciekawie!

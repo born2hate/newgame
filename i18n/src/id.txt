@@ -670,3 +670,13 @@
 669|Seret kolonis yang menganggur ke ruangan dengan slot kosong.
 670|Kamu berbakat! Ikuti misiku di Tugas. Semoga berhasil!
 671|Ayo!
+672|Notifikasi
+673|Batiskaf sudah kembali!
+674|Krumu kembali dari %s membawa rampasan.
+675|Riset selesai
+676|Kolonimu siap
+677|Semua ruangan selesai. Ayo kumpulkan!
+678|Peti gratis
+679|Peti perbekalan gratis menunggu di toko.
+680|Hadiah harianmu siap, pengawas!
+681|Koloni merindukanmu, pengawas. Keadaan di bawah mulai sulit!

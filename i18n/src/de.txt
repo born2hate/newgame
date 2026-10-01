@@ -670,3 +670,13 @@
 669|Zieh den freien Kolonisten in einen Raum mit freiem Platz.
 670|Du bist ein Naturtalent! Folge meinen Aufträgen unter Aufgaben. Viel Glück!
 671|Los geht's!
+672|Benachrichtigungen
+673|Das U-Boot ist zurück!
+674|Deine Crew ist mit Beute aus %s zurück.
+675|Forschung abgeschlossen
+676|Deine Kolonie ist bereit
+677|Alle Räume sind fertig. Komm und sammle ein!
+678|Gratis-Kiste
+679|Eine Gratis-Vorratskiste wartet im Shop.
+680|Deine tägliche Belohnung ist bereit, Aufseher!
+681|Die Kolonie vermisst dich, Aufseher. Hier unten wird es ungemütlich!

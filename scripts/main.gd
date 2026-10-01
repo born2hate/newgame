@@ -420,6 +420,12 @@ func _dev_screenshot() -> void:
 			Game.stats.merge({"build": 23, "upgrade": 11, "collect": 812, "collect_pearls": 9450, "birth": 4, "level_up": 57, "incident_resolved": 19, "raid_won": 3, "boss_won": 1, "expedition_done": 14, "research": 6, "craft": 2, "crate": 9, "deaths": 2, "revive": 1, "max_pop": 27, "founded": Game.today() - 5}, true)
 			Game.colony_level = 8
 			hud.open_stats()
+		"notify_plan":
+			var dkn := Game._add_room("dock", 3, 1)
+			Game.launch_expedition(dkn.id, 1, [Game.colonists[3].id])
+			for n in Notifier.plan():
+				print("NOTIFY in %ds: %s — %s" % [int(n[0]), n[1], n[2]])
+			hud._open_settings()
 		"expedition_ru":
 			Audio.set_language("ru")
 			var d2 := Game._add_room("dock", 3, 1)

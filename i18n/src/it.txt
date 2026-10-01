@@ -670,3 +670,13 @@
 669|Trascina il colono libero in una stanza con un posto libero.
 670|Hai talento! Segui le mie missioni in Compiti. Buona fortuna!
 671|Andiamo!
+672|Notifiche
+673|Il batiscafo è tornato!
+674|Il tuo equipaggio è tornato da %s con il bottino.
+675|Ricerca completata
+676|La tua colonia è pronta
+677|Tutte le stanze hanno finito. Vieni a raccogliere!
+678|Cassa gratuita
+679|Una cassa di rifornimenti gratuita ti aspetta nel negozio.
+680|La tua ricompensa giornaliera è pronta, supervisore!
+681|La colonia sente la tua mancanza, supervisore. Quaggiù si mette male!

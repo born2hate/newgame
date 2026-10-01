@@ -671,3 +671,13 @@
 669|Arrastra al colono libre a una sala con hueco.
 670|¡Tienes talento! Sigue mis misiones en Tareas. ¡Suerte!
 671|¡Vamos!
+672|Notificaciones
+673|¡El batiscafo ha vuelto!
+674|Tu tripulación volvió de %s con botín.
+675|Investigación completada
+676|Tu colonia te espera
+677|Todas las salas terminaron. ¡Ven a recoger!
+678|Cofre gratis
+679|Un cofre de suministros gratis te espera en la tienda.
+680|¡Tu recompensa diaria está lista, supervisor!
+681|La colonia te echa de menos, supervisor. ¡Las cosas se complican aquí abajo!

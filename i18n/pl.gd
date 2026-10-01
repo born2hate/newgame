@@ -676,6 +676,16 @@ const T := {
 	"Drag the idle colonist into a room with a free slot.": "Przeciągnij wolnego kolonistę do pomieszczenia z wolnym miejscem.",
 	"You're a natural! Follow my missions in Tasks. Good luck!": "Masz talent! Wykonuj moje misje w Zadaniach. Powodzenia!",
 	"Let's go!": "Do dzieła!",
+	"Notifications": "Powiadomienia",
+	"The bathyscaphe is back!": "Batyskaf wrócił!",
+	"Your crew returned from %s with loot.": "Twoja załoga wróciła z łupem z: %s.",
+	"Research complete": "Badanie ukończone",
+	"Your colony is ready": "Twoja kolonia czeka",
+	"All rooms have finished production. Come and collect!": "Wszystkie pomieszczenia skończyły. Wpadnij zebrać!",
+	"Free crate": "Darmowa skrzynia",
+	"A free Supply Crate is waiting in the shop.": "W sklepie czeka darmowa skrzynia zaopatrzenia.",
+	"Your daily reward is ready, Overseer!": "Twoja nagroda dzienna czeka, nadzorco!",
+	"The colony misses you, Overseer. Things are getting rough down here!": "Kolonia tęskni, nadzorco. Na dole robi się nieciekawie!",
 }
 
 static func make() -> Translation:

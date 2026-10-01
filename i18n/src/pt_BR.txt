@@ -670,3 +670,13 @@
 669|Arraste o colono livre para uma sala com vaga.
 670|Você leva jeito! Siga minhas missões em Tarefas. Boa sorte!
 671|Vamos!
+672|Notificações
+673|O batiscafo voltou!
+674|Sua tripulação voltou de %s com saque.
+675|Pesquisa concluída
+676|Sua colônia está pronta
+677|Todas as salas terminaram. Venha coletar!
+678|Baú grátis
+679|Um baú de suprimentos grátis espera na loja.
+680|Sua recompensa diária está pronta, supervisor!
+681|A colônia sente sua falta, supervisor. As coisas estão complicadas aqui embaixo!

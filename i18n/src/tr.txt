@@ -670,3 +670,13 @@
 669|Boştaki sakini boş yeri olan bir odaya sürükle.
 670|Yeteneklisin! Görevler'deki görevlerimi takip et. Bol şans!
 671|Hadi!
+672|Bildirimler
+673|Batiskaf döndü!
+674|Ekibin %s bölgesinden ganimetle döndü.
+675|Araştırma tamamlandı
+676|Kolonin hazır
+677|Tüm odalar üretimi bitirdi. Gel ve topla!
+678|Ücretsiz sandık
+679|Mağazada ücretsiz bir erzak sandığı bekliyor.
+680|Günlük ödülün hazır, gözetmen!
+681|Koloni seni özledi, gözetmen. Aşağıda işler karışıyor!

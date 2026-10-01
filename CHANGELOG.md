@@ -3,6 +3,14 @@
 All notable changes to **Deep Colony** are listed here, newest first.
 APK builds live in [`releases/`](releases/).
 
+## Unreleased
+### Added
+- **Phone notifications** (scheduled when the game goes to the background, cancelled on return): expedition back, child grown up, research done, all rooms ready, free crate, daily reward, a gentle "we miss you" after 2 days. At most one every 30 minutes; can be turned off in Settings. Needs the native local-notification plugin in the release build.
+- **New sounds**: hits on bosses, boss roar, raid horn, rising notes while combo collecting, coins flying to the top bar, a lullaby for a newborn, repair clinks.
+- **Tense music** fades in during pirate raids and boss fights.
+### Changed
+- **Shorter tutorial**: 6 hands-on steps instead of 11 — collect, build, place, drag, done.
+
 ## 0.11 — 2026-10-01
 ### Added
 - **Colony stats** screen (Tasks → Colony stats): days since founding, population record, children born, raids and bosses defeated, incidents, expeditions, research, crates, losses and revivals.

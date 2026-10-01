@@ -676,6 +676,16 @@ const T := {
 	"Drag the idle colonist into a room with a free slot.": "Seret kolonis yang menganggur ke ruangan dengan slot kosong.",
 	"You're a natural! Follow my missions in Tasks. Good luck!": "Kamu berbakat! Ikuti misiku di Tugas. Semoga berhasil!",
 	"Let's go!": "Ayo!",
+	"Notifications": "Notifikasi",
+	"The bathyscaphe is back!": "Batiskaf sudah kembali!",
+	"Your crew returned from %s with loot.": "Krumu kembali dari %s membawa rampasan.",
+	"Research complete": "Riset selesai",
+	"Your colony is ready": "Kolonimu siap",
+	"All rooms have finished production. Come and collect!": "Semua ruangan selesai. Ayo kumpulkan!",
+	"Free crate": "Peti gratis",
+	"A free Supply Crate is waiting in the shop.": "Peti perbekalan gratis menunggu di toko.",
+	"Your daily reward is ready, Overseer!": "Hadiah harianmu siap, pengawas!",
+	"The colony misses you, Overseer. Things are getting rough down here!": "Koloni merindukanmu, pengawas. Keadaan di bawah mulai sulit!",
 }
 
 static func make() -> Translation:
