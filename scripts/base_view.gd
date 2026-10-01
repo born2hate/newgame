@@ -659,6 +659,13 @@ func _draw_room(r: Dictionary) -> void:
 				draw_set_transform(Vector2.ZERO)
 			else:
 				draw_texture_rect(art, seg, false, Color(light, light, light))
+		if r.type == "airlock" and r.level >= 2:
+			# улучшенная дверь шлюза поверх нарисованной
+			var door := Art.tex("res://art/ui/airlock_door_%d.png" % mini(3, r.level))
+			if door:
+				var dh := back.size.y * 0.78
+				var dw := dh * door.get_width() / door.get_height()
+				draw_texture_rect(door, Rect2(back.get_center() - Vector2(dw / 2.0, dh / 2.0 - back.size.y * 0.04), Vector2(dw, dh)), false)
 		if powered and r.incident <= 0.0:
 			_draw_room_ambient(r, back)
 		if r.type == "reactor" and powered:

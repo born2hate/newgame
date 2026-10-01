@@ -312,6 +312,7 @@ func _dev_screenshot() -> void:
 			hud.open_fallen(0)
 		"raid_ru":
 			Audio.set_language("ru")
+			Game.find_room_of_type("airlock").level = 2
 			Game.start_raid()
 			Game.raid.door = 0.0
 			Game.send_help(Game.colonists[0], Game.find_room_of_type("airlock"))
