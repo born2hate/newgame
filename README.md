@@ -30,7 +30,7 @@ More screens: **[full gallery](docs/SCREENSHOTS.md)**.
 ### Build the colony
 - A cross-section base on the ocean floor, 14 columns wide and 14 floors deep.
 - **20 room types**: Airlock, Elevator, Living Quarters, Reactor, O₂ Generator, Algae Farm, Storage, Pearl Farm, Sub Dock, Research Lab, Medbay, Kitchen, Gym, School, Radio Room, Lounge, Workshop, Armory, Aquarium, Current Turbine, Observation Deck.
-- Rooms unlock as the colony grows, upgrade to level 3, and merge with an identical neighbour into a wider room.
+- Rooms unlock through the story (or by population), upgrade to level 5, and merge with an identical neighbour into a wider room.
 - **Depth zones**: Twilight Shelf → Midnight Zone → The Abyss. Deeper floors produce more and drop crystals, but incidents are more frequent and nastier. Each zone is unlocked by research.
 
 ### Colonists
@@ -38,6 +38,7 @@ More screens: **[full gallery](docs/SCREENSHOTS.md)**.
 - Drag a colonist into a room to assign them; they work at their stations with little animations.
 - XP and levels, training rooms (Gym, School, Lounge), crystal training.
 - **Gear**: suits, tools, weapons and armor in common / rare / legendary rarity.
+- **Traits**: brave, tough, lucky, genius, cheerful, night owl, lazy, clumsy — children inherit them.
 - **Children**: a couple in Living Quarters may have a child who grows into a new colonist.
 - Colonists take their helmets off when they relax.
 - After 8 colonists, newcomers arrive only through the **Radio Room**.
@@ -50,13 +51,16 @@ More screens: **[full gallery](docs/SCREENSHOTS.md)**.
 - Three difficulty modes: **Calm**, **Normal**, **Survival**.
 
 ### Adventure and progression
-- **Expeditions** by bathyscaphe to 5 zones, with a live log of fights and finds and choices to make on the way.
-- **Research tree** (17 projects), **story** with Commander Reyes (20 chapters), **achievements**, **daily quests**, **weekly event**, **season pass**.
-- **Colony level**, **combo collecting**, **pets** with bonuses, a **wandering trader**, treasure bubbles.
+- **Missions**: timed bathyscaphe trips to 5 zones with a live log and choices on the way.
+- **Exploration** (Fallout-style): no timer — the longer the crew stays out, the richer and more dangerous it gets; recall them any time (the way back takes half the time) or lose them.
+- **Crafting**: 8 materials, blueprints from exploring and bosses, the Workshop builds the gear you choose.
+- **Colony projects**: Garden Dome, Survivor Beacon, Deep Bathyscaphe, Pearl Monument — big builds with permanent bonuses.
+- **Research tree** (17 projects), **story** with Commander Reyes (23 chapters) and an on-screen story tracker, **task chains**, **achievements**, **daily quests**, **weekly event**, **season pass**.
+- **Colony level**, **combo collecting**, **pets** that level up, a **wandering trader**, treasure bubbles, the **mysterious stranger**, **sea storms**.
 - **Colony stats** screen.
 
 ### Monetisation (test mode)
-Crystals, crates, Starter Pack, Premium, No Ads, Season Pass; rewarded ads (max 12 per day). All purchases are free in the test build.
+Crystals, crates, Starter Pack, Premium, No Ads, Season Pass, Treasure Piggy Bank, Lucky Wheel (odds shown), 24-hour event bundles, a daily crystal deal; rewarded ads (max 12 per day). All purchases are free in the test build.
 
 ## Project layout
 

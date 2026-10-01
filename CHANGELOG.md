@@ -5,6 +5,17 @@ APK builds live in [`releases/`](releases/).
 
 ## Unreleased
 ### Added
+- **Exploration, Fallout-style**: besides timed missions, crews can explore with no timer. Events happen over time (even while the game is closed), HP drops for real, loot grows richer the longer they stay. Recall them any time — the way back takes half the time. Optional auto turn-back when someone is badly hurt; without it the crew can die out there and the loot is lost.
+- **Crafting**: 8 materials (scrap, kelp fiber, pearl shell, coral, copper wire, vent crystal, kraken ink, abyss pearl) from zones, raiders, crates and bosses; common/rare/legendary **blueprints**; the Workshop crafts the gear you pick for materials, pearls and time, and makes scrap when idle.
+- **Mysterious stranger**: shows up in a random room for a few seconds — tap him for a reward.
+- **Colonist traits**: brave, tough, lucky, genius, cheerful, night owl, lazy, clumsy. Children inherit them.
+- **Colony projects**: Garden Dome, Survivor Beacon, Deep Bathyscaphe, Pearl Monument — 3 stages each with permanent bonuses.
+- **Task chains**: four 3-step mini stories with rewards.
+- **Sea storms**: for 2 hours outside is more dangerous but much richer; more floods at the base.
+- **Pet levels**: pets grow while they are with you and their bonus gets stronger (up to ×2).
+- **Shop**: Treasure Piggy Bank, Lucky Wheel (free daily spin, odds listed), 24-hour event bundles (Hero, Builder, Medic), daily −40% crystal deal.
+- **Premium look**: soft bloom, cinematic color grading, light shafts, bokeh, vignette, colored light from rooms onto the rock, soft shadows, bevelled frames and glass sheen, springy buttons, rolling counters. "Best graphics" can be turned off in Settings.
+- Expedition planner warns when someone may not come back.
 - **Story tracker** on the main screen: the current chapter goal with progress. Tap it to jump straight to the action (build the room, plan the expedition, open research); when the goal is done it glows — tap to claim.
 - **Story opens rooms early**: each chapter unlocks new rooms ("New rooms: …" on the chapter card, a banner when they open). Players who ignore the story still unlock everything by population — nobody is kept on a leash.
 - 3 new early chapters: *Pearls of the Deep* (build a Pearl Farm), *Make It Better* (upgrade a room), *Calling Survivors* (build a Radio Room).
@@ -13,7 +24,10 @@ APK builds live in [`releases/`](releases/).
 - **Radio**: brings people faster while the colony is small and slower as it grows; an empty Radio Room still broadcasts weakly, so the colony never gets stuck at 8.
 - **Scarcer economy**: research takes 10 min – 5 h (rush: 1 crystal per 4 min); fewer crystals from expeditions, crates, chests, bosses, achievements and the story; fewer pearls from expeditions, crates and raider bodies; fewer crates from expeditions; colonists from crates are rarer; children grow for 24 h; the Workshop crafts 3× slower.
 - Calmer work animation; progress bars moved under the room name so colonists don't stand on them.
+- Expedition damage depends on how strong the crew is for the zone (strong crews come back hurt but alive) — no more surprise deaths in deep zones.
+- Room level gates lowered to colony level 8 / 12, levels 4–5 cost more, so pearls are spent steadily instead of piling up.
 ### Fixed
+- Changing music, sound or language no longer turns notifications back on.
 - Story chapters now count what is already done: rooms built in the tutorial, colonists already at work, a first expedition or upgrade made earlier.
 - The research badge only lights up when a research can actually be started.
 - The boss health bar stays on screen.
