@@ -69,9 +69,17 @@ func _process(delta: float) -> void:
 		refresh_daily_systems()
 		save_game()
 
+var _paused_at := 0.0
+
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST or what == NOTIFICATION_APPLICATION_PAUSED:
 		save_game()
+		_paused_at = Time.get_unix_time_from_system()
+	elif what == NOTIFICATION_APPLICATION_RESUMED and _paused_at > 0.0:
+		# свернули и вернулись, не закрывая игру — досчитываем время отсутствия
+		var away := Time.get_unix_time_from_system() - _paused_at
+		_paused_at = 0.0
+		_apply_offline(away)
 
 # ---------------------------------------------------------------- новая игра
 
@@ -2175,6 +2183,12 @@ const OFFLINE_FLOOR := 10.0
 const OFFLINE_STEP := 10.0
 
 func _apply_offline(elapsed: float) -> void:
+	# пока игрока нет, таймеры павших и тел пиратов стоят на паузе
+	var away := maxf(0.0, elapsed)
+	for f in fallen:
+		f.until = float(f.until) + away
+	for b in raider_bodies:
+		b.until = float(b.until) + away
 	elapsed = clampf(elapsed, 0.0, MAX_OFFLINE_PREMIUM if premium else MAX_OFFLINE)
 	if elapsed < 30.0:
 		return

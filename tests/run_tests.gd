@@ -317,6 +317,10 @@ func _initialize() -> void:
 	rv.colonists[0].health = 0.0
 	rv.simulate(1.0, false)
 	check(rv.revive_cost(rv.fallen[0]) > rcost, "оживление дороже с уровнем")
+	# время вне игры прибавляется к сроку — за 3 ч отсутствия оставшееся время не уменьшилось
+	var until0: float = float(rv.fallen[0].until)
+	rv._apply_offline(3 * 3600.0)
+	check(absf(float(rv.fallen[0].until) - until0 - 3 * 3600.0) < 1.0, "вне игры таймер воскрешения стоит")
 	# офлайн: запасы не уходят в ноль, отсеки ждут сбора
 	var of = load("res://scripts/game_state.gd").new()
 	of.new_game()
