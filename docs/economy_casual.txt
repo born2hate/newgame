@@ -1,0 +1,39 @@
+
+profile=free  sessions=2×5 min/day
+day  pop  kids  rooms  lvl  colLv  pearls  cryst  items  story  earned_p  ads  starv  dead%
+  1    8     0      9  5.4      2     287     34      0      7       280    0     0     0
+  2    8     0     13  6.8      3     128     45      1      9       674    0     0    30
+  3    9     0     16  6.6      4     277     58      2     10      1428    0     0     0
+  4   10     0     16  7.3      4     159     63      4     10      1698    0     0    40
+  5   11     0     16  8.2      5     187     76      4     10      2233    0     0    20
+  6   12     0     17  9.0      5     146     83      8     10      3104    0     0     0
+  7   13     0     17  9.8      6     605    107      8     10      3728    0     0     0
+  8   15     0     21  10.5      6     533    124      9     12      4347    0     0     0
+  9   17     0     25  10.8      6     115    144     12     12      5037    0     0     0
+ 10   19     0     26  11.0      7     163    163     12     12      5307    0     0    20
+ 11   20     0     26  11.7      7     699    165     13     12      6467    0     0    10
+ 12   22     0     26  11.9      7     836    183     15     12      7367    0     0     0
+ 13   23     0     27  12.4      8     759    188     16     12      8181    0     0    10
+ 14   24     0     27  12.8      8     912    190     18     12      8903    0     0    10
+ 15   25     0     28  13.2      8     505    202     18     14      9924    0     0    10
+ 16   25     0     29  14.2      8     183    210     20     14     10546    0     0    40
+ 17   26     0     29  14.5      8    1018    236     25     15     11804    0     0     0
+ 18   27     0     30  14.9      8     588    244     30     16     12608    0     0    30
+ 19   28     0     30  15.1      9     998    264     33     16     13721    0     0     0
+ 20   29     0     30  15.3      9    1098    267     36     16     14865    0     0     0
+ 21   31     0     32  15.2      9     296    272     39     16     15997    0     0    20
+ 22   32     0     32  15.7      9     152    279     43     16     17583    0     0    10
+ 23   34     0     32  15.8      9    1296    290     46     16     18568    0     0    10
+ 24   35     0     32  15.9      9     540    296     49     16     19770    0     0     0
+ 25   39     1     33  15.4     10    1449    314     52     16     21436    0     0    10
+rooms: { "reactor": 4, "airlock": 1, "elevator": 7, "oxygen": 2, "farm": 1, "living": 3, "pearl": 3, "dock": 1, "lab": 1, "radio": 1, "storage": 1, "medbay": 1, "kitchen": 1, "gym": 1, "school": 1, "lounge": 1, "workshop": 1, "armory": 1, "aquarium": 1 }
+room levels: { 3: 21, 1: 8, 2: 4 }
+pearl sources: { "collect": 14834, "manage": 8060, "sim": 2605 }
+pearl by source: { "daily": 1360, "story": 1550, "sim(boss/raid/offline)": 2605, "collect": 14834, "crates": 7055, "season": 1400, "expeditions": 16069, "quests": 1750, "raider_bodies": 599 }
+pearl spent on: { "upgrade": 24285, "build": 11586, "craft": 19500 }
+projects: {  } materials: { "shell": 4, "coral": 3, "kelp_fiber": 7, "scrap": 33, "copper": 24, "vent_crystal": 63, "kraken_ink": 22, "abyss_pearl": 1 } blueprints: 14 crafted: 19
+deaths: 0 {  }  starve secs: { "oxygen": 0, "food": 0, "energy0": 0 }
+crystal sources: { "crates": 22, "quests": 41, "achievements": 98, "story": 26, "daily": 32, "season": 30, "raider_bodies": 4, "expeditions": 30 }
+item sources: { "crates": 22, "expeditions": 7, "raider_bodies": 1, "sim(boss/raid/offline)": 3 }
+crate sources: { "story": 4, "daily": 7, "season": 3, "expeditions": 12 }
+pop sources: { "offline": 26, "sim": 1, "manage": 2, "session_start": 0 } births 1
