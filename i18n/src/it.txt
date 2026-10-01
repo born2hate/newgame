@@ -818,3 +818,4 @@
 817|×2 al primo acquisto!
 818|Pacchetto iniziale: il più conveniente!
 819|150 cristalli, 1000 perle, il pesce pagliaccio Nemo, 2 casse d'argento e un colono raro — nel negozio.
+820|×2 perle per un video

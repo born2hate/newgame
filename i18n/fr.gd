@@ -824,6 +824,7 @@ const T := {
 	"×2 first purchase!": "×2 au premier achat !",
 	"Starter Pack: best value!": "Pack de départ : la meilleure affaire !",
 	"150 crystals, 1000 pearls, Nemo the clownfish, 2 Silver Crates and a Rare colonist — in the Shop.": "150 cristaux, 1000 perles, Nemo le poisson-clown, 2 caisses en argent et un colon rare — à la boutique.",
+	"×2 pearls for a video": "×2 perles contre une vidéo",
 }
 
 static func make() -> Translation:

@@ -824,6 +824,7 @@ const T := {
 	"×2 first purchase!": "İlk alımda ×2!",
 	"Starter Pack: best value!": "Başlangıç paketi: en avantajlısı!",
 	"150 crystals, 1000 pearls, Nemo the clownfish, 2 Silver Crates and a Rare colonist — in the Shop.": "150 kristal, 1000 inci, palyaço balığı Nemo, 2 gümüş sandık ve nadir bir kolonist — mağazada.",
+	"×2 pearls for a video": "Video karşılığı ×2 inci",
 }
 
 static func make() -> Translation:

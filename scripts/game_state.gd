@@ -2218,7 +2218,8 @@ func cut_expedition(e: Dictionary, seconds: float) -> void:
 	e.end = maxf(now(), float(e.end) - seconds)
 	changed.emit()
 
-func claim_expedition(e: Dictionary) -> void:
+## double_pearls — игрок посмотрел видео: жемчуг из похода ×2.
+func claim_expedition(e: Dictionary, double_pearls := false) -> void:
 	if not expedition_done(e):
 		return
 	expeditions.erase(e)
@@ -2265,6 +2266,8 @@ func claim_expedition(e: Dictionary) -> void:
 	track("expedition_done")
 	var reward := loot.duplicate()
 	reward.erase("resources")
+	if double_pearls and reward.get("pearls", 0) > 0:
+		reward.pearls = int(reward.pearls) * 2
 	if reward.get("pearls", 0) <= 0: reward.erase("pearls")
 	if reward.get("crystals", 0) <= 0: reward.erase("crystals")
 	var title := tr("%s: expedition complete") % tr(zone.name)
@@ -2280,6 +2283,10 @@ func claim_expedition(e: Dictionary) -> void:
 var _pending_lines: Array = []
 
 ## Опыт со всех записей журнала (для выдачи при возвращении).
+## Сколько жемчуга принесёт поход (для кнопки «×2 за видео»).
+func expedition_pearls(e: Dictionary) -> int:
+	return int(e.get("loot", {}).get("pearls", 0))
+
 func expedition_so_far_all(e: Dictionary) -> int:
 	var x := 0
 	for ev in e.events:

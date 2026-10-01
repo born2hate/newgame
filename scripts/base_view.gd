@@ -1753,7 +1753,7 @@ func _on_release(p: Vector2) -> void:
 		return
 	if room.type == "dock":
 		var e := Game.expedition_at(room.id)
-		if not e.is_empty() and Game.expedition_done(e):
+		if not e.is_empty() and Game.expedition_done(e) and (Game.expedition_pearls(e) <= 0 or Game.ads_left() <= 0):
 			Game.claim_expedition(e)
 			return
 	if room.type == "workshop" and Game.craft_ready(room):

@@ -751,7 +751,7 @@ func _build_expedition_button() -> void:
 		if Game.expeditions.is_empty():
 			return
 		var e: Dictionary = Game.expeditions[0]
-		if Game.expedition_done(e):
+		if Game.expedition_done(e) and (Game.expedition_pearls(e) <= 0 or Game.ads_left() <= 0):
 			Game.claim_expedition(e)
 		else:
 			_open_room(e.dock), 64)
@@ -2324,7 +2324,13 @@ func _dock_section(r: Dictionary) -> void:
 		Game.claim_expedition(e)
 		_close_sheet(), 76)
 	sheet_body.add_child(claim)
-	room_live_labels["exp"] = {"e": e, "bar": pb, "status": st, "log": logbox, "summary": summary, "choice": choice_box, "choice_on": false, "scroll": logscroll, "fin": fin, "ad": ad, "claim": claim, "recall": recall, "shown": -1}
+	var claim2 := _button(tr("×2 pearls for a video"), func(): Store.show_rewarded(func():
+		Game.claim_expedition(e, true)
+		_close_sheet()), 76)
+	_with_icon(claim2, "ad", 40)
+	_gold(claim2)
+	sheet_body.add_child(claim2)
+	room_live_labels["exp"] = {"e": e, "bar": pb, "status": st, "log": logbox, "summary": summary, "choice": choice_box, "choice_on": false, "scroll": logscroll, "fin": fin, "ad": ad, "claim": claim, "claim2": claim2, "recall": recall, "shown": -1}
 	_refresh_dock_live(r)
 
 func _refresh_dock_live(_r: Dictionary) -> void:
@@ -2345,6 +2351,7 @@ func _refresh_dock_live(_r: Dictionary) -> void:
 	d.fin.visible = not done and not out and Game.crystal_rush_allowed()
 	d.ad.visible = not done and not out and not e.get("ad_used", false) and Game.ads_left() > 0
 	d.claim.visible = done
+	d.claim2.visible = done and Game.expedition_pearls(e) > 0 and Game.ads_left() > 0
 	set_cost_text(d.fin, tr("Finish ◆ %d") % Game.finish_cost(e) if not done else "")
 	var pc := Game.pending_choice(e)
 	if pc.is_empty() != (not d.choice_on):
