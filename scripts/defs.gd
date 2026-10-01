@@ -250,6 +250,14 @@ const LOG_LOOT := {
 	"colonist": "{n} rescued a survivor! They will join the colony.",
 }
 
+## События с выбором в экспедиции: a — рискнуть, b — пройти мимо.
+const EXP_CHOICES := [
+	{"id": "chest", "text": "The crew found a sealed chest covered in barnacles. It might be trapped.", "a": "Open it", "b": "Leave it"},
+	{"id": "stranger", "text": "A wounded stranger is signaling for help from a wreck.", "a": "Help them", "b": "Sail on"},
+	{"id": "cave", "text": "Sonar shows a shortcut through a dark cave. Something lives there.", "a": "Take the shortcut", "b": "Go around"},
+	{"id": "glow", "text": "A strange glowing coral pulses nearby. Rare minerals... or poison?", "a": "Harvest it", "b": "Don't touch"},
+]
+
 ## Ежедневные задания: event — что считаем, target — [мин, макс], reward.
 ## needs — отсек, без которого задание не выдаётся; scales — цель растёт с размером колонии.
 const QUEST_POOL := [

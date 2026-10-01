@@ -577,3 +577,32 @@
 576|Gdy grasz, pomieszczenia energii, tlenu i jedzenia same zbierają połowę produkcji.
 577|Wydaj perły
 578|Cena rośnie z każdym dzisiejszym zakupem
+579|%s nadciąga!
+580|Stukaj potwora, by go przegonić! Wszyscy koloniści pomagają.
+581|%s pokonany!
+582|%s odpłynął
+583|Wróci. Stań się silniejszy!
+584|Olbrzymia żabnica
+585|Kraken
+586|Wąż morski
+587|Krab tytan
+588|Twoja decyzja, nadzorco!
+589|Załoga znalazła zapieczętowaną skrzynię oblepioną pąklami. Może to pułapka.
+590|Otwórz
+591|Zostaw
+592|Ranny nieznajomy wzywa pomocy z wraku.
+593|Pomóż
+594|Płyń dalej
+595|Sonar pokazuje skrót przez ciemną jaskinię. Coś tam mieszka.
+596|Idź skrótem
+597|Obejdź
+598|Obok pulsuje dziwny świecący koral. Rzadkie minerały… czy trucizna?
+599|Zbierz
+600|Nie dotykaj
+601|Załoga postanowiła płynąć dalej.
+602|{n} zaryzykował i znalazł {v} kryształów!
+603|To była pułapka! {n} ranny. −{h} PŻ
+604|{n} uratował nieznajomego — dołączy do kolonii!
+605|To była zasadzka! {n} przebił się. −{h} PŻ
+606|Skrót zadziałał! Łódź wróci szybciej.
+607|Coś zaatakowało w jaskini! {n} ranny. −{h} PŻ

@@ -577,3 +577,32 @@
 576|Mentre giochi, le stanze di energia, ossigeno e cibo raccolgono da sole metà della produzione.
 577|Spendi perle
 578|Il prezzo sale a ogni acquisto di oggi
+579|%s si avvicina!
+580|Tocca il mostro per scacciarlo! Tutti i coloni aiutano.
+581|%s sconfitto!
+582|%s si è allontanato
+583|Tornerà. Diventa più forte!
+584|Rana pescatrice gigante
+585|Kraken
+586|Serpente marino
+587|Granchio titano
+588|A te la scelta, supervisore!
+589|L'equipaggio ha trovato un forziere sigillato pieno di cirripedi. Potrebbe essere una trappola.
+590|Aprilo
+591|Lascialo
+592|Uno sconosciuto ferito chiede aiuto da un relitto.
+593|Aiutalo
+594|Prosegui
+595|Il sonar mostra una scorciatoia in una grotta buia. Lì vive qualcosa.
+596|Prendi la scorciatoia
+597|Aggira
+598|Uno strano corallo luminoso pulsa vicino. Minerali rari… o veleno?
+599|Raccoglilo
+600|Non toccare
+601|L'equipaggio ha deciso di proseguire.
+602|{n} ha rischiato e trovato {v} cristalli!
+603|Era una trappola! {n} è ferito. −{h} PS
+604|{n} ha salvato lo sconosciuto: si unirà alla colonia!
+605|Era un'imboscata! {n} si è liberato. −{h} PS
+606|La scorciatoia ha funzionato! Il sottomarino tornerà prima.
+607|Qualcosa ha attaccato nella grotta! {n} è ferito. −{h} PS

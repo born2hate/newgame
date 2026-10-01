@@ -577,3 +577,32 @@
 576|Enquanto você joga, salas de energia, oxigênio e comida coletam metade sozinhas.
 577|Gastar pérolas
 578|O preço sobe a cada compra de hoje
+579|%s se aproxima!
+580|Toque no monstro para afastá-lo! Todos os colonos ajudam.
+581|%s derrotado!
+582|%s foi embora
+583|Ele vai voltar. Fique mais forte!
+584|Peixe-diabo gigante
+585|Kraken
+586|Serpente marinha
+587|Caranguejo titã
+588|Você decide, supervisor!
+589|A tripulação achou um baú lacrado coberto de cracas. Pode ser uma armadilha.
+590|Abrir
+591|Deixar
+592|Um estranho ferido pede ajuda de um naufrágio.
+593|Ajudar
+594|Seguir em frente
+595|O sonar mostra um atalho por uma caverna escura. Algo vive lá.
+596|Pegar o atalho
+597|Contornar
+598|Um coral brilhante estranho pulsa por perto. Minerais raros… ou veneno?
+599|Coletar
+600|Não tocar
+601|A tripulação decidiu seguir.
+602|{n} arriscou e achou {v} cristais!
+603|Era uma armadilha! {n} se feriu. −{h} PV
+604|{n} resgatou o estranho — ele vai se juntar à colônia!
+605|Era uma emboscada! {n} lutou para escapar. −{h} PV
+606|O atalho funcionou! O submarino volta mais cedo.
+607|Algo atacou na caverna! {n} se feriu. −{h} PV

@@ -688,7 +688,11 @@ func _refresh_expedition_button() -> void:
 	if not exp_btn.visible:
 		return
 	var e: Dictionary = Game.expeditions[0]
-	if Game.expedition_done(e):
+	if not Game.pending_choice(e).is_empty():
+		exp_btn.text = tr("Your call, Overseer!")
+		_gold(exp_btn)
+		exp_btn.scale = Vector2.ONE * (1.0 + 0.04 * sin(Time.get_ticks_msec() / 150.0))
+	elif Game.expedition_done(e):
 		exp_btn.text = tr("Collect loot!")
 		_gold(exp_btn)
 		exp_btn.scale = Vector2.ONE * (1.0 + 0.04 * sin(Time.get_ticks_msec() / 150.0))
@@ -2023,6 +2027,9 @@ func _dock_section(r: Dictionary) -> void:
 	if e.is_empty():
 		sheet_body.add_child(_with_icon(_button(tr("Plan an expedition"), _open_planner.bind(r.id, 0), 76), "expedition", 48))
 		return
+	var choice_box := VBoxContainer.new()
+	choice_box.add_theme_constant_override("separation", 8)
+	sheet_body.add_child(choice_box)
 	var zone: Dictionary = Defs.ZONES[e.zone]
 	var zbanner := Art.tex("res://art/zones/%s.png" % zone.id)
 	if zbanner:
@@ -2082,7 +2089,7 @@ func _dock_section(r: Dictionary) -> void:
 		Game.claim_expedition(e)
 		_close_sheet(), 76)
 	sheet_body.add_child(claim)
-	room_live_labels["exp"] = {"e": e, "bar": pb, "status": st, "log": logbox, "summary": summary, "scroll": logscroll, "fin": fin, "ad": ad, "claim": claim, "shown": -1}
+	room_live_labels["exp"] = {"e": e, "bar": pb, "status": st, "log": logbox, "summary": summary, "choice": choice_box, "choice_on": false, "scroll": logscroll, "fin": fin, "ad": ad, "claim": claim, "shown": -1}
 	_refresh_dock_live(r)
 
 func _refresh_dock_live(_r: Dictionary) -> void:
@@ -2095,6 +2102,36 @@ func _refresh_dock_live(_r: Dictionary) -> void:
 	d.ad.visible = not done and not e.get("ad_used", false) and Game.ads_left() > 0
 	d.claim.visible = done
 	set_cost_text(d.fin, tr("Finish ◆ %d") % Game.finish_cost(e) if not done else "")
+	var pc := Game.pending_choice(e)
+	if pc.is_empty() != (not d.choice_on):
+		d.choice_on = not pc.is_empty()
+		for ch in d.choice.get_children():
+			ch.queue_free()
+		if not pc.is_empty():
+			var card := PanelContainer.new()
+			card.add_theme_stylebox_override("panel", _box(Color(0.22, 0.14, 0.03, 0.95), Color(1.0, 0.8, 0.3), 14, 3))
+			var cv := VBoxContainer.new()
+			cv.add_theme_constant_override("separation", 10)
+			card.add_child(cv)
+			cv.add_child(_label(tr("Your call, Overseer!"), 22, Color(1.0, 0.86, 0.35)))
+			var q := _label(tr(pc.text), 19)
+			q.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			cv.add_child(q)
+			var hb := HBoxContainer.new()
+			hb.add_theme_constant_override("separation", 10)
+			var ba := _button(tr(pc.a), func():
+				show_toast(Game.resolve_choice(e, true))
+				_refresh_dock_live(_r), 60)
+			_gold(ba)
+			ba.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			var bb := _button(tr(pc.b), func():
+				show_toast(Game.resolve_choice(e, false))
+				_refresh_dock_live(_r), 60)
+			bb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			hb.add_child(ba)
+			hb.add_child(bb)
+			cv.add_child(hb)
+			d.choice.add_child(card)
 	var evs := Game.visible_events(e)
 	if evs.size() != d.shown:
 		d.shown = evs.size()

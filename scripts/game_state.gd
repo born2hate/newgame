@@ -499,6 +499,7 @@ func simulate(delta: float, offline: bool) -> void:
 			_spawn_random_incident()
 	if not offline:
 		_tick_raid(delta)
+		_tick_boss(delta)
 	if not offline and colonists.size() >= 6:
 		trader_timer -= delta * (2.0 if has_research("trader_beacon") else 1.0) * (1.0 + type_power("radio") * 0.03)
 		if trader_timer <= 0.0:
@@ -1129,6 +1130,11 @@ func launch_expedition(dock_id: int, zone_idx: int, ids: Array) -> bool:
 	for ev in events:
 		for k in ev.get("hp", {}):
 			damage[k] = damage.get(k, 0) + ev.hp[k]
+	# в половине походов — событие с выбором где-то в середине пути
+	var choice := {}
+	if rng.randf() < 0.5 + 0.1 * zone_idx:
+		var ch: Dictionary = Defs.EXP_CHOICES.pick_random()
+		choice = {"id": ch.id, "at": rng.randf_range(0.3, 0.7), "pick": ""}
 	for id in ids:
 		get_colonist(id).room = ON_EXPEDITION
 		get_colonist(id).help = -1
@@ -1136,7 +1142,7 @@ func launch_expedition(dock_id: int, zone_idx: int, ids: Array) -> bool:
 	expeditions.append({
 		"id": next_id, "dock": dock_id, "zone": zone_idx, "crew": ids.duplicate(),
 		"start": start, "end": start + zone.minutes * 60.0 * (0.7 if has_research("bathyscaphe_engines") else 1.0),
-		"events": events, "loot": loot, "damage": damage,
+		"events": events, "loot": loot, "damage": damage, "choice": choice,
 	})
 	next_id += 1
 	track("expedition")
@@ -1258,6 +1264,69 @@ func _plan_expedition(zone_idx: int, ids: Array, f: float, loot: Dictionary) -> 
 		events.append(ev)
 	return events
 
+## Событие с выбором, которое сейчас ждёт решения игрока (или пусто).
+func pending_choice(e: Dictionary) -> Dictionary:
+	var ch: Dictionary = e.get("choice", {})
+	if ch.is_empty() or ch.pick != "" or expedition_progress(e) < float(ch.at):
+		return {}
+	for d in Defs.EXP_CHOICES:
+		if d.id == ch.id:
+			return d
+	return {}
+
+func resolve_choice(e: Dictionary, risk: bool) -> String:
+	var ch: Dictionary = e.get("choice", {})
+	if ch.is_empty() or ch.pick != "":
+		return ""
+	ch.pick = "a" if risk else "b"
+	var zone_idx: int = e.zone
+	var who_id: int = e.crew.pick_random()
+	var who: String = get_colonist(who_id).get("name", "?").split(" ")[0]
+	var text := tr("The crew decided to move on.")
+	var ev := {"at": expedition_progress(e), "kind": "choice", "xp": 5, "hp": {}, "loot": {}}
+	if risk:
+		var luck := 0.0
+		for id in e.crew:
+			luck += stat(get_colonist(id), "luck")
+		var ok := rng.randf() < 0.5 + luck * 0.02
+		match ch.id:
+			"chest", "glow":
+				if ok:
+					var cr := rng.randi_range(2, 4) + zone_idx * 2
+					e.loot["crystals"] = int(e.loot.get("crystals", 0)) + cr
+					ev.loot = {"crystals": cr}
+					text = tr("{n} took the risk and found {v} crystals!").replace("{n}", who).replace("{v}", str(cr))
+				else:
+					var dmg := 15 + zone_idx * 6
+					e.damage[str(who_id)] = int(e.damage.get(str(who_id), 0)) + dmg
+					ev.hp = {str(who_id): dmg}
+					text = tr("It was a trap! {n} got hurt. −{h} HP").replace("{n}", who).replace("{h}", str(dmg))
+			"stranger":
+				if ok:
+					e.loot["colonist"] = "rare"
+					ev.loot = {"colonist": "rare"}
+					text = tr("{n} rescued the stranger — they will join the colony!").replace("{n}", who)
+				else:
+					var dmg := 18 + zone_idx * 6
+					e.damage[str(who_id)] = int(e.damage.get(str(who_id), 0)) + dmg
+					ev.hp = {str(who_id): dmg}
+					text = tr("It was an ambush! {n} fought free. −{h} HP").replace("{n}", who).replace("{h}", str(dmg))
+			"cave":
+				if ok:
+					var left := float(e.end) - now()
+					e.end = now() + left * 0.6
+					text = tr("The shortcut worked! The sub will be home sooner.")
+				else:
+					var dmg := 20 + zone_idx * 6
+					e.damage[str(who_id)] = int(e.damage.get(str(who_id), 0)) + dmg
+					ev.hp = {str(who_id): dmg}
+					text = tr("Something attacked in the cave! {n} was hurt. −{h} HP").replace("{n}", who).replace("{h}", str(dmg))
+	ev["text"] = text
+	e.events.append(ev)
+	e.events.sort_custom(func(x, y): return float(x.at) < float(y.at))
+	changed.emit()
+	return text
+
 func visible_events(e: Dictionary) -> Array:
 	var p := expedition_progress(e)
 	return e.events.filter(func(ev): return ev.at <= p)
@@ -1363,6 +1432,94 @@ const HAZARDS := {
 	"creature": {"label": "ATTACK", "msg": "Creature attack in %s!", "damage": 2.4},
 	"raid": {"label": "PIRATES", "msg": "Pirates in %s!", "damage": 0.0},
 }
+
+# ---------------------------------------------------------------- левиафан (босс глубины)
+## Раз в несколько часов игры у купола появляется чудовище. Игрок бьёт его нажатиями,
+## колонисты помогают сами; чудовище раз в BOSS_ATTACK секунд нападает на случайный отсек.
+## Не успели за BOSS_TIME — уплывает. Вне игры не появляется.
+const BOSS_MIN_POP := 15
+## Виды боссов: картинка art/creatures/boss_<id>.png (пока нет — удильщик), множитель силы.
+const BOSSES := [
+	{"id": "angler", "name": "Giant Anglerfish", "hp": 1.0},
+	{"id": "squid", "name": "Kraken", "hp": 1.25},
+	{"id": "serpent", "name": "Sea Serpent", "hp": 1.4},
+	{"id": "crab", "name": "Titan Crab", "hp": 1.6},
+]
+const BOSS_TIME := 150.0
+const BOSS_ATTACK := 18.0
+var boss := {}
+var boss_timer := 5400.0
+
+func boss_tier() -> int:
+	return colonists.size() / 10 + colony_level / 5
+
+func start_boss() -> void:
+	if not boss.is_empty():
+		return
+	var tier := boss_tier()
+	# чем сильнее колония, тем страшнее гость
+	var kind := clampi(rng.randi_range(0, mini(3, tier / 2)), 0, BOSSES.size() - 1)
+	var hp := (400.0 + 220.0 * tier) * float(BOSSES[kind].hp)
+	boss = {"hp": hp, "max": hp, "until": now() + BOSS_TIME, "attack": BOSS_ATTACK, "tier": tier, "kind": kind}
+	banner.emit("leviathan", tr("%s approaches!") % tr(BOSSES[kind].name), tr("Tap the monster to fight it off. Every colonist helps!"))
+	event.emit("breach")
+	changed.emit()
+
+## Урон от нажатия: растёт с уровнем колонии.
+func boss_tap_damage() -> int:
+	return 4 + colony_level / 2
+
+func hit_boss() -> int:
+	if boss.is_empty():
+		return 0
+	var d := boss_tap_damage()
+	boss.hp = float(boss.hp) - d
+	if boss.hp <= 0.0:
+		_end_boss(true)
+	return d
+
+func _tick_boss(delta: float) -> void:
+	if boss.is_empty():
+		if colonists.size() >= BOSS_MIN_POP and raid.is_empty():
+			boss_timer -= delta
+			if boss_timer <= 0.0:
+				boss_timer = rng.randf_range(7200.0, 12600.0)
+				start_boss()
+		return
+	# колонисты бьют сами: чем сильнее колония, тем быстрее
+	var dps := 0.0
+	for c in colonists:
+		if not c.get("child", false) and c.room != ON_EXPEDITION:
+			dps += fight_power(c) * 0.04
+	boss.hp = float(boss.hp) - dps * armory_bonus() * delta
+	if boss.hp <= 0.0:
+		_end_boss(true)
+		return
+	boss.attack = float(boss.attack) - delta
+	if boss.attack <= 0.0:
+		boss.attack = BOSS_ATTACK
+		var cand := rooms.filter(func(r): return can_have_hazard(r) and r.incident <= 0.0)
+		if not cand.is_empty():
+			start_hazard(cand.pick_random(), "creature", 60.0)
+	if now() > float(boss.until):
+		_end_boss(false)
+
+func _end_boss(won: bool) -> void:
+	var tier: int = boss.get("tier", 0) + int(boss.get("kind", 0))
+	var bname: String = tr(BOSSES[int(boss.get("kind", 0))].name)
+	boss = {}
+	if won:
+		var r := {"pearls": 300 + 120 * tier, "crystals": 6 + tier}
+		if rng.randf() < 0.35:
+			r["item"] = "legendary" if rng.randf() < 0.2 else "rare"
+		if rng.randf() < 0.25:
+			r["crates"] = {"silver": 1}
+		track("boss_won")
+		add_colony_xp(80)
+		grant(r, tr("%s defeated!") % bname)
+	else:
+		banner.emit("leviathan", tr("%s swam away") % bname, tr("It will be back. Get stronger!"))
+	changed.emit()
 
 # ---------------------------------------------------------------- налёты пиратов
 ## Как рейдеры в Fallout: подлодка причаливает к шлюзу, пираты ломают дверь и идут
@@ -2246,8 +2403,9 @@ func load_game() -> bool:
 	ads_count = int(data.get("meta", {}).get("ads_count", 0))
 	pearl_buys = data.get("meta", {}).get("pearl_buys", {})
 	pearl_buys_day = int(data.get("meta", {}).get("pearl_buys_day", -1))
-	# налёт не сохраняется: после перезапуска пиратов уже нет
+	# налёт и босс не сохраняются: после перезапуска их уже нет
 	raid = {}
+	boss = {}
 	for r in rooms:
 		if r.get("hazard", "") == "raid":
 			r.hazard = ""

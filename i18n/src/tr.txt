@@ -577,3 +577,32 @@
 576|Sen oynarken enerji, oksijen ve yiyecek odaları üretimin yarısını kendileri toplar.
 577|İnci harca
 578|Bugünkü her alımda fiyat artar
+579|%s yaklaşıyor!
+580|Canavarı kovmak için ona dokun! Tüm sakinler yardım eder.
+581|%s yenildi!
+582|%s yüzerek uzaklaştı
+583|Geri gelecek. Güçlen!
+584|Dev fener balığı
+585|Kraken
+586|Deniz yılanı
+587|Titan yengeç
+588|Karar senin, gözetmen!
+589|Ekip midyelerle kaplı mühürlü bir sandık buldu. Tuzak olabilir.
+590|Aç
+591|Bırak
+592|Yaralı bir yabancı bir enkazdan yardım istiyor.
+593|Yardım et
+594|Devam et
+595|Sonar karanlık bir mağaradan kısa yol gösteriyor. Orada bir şey yaşıyor.
+596|Kısa yoldan git
+597|Etrafından dolaş
+598|Yakında garip parlayan bir mercan atıyor. Nadir mineraller… yoksa zehir mi?
+599|Topla
+600|Dokunma
+601|Ekip yola devam etmeye karar verdi.
+602|{n} risk aldı ve {v} kristal buldu!
+603|Tuzakmış! {n} yaralandı. −{h} CP
+604|{n} yabancıyı kurtardı — koloniye katılacak!
+605|Pusuymuş! {n} savaşarak kurtuldu. −{h} CP
+606|Kısa yol işe yaradı! Denizaltı daha erken dönecek.
+607|Mağarada bir şey saldırdı! {n} yaralandı. −{h} CP

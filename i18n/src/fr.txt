@@ -577,3 +577,32 @@
 576|Pendant que tu joues, les salles d'énergie, d'oxygène et de nourriture récoltent la moitié toutes seules.
 577|Dépenser des perles
 578|Le prix augmente à chaque achat aujourd'hui
+579|%s approche !
+580|Touche le monstre pour le repousser ! Tous les colons aident.
+581|%s vaincu !
+582|%s s'est éloigné
+583|Il reviendra. Deviens plus fort !
+584|Baudroie géante
+585|Kraken
+586|Serpent de mer
+587|Crabe titan
+588|À toi de décider, superviseur !
+589|L'équipage a trouvé un coffre scellé couvert de bernacles. Peut-être un piège.
+590|L'ouvrir
+591|Le laisser
+592|Un inconnu blessé appelle à l'aide depuis une épave.
+593|L'aider
+594|Continuer
+595|Le sonar montre un raccourci par une grotte sombre. Quelque chose y vit.
+596|Prendre le raccourci
+597|Contourner
+598|Un étrange corail lumineux palpite tout près. Minerais rares… ou poison ?
+599|Le récolter
+600|Ne pas toucher
+601|L'équipage a décidé de continuer.
+602|{n} a pris le risque et trouvé {v} cristaux !
+603|C'était un piège ! {n} est blessé. −{h} PV
+604|{n} a sauvé l'inconnu — il rejoindra la colonie !
+605|C'était une embuscade ! {n} s'est dégagé. −{h} PV
+606|Le raccourci a marché ! Le sous-marin rentrera plus tôt.
+607|Quelque chose a attaqué dans la grotte ! {n} est blessé. −{h} PV

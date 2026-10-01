@@ -577,3 +577,32 @@
 576|Selama kamu bermain, ruangan energi, oksigen, dan makanan mengumpulkan setengah hasilnya sendiri.
 577|Belanjakan mutiara
 578|Harga naik setiap pembelian hari ini
+579|%s mendekat!
+580|Ketuk monster untuk mengusirnya! Semua kolonis membantu.
+581|%s dikalahkan!
+582|%s berenang pergi
+583|Ia akan kembali. Jadilah lebih kuat!
+584|Ikan sungut raksasa
+585|Kraken
+586|Ular laut
+587|Kepiting titan
+588|Keputusanmu, pengawas!
+589|Kru menemukan peti tersegel penuh teritip. Mungkin jebakan.
+590|Buka
+591|Tinggalkan
+592|Orang asing yang terluka meminta tolong dari bangkai kapal.
+593|Tolong
+594|Lanjutkan
+595|Sonar menunjukkan jalan pintas lewat gua gelap. Ada sesuatu di sana.
+596|Ambil jalan pintas
+597|Memutar
+598|Karang bercahaya aneh berdenyut di dekatnya. Mineral langka… atau racun?
+599|Panen
+600|Jangan sentuh
+601|Kru memutuskan melanjutkan perjalanan.
+602|{n} mengambil risiko dan menemukan {v} kristal!
+603|Itu jebakan! {n} terluka. −{h} HP
+604|{n} menyelamatkan orang asing itu — ia akan bergabung!
+605|Itu penyergapan! {n} berhasil lolos. −{h} HP
+606|Jalan pintasnya berhasil! Kapal akan pulang lebih cepat.
+607|Sesuatu menyerang di gua! {n} terluka. −{h} HP

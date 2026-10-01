@@ -317,6 +317,7 @@ func _draw_rest(depth_rows: int) -> void:
 	_draw_treasure()
 	_draw_trader()
 	_draw_pirate_sub()
+	_draw_boss()
 	for fl in floaters:
 		var a := clampf(fl.life, 0.0, 1.0)
 		var ic: Texture2D = Art.marker_icon(fl.get("icon", "")) if fl.get("icon", "") != "" else null
@@ -572,6 +573,40 @@ func _draw_raiders(r: Dictionary, inner: Rect2) -> void:
 		var hb := Rect2(feet + Vector2(-16, -h - 12), Vector2(32, 5))
 		draw_rect(hb, Color(0, 0, 0, 0.7))
 		draw_rect(Rect2(hb.position, Vector2(hb.size.x * rd.hp / rd.max, hb.size.y)), Color(1.0, 0.25, 0.2))
+
+## Левиафан у купола: огромный удильщик, полоска здоровья и таймер.
+func boss_rect() -> Rect2:
+	var span := Defs.GRID_COLS * CELL_W
+	var cx := span * 0.5 + sin(t * 0.6) * span * 0.25
+	return Rect2(cx - 260, -560 + sin(t * 1.3) * 25, 520, 340)
+
+var boss_hit := 0.0
+
+func _draw_boss() -> void:
+	if Game.boss.is_empty():
+		return
+	boss_hit = maxf(0.0, boss_hit - 0.05)
+	var r := boss_rect()
+	var kind: int = int(Game.boss.get("kind", 0))
+	var tex := Art.tex("res://art/creatures/boss_%s.png" % Game.BOSSES[kind].id)
+	var fallback := tex == null
+	if fallback:
+		tex = Art.tex("res://art/creatures/anglerfish.png")
+	var dir := -signf(cos(t * 0.6))
+	if tex:
+		var h := r.size.x * tex.get_height() / tex.get_width()
+		var tint := Color(1.0, 1.0 - boss_hit * 0.6, 1.0 - boss_hit * 0.6)
+		if fallback and kind > 0:
+			# пока нет своих картинок — разный оттенок
+			tint *= [Color.WHITE, Color(1.0, 0.6, 0.8), Color(0.6, 1.0, 0.7), Color(1.0, 0.7, 0.5)][kind]
+		draw_set_transform(r.get_center(), sin(t * 2.0) * 0.05, Vector2(dir, 1) * (1.0 + boss_hit * 0.06))
+		draw_texture_rect(tex, Rect2(-r.size.x / 2.0, -h / 2.0, r.size.x, h), false, tint)
+		draw_set_transform(Vector2.ZERO)
+	var hb := Rect2(r.position.x + 60, r.position.y - 30, r.size.x - 120, 18)
+	draw_rect(hb, Color(0, 0, 0, 0.7))
+	draw_rect(Rect2(hb.position, Vector2(hb.size.x * Game.boss.hp / Game.boss.max, hb.size.y)), Color(1.0, 0.2, 0.25))
+	draw_rect(hb, Color(1.0, 0.85, 0.4), false, 2.0)
+	_text(Vector2(hb.get_center().x, hb.position.y - 8), "%s · %s" % [tr(Game.BOSSES[kind].name).to_upper(), _short_time(float(Game.boss.until) - Game.now())], 22, Color(1.0, 0.9, 0.7), true)
 
 ## Подлодка пиратов у шлюза, пока идёт налёт.
 func _draw_pirate_sub() -> void:
@@ -1419,6 +1454,14 @@ func _on_press(p: Vector2) -> void:
 	if build_type != "":
 		return
 	var world := screen_to_world(p)
+	if not Game.boss.is_empty() and boss_rect().grow(30).has_point(world):
+		moved = true
+		var dmg := Game.hit_boss()
+		boss_hit = 1.0
+		add_shake(4.0)
+		Audio.play("tap", 0.7)
+		floaters.append({"pos": world + Vector2(randf_range(-20, 20), -20), "text": "-%d" % dmg, "icon": "", "color": Color(1.0, 0.5, 0.4), "life": 0.9})
+		return
 	for b in Game.raider_bodies:
 		var bp := raider_body_pos(b)
 		if world.distance_to(bp + Vector2(0, -20)) < 40.0:

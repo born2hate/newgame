@@ -578,3 +578,32 @@
 576|Mientras juegas, las salas de energía, oxígeno y comida recogen la mitad solas.
 577|Gastar perlas
 578|El precio sube con cada compra de hoy
+579|¡Se acerca: %s!
+580|¡Toca al monstruo para ahuyentarlo! Todos los colonos ayudan.
+581|¡%s derrotado!
+582|%s se alejó nadando
+583|Volverá. ¡Hazte más fuerte!
+584|Rape gigante
+585|Kraken
+586|Serpiente marina
+587|Cangrejo titán
+588|¡Tú decides, supervisor!
+589|La tripulación encontró un cofre sellado cubierto de percebes. Podría ser una trampa.
+590|Abrirlo
+591|Dejarlo
+592|Un desconocido herido pide ayuda desde un naufragio.
+593|Ayudarlo
+594|Seguir
+595|El sonar muestra un atajo por una cueva oscura. Algo vive allí.
+596|Tomar el atajo
+597|Rodear
+598|Un extraño coral brillante late cerca. ¿Minerales raros… o veneno?
+599|Recogerlo
+600|No tocar
+601|La tripulación decidió seguir.
+602|¡{n} se arriesgó y encontró {v} cristales!
+603|¡Era una trampa! {n} resultó herido. −{h} PS
+604|¡{n} rescató al desconocido: se unirá a la colonia!
+605|¡Era una emboscada! {n} se abrió paso. −{h} PS
+606|¡El atajo funcionó! El submarino volverá antes.
+607|¡Algo atacó en la cueva! {n} resultó herido. −{h} PS

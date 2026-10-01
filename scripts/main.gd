@@ -353,6 +353,25 @@ func _dev_screenshot() -> void:
 			camera.position = Vector2(900, 500)
 			camera.zoom = Vector2(1.6, 1.6)
 			await get_tree().create_timer(0.3).timeout
+		"boss_ru":
+			Audio.set_language("ru")
+			while Game.colonists.size() < 20:
+				Game.colonists.append(Game._make_colonist())
+			Game.start_boss()
+			Game.boss.hp = Game.boss.max * 0.6
+			camera.position = Vector2(700, -250)
+			camera.zoom = Vector2(0.8, 0.8)
+			await get_tree().create_timer(0.8).timeout
+		"choice_ru":
+			Audio.set_language("ru")
+			var dkc := Game._add_room("dock", 3, 1)
+			Game.launch_expedition(dkc.id, 1, [Game.colonists[3].id])
+			var ec := Game.expedition_at(dkc.id)
+			ec.start = Game.now() - 1000.0
+			ec.end = Game.now() + 800.0
+			ec["choice"] = {"id": "stranger", "at": 0.2, "pick": ""}
+			view.room_selected.emit(dkc.id)
+			await get_tree().create_timer(0.6).timeout
 		"expedition_ru":
 			Audio.set_language("ru")
 			var d2 := Game._add_room("dock", 3, 1)

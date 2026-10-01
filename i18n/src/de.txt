@@ -577,3 +577,32 @@
 576|Während du spielst, sammeln Energie-, Sauerstoff- und Nahrungsräume die Hälfte selbst ein.
 577|Perlen ausgeben
 578|Der Preis steigt mit jedem Kauf heute
+579|%s nähert sich!
+580|Tippe auf das Monster, um es zu vertreiben! Alle Kolonisten helfen.
+581|%s besiegt!
+582|%s ist weggeschwommen
+583|Es kommt wieder. Werde stärker!
+584|Riesen-Anglerfisch
+585|Krake
+586|Seeschlange
+587|Titanenkrabbe
+588|Deine Entscheidung, Aufseher!
+589|Die Crew fand eine versiegelte, mit Seepocken bedeckte Truhe. Vielleicht eine Falle.
+590|Öffnen
+591|Liegen lassen
+592|Ein verletzter Fremder signalisiert aus einem Wrack um Hilfe.
+593|Helfen
+594|Weiterfahren
+595|Das Sonar zeigt eine Abkürzung durch eine dunkle Höhle. Dort lebt etwas.
+596|Abkürzung nehmen
+597|Außen herum
+598|Eine seltsam leuchtende Koralle pulsiert in der Nähe. Seltene Minerale … oder Gift?
+599|Ernten
+600|Nicht anfassen
+601|Die Crew fuhr weiter.
+602|{n} wagte es und fand {v} Kristalle!
+603|Eine Falle! {n} wurde verletzt. −{h} LP
+604|{n} rettete den Fremden – er schließt sich der Kolonie an!
+605|Ein Hinterhalt! {n} kämpfte sich frei. −{h} LP
+606|Die Abkürzung hat geklappt! Das U-Boot ist früher zurück.
+607|In der Höhle griff etwas an! {n} wurde verletzt. −{h} LP

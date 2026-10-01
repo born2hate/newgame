@@ -136,3 +136,14 @@ transparent background, no text: <объект>
 | `raider_1.png` | то же, но `with a big rusty knife and eye patch` |
 | `raider_2.png` | то же, но `a big brute with a riveted metal shield` |
 | `pirate_sub.png` | `cartoon pirate submarine, rusty dark hull with skull flag and spikes, side view facing left, transparent background, mobile game style` |
+
+## Боссы глубины → `art/creatures/boss_<id>.png`
+
+Прозрачный фон, вид сбоку, смотрит влево, огромный и страшный, но в мультяшном стиле игры.
+
+| Файл | Промт |
+|---|---|
+| `boss_angler.png` | `giant monstrous anglerfish boss, glowing lure, huge jagged teeth, dark red and purple scales, side view facing left, cartoon mobile game boss, transparent background` |
+| `boss_squid.png` | `giant kraken squid boss with long tentacles and glowing eyes, purple and pink, side view facing left, cartoon mobile game boss, transparent background` |
+| `boss_serpent.png` | `huge sea serpent boss, long coiled body, green scales with glowing spines, open jaws, side view facing left, cartoon mobile game boss, transparent background` |
+| `boss_crab.png` | `titan crab boss with enormous claws and armored barnacle shell, orange and rust colors, side view facing left, cartoon mobile game boss, transparent background` |

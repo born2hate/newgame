@@ -367,6 +367,29 @@ func _initialize() -> void:
 	fam.add_colony_xp(fam.colony_xp_needed())
 	check(fam.colony_level == lv + 1, "уровень колонии растёт")
 	fam.free()
+	# босс и выбор в экспедиции
+	var bs = load("res://scripts/game_state.gd").new()
+	bs.new_game()
+	bs.start_boss()
+	check(not bs.boss.is_empty(), "босс появился")
+	var p_b: int = bs.pearls
+	for i in 500:
+		if bs.boss.is_empty():
+			break
+		bs.hit_boss()
+	check(bs.boss.is_empty() and bs.pearls > p_b, "босса победили нажатиями — награда")
+	bs.start_boss()
+	bs.boss.until = bs.now() - 1.0
+	bs.simulate(1.0, false)
+	check(bs.boss.is_empty(), "босс уплывает, если не успели")
+	var dk: Dictionary = bs._add_room("dock", 8, 1)
+	bs.launch_expedition(dk.id, 0, [bs.colonists[0].id])
+	var ex3: Dictionary = bs.expedition_at(dk.id)
+	ex3["choice"] = {"id": "chest", "at": 0.0, "pick": ""}
+	check(not bs.pending_choice(ex3).is_empty(), "в экспедиции ждёт выбор")
+	var txt: String = bs.resolve_choice(ex3, true)
+	check(txt != "" and bs.pending_choice(ex3).is_empty(), "выбор сделан, результат в журнале")
+	bs.free()
 	# налёт пиратов
 	var pr = load("res://scripts/game_state.gd").new()
 	pr.new_game()
