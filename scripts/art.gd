@@ -123,6 +123,8 @@ static func marker_icon(key: String) -> Texture2D:
 		return material(key.trim_prefix("mat_"))
 	if key == "blueprint":
 		return blueprint()
+	if key == "storm":
+		return tex("res://art/ui/storm.png")
 	if key.begins_with("crate_"):
 		return tex("res://art/ui/shop/%s.png" % key)
 	if key.begins_with("item_"):
