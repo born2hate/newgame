@@ -298,6 +298,18 @@ func add_chains_section() -> void:
 func add_weekly_section() -> void:
 	var ev := Game.weekly_event()
 	hud._section(tr("Weekly event · %d days left") % Game.weekly_days_left())
+	var wart := Art.tex("res://art/events/weekly_%s.png" % ev.mod)
+	if wart:
+		var wpic := TextureRect.new()
+		wpic.texture = wart
+		wpic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		wpic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		wpic.custom_minimum_size = Vector2(0, 130)
+		wpic.mouse_filter = Control.MOUSE_FILTER_STOP
+		wpic.gui_input.connect(func(e: InputEvent):
+			if (e is InputEventMouseButton and e.pressed) or (e is InputEventScreenTouch and e.pressed):
+				open_event_shop())
+		_body().add_child(wpic)
 	var row: HBoxContainer = hud._card(Color(0.22, 0.08, 0.2, 0.95), Color(1.0, 0.5, 0.8, 0.8))
 	var info := VBoxContainer.new()
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
