@@ -3,7 +3,7 @@
 All notable changes to **Deep Colony** are listed here, newest first.
 APK builds live in [`releases/`](releases/).
 
-## Unreleased
+## 0.14 — 2026-10-02
 ### Added
 - **Event shop**: the weekly goal now pays **event tokens** (~300 for the full goal). Spend them on a permanent **event trophy**, a legendary blueprint, crates, crystals and rare materials. Tokens burn when the week ends. Extra tokens for pearls (price doubles with each purchase that week).
 - **Event trophies**: Golden Clam, Tide Breaker, Kelp Crown, Brass Compass — each gives a small permanent bonus and levels up (to 5) every time its event comes back. Trophy collection in the event shop.
