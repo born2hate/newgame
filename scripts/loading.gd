@@ -18,15 +18,35 @@ var progress := 0.0
 func _ready() -> void:
 	layer = 50
 	var bg := TextureRect.new()
-	bg.texture = Art.tex("res://art/backgrounds/ocean.png")
+	# большая картинка-заставка (случайная из трёх), иначе — фон океана с куполом
+	var splash := Art.tex("res://art/backgrounds/splash_%d.png" % randi_range(1, 3))
+	bg.texture = splash if splash else Art.tex("res://art/backgrounds/ocean.png")
 	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
 	var shade := ColorRect.new()
-	shade.color = Color(0.0, 0.03, 0.08, 0.45)
+	shade.color = Color(0.0, 0.03, 0.08, 0.25 if splash else 0.45)
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(shade)
+	if splash:
+		# затемнение снизу, чтобы подсказка читалась на пёстрой картинке
+		var g := Gradient.new()
+		g.set_color(0, Color(0, 0.02, 0.06, 0.0))
+		g.set_color(1, Color(0, 0.02, 0.06, 0.85))
+		var gt := GradientTexture2D.new()
+		gt.gradient = g
+		gt.fill_from = Vector2(0, 0)
+		gt.fill_to = Vector2(0, 1)
+		var fade := TextureRect.new()
+		fade.texture = gt
+		fade.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		fade.stretch_mode = TextureRect.STRETCH_SCALE
+		fade.anchor_left = 0.0
+		fade.anchor_right = 1.0
+		fade.anchor_top = 0.55
+		fade.anchor_bottom = 1.0
+		add_child(fade)
 	var logo := TextureRect.new()
 	logo.texture = Art.tex("res://art/ui/logo.png")
 	logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -46,6 +66,7 @@ func _ready() -> void:
 	dome.offset_right = 260
 	dome.offset_top = -560
 	dome.offset_bottom = -260
+	dome.visible = splash == null
 	add_child(dome)
 	bar = ProgressBar.new()
 	bar.show_percentage = false
