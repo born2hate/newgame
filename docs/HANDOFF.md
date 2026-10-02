@@ -20,10 +20,7 @@
 - **0.14 (12) загружена во внутреннее тестирование** (`play_publish.py bundle`), статус completed.
 
 ## Осталось
-1. **Платёжный профиль**: Play Console → Settings → Payments profile (или Monetize → Monetization setup).
-   Без него API отвечает «Cannot manage a one-time product without first registering a payments profile».
-   Потом: `PLAY_KEY=<json> python3 tools/play_publish.py products` — создаст и активирует 15 товаров
-   (новый API monetization.onetimeproducts, старый inappproducts закрыт).
+1. ~~Товары~~: платёжный профиль создан, 15 товаров созданы и активны (`play_publish.py products`).
 2. Internal testing → Testers: добавить свой email, установить по ссылке, проверить покупку и рекламу.
 3. Пользователь отмечает ИИ-картинки в Main store listing → AI asset declaration.
 4. Ключи и JSON сервисного аккаунта в репозиторий не класть.

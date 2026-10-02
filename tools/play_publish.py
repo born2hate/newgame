@@ -112,7 +112,6 @@ def cmd_bundle(path: str, track: str) -> None:
 
 
 # Цены в долларах — как в docs/store/play_console_answers.md; Play пересчитывает их по странам.
-REGIONS_VERSION = "2025/03"
 
 
 def iap_products() -> list:
@@ -159,7 +158,8 @@ def cmd_products() -> None:
             "purchaseOptions": [option],
         }
         otp.patch(packageName=PACKAGE, productId=it["id"], body=body, allowMissing=True,
-                  updateMask="listings,purchaseOptions", **{"regionsVersion_version": REGIONS_VERSION}
+                  updateMask="listings,purchaseOptions",
+                  regionsVersion_version=conv["regionVersion"]["version"]
                   ).execute(num_retries=6)
         otp.purchaseOptions().batchUpdateStates(packageName=PACKAGE, productId=it["id"], body={"requests": [
             {"activatePurchaseOptionRequest": {"packageName": PACKAGE, "productId": it["id"],
