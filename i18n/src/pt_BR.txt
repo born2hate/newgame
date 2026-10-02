@@ -872,3 +872,4 @@
 871|A colônia continua trabalhando com o jogo fechado. Toque fora de um menu para fechá-lo. Mascotes dão bônus e crescem com você. Às vezes um forasteiro misterioso aparece numa sala: toque rápido!
 872|Materiais raros
 873|Trocar materiais extras:
+874|Materiais de construção

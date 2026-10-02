@@ -872,3 +872,4 @@
 871|Koloni tetap bekerja saat game ditutup. Ketuk di luar menu untuk menutupnya. Peliharaan memberi bonus dan tumbuh bersamamu. Kadang orang asing misterius muncul di ruangan: cepat ketuk dia!
 872|Bahan langka
 873|Tukar bahan berlebih:
+874|Bahan bangunan

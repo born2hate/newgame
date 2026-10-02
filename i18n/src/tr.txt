@@ -872,3 +872,4 @@
 871|Oyun kapalıyken de koloni çalışır. Bir menüyü kapatmak için dışına dokun. Evcil hayvanlar bonus verir ve seninle büyür. Bazen bir odada gizemli bir yabancı belirir: hemen dokun!
 872|Nadir malzemeler
 873|Fazla malzemeleri takas et:
+874|Yapı malzemeleri

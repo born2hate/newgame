@@ -1280,13 +1280,13 @@ func build_project_stage(id: String) -> bool:
 	var st := project_stage(id)
 	var reward := {"crates": {"gold" if st >= Defs.PROJECT_STAGES else "silver": 1}}
 	if st == Defs.PROJECT_STAGES:
-		reward["crystals"] = 20
+		reward["crystals"] = 10
 	if st > Defs.PROJECT_STAGES:
 		# мастерство: серебряный ящик, каждый 5-й уровень — золотой и кристаллы
 		var lv := st - Defs.PROJECT_STAGES
 		reward = {"crates": {"gold" if lv % 5 == 0 else "silver": 1}}
 		if lv % 5 == 0:
-			reward["crystals"] = 10
+			reward["crystals"] = 5
 		grant(reward, tr("%s: mastery %d!") % [tr(project_def(id).name), lv])
 		return true
 	grant(reward, tr("%s: stage %d complete!") % [tr(project_def(id).name), st])
@@ -1339,7 +1339,7 @@ func catch_stranger() -> Dictionary:
 	if roll < 0.06:
 		r["blueprint"] = random_blueprint("rare" if rng.randf() < 0.3 else "common")
 	elif roll < 0.18:
-		r["crystals"] = rng.randi_range(2, 4)
+		r["crystals"] = rng.randi_range(1, 2)
 	elif roll < 0.4:
 		var mk: String = Defs.MATERIALS.keys().slice(0, 6).pick_random()
 		r["materials"] = {mk: rng.randi_range(2, 4)}
@@ -1358,7 +1358,7 @@ func _tick_crafts() -> void:
 
 func craft_finish_cost(room: Dictionary) -> int:
 	var j := craft_job(room)
-	return 0 if j.is_empty() else maxi(1, ceili((float(j.end) - now()) / 240.0))
+	return 0 if j.is_empty() else rush_price(float(j.end) - now())
 
 func finish_craft_now(room: Dictionary) -> void:
 	if not crystal_rush_allowed() or craft_job(room).is_empty() or craft_ready(room):
@@ -1496,7 +1496,7 @@ func safe_rush_cost(room: Dictionary) -> int:
 	var t := cycle_time(room)
 	if t == INF:
 		return -1
-	return clampi(ceili((1.0 - room.progress) * t / 60.0), 1, 60)
+	return clampi(ceili((1.0 - room.progress) * t / 60.0), 2, 60)
 
 func rush_safe(room: Dictionary) -> void:
 	if not crystal_rush_allowed():
@@ -1839,7 +1839,7 @@ func _explore_event(e: Dictionary, t: float) -> void:
 		var p_crate := (0.03 + 0.01 * zone_idx) if L.has("crate") else 0.0
 		var p_item := p_crate + 0.07 + 0.02 * zone_idx
 		var p_surv := p_item + (0.02 if L.has("survivor") else 0.0)
-		var p_cr := p_surv + (0.06 if L.has("crystals") else 0.0)
+		var p_cr := p_surv + (0.02 if L.has("crystals") else 0.0)
 		var p_bp := p_cr + 0.02
 		var p_mat := p_bp + 0.25
 		var p_res := p_mat + (0.15 if L.has("resources") else 0.0)
@@ -2286,8 +2286,12 @@ func expedition_so_far(e: Dictionary) -> Dictionary:
 				out.loot[k] = lt[k]
 	return out
 
+## Цена ускорения за кристаллы: ~1 кристалл за 4 минуты ожидания, минимум 3.
+func rush_price(seconds_left: float) -> int:
+	return maxi(3, ceili(maxf(0.0, seconds_left) / 240.0) + 2)
+
 func finish_cost(e: Dictionary) -> int:
-	return maxi(1, ceili((float(e.end) - now()) / 120.0))
+	return rush_price(float(e.end) - now())
 
 func finish_expedition_now(e: Dictionary) -> void:
 	if not crystal_rush_allowed():
@@ -2464,7 +2468,7 @@ func _end_boss(won: bool) -> void:
 	var bname: String = tr(BOSSES[int(boss.get("kind", 0))].name)
 	boss = {}
 	if won:
-		var r := {"pearls": 300 + 120 * tier, "crystals": 3 + tier / 2}
+		var r := {"pearls": 300 + 120 * tier, "crystals": 1 + tier / 2}
 		# боссы — главный источник редких и легендарных чертежей
 		var br := rng.randf()
 		if br < 0.12 + 0.02 * tier:
@@ -2969,7 +2973,7 @@ func research_left() -> float:
 
 ## 1 кристалл за каждые 4 минуты до конца.
 func research_finish_cost() -> int:
-	return maxi(1, ceili(research_left() / 240.0))
+	return rush_price(research_left())
 
 func finish_research_now() -> void:
 	if not crystal_rush_allowed():
@@ -3370,7 +3374,7 @@ func train(c: Dictionary, stat: String) -> bool:
 	return true
 
 func heal_cost(c: Dictionary) -> int:
-	return maxi(1, ceili((100.0 - c.health) / 20.0))
+	return maxi(2, ceili((100.0 - c.health) / 10.0))
 
 func heal(c: Dictionary) -> void:
 	if c.health >= 100.0 or not spend_crystals(heal_cost(c)):

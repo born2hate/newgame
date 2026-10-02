@@ -872,3 +872,4 @@
 871|La colonia lavora anche a gioco chiuso. Tocca fuori da un menu per chiuderlo. Gli animali danno bonus e crescono con te. A volte uno straniero misterioso appare in una stanza: toccalo in fretta!
 872|Materiali rari
 873|Scambia materiali in eccesso:
+874|Materiali da costruzione

@@ -518,14 +518,15 @@ func open_event_shop() -> void:
 					title = tr("Gold Crate")
 				"silver_crate":
 					title = tr("Silver Crate")
-				"crystals":
-					title = tr("%d crystals") % int(r.crystals)
+				"build_mats":
+					title = tr("Building materials")
 				_:
 					title = tr("Rare materials")
-					var parts := []
-					for m in r.get("materials", {}):
-						parts.append("%d %s" % [int(r.materials[m]), tr(Defs.MATERIALS[m].name)])
-					sub = ", ".join(parts)
+			if r.has("materials"):
+				var parts := []
+				for m in r.get("materials", {}):
+					parts.append("%d %s" % [int(r.materials[m]), tr(Defs.MATERIALS[m].name)])
+				sub = ", ".join(parts)
 		var info := VBoxContainer.new()
 		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		info.size_flags_vertical = Control.SIZE_SHRINK_CENTER

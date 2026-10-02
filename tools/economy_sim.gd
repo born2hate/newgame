@@ -257,6 +257,8 @@ func _event_shop() -> void:
 	for i in g.weekly_event().tiers.size():
 		g.claim_weekly(i)
 	_ce("weekly")
+	if OS.get_cmdline_user_args().has("noevent"):
+		return
 	var pe0: int = g.pearls
 	while g.pearls > 30000 and g.event_cache_price() <= g.pearls * 0.25:
 		g.buy_event_cache()

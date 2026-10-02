@@ -878,6 +878,7 @@ const T := {
 	"The colony keeps working while the game is closed. Tap anywhere outside a menu to close it. Pets give bonuses and grow with you. A mysterious stranger sometimes appears in a room: tap them quickly!": "Oyun kapalıyken de koloni çalışır. Bir menüyü kapatmak için dışına dokun. Evcil hayvanlar bonus verir ve seninle büyür. Bazen bir odada gizemli bir yabancı belirir: hemen dokun!",
 	"Rare materials": "Nadir malzemeler",
 	"Trade spare materials:": "Fazla malzemeleri takas et:",
+	"Building materials": "Yapı malzemeleri",
 }
 
 static func make() -> Translation:

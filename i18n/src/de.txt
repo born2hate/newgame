@@ -872,3 +872,4 @@
 871|Die Kolonie arbeitet weiter, während das Spiel geschlossen ist. Tippe außerhalb eines Menüs, um es zu schließen. Haustiere geben Boni und wachsen mit dir. Manchmal taucht ein geheimnisvoller Fremder in einem Raum auf: tippe schnell darauf!
 872|Seltene Materialien
 873|Überschüssiges tauschen:
+874|Baumaterialien

@@ -872,3 +872,4 @@
 871|La colonie continue de tourner jeu fermé. Touchez hors d'un menu pour le fermer. Les animaux donnent des bonus et grandissent avec vous. Un mystérieux inconnu apparaît parfois dans une salle : touchez-le vite !
 872|Matériaux rares
 873|Échanger le surplus :
+874|Matériaux de construction

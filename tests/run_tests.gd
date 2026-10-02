@@ -547,7 +547,8 @@ func _initialize() -> void:
 	check(stg.can_start_any_research(), "наука есть — значок горит")
 	stg.start_research("efficient_reactors")
 	check(not stg.can_start_any_research(), "исследование идёт — значка нет")
-	check(stg.research_finish_cost() == 3, "ускорение 10 минут стоит 3 кристалла (%d)" % stg.research_finish_cost())
+	check(stg.research_finish_cost() == 5, "ускорение 10 минут стоит 5 кристаллов (%d)" % stg.research_finish_cost())
+	check(stg.rush_price(5 * 3600) == 77 and stg.rush_price(30) == 3, "5 часов — 77 кристаллов, минимум 3")
 	stg.free()
 	# открытие отсеков: глава сюжета ИЛИ население
 	var ul = load("res://scripts/game_state.gd").new()
