@@ -25,7 +25,8 @@
   и опубликовано сообщение GDPR, иначе окно не появится.
 - Снос отсеков (возврат 15% стройки и улучшений) — `Game.demolish`, кнопка в меню отсека.
 - Первая проверка Google пройдена. **0.15 (14) выпущена в Internal и Alpha** (`completed`).
-  Production — после проверки на телефоне: Production → Create release → Add from library → 14.
+- **2026-10-02: 0.15 (14) отправлена в Production** (177 стран, 100% — первый релиз нельзя выпускать частично).
+  После публикации: AdMob → Apps → Deep Colony → Add store; app-ads.txt уже на https://workizon.ltd/app-ads.txt.
 
 ## Осталось
 1. ~~Товары~~: платёжный профиль создан, 15 товаров созданы и активны (`play_publish.py products`).
