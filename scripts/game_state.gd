@@ -110,8 +110,11 @@ func has_pet(id: String) -> bool:
 func grant_pet(id := "") -> String:
 	var free: Array = Defs.PETS.keys().filter(func(k): return not k in pets_owned)
 	if free.is_empty():
-		crystals += 10
-		return tr("+%d crystals") % 10
+		# все питомцы уже есть: жемчуг и опыт текущему питомцу вместо кристаллов
+		pearls += 300
+		if pet != "":
+			_pet_gain(40)
+		return tr("+%d pearls") % 300
 	if id == "" or id in pets_owned:
 		id = free.pick_random()
 	pets_owned.append(id)
