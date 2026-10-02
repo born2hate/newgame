@@ -1839,7 +1839,7 @@ func _explore_event(e: Dictionary, t: float) -> void:
 		var p_crate := (0.03 + 0.01 * zone_idx) if L.has("crate") else 0.0
 		var p_item := p_crate + 0.07 + 0.02 * zone_idx
 		var p_surv := p_item + (0.02 if L.has("survivor") else 0.0)
-		var p_cr := p_surv + (0.02 if L.has("crystals") else 0.0)
+		var p_cr := p_surv + (0.01 if L.has("crystals") else 0.0)
 		var p_bp := p_cr + 0.02
 		var p_mat := p_bp + 0.25
 		var p_res := p_mat + (0.15 if L.has("resources") else 0.0)
@@ -2206,7 +2206,7 @@ func resolve_choice(e: Dictionary, risk: bool) -> String:
 		match ch.id:
 			"chest", "glow":
 				if ok:
-					var cr := 1 + zone_idx / 2
+					var cr := 1
 					e.loot["crystals"] = int(e.loot.get("crystals", 0)) + cr
 					ev.loot = {"crystals": cr}
 					text = tr("{n} took the risk and found {v} crystals!").replace("{n}", who).replace("{v}", str(cr))

@@ -164,13 +164,13 @@ const ROOMS := {
 ## Шансы показываются игроку в магазине (требование Apple/Google).
 const CRATES := {
 	"common": {"name": "Supply Crate", "rolls": 2, "color": Color(0.55, 0.75, 0.9), "table": [
-		[50, "pearls", 50, 120], [20, "resources", 40, 80], [3, "crystals", 1, 1],
+		[50, "pearls", 50, 120], [20, "resources", 40, 80],
 		[2, "colonist_rare", 1, 1], [1, "colonist_legendary", 1, 1]]},
 	"silver": {"name": "Silver Crate", "rolls": 3, "color": Color(0.85, 0.9, 1.0), "table": [
-		[40, "pearls", 120, 280], [20, "resources", 80, 150], [8, "crystals", 1, 2],
+		[40, "pearls", 120, 280], [20, "resources", 80, 150], [4, "crystals", 1, 2],
 		[5, "colonist_rare", 1, 1], [1, "colonist_legendary", 1, 1], [3, "pet", 1, 1]]},
 	"gold": {"name": "Gold Crate", "rolls": 4, "color": Color(1.0, 0.8, 0.3), "guaranteed": "colonist_rare", "table": [
-		[35, "pearls", 250, 550], [20, "resources", 150, 250], [10, "crystals", 2, 4],
+		[35, "pearls", 250, 550], [20, "resources", 150, 250], [6, "crystals", 2, 3],
 		[10, "colonist_rare", 1, 1], [4, "colonist_legendary", 1, 1], [8, "pet", 1, 1]]},
 }
 
@@ -194,10 +194,10 @@ const ZONES := [
 		"loot": {"pearls": [110, 215], "crate": "common"}},
 	{"id": "vents", "name": "Hydrothermal Vents", "minutes": 120, "danger": 0.5, "power": 34, "unlock_pop": 12,
 		"desc": "Scalding water, rare minerals.",
-		"loot": {"pearls": [180, 330], "crystals": [0, 1], "crate": "silver"}},
+		"loot": {"pearls": [180, 330], "crate": "silver"}},
 	{"id": "trench", "name": "Abyssal Trench", "minutes": 240, "danger": 0.7, "power": 45, "unlock_pop": 16,
 		"desc": "The deepest dark. Legends live here.",
-		"loot": {"pearls": [330, 570], "crystals": [0, 2], "crate": "gold", "survivor": 0.25}},
+		"loot": {"pearls": [330, 570], "crystals": [0, 1], "crate": "gold", "survivor": 0.25}},
 ]
 
 ## Шаблоны записей журнала экспедиции ({n} — имя члена экипажа).
