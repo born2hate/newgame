@@ -23,8 +23,9 @@
 - Окно согласия GDPR (Google UMP) перед инициализацией AdMob, кнопка «Privacy settings» в настройках
   (видна только там, где согласие требуется). В AdMob → Privacy & messaging должно быть создано
   и опубликовано сообщение GDPR, иначе окно не появится.
-- AAB 13 загружен в библиотеку Play (без трека): 12 на первой проверке Google в Alpha/Internal.
-  После одобрения: Internal/Production → Create release → Add from library → 13.
+- Снос отсеков (возврат 15% стройки и улучшений) — `Game.demolish`, кнопка в меню отсека.
+- Первая проверка Google пройдена. **0.15 (14) выпущена в Internal и Alpha** (`completed`).
+  Production — после проверки на телефоне: Production → Create release → Add from library → 14.
 
 ## Осталось
 1. ~~Товары~~: платёжный профиль создан, 15 товаров созданы и активны (`play_publish.py products`).

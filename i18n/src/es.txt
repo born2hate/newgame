@@ -875,3 +875,9 @@
 873|Cambiar materiales sobrantes:
 874|Materiales de construcción
 875|Ajustes de privacidad
+876|Esta sala no se puede demoler.
+877|Primero resuelve la emergencia.
+878|Otras salas quedarían aisladas.
+879|%s demolida: +%d perlas
+880|Demoler +◉%d
+881|Toca otra vez para demoler +◉%d

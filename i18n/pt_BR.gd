@@ -880,6 +880,12 @@ const T := {
 	"Trade spare materials:": "Trocar materiais extras:",
 	"Building materials": "Materiais de construção",
 	"Privacy settings": "Configurações de privacidade",
+	"This room can't be demolished.": "Esta sala não pode ser demolida.",
+	"Deal with the emergency first.": "Resolva a emergência primeiro.",
+	"Other rooms would be cut off.": "Outras salas ficariam isoladas.",
+	"%s demolished: +%d pearls": "%s demolida: +%d pérolas",
+	"Demolish +◉%d": "Demolir +◉%d",
+	"Tap again to demolish +◉%d": "Toque de novo para demolir +◉%d",
 }
 
 static func make() -> Translation:

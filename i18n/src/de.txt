@@ -874,3 +874,9 @@
 873|Überschüssiges tauschen:
 874|Baumaterialien
 875|Datenschutzeinstellungen
+876|Dieser Raum kann nicht abgerissen werden.
+877|Kümmere dich zuerst um den Notfall.
+878|Andere Räume wären abgeschnitten.
+879|%s abgerissen: +%d Perlen
+880|Abreißen +◉%d
+881|Nochmal tippen zum Abreißen +◉%d

@@ -874,3 +874,9 @@
 873|Trocar materiais extras:
 874|Materiais de construção
 875|Configurações de privacidade
+876|Esta sala não pode ser demolida.
+877|Resolva a emergência primeiro.
+878|Outras salas ficariam isoladas.
+879|%s demolida: +%d pérolas
+880|Demolir +◉%d
+881|Toque de novo para demolir +◉%d

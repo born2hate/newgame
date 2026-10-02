@@ -880,6 +880,12 @@ const T := {
 	"Trade spare materials:": "Fazla malzemeleri takas et:",
 	"Building materials": "Yapı malzemeleri",
 	"Privacy settings": "Gizlilik ayarları",
+	"This room can't be demolished.": "Bu oda yıkılamaz.",
+	"Deal with the emergency first.": "Önce acil durumu çöz.",
+	"Other rooms would be cut off.": "Diğer odaların bağlantısı kesilir.",
+	"%s demolished: +%d pearls": "%s yıkıldı: +%d inci",
+	"Demolish +◉%d": "Yık +◉%d",
+	"Tap again to demolish +◉%d": "Yıkmak için tekrar dokun +◉%d",
 }
 
 static func make() -> Translation:

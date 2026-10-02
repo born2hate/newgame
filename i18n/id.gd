@@ -880,6 +880,12 @@ const T := {
 	"Trade spare materials:": "Tukar bahan berlebih:",
 	"Building materials": "Bahan bangunan",
 	"Privacy settings": "Pengaturan privasi",
+	"This room can't be demolished.": "Ruangan ini tidak bisa dibongkar.",
+	"Deal with the emergency first.": "Atasi keadaan darurat dulu.",
+	"Other rooms would be cut off.": "Ruangan lain akan terputus.",
+	"%s demolished: +%d pearls": "%s dibongkar: +%d mutiara",
+	"Demolish +◉%d": "Bongkar +◉%d",
+	"Tap again to demolish +◉%d": "Ketuk lagi untuk membongkar +◉%d",
 }
 
 static func make() -> Translation:

@@ -6,6 +6,7 @@ APK builds live in [`releases/`](releases/).
 ## 0.15 — 2026-10-02
 ### Added
 - **Google Play release build**: real in-app purchases (Google Play Billing) with local prices from the store, and real rewarded video ads (AdMob).
+- **Demolish rooms** (like Fallout Shelter): get back 15% of what the room cost, upgrades included. Workers are freed; the airlock, rooms in an emergency and rooms that would cut others off can't be demolished.
 - **Ad consent** for players in the EEA and UK (Google consent message on first launch) and **Privacy settings** in Settings to change the choice later.
 
 ## 0.14 — 2026-10-02

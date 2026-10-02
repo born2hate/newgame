@@ -874,3 +874,9 @@
 873|Fazla malzemeleri takas et:
 874|Yapı malzemeleri
 875|Gizlilik ayarları
+876|Bu oda yıkılamaz.
+877|Önce acil durumu çöz.
+878|Diğer odaların bağlantısı kesilir.
+879|%s yıkıldı: +%d inci
+880|Yık +◉%d
+881|Yıkmak için tekrar dokun +◉%d

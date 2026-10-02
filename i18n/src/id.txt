@@ -874,3 +874,9 @@
 873|Tukar bahan berlebih:
 874|Bahan bangunan
 875|Pengaturan privasi
+876|Ruangan ini tidak bisa dibongkar.
+877|Atasi keadaan darurat dulu.
+878|Ruangan lain akan terputus.
+879|%s dibongkar: +%d mutiara
+880|Bongkar +◉%d
+881|Ketuk lagi untuk membongkar +◉%d

@@ -861,6 +861,26 @@ func _initialize() -> void:
 	xg.clock_offset = x_off0
 	xg.free()
 
+	# снос отсека: 15% вложенного, рабочие свободны, связность базы не рвётся
+	var dg = load("res://scripts/game_state.gd").new()
+	dg.traits_enabled = false
+	dg.new_game()
+	check(dg.demolish_block(dg.find_room_of_type("airlock")) != "", "шлюз снести нельзя")
+	check(dg.demolish_block(dg.room_at(5, 0)) != "", "лифт, без которого отрежет нижний ряд, снести нельзя")
+	var d_farm: Dictionary = dg.find_room_of_type("farm")
+	var d_worker: Dictionary = dg.workers_in(d_farm)[0]
+	var d_p0: int = dg.pearls
+	check(dg.demolish_value(d_farm) == int(Defs.ROOMS.farm.cost * 0.15), "возврат — 15% цены")
+	check(dg.demolish(d_farm) and dg.find_room_of_type("farm").is_empty(), "крайний отсек снесён")
+	check(dg.pearls == d_p0 + int(Defs.ROOMS.farm.cost * 0.15), "жемчуг вернулся")
+	check(d_worker.room == -1, "рабочий снесённого отсека свободен")
+	var d_ox: Dictionary = dg.find_room_of_type("oxygen")
+	d_ox.level = 3
+	check(dg.demolish_value(d_ox) == int((Defs.ROOMS.oxygen.cost + Defs.upgrade_cost("oxygen", 1) + Defs.upgrade_cost("oxygen", 2)) * 0.15), "в возврат входят улучшения")
+	d_ox.incident = 5.0
+	check(dg.demolish_block(d_ox) != "", "во время ЧП сносить нельзя")
+	dg.free()
+
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(g.SAVE_PATH))
 	g.free(); g2.free(); g3.free()
 	print("FAILURES: %d" % failures)

@@ -874,3 +874,9 @@
 873|Wymień nadmiar materiałów:
 874|Materiały budowlane
 875|Ustawienia prywatności
+876|Tego pomieszczenia nie można zburzyć.
+877|Najpierw opanuj sytuację awaryjną.
+878|Inne pomieszczenia zostałyby odcięte.
+879|%s zburzono: +%d pereł
+880|Zburz +◉%d
+881|Dotknij ponownie, aby zburzyć +◉%d

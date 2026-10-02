@@ -874,3 +874,9 @@
 873|Échanger le surplus :
 874|Matériaux de construction
 875|Paramètres de confidentialité
+876|Cette salle ne peut pas être démolie.
+877|Réglez d'abord l'urgence.
+878|D'autres salles seraient isolées.
+879|%s démolie : +%d perles
+880|Démolir +◉%d
+881|Touchez encore pour démolir +◉%d

@@ -836,6 +836,63 @@ func _try_merge(r: Dictionary) -> Dictionary:
 		return n
 	return r
 
+## Снос отсека (как в Fallout Shelter): возвращается часть вложенного — стройка и улучшения.
+const DEMOLISH_REFUND := 0.15
+
+func demolish_value(room: Dictionary) -> int:
+	var invested: int = Defs.ROOMS[room.type].cost * int(room.size)
+	for lv in range(1, int(room.level)):
+		invested += Defs.upgrade_cost(room.type, lv) * int(room.size)
+	return int(invested * DEMOLISH_REFUND)
+
+## Почему отсек нельзя снести ("" — можно).
+func demolish_block(room: Dictionary) -> String:
+	if not Defs.ROOMS[room.type].get("buildable", false):
+		return tr("This room can't be demolished.")
+	if room.incident > 0.0 or room.get("hazard", "") != "" or int(raid.get("room", -1)) == room.id:
+		return tr("Deal with the emergency first.")
+	if _connected_count(room.id) < _connected_count(-1) - 1:
+		return tr("Other rooms would be cut off.")
+	return ""
+
+## Сколько отсеков связано со шлюзом (соседи по ряду, лифт с лифтом), без отсека skip_id.
+func _connected_count(skip_id: int) -> int:
+	var start := find_room_of_type("airlock")
+	if start.is_empty():
+		return rooms.size()
+	var seen := {start.id: true}
+	var queue := [start]
+	while not queue.is_empty():
+		var r: Dictionary = queue.pop_back()
+		var near := [room_at(r.col - 1, r.row), room_at(r.col + room_w(r), r.row)]
+		if r.type == "elevator":
+			for dr in [-1, 1]:
+				var v := room_at(r.col, r.row + dr)
+				if not v.is_empty() and v.type == "elevator":
+					near.append(v)
+		for n in near:
+			if not n.is_empty() and n.id != skip_id and not seen.has(n.id):
+				seen[n.id] = true
+				queue.append(n)
+	return seen.size()
+
+func demolish(room: Dictionary) -> bool:
+	var why := demolish_block(room)
+	if why != "":
+		message.emit(why)
+		event.emit("error")
+		return false
+	var refund := demolish_value(room)
+	pearls += refund
+	rooms.erase(room)
+	_fix_orphans()
+	if int(stranger.get("room", -1)) == room.id:
+		stranger = {}
+	track("demolish")
+	message.emit(tr("%s demolished: +%d pearls") % [tr(Defs.ROOMS[room.type].name), refund])
+	changed.emit()
+	return true
+
 ## Ремонт сломанного отсека: четверть цены стройки, мастерская делает вдвое дешевле.
 func repair_cost(room: Dictionary) -> int:
 	var c := int(Defs.ROOMS[room.type].cost * 0.25 * room.level * room.size)

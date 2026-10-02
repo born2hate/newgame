@@ -880,6 +880,12 @@ const T := {
 	"Trade spare materials:": "Обменять лишние материалы:",
 	"Building materials": "Стройматериалы",
 	"Privacy settings": "Настройки конфиденциальности",
+	"This room can't be demolished.": "Этот отсек нельзя снести.",
+	"Deal with the emergency first.": "Сначала разберитесь с ЧП.",
+	"Other rooms would be cut off.": "Другие отсеки окажутся отрезаны.",
+	"%s demolished: +%d pearls": "%s снесён: +%d жемчуга",
+	"Demolish +◉%d": "Снести +◉%d",
+	"Tap again to demolish +◉%d": "Нажмите ещё раз, чтобы снести +◉%d",
 }
 
 static func make() -> Translation:

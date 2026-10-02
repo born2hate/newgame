@@ -874,5 +874,11 @@
 "Rare materials",
 "Trade spare materials:",
 "Building materials",
-"Privacy settings"
+"Privacy settings",
+"This room can't be demolished.",
+"Deal with the emergency first.",
+"Other rooms would be cut off.",
+"%s demolished: +%d pearls",
+"Demolish +◉%d",
+"Tap again to demolish +◉%d"
 ]

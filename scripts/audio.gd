@@ -12,7 +12,7 @@ const POOL := 8
 ## Какой звук играть на событие игры (Game.event).
 const EVENT_SFX := {
 	"collect_energy": ["collect", 0.9], "collect_oxygen": ["collect", 1.1], "collect_food": ["collect", 1.0],
-	"collect_pearls": ["pearls", 1.0], "build": ["build", 1.0], "upgrade": ["upgrade", 1.0],
+	"collect_pearls": ["pearls", 1.0], "build": ["build", 1.0], "demolish": ["build", 0.7], "upgrade": ["upgrade", 1.0],
 	"level_up": ["levelup", 1.0], "crate": ["crate", 1.0], "breach": ["alarm", 1.0],
 	"arrive": ["arrive", 1.0], "expedition": ["launch", 1.0], "rush": ["bubbles", 1.0],
 	"error": ["error", 1.0], "incident": ["alarm", 0.9],

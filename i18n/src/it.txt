@@ -874,3 +874,9 @@
 873|Scambia materiali in eccesso:
 874|Materiali da costruzione
 875|Impostazioni privacy
+876|Questa stanza non può essere demolita.
+877|Prima risolvi l'emergenza.
+878|Altre stanze resterebbero isolate.
+879|%s demolita: +%d perle
+880|Demolisci +◉%d
+881|Tocca di nuovo per demolire +◉%d

@@ -1177,7 +1177,28 @@ func _open_room(id: int) -> void:
 		sheet_body.add_child(actions)
 	if room_live_labels.has("safe"):
 		sheet_body.add_child(room_live_labels.safe)
+	if def.get("buildable", false):
+		sheet_body.add_child(_demolish_button(r))
 	_refresh_room_live()
+
+## Снос: первое нажатие — предупреждение, второе — сносим и получаем часть жемчуга обратно.
+func _demolish_button(r: Dictionary) -> Button:
+	var value := Game.demolish_value(r)
+	var b := _button("", func(): pass, 56)
+	set_cost_text(b, tr("Demolish +◉%d") % value)
+	b.modulate = Color(1, 0.7, 0.7)
+	b.pressed.connect(func():
+		var why := Game.demolish_block(r)
+		if why != "":
+			Game.message.emit(why)
+			Game.event.emit("error")
+		elif b.get_meta("armed", false):
+			if Game.demolish(r):
+				_close_sheet()
+		else:
+			b.set_meta("armed", true)
+			set_cost_text(b, tr("Tap again to demolish +◉%d") % value))
+	return b
 
 func _refresh_room_live() -> void:
 	var r := Game.get_room(sheet_room)
