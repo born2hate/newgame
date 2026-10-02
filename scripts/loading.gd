@@ -18,8 +18,8 @@ var progress := 0.0
 func _ready() -> void:
 	layer = 50
 	var bg := TextureRect.new()
-	# большая картинка-заставка (случайная из трёх), иначе — фон океана с куполом
-	var splash := Art.tex("res://art/backgrounds/splash_%d.png" % randi_range(1, 3))
+	# большая картинка-заставка (случайная из четырёх), иначе — фон океана с куполом
+	var splash := Art.tex("res://art/backgrounds/splash_%d.png" % randi_range(1, 4))
 	bg.texture = splash if splash else Art.tex("res://art/backgrounds/ocean.png")
 	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
