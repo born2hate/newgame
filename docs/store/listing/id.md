@@ -28,13 +28,14 @@ Deep Colony adalah game membangun koloni yang santai tapi menegangkan, terinspir
 🗺️ JELAJAHI
 • Jelajahi tanpa batas waktu ala Fallout: makin lama di luar, makin kaya rampasan — panggil timmu tepat waktu
 • Buat senjata dan zirah dari cetak biru dan bahan langka
-• Bangun proyek besar: kubah taman, mercusuar penyintas, dan lainnya
+• Bangun proyek besar: kubah taman, mercusuar penyintas, dan lainnya — lalu terus kembangkan dengan level penguasaan tanpa batas
 • Kirim tim ekspedisi ke hutan kelp, terumbu karang, dan kapal karam
 • Ambil keputusan berisiko: buka peti tersegel atau biarkan?
 • Bawa pulang mutiara, kristal, perlengkapan langka, dan hewan peliharaan
 
 ⭐ DAN LAINNYA
-• Cerita 20 bab, misi harian, pencapaian, dan level koloni
+• Cerita 23 bab, misi harian, pencapaian, dan level koloni
+• Event mingguan dengan toko event dan trofi koleksi
 • 17 riset
 • 6 hewan peliharaan dengan bonus unik
 • Tingkat kesulitan Santai, Normal, dan Bertahan Hidup

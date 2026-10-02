@@ -28,13 +28,14 @@ Deep Colony, klasik sığınak oyunlarının ruhunu taşıyan, sıcak ama gerili
 🗺️ KEŞFET
 • Fallout gibi süresiz keşfet: dışarıda ne kadar kalırsan ganimet o kadar zengin — ekibini zamanında geri çağır
 • Planlardan ve nadir malzemelerden silah ve zırh üret
-• Büyük koloni projeleri kur: bahçe kubbesi, hayatta kalan feneri ve dahası
+• Büyük koloni projeleri kur: bahçe kubbesi, hayatta kalan feneri ve dahası — ve sonsuz ustalık seviyeleriyle geliştirmeye devam et
 • Ekipleri yosun ormanlarına, mercan resiflerine ve batık gemilere gönder
 • Riskli kararlar ver: mühürlü sandığı açmak mı, bırakmak mı?
 • İnci, kristal, nadir ekipman ve evcil hayvanlarla dön
 
 ⭐ VE DAHASI
-• 20 bölümlük hikâye, günlük görevler, başarımlar ve koloni seviyeleri
+• 23 bölümlük hikâye, günlük görevler, başarımlar ve koloni seviyeleri
+• Etkinlik mağazası ve koleksiyon kupalarıyla haftalık etkinlikler
 • 17 araştırma
 • Özel bonuslu 6 evcil hayvan
 • Sakin, Normal ve Hayatta Kalma zorlukları

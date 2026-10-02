@@ -28,13 +28,14 @@ Deep Colony é um jogo de construção de colônia aconchegante, mas tenso, no e
 🗺️ EXPLORE
 • Explore sem limite de tempo, estilo Fallout: quanto mais tempo fora, melhor o saque — mas chame a equipe a tempo
 • Fabrique armas e armaduras com projetos e materiais raros
-• Construa grandes projetos: cúpula jardim, farol dos sobreviventes e mais
+• Construa grandes projetos: cúpula jardim, farol dos sobreviventes e mais — e continue evoluindo com níveis de maestria sem fim
 • Envie equipes em expedições a florestas de algas, recifes de coral e navios naufragados
 • Faça escolhas arriscadas: abrir o baú lacrado ou deixá-lo?
 • Traga pérolas, cristais, equipamentos raros e mascotes colecionáveis
 
 ⭐ E MAIS
-• História em 20 capítulos, missões diárias, conquistas e níveis de colônia
+• História em 23 capítulos, missões diárias, conquistas e níveis de colônia
+• Eventos semanais com loja do evento e troféus colecionáveis
 • 17 pesquisas
 • 6 mascotes com bônus únicos
 • Dificuldade Tranquila, Normal e Sobrevivência
