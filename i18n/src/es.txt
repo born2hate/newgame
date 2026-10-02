@@ -871,3 +871,5 @@
 869|Cada semana tiene su propio evento. Su objetivo da fichas: gástalas en la tienda del evento en un trofeo con bonus permanente y otras recompensas. ¡Las fichas se pierden al acabar la semana!
 870|Consejos
 871|La colonia sigue trabajando con el juego cerrado. Toca fuera de un menú para cerrarlo. Las mascotas dan bonus y crecen contigo. A veces aparece un forastero misterioso en una sala: ¡tócalo rápido!
+872|Materiales raros
+873|Cambiar materiales sobrantes:

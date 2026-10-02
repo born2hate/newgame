@@ -554,6 +554,16 @@ func _dev_screenshot() -> void:
 		"guide_ru", "guide_de":
 			Audio.set_language("ru" if scene == "guide_ru" else "de")
 			hud.more.open_guide()
+		"event_low_ru":
+			Audio.set_language("ru")
+			Game.refresh_daily_systems()
+			Game.event_tokens = 340.0
+			Game.trophies = {"harvest": 2, Game.weekly_mod(): 1}
+			Game.pearls = 30000
+			hud.more.open_event_shop()
+			await get_tree().process_frame
+			await get_tree().process_frame
+			(hud.sheet.get_child(0) as ScrollContainer).scroll_vertical = 650
 		"mastery_ru":
 			Audio.set_language("ru")
 			Game.colony_level = 16

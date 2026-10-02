@@ -876,6 +876,8 @@ const T := {
 	"Every week has its own event. Its goal pays event tokens: spend them in the Event shop on a trophy with a permanent bonus and other rewards. Tokens burn when the week ends!": "Jede Woche hat ihr eigenes Event. Sein Ziel bringt Event-Marken: gib sie im Event-Shop für eine Trophäe mit Dauerbonus und andere Belohnungen aus. Am Wochenende verfallen die Marken!",
 	"Tips": "Tipps",
 	"The colony keeps working while the game is closed. Tap anywhere outside a menu to close it. Pets give bonuses and grow with you. A mysterious stranger sometimes appears in a room: tap them quickly!": "Die Kolonie arbeitet weiter, während das Spiel geschlossen ist. Tippe außerhalb eines Menüs, um es zu schließen. Haustiere geben Boni und wachsen mit dir. Manchmal taucht ein geheimnisvoller Fremder in einem Raum auf: tippe schnell darauf!",
+	"Rare materials": "Seltene Materialien",
+	"Trade spare materials:": "Überschüssiges tauschen:",
 }
 
 static func make() -> Translation:

@@ -870,3 +870,5 @@
 869|Jede Woche hat ihr eigenes Event. Sein Ziel bringt Event-Marken: gib sie im Event-Shop für eine Trophäe mit Dauerbonus und andere Belohnungen aus. Am Wochenende verfallen die Marken!
 870|Tipps
 871|Die Kolonie arbeitet weiter, während das Spiel geschlossen ist. Tippe außerhalb eines Menüs, um es zu schließen. Haustiere geben Boni und wachsen mit dir. Manchmal taucht ein geheimnisvoller Fremder in einem Raum auf: tippe schnell darauf!
+872|Seltene Materialien
+873|Überschüssiges tauschen:

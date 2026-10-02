@@ -870,3 +870,5 @@
 869|Chaque semaine a son événement. Son objectif rapporte des jetons : dépensez-les dans la boutique d'événement pour un trophée au bonus permanent et d'autres récompenses. Les jetons disparaissent à la fin de la semaine !
 870|Astuces
 871|La colonie continue de tourner jeu fermé. Touchez hors d'un menu pour le fermer. Les animaux donnent des bonus et grandissent avec vous. Un mystérieux inconnu apparaît parfois dans une salle : touchez-le vite !
+872|Matériaux rares
+873|Échanger le surplus :

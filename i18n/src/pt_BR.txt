@@ -870,3 +870,5 @@
 869|Toda semana tem seu evento. A meta dá fichas: gaste na loja do evento em um troféu com bônus permanente e outras recompensas. As fichas somem quando a semana acaba!
 870|Dicas
 871|A colônia continua trabalhando com o jogo fechado. Toque fora de um menu para fechá-lo. Mascotes dão bônus e crescem com você. Às vezes um forasteiro misterioso aparece numa sala: toque rápido!
+872|Materiais raros
+873|Trocar materiais extras:

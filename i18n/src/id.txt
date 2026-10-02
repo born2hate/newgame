@@ -870,3 +870,5 @@
 869|Setiap minggu punya event sendiri. Targetnya memberi token event: belanjakan di Toko event untuk trofi berbonus permanen dan hadiah lain. Token hangus saat minggu berakhir!
 870|Tips
 871|Koloni tetap bekerja saat game ditutup. Ketuk di luar menu untuk menutupnya. Peliharaan memberi bonus dan tumbuh bersamamu. Kadang orang asing misterius muncul di ruangan: cepat ketuk dia!
+872|Bahan langka
+873|Tukar bahan berlebih:

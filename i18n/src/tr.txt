@@ -870,3 +870,5 @@
 869|Her haftanın kendi etkinliği vardır. Hedefi etkinlik jetonu verir: bunları etkinlik mağazasında kalıcı bonuslu bir kupaya ve diğer ödüllere harca. Hafta bitince jetonlar yanar!
 870|İpuçları
 871|Oyun kapalıyken de koloni çalışır. Bir menüyü kapatmak için dışına dokun. Evcil hayvanlar bonus verir ve seninle büyür. Bazen bir odada gizemli bir yabancı belirir: hemen dokun!
+872|Nadir malzemeler
+873|Fazla malzemeleri takas et:
