@@ -11,20 +11,24 @@
 - Страница магазина на 10 языках с картинками загружена через `tools/play_publish.py`.
 - AdMob: App ID и блок rewarded прописаны в `scripts/ads.gd`.
 
+## Сделано 2026-10-02
+- Плагины в `addons/`: Google Play Billing 3.3.0 (`addons/GodotGooglePlayBilling`) и AdMob v4.3.1
+  с Android-библиотеками для Godot 4.3 (`addons/admob/android/bin`), App ID в `addons/admob/android/config.gd`.
+  `scripts/store.gd` переведён на API Billing 3.x (initPlugin, on_purchase_updated, queryPurchases(type, false)).
+- Пресет: Gradle build, AAB, version code 12, minSdk 24 (требует AdMob), targetSdk 36.
+- Сборка: `tools/build_aab.sh` (ставит шаблон, поднимает compileSdk до 36, подписывает ключом upload).
+- **0.14 (12) загружена во внутреннее тестирование** (`play_publish.py bundle`), статус completed.
+
 ## Осталось
-1. Поставить плагины (нужна сеть: dl.google.com, github.com, objects.githubusercontent.com):
-   - Google Play Billing для Godot 4 (godot-sdk-integrations/godot-google-play-billing);
-   - AdMob (poing-studios/godot-admob-plugin), App ID `ca-app-pub-3660062326800102~1427937123`.
-   Код (`scripts/store.gd`, `scripts/ads.gd`) находит плагины сам.
-2. Android build template, Use Gradle Build = On, формат AAB, version code ≥ 12.
-3. Подписать ключом загрузки (`deepcolony-upload.keystore`, alias `upload`) — пользователь пришлёт
-   файл и пароль. **Ключи и JSON сервисного аккаунта в репозиторий не класть.**
-4. `PLAY_KEY=<json> python3 tools/play_publish.py ...`: загрузить AAB во внутреннее тестирование
-   (дописать команду upload_bundle + tracks), создать 15 товаров из `docs/store/play_console_answers.md`
-   (ID должны совпадать с `scripts/store.gd`).
-5. Пользователь отмечает ИИ-картинки в Main store listing → AI asset declaration.
+1. **Платёжный профиль**: Play Console → Settings → Payments profile (или Monetize → Monetization setup).
+   Без него API отвечает «Cannot manage a one-time product without first registering a payments profile».
+   Потом: `PLAY_KEY=<json> python3 tools/play_publish.py products` — создаст и активирует 15 товаров
+   (новый API monetization.onetimeproducts, старый inappproducts закрыт).
+2. Internal testing → Testers: добавить свой email, установить по ссылке, проверить покупку и рекламу.
+3. Пользователь отмечает ИИ-картинки в Main store listing → AI asset declaration.
+4. Ключи и JSON сервисного аккаунта в репозиторий не класть.
 
 ## Инструменты сессии
-- Godot 4.3 headless + export templates, Android SDK (build-tools 34) скачивались в scratchpad;
+- Godot 4.3 headless + export templates, JDK 17, Android SDK (platforms 36, build-tools 36, NDK 23.2) скачивались в scratchpad;
   в новом окружении их нужно поставить заново.
 - Экономика: `tools/economy_sim.gd -- free 30 [s=8x15]`.

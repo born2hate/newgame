@@ -77,26 +77,19 @@ func _ready() -> void:
 	if Engine.has_singleton("GodotGooglePlayBilling"):
 		billing = Engine.get_singleton("GodotGooglePlayBilling")
 		DEV_MODE = false
-		for pair in [["connected", _on_billing_connected], ["purchases_updated", _on_purchases_updated],
-				["purchase_error", _on_purchase_error], ["query_product_details_response", _on_product_details],
-				["product_details_query_completed", _on_product_details], ["sku_details_query_completed", _on_product_details],
-				["query_purchases_response", _on_query_purchases]]:
-			if billing.has_signal(pair[0]):
-				billing.connect(pair[0], pair[1])
-		if billing.has_method("startConnection"):
-			billing.startConnection()
+		# API плагина godot-google-play-billing 3.x (addons/GodotGooglePlayBilling)
+		billing.initPlugin()
+		billing.connect("connected", _on_billing_connected)
+		billing.connect("query_product_details_response", _on_product_details)
+		billing.connect("query_purchases_response", _on_query_purchases)
+		billing.connect("on_purchase_updated", _on_purchases_updated)
+		billing.startConnection()
 
 func _on_billing_connected() -> void:
-	var ids: Array = IAP.map(func(p): return p.id)
-	if billing.has_method("queryProductDetails"):
-		billing.queryProductDetails(ids, "inapp")
-	elif billing.has_method("querySkuDetails"):
-		billing.querySkuDetails(ids, "inapp")
+	var ids := PackedStringArray(IAP.map(func(p): return p.id))
+	billing.queryProductDetails(ids, "inapp")
 	# восстановить купленное раньше (Premium, без рекламы, наборы) — например, после переустановки
-	if billing.has_method("queryPurchases"):
-		var r = billing.queryPurchases("inapp")
-		if typeof(r) == TYPE_DICTIONARY:
-			_on_query_purchases(r)
+	billing.queryPurchases("inapp", false)
 
 ## Цены из Google Play (в валюте игрока) вместо строк по умолчанию.
 func _on_product_details(response) -> void:
@@ -108,8 +101,9 @@ func _on_product_details(response) -> void:
 	for d in list:
 		var pid: String = str(d.get("product_id", d.get("sku", d.get("id", ""))))
 		var price: String = str(d.get("price", d.get("formatted_price", "")))
-		if price == "" and d.has("one_time_purchase_offer_details"):
-			price = str(d.one_time_purchase_offer_details.get("formatted_price", ""))
+		var offers = d.get("one_time_purchase_offer_details_list")
+		if price == "" and offers is Array and not offers.is_empty():
+			price = str(offers[0].get("formatted_price", ""))
 		if pid != "" and price != "":
 			store_prices[pid] = price
 
@@ -127,12 +121,18 @@ func _purchase_list(response) -> Array:
 	return []
 
 func _on_purchases_updated(response) -> void:
+	# response_code 0 — OK, 1 — игрок отменил покупку, остальное — ошибка
+	var code := int(response.get("response_code", 0)) if typeof(response) == TYPE_DICTIONARY else 0
+	if code != 0:
+		if code != 1:
+			_on_purchase_error(code, str(response.get("debug_message", "")))
+		return
 	for pu in _purchase_list(response):
 		_handle_purchase(pu)
 
 func _on_query_purchases(response) -> void:
 	for pu in _purchase_list(response):
-		var ids: Array = pu.get("product_ids", [pu.get("product_id", pu.get("sku", ""))])
+		var ids := Array(pu.get("product_ids", [pu.get("product_id", "")]))
 		for pid in ids:
 			# незавершённые покупки и купленное раньше (не расходуемое)
 			if not pu.get("is_acknowledged", false) or (not pid in CONSUMABLE and not is_owned(pid)):
@@ -147,7 +147,7 @@ func _handle_purchase(pu: Dictionary) -> void:
 	var token: String = str(pu.get("purchase_token", ""))
 	if token != "" and token in Game.purchase_tokens:
 		return
-	var ids: Array = pu.get("product_ids", [pu.get("product_id", pu.get("sku", ""))])
+	var ids := Array(pu.get("product_ids", [pu.get("product_id", "")]))
 	for pid in ids:
 		if product(pid).is_empty():
 			continue
@@ -155,9 +155,8 @@ func _handle_purchase(pu: Dictionary) -> void:
 			continue
 		_deliver(pid)
 		if pid in CONSUMABLE:
-			if billing.has_method("consumePurchase"):
-				billing.consumePurchase(token)
-		elif not pu.get("is_acknowledged", false) and billing.has_method("acknowledgePurchase"):
+			billing.consumePurchase(token)
+		elif not pu.get("is_acknowledged", false):
 			billing.acknowledgePurchase(token)
 	if token != "":
 		Game.purchase_tokens.append(token)
@@ -196,7 +195,9 @@ func purchase(id: String) -> void:
 		_deliver(id)
 		return
 	# товар выдаётся в _handle_purchase, когда Google Play подтвердит оплату
-	billing.purchase(id)
+	var r = billing.purchase(id, "", "", false)
+	if typeof(r) == TYPE_DICTIONARY and int(r.get("response_code", 0)) != 0:
+		_on_purchase_error(int(r.response_code), str(r.get("debug_message", "")))
 
 func _deliver(id: String) -> void:
 	var p := product(id)
