@@ -47,43 +47,43 @@ def upload_images(svc, edit_id: str, lang: str, folder: str) -> None:
     ed = svc.edits().images()
     if lang == "en-US":
         for kind, f in [("icon", "icon_512.png"), ("featureGraphic", "feature_graphic.png")]:
-            ed.deleteall(packageName=PACKAGE, editId=edit_id, language=lang, imageType=kind).execute()
+            ed.deleteall(packageName=PACKAGE, editId=edit_id, language=lang, imageType=kind).execute(num_retries=6)
             ed.upload(packageName=PACKAGE, editId=edit_id, language=lang, imageType=kind,
-                      media_body=MediaFileUpload(os.path.join(STORE, f), mimetype="image/png")).execute()
+                      media_body=MediaFileUpload(os.path.join(STORE, f), mimetype="image/png")).execute(num_retries=6)
     shots = sorted(f for f in os.listdir(os.path.join(STORE, "screenshots", folder)) if f.endswith(".jpg"))
     for kind in ["phoneScreenshots", "sevenInchScreenshots", "tenInchScreenshots"]:
-        ed.deleteall(packageName=PACKAGE, editId=edit_id, language=lang, imageType=kind).execute()
+        ed.deleteall(packageName=PACKAGE, editId=edit_id, language=lang, imageType=kind).execute(num_retries=6)
         for f in shots:
             ed.upload(packageName=PACKAGE, editId=edit_id, language=lang, imageType=kind,
                       media_body=MediaFileUpload(os.path.join(STORE, "screenshots", folder, f),
-                                                 mimetype="image/jpeg")).execute()
+                                                 mimetype="image/jpeg")).execute(num_retries=6)
     print(f"  {lang}: images uploaded ({len(shots)} screenshots)")
 
 
 def cmd_listings(images: bool) -> None:
     svc = service()
-    edit = svc.edits().insert(packageName=PACKAGE, body={}).execute()
+    edit = svc.edits().insert(packageName=PACKAGE, body={}).execute(num_retries=6)
     eid = edit["id"]
     for lang, folder in LANGS.items():
         body = parse_listing(lang)
-        svc.edits().listings().update(packageName=PACKAGE, editId=eid, language=lang, body=body).execute()
+        svc.edits().listings().update(packageName=PACKAGE, editId=eid, language=lang, body=body).execute(num_retries=6)
         print(f"  {lang}: {body['title']}")
         if images:
             upload_images(svc, eid, lang, folder)
-    svc.edits().commit(packageName=PACKAGE, editId=eid, changesNotSentForReview=False).execute()
+    svc.edits().commit(packageName=PACKAGE, editId=eid, changesNotSentForReview=False).execute(num_retries=6)
     print("committed")
 
 
 def cmd_show() -> None:
     svc = service()
-    eid = svc.edits().insert(packageName=PACKAGE, body={}).execute()["id"]
-    det = svc.edits().details().get(packageName=PACKAGE, editId=eid).execute()
+    eid = svc.edits().insert(packageName=PACKAGE, body={}).execute(num_retries=6)["id"]
+    det = svc.edits().details().get(packageName=PACKAGE, editId=eid).execute(num_retries=6)
     print("details:", det)
-    for l in svc.edits().listings().list(packageName=PACKAGE, editId=eid).execute().get("listings", []):
+    for l in svc.edits().listings().list(packageName=PACKAGE, editId=eid).execute(num_retries=6).get("listings", []):
         print(" ", l["language"], "|", l.get("title"))
-    for t in svc.edits().tracks().list(packageName=PACKAGE, editId=eid).execute().get("tracks", []):
+    for t in svc.edits().tracks().list(packageName=PACKAGE, editId=eid).execute(num_retries=6).get("tracks", []):
         print("  track", t["track"], t.get("releases"))
-    svc.edits().delete(packageName=PACKAGE, editId=eid).execute()
+    svc.edits().delete(packageName=PACKAGE, editId=eid).execute(num_retries=6)
 
 
 if __name__ == "__main__":
