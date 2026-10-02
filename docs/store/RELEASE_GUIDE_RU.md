@@ -18,7 +18,7 @@
 ## 2. Плагины
 1. **Покупки**: [godot-google-play-billing](https://github.com/godot-sdk-integrations/godot-google-play-billing) для Godot 4 — скопировать в `android/plugins` (или `addons/`, как написано в README плагина), включить в *Project → Export → Android → Plugins*.
 2. **Реклама**: [godot-admob-plugin (poing-studios)](https://github.com/poing-studios/godot-admob-plugin) — через AssetLib или вручную в `addons/admob`, включить плагин в *Project Settings → Plugins*, скачать Android-библиотеку плагина по его инструкции.
-3. В AdMob создай приложение и **блок рекламы с вознаграждением**. Замени тестовый ID в `scripts/ads.gd` (`REWARDED_UNIT_ANDROID`) на свой, а App ID пропиши в настройках плагина.
+3. В AdMob создай приложение и **блок рекламы с вознаграждением**. ID уже прописаны в `scripts/ads.gd` (App ID `ca-app-pub-3660062326800102~1427937123` указать в настройках плагина).
 
 Код уже ищет оба плагина сам: если они на месте, тестовый режим выключается.
 

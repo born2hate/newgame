@@ -3,8 +3,15 @@ extends RefCounted
 ## Классы плагина ищем по имени во время работы, поэтому игра собирается и без него:
 ## если плагина нет, ready() == false и магазин работает в тестовом режиме.
 
-## Тестовый блок Google; перед релизом заменить на свой из AdMob (Приложения → Блоки рекламы).
-const REWARDED_UNIT_ANDROID := "ca-app-pub-3940256099942544/5224354917"
+## AdMob: приложение Deep Colony и блок рекламы за награду.
+## App ID прописывается в настройках AdMob-плагина (AndroidManifest), здесь — для справки.
+const APP_ID_ANDROID := "ca-app-pub-3660062326800102~1427937123"
+const REWARDED_UNIT_ANDROID := "ca-app-pub-3660062326800102/6501134557"
+## Тестовый блок Google: в отладочных сборках, чтобы не накручивать показы своей рекламы.
+const REWARDED_UNIT_TEST := "ca-app-pub-3940256099942544/5224354917"
+
+func unit_id() -> String:
+	return REWARDED_UNIT_TEST if OS.is_debug_build() else REWARDED_UNIT_ANDROID
 
 var _classes := {}
 var _ad = null
@@ -44,7 +51,7 @@ func load_ad() -> void:
 		_loading = false
 	cb.on_ad_failed_to_load = func(_err):
 		_loading = false
-	_cls("RewardedAdLoader").new().load(REWARDED_UNIT_ANDROID, _cls("AdRequest").new(), cb)
+	_cls("RewardedAdLoader").new().load(unit_id(), _cls("AdRequest").new(), cb)
 
 ## Показать рекламу. on_reward — если досмотрел; on_close — когда реклама закрылась (в любом случае).
 func show(on_reward: Callable, on_close: Callable) -> bool:
