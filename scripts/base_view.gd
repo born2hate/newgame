@@ -26,6 +26,11 @@ var t := 0.0
 # состояние касаний
 var touches := {}
 var drag_colonist := -1
+## Интерфейс перехватывает касание по игре (например, чтобы закрыть открытое меню).
+var tap_blocker: Callable
+## Открыто ли меню, которое закрывается касанием по игре (тогда касание не трогает пузыри, торговца и т.п.).
+var menu_open: Callable
+var _press_in_menu := false
 var drag_pos := Vector2.ZERO
 var press_pos := Vector2.ZERO
 var moved := false
@@ -1644,7 +1649,8 @@ func _on_press(p: Vector2) -> void:
 	press_pos = p
 	moved = false
 	drag_colonist = -1
-	if build_type != "":
+	_press_in_menu = menu_open.is_valid() and menu_open.call()
+	if build_type != "" or _press_in_menu:
 		return
 	var world := screen_to_world(p)
 	if not Game.boss.is_empty() and boss_rect().grow(30).has_point(world):
@@ -1717,9 +1723,13 @@ func _on_release(p: Vector2) -> void:
 		if not here.is_empty() and here.ready:
 			Game.collect(here)
 			return
+		if tap_blocker.is_valid() and tap_blocker.call({}):
+			return
 		colonist_selected.emit(c.id)
 		return
 	if moved:
+		return
+	if tap_blocker.is_valid() and tap_blocker.call(Game.room_at(cell.x, cell.y)):
 		return
 	if build_type != "":
 		# в режиме стройки можно собирать готовые ресурсы

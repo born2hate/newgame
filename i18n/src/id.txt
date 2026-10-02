@@ -819,3 +819,54 @@
 818|Paket Pemula: paling hemat!
 819|150 kristal, 1000 mutiara, ikan badut Nemo, 2 peti perak, dan kolonis langka — di Toko.
 820|×2 mutiara dengan video
+821|%s: penguasaan %d!
+822|Trofi: %s · level %d
+823|Tiket Event: token ganda minggu ini!
+824|Tiket Event
+825|Token event ganda minggu ini (termasuk yang sudah kamu punya) dan Peti Emas sekarang juga.
+826|Kerang Emas
+827|Pemecah Pasang
+828|Mahkota Rumput Laut
+829|Kompas Kuningan
+830|+3% mutiara per level
+831|+5% mutiara dari insiden yang ditangani per level
+832|+3% makanan per level
+833|+3% jarahan ekspedisi per level
+834|%d token event
+835|Toko event
+836|Dapatkan token dari target minggu ini. Token hangus saat event berakhir dalam %d hari!
+837|Tiket Event aktif: token ganda!
+838|Lv %d/%d
+839|Trofi permanen: %s. Naik level setiap kali event ini kembali.
+840|Cetak biru legendaris
+841|Sisa %d minggu ini
+842|+%d token
+843|Harga berlipat dua tiap pembelian minggu ini.
+844|Koleksi trofi
+845|sisa %d hari
+846|Selesai! Penguasaan: setiap level menambah seperempat bonus tahap.
+847|Penguasaan %d
+848|Tukar bahan berlebih: %d
+849|Cara bermain
+850|Jaga koloni tetap hidup
+851|Reaktor menghasilkan energi, stasiun oksigen menghasilkan udara, kebun menghasilkan makanan. Tempatkan kolonis di sana dan ketuk ruangan yang bersinar untuk mengumpulkan. Jika salah satunya habis, warga menderita dan ruangan berhenti.
+852|Kolonis dan keahlian
+853|Seret kolonis ke ruangan untuk memberinya pekerjaan. Tiap ruangan memakai satu keahlian: Kekuatan untuk reaktor, Teknik untuk oksigen dan lab, Biologi untuk kebun dan kebun mutiara. Orang yang tepat bekerja lebih cepat dan lebih bahagia. Sifat seperti Beruntung atau Malas mengubah cara kerjanya.
+854|Mutiara dan kristal
+855|Mutiara untuk membangun dan meningkatkan. Kristal itu langka: pakai untuk mempercepat, membuka peti, atau memutar roda. Simpan untuk hal yang penting bagimu.
+856|Cerita dan tugas
+857|Ikuti bilah cerita di atas: tiap bab memberi tahu langkah berikutnya dan membuka ruangan baru. Tugas harian, pencapaian, dan rantai tugas memberi hadiah tambahan.
+858|Lebih banyak orang
+859|Ruang Radio memanggil penyintas ke koloni. Dua orang dewasa di Tempat Tinggal bisa punya bayi. Bangun lebih banyak hunian untuk menaikkan batas populasi.
+860|Ekspedisi
+861|Bangun Dermaga dan kirim kru. Misi kembali sesuai waktu. Penjelajahan tanpa batas waktu: makin lama kru di luar, makin banyak temuan, tapi mereka terluka, jadi panggil pulang tepat waktu. Beri baju zirah dan senjata, dan perhatikan peringatan HP.
+862|Bahaya
+863|Kebakaran, banjir, makhluk laut, perompak, dan bos menyerang markas. Seret kolonis ke ruangan untuk melawan. Klinik menyembuhkan yang terluka. Badai laut membuat luar lebih berbahaya tetapi jauh lebih kaya.
+864|Lab menghasilkan sains. Gunakan untuk riset peningkatan permanen: ruangan lebih baik, kedalaman baru, ekspedisi lebih cepat.
+865|Kerajinan
+866|Ekspedisi, peti, dan perompak membawa bahan dan cetak biru. Bengkel mengubahnya jadi perlengkapan. Perlengkapan langka dan legendaris membuat kolonis jauh lebih kuat.
+867|Mulai level koloni 6 kamu bisa membangun proyek besar dengan bonus permanen. Setelah tahap 3 proyek terus berkembang lewat level penguasaan. Bahan berlebih bisa ditukar dengan yang kurang.
+868|Event mingguan
+869|Setiap minggu punya event sendiri. Targetnya memberi token event: belanjakan di Toko event untuk trofi berbonus permanen dan hadiah lain. Token hangus saat minggu berakhir!
+870|Tips
+871|Koloni tetap bekerja saat game ditutup. Ketuk di luar menu untuk menutupnya. Peliharaan memberi bonus dan tumbuh bersamamu. Kadang orang asing misterius muncul di ruangan: cepat ketuk dia!

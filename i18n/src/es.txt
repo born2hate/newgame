@@ -820,3 +820,54 @@
 818|¡Pack inicial: la mejor oferta!
 819|150 cristales, 1000 perlas, el pez payaso Nemo, 2 cofres de plata y un colono raro, en la tienda.
 820|×2 perlas por un vídeo
+821|%s: maestría %d!
+822|Trofeo: %s · nivel %d
+823|Pase del evento: ¡fichas dobles esta semana!
+824|Pase del evento
+825|Fichas del evento dobles esta semana (incluidas las que ya tienes) y un Cofre de oro ahora mismo.
+826|Almeja dorada
+827|Rompemareas
+828|Corona de algas
+829|Brújula de latón
+830|+3% perlas por nivel
+831|+5% perlas por incidentes resueltos por nivel
+832|+3% comida por nivel
+833|+3% botín de expediciones por nivel
+834|%d fichas del evento
+835|Tienda del evento
+836|Gana fichas con el objetivo de la semana. ¡Se pierden cuando el evento termine en %d días!
+837|Pase del evento activo: ¡fichas dobles!
+838|Nv. %d/%d
+839|Trofeo para siempre: %s. Sube de nivel cada vez que vuelve el evento.
+840|Plano legendario
+841|Quedan %d esta semana
+842|+%d fichas
+843|El precio se duplica con cada compra esta semana.
+844|Colección de trofeos
+845|quedan %d días
+846|¡Completo! Maestría: cada nivel añade un cuarto del bonus de una etapa.
+847|Maestría %d
+848|Cambiar materiales sobrantes: %d
+849|Cómo jugar
+850|Mantén viva la colonia
+851|Los reactores dan energía, las estaciones de oxígeno dan aire y las granjas dan comida. Pon colonos a trabajar ahí y toca una sala cuando brille para recoger. Si se acaba alguno de los tres, la gente sufre y las salas se paran.
+852|Colonos y habilidades
+853|Arrastra un colono a una sala para darle trabajo. Cada sala usa una habilidad: Fuerza para reactores, Técnica para oxígeno y laboratorio, Biología para granjas y granjas de perlas. La persona adecuada trabaja más rápido y es más feliz. Rasgos como Afortunado o Perezoso cambian cómo trabaja.
+854|Perlas y cristales
+855|Las perlas pagan construcciones y mejoras. Los cristales son raros: úsalos para acelerar, abrir cofres o girar la rueda. Guárdalos para lo que más te importe.
+856|Historia y tareas
+857|Sigue la barra de historia de arriba: cada capítulo te dice qué hacer y desbloquea salas nuevas. Las tareas diarias, logros y cadenas de tareas dan recompensas extra.
+858|Más gente
+859|La sala de radio llama a supervivientes a la colonia. Dos adultos en los dormitorios pueden tener un bebé. Construye más viviendas para subir el límite de población.
+860|Expediciones
+861|Construye un muelle y envía un equipo. Una misión vuelve con temporizador. La exploración no tiene tiempo: cuanto más se queda el equipo, más encuentra, pero se hiere, así que llámalo a tiempo. Dales armadura y armas y atiende el aviso de vida.
+862|Peligros
+863|Incendios, inundaciones, criaturas marinas, saqueadores y jefes atacan la base. Arrastra colonos a la sala para defenderte. La enfermería cura a los heridos. Las tormentas marinas hacen el exterior más peligroso pero mucho más rico.
+864|El laboratorio produce ciencia. Gástala en investigación para mejoras permanentes: mejores salas, nuevas profundidades, expediciones más rápidas.
+865|Fabricación
+866|Las expediciones, cofres y saqueadores traen materiales y planos. El taller los convierte en equipo. El equipo raro y legendario hace a los colonos mucho más fuertes.
+867|Desde el nivel 6 de la colonia puedes construir grandes proyectos con bonus permanentes. Tras la etapa 3 siguen creciendo con niveles de maestría. Los materiales sobrantes se pueden cambiar por los que faltan.
+868|Evento semanal
+869|Cada semana tiene su propio evento. Su objetivo da fichas: gástalas en la tienda del evento en un trofeo con bonus permanente y otras recompensas. ¡Las fichas se pierden al acabar la semana!
+870|Consejos
+871|La colonia sigue trabajando con el juego cerrado. Toca fuera de un menú para cerrarlo. Las mascotas dan bonus y crecen contigo. A veces aparece un forastero misterioso en una sala: ¡tócalo rápido!

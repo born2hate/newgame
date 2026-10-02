@@ -157,6 +157,7 @@ func _initialize() -> void:
 	print("pearl sources: ", src)
 	print("pearl by source: ", psrc)
 	print("pearl spent on: ", spend)
+	print("trophies: ", g.trophies, " event buys: ", g.stats.get("event_buy", 0))
 	print("projects: ", g.projects, " materials: ", g.materials, " blueprints: ", g.blueprints.size(), " crafted: ", g.stats.get("craft", 0))
 	var dc := {}
 	for k in g.stats:
@@ -196,6 +197,7 @@ func _session() -> void:
 	_ce("crates")
 	if OS.get_cmdline_user_args().has("debug") and g.pearls - pc > 1000:
 		print("  crates/daily +%d" % (g.pearls - pc))
+	_event_shop()
 	var steps: int = SESSION_MIN * 60
 	# вернулись в игру — отзываем исследователей
 	for e in g.expeditions.duplicate():
@@ -248,6 +250,31 @@ func _session() -> void:
 		popsrc.manage += g.colonists.size() - n2
 		src.manage += maxi(0, g.pearls - p2)
 		earned.pearls += maxi(0, g.pearls - p0)
+
+## Событие недели: забираем награды, тратим жетоны, лишний жемчуг — в жетоны.
+func _event_shop() -> void:
+	_cs()
+	for i in g.weekly_event().tiers.size():
+		g.claim_weekly(i)
+	_ce("weekly")
+	var pe0: int = g.pearls
+	while g.pearls > 30000 and g.event_cache_price() <= g.pearls * 0.25:
+		g.buy_event_cache()
+	_spend("event_tokens", pe0)
+	_cs()
+	# копим на трофей, остальное — когда трофей уже взят (или потолок)
+	var trophy_done: bool = g.event_bought_count("trophy") > 0 or g.trophy_level(g.weekly_mod()) >= Defs.TROPHY_MAX
+	if g.can_buy_event("trophy"):
+		g.buy_event("trophy")
+		trophy_done = true
+	if trophy_done or g.weekly_days_left() <= 1:
+		for it in Defs.EVENT_SHOP:
+			while g.can_buy_event(it.id):
+				g.buy_event(it.id)
+	_ce("event_shop")
+	for t in g.crates.keys():
+		while g.crates[t] > 0:
+			g.open_crate(t)
 
 func _manage(ads: bool) -> void:
 	# аварии и налёт — отправляем свободных и ближайших
@@ -501,6 +528,11 @@ func _build() -> void:
 		return
 	# 4) проекты колонии, если хватает
 	for pd in Defs.PROJECTS:
+		var pcost: Dictionary = g.project_cost(pd.id) if g.project_unlocked(pd.id) else {}
+		if not pcost.is_empty() and g.pearls > int(pcost.pearls) + 5000 and not g.has_materials(pcost.materials) and g.can_fill(pcost.materials):
+			var pf0: int = g.pearls
+			g.fill_materials(pcost.materials)
+			_spend("exchange", pf0)
 		if g.can_build_project(pd.id):
 			var pp0: int = g.pearls
 			g.build_project_stage(pd.id)

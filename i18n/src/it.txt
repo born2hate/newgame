@@ -819,3 +819,54 @@
 818|Pacchetto iniziale: il più conveniente!
 819|150 cristalli, 1000 perle, il pesce pagliaccio Nemo, 2 casse d'argento e un colono raro — nel negozio.
 820|×2 perle per un video
+821|%s: maestria %d!
+822|Trofeo: %s · livello %d
+823|Pass evento: gettoni doppi questa settimana!
+824|Pass evento
+825|Gettoni evento doppi per questa settimana (anche quelli che hai già) e subito una Cassa d'oro.
+826|Vongola d'oro
+827|Spezzamarea
+828|Corona di alghe
+829|Bussola d'ottone
+830|+3% perle per livello
+831|+5% perle per incidenti risolti per livello
+832|+3% cibo per livello
+833|+3% bottino delle spedizioni per livello
+834|%d gettoni evento
+835|Negozio evento
+836|Guadagna gettoni con l'obiettivo della settimana. Spariscono quando l'evento finisce tra %d giorni!
+837|Pass evento attivo: gettoni doppi!
+838|Liv. %d/%d
+839|Trofeo per sempre: %s. Sale di livello ogni volta che l'evento ritorna.
+840|Progetto leggendario
+841|Ne restano %d questa settimana
+842|+%d gettoni
+843|Il prezzo raddoppia a ogni acquisto questa settimana.
+844|Collezione di trofei
+845|%d giorni rimasti
+846|Completato! Maestria: ogni livello aggiunge un quarto del bonus di una fase.
+847|Maestria %d
+848|Scambia materiali in eccesso: %d
+849|Come si gioca
+850|Mantieni viva la colonia
+851|I reattori producono energia, le stazioni di ossigeno l'aria, le fattorie il cibo. Metti i coloni al lavoro e tocca una stanza quando brilla per raccogliere. Se uno dei tre finisce, la gente soffre e le stanze si fermano.
+852|Coloni e abilità
+853|Trascina un colono in una stanza per dargli un lavoro. Ogni stanza usa un'abilità: Forza per i reattori, Tecnica per ossigeno e laboratorio, Biologia per fattorie e allevamenti di perle. La persona giusta lavora più in fretta ed è più felice. Tratti come Fortunato o Pigro cambiano il suo modo di lavorare.
+854|Perle e cristalli
+855|Le perle pagano costruzioni e miglioramenti. I cristalli sono rari: usali per accelerare, aprire casse o girare la ruota. Tienili per ciò che conta.
+856|Storia e compiti
+857|Segui la barra della storia in alto: ogni capitolo ti dice cosa fare e sblocca nuove stanze. Compiti giornalieri, obiettivi e catene di compiti danno premi extra.
+858|Più persone
+859|La sala radio chiama i sopravvissuti nella colonia. Due adulti negli alloggi possono avere un bambino. Costruisci più alloggi per alzare il limite di popolazione.
+860|Spedizioni
+861|Costruisci un molo e manda una squadra. Una missione torna a tempo. L'esplorazione non ha timer: più la squadra resta fuori, più trova, ma si ferisce, quindi richiamala in tempo. Dai loro armature e armi e bada all'avviso dei PS.
+862|Pericoli
+863|Incendi, allagamenti, creature marine, predoni e boss attaccano la base. Trascina i coloni nella stanza per difenderti. L'infermeria cura i feriti. Le tempeste marine rendono l'esterno più pericoloso ma molto più ricco.
+864|Il laboratorio produce scienza. Spendila in ricerca per miglioramenti permanenti: stanze migliori, nuove profondità, spedizioni più veloci.
+865|Creazione
+866|Spedizioni, casse e predoni portano materiali e progetti. L'officina li trasforma in equipaggiamento. L'equipaggiamento raro e leggendario rende i coloni molto più forti.
+867|Dal livello 6 della colonia puoi costruire grandi progetti con bonus permanenti. Dopo la fase 3 continuano a crescere con livelli di maestria. I materiali in eccesso si possono scambiare con quelli mancanti.
+868|Evento settimanale
+869|Ogni settimana ha il suo evento. Il suo obiettivo dà gettoni: spendili nel negozio evento per un trofeo con bonus permanente e altri premi. I gettoni spariscono a fine settimana!
+870|Consigli
+871|La colonia lavora anche a gioco chiuso. Tocca fuori da un menu per chiuderlo. Gli animali danno bonus e crescono con te. A volte uno straniero misterioso appare in una stanza: toccalo in fretta!

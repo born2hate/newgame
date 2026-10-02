@@ -3,6 +3,16 @@
 All notable changes to **Deep Colony** are listed here, newest first.
 APK builds live in [`releases/`](releases/).
 
+## Unreleased
+### Added
+- **Event shop**: the weekly goal now pays **event tokens** (~300 for the full goal). Spend them on a permanent **event trophy**, a legendary blueprint, crates, crystals and rare materials. Tokens burn when the week ends. Extra tokens for pearls (price doubles with each purchase that week).
+- **Event trophies**: Golden Clam, Tide Breaker, Kelp Crown, Brass Compass — each gives a small permanent bonus and levels up (to 5) every time its event comes back. Trophy collection in the event shop.
+- **Event Pass** ($2.99): double tokens for the week (including ones already earned) and a Gold Crate.
+- **Project mastery**: after stage 3, projects keep levelling with no cap. Each level adds a quarter of a stage bonus and costs 30% more pearls; every 5th level gives a Gold Crate.
+- **Material trade** in Colony projects: turn spare materials into missing ones (3:1, abyss pearl 10:1) for pearls.
+- Tapping the game outside an open menu closes it (from a room menu, tapping another room opens that one).
+- **How to play** guide in all 10 languages (Settings and Tasks): 12 short illustrated topics.
+
 ## 0.13 — 2026-10-02
 ### Added
 - **Exploration, Fallout-style**: besides timed missions, crews can explore with no timer. Events happen over time (even while the game is closed), HP drops for real, loot grows richer the longer they stay. Recall them any time — the way back takes half the time. Optional auto turn-back when someone is badly hurt; without it the crew can die out there and the loot is lost.

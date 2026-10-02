@@ -219,6 +219,11 @@ func new_game() -> void:
 	weekly_week = -1
 	weekly_progress = 0
 	weekly_claimed = []
+	event_tokens = 0.0
+	event_bought = {}
+	event_caches = 0
+	event_pass_week = -1
+	trophies = {}
 	trader = {}
 	tutorial_done = false
 	difficulty = "normal"
@@ -427,7 +432,7 @@ func mood_bonus() -> float:
 		b += float(Defs.ROOMS[r.type].get("mood", 0)) * r.level * r.size
 	if has_pet("angel"):
 		b += 10.0 * pet_power()
-	b += 5.0 * project_stage("garden_dome")
+	b += 5.0 * project_power("garden_dome")
 	return minf(50.0, b)
 
 ## Сила всех отсеков типа (для пассивных эффектов: радио, оружейная).
@@ -533,12 +538,12 @@ func production_amount(room: Dictionary) -> float:
 		"food":
 			m *= 1.2 if has_research("hydroponics") else 1.0
 			m *= project_bonus("garden_dome", 0.1)
-			m *= 1.5 if weekly_mod() == "harvest" else 1.0
+			m *= (1.5 if weekly_mod() == "harvest" else 1.0) * trophy_bonus("harvest")
 		"oxygen": m *= 1.2 if has_research("electrolysis") else 1.0
 		"pearls":
 			m *= 1.4 if has_research("pearl_cultivation") else 1.0
 			m *= project_bonus("pearl_monument", 0.05)
-			m *= 1.5 if weekly_mod() == "pearl_week" else 1.0
+			m *= (1.5 if weekly_mod() == "pearl_week" else 1.0) * trophy_bonus("pearl_week")
 	if res == "pearls":
 		m *= mode().reward * (1.0 + pearl_bonus())
 	if res == "gear":
@@ -946,6 +951,54 @@ func has_materials(mats: Dictionary) -> bool:
 			return false
 	return true
 
+## Обмен материалов: недостающее добираем из лишнего (3 к 1, жемчужину бездны — 10 к 1)
+## и платим жемчугом за каждую полученную единицу. Возвращает {"pearls": цена, "plan": {...}}
+## или пустой словарь, если лишнего не хватает.
+const EXCHANGE_RATE := 3
+const EXCHANGE_RATE_RARE := 10
+const EXCHANGE_PEARLS := 250
+
+func fill_plan(mats: Dictionary) -> Dictionary:
+	var spare := {}
+	for k in materials:
+		spare[k] = int(materials[k]) - int(mats.get(k, 0))
+	var made := 0
+	var take := {}
+	for k in mats:
+		var need: int = int(mats[k]) - int(materials.get(k, 0))
+		if need <= 0:
+			continue
+		var rate := EXCHANGE_RATE_RARE if k == "abyss_pearl" else EXCHANGE_RATE
+		for i in need:
+			# берём из того, чего больше всего (кроме жемчужин бездны)
+			var best := ""
+			for m in spare:
+				if m != k and m != "abyss_pearl" and int(spare[m]) >= rate and (best == "" or int(spare[m]) > int(spare[best])):
+					best = m
+			if best == "":
+				return {}
+			spare[best] = int(spare[best]) - rate
+			take[best] = int(take.get(best, 0)) + rate
+		made += need
+	return {"pearls": made * EXCHANGE_PEARLS, "take": take, "made": made}
+
+func can_fill(mats: Dictionary) -> bool:
+	var pl := fill_plan(mats)
+	return not pl.is_empty() and int(pl.made) > 0 and pearls >= int(pl.pearls)
+
+func fill_materials(mats: Dictionary) -> bool:
+	if not can_fill(mats):
+		return false
+	var pl := fill_plan(mats)
+	pearls -= int(pl.pearls)
+	for m in pl.take:
+		materials[m] = int(materials[m]) - int(pl.take[m])
+	for k in mats:
+		materials[k] = maxi(int(materials.get(k, 0)), int(mats[k]))
+	track("exchange", int(pl.made))
+	changed.emit()
+	return true
+
 func blueprint_name(key: String) -> String:
 	var parts := key.split(":")
 	var d := Defs.item_def(parts[0])
@@ -1184,13 +1237,28 @@ func project_stage(id: String) -> int:
 func project_cost(id: String) -> Dictionary:
 	var d := project_def(id)
 	var st := project_stage(id)
-	if st >= Defs.PROJECT_STAGES:
-		return {}
-	var m: float = Defs.PROJECT_STAGE_MULT[st]
+	var m: float
+	var mm: float
+	if st < Defs.PROJECT_STAGES:
+		m = Defs.PROJECT_STAGE_MULT[st]
+		mm = m
+	else:
+		# мастерство: жемчуг растёт по экспоненте, материалы — линейно (чтобы их хватало)
+		var lv := st - Defs.PROJECT_STAGES + 1
+		m = float(Defs.PROJECT_STAGE_MULT[-1]) * pow(Defs.MASTERY_GROWTH, lv)
+		mm = 2.0 + lv
 	var mats := {}
 	for k in d.materials:
-		mats[k] = int(ceil(int(d.materials[k]) * m))
+		mats[k] = int(ceil(int(d.materials[k]) * mm))
 	return {"pearls": int(int(d.pearls) * m), "materials": mats}
+
+## Уровень мастерства проекта (после всех этапов).
+func project_mastery(id: String) -> int:
+	return maxi(0, project_stage(id) - Defs.PROJECT_STAGES)
+
+## Сила проекта: этапы целиком плюс четверть этапа за каждый уровень мастерства.
+func project_power(id: String) -> float:
+	return mini(project_stage(id), Defs.PROJECT_STAGES) + Defs.MASTERY_STEP * project_mastery(id)
 
 func project_unlocked(id: String) -> bool:
 	return colony_level >= int(project_def(id).level)
@@ -1211,14 +1279,26 @@ func build_project_stage(id: String) -> bool:
 	add_colony_xp(150 * project_stage(id))
 	var st := project_stage(id)
 	var reward := {"crates": {"gold" if st >= Defs.PROJECT_STAGES else "silver": 1}}
-	if st >= Defs.PROJECT_STAGES:
+	if st == Defs.PROJECT_STAGES:
 		reward["crystals"] = 20
+	if st > Defs.PROJECT_STAGES:
+		# мастерство: серебряный ящик, каждый 5-й уровень — золотой и кристаллы
+		var lv := st - Defs.PROJECT_STAGES
+		reward = {"crates": {"gold" if lv % 5 == 0 else "silver": 1}}
+		if lv % 5 == 0:
+			reward["crystals"] = 10
+		grant(reward, tr("%s: mastery %d!") % [tr(project_def(id).name), lv])
+		return true
 	grant(reward, tr("%s: stage %d complete!") % [tr(project_def(id).name), st])
 	return true
 
+## Батискаф сокращает путь домой: −15% за этап, не больше −60%.
+func project_return_mult() -> float:
+	return 1.0 - minf(0.6, 0.15 * project_power("deep_bathyscaphe"))
+
 ## Бонус проекта: множитель вида 1 + шаг × этапы.
 func project_bonus(id: String, step: float) -> float:
-	return 1.0 + step * project_stage(id)
+	return 1.0 + step * project_power(id)
 
 # ---------------------------------------------------------------- таинственный незнакомец
 ## Как в Fallout Shelter: иногда в случайном отсеке на несколько секунд появляется
@@ -1465,6 +1545,11 @@ func grant(reward: Dictionary, title: String) -> void:
 	if reward.get("season_pass", false):
 		season_pass = true
 		lines.append(tr("Season Pass unlocked!"))
+	if reward.get("event_pass", false):
+		event_pass_week = int(now() / 604800.0)
+		# уже набранные жетоны тоже удваиваются
+		event_tokens *= 2.0
+		lines.append(tr("Event Pass: double tokens this week!"))
 	if reward.get("premium", false):
 		premium = true
 		lines.append(tr("Premium unlocked!"))
@@ -1692,7 +1777,7 @@ func recall_exploration(e: Dictionary, auto := false) -> void:
 		resolve_choice(e, false)
 	e.state = "return"
 	e.recall_at = now()
-	var back := explore_elapsed(e) * 0.5 * (1.0 - 0.15 * project_stage("deep_bathyscaphe")) * (0.7 if has_research("bathyscaphe_engines") else 1.0) * (0.6 if e.get("shortcut", false) else 1.0)
+	var back := explore_elapsed(e) * 0.5 * project_return_mult() * (0.7 if has_research("bathyscaphe_engines") else 1.0) * (0.6 if e.get("shortcut", false) else 1.0)
 	e.end = now() + maxf(60.0, back)
 	if auto:
 		banner.emit("expedition", tr("The crew is coming back"), tr("The crew turned back: someone is badly hurt."))
@@ -1749,7 +1834,7 @@ func _explore_event(e: Dictionary, t: float) -> void:
 		var L: Dictionary = zone.loot
 		var got := {}
 		var lr := rng.randf()
-		var mult: float = richer * project_bonus("deep_bathyscaphe", 0.1) * (1.0 + 0.2 * pet_power() if has_pet("lion") else 1.0) * (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * mode().reward
+		var mult: float = richer * project_bonus("deep_bathyscaphe", 0.1) * (1.0 + 0.2 * pet_power() if has_pet("lion") else 1.0) * (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * trophy_bonus("explorers") * mode().reward
 		# шансы складываются по очереди: ящик, снаряжение, выживший, кристалл, запасы, иначе жемчуг
 		var p_crate := (0.03 + 0.01 * zone_idx) if L.has("crate") else 0.0
 		var p_item := p_crate + 0.07 + 0.02 * zone_idx
@@ -1913,7 +1998,7 @@ func launch_expedition(dock_id: int, zone_idx: int, ids: Array) -> bool:
 		return false
 	var zone: Dictionary = Defs.ZONES[zone_idx]
 	var f := expedition_chance(zone_idx, ids)
-	var loot_mult: float = (1.3 if storm_active() else 1.0) * project_bonus("deep_bathyscaphe", 0.1) * (1.0 + 0.2 * pet_power() if has_pet("lion") else 1.0) * (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * mode().reward
+	var loot_mult: float = (1.3 if storm_active() else 1.0) * project_bonus("deep_bathyscaphe", 0.1) * (1.0 + 0.2 * pet_power() if has_pet("lion") else 1.0) * (1.25 if has_research("sonar_mapping") else 1.0) * (1.5 if weekly_mod() == "explorers" else 1.0) * trophy_bonus("explorers") * mode().reward
 	var names := []
 	for id in ids:
 		names.append(get_colonist(id).name.split(" ")[0])
@@ -1964,7 +2049,7 @@ func launch_expedition(dock_id: int, zone_idx: int, ids: Array) -> bool:
 	var start := now()
 	expeditions.append({
 		"id": next_id, "dock": dock_id, "zone": zone_idx, "crew": ids.duplicate(),
-		"start": start, "end": start + zone.minutes * 60.0 * (1.0 - 0.15 * project_stage("deep_bathyscaphe")) * (0.7 if has_research("bathyscaphe_engines") else 1.0),
+		"start": start, "end": start + zone.minutes * 60.0 * project_return_mult() * (0.7 if has_research("bathyscaphe_engines") else 1.0),
 		"events": events, "loot": loot, "damage": damage, "choice": choice,
 	})
 	next_id += 1
@@ -2650,6 +2735,12 @@ var story_count := 0
 var weekly_week := -1
 var weekly_progress := 0
 var weekly_claimed: Array = []
+## Магазин события: жетоны недели (сгорают), покупки за неделю, пропуск, трофеи навсегда.
+var event_tokens := 0.0
+var event_bought := {}
+var event_caches := 0
+var event_pass_week := -1
+var trophies := {}
 var trader := {}
 var trader_timer := 300.0
 var tutorial_done := false
@@ -2790,7 +2881,7 @@ func _resolve_hazard(r: Dictionary, offline: bool, burned := false) -> void:
 		message.emit(tr(BURNED_MSG.get(kind, "%s: the danger has passed.")) % tr(Defs.ROOMS[r.type].name))
 		changed.emit()
 		return
-	var reward: int = int((10 + 10 * r.level) * (2 if weekly_mod() == "tide" else 1) * mode().reward)
+	var reward: int = int((10 + 10 * r.level) * (2 if weekly_mod() == "tide" else 1) * trophy_bonus("tide") * mode().reward)
 	pearls += reward
 	for c in crew:
 		c.xp += 20.0
@@ -3081,6 +3172,82 @@ func claim_weekly(tier: int) -> void:
 	weekly_claimed.append(tier)
 	grant(Defs.WEEKLY_REWARDS[tier], tr("%s reward") % tr(ev.name))
 
+# ---------------------------------------------------------------- магазин события
+
+func event_pass_active() -> bool:
+	return event_pass_week == int(now() / 604800.0)
+
+## Сколько жетонов даёт одна единица задания недели.
+func event_token_rate() -> float:
+	return float(Defs.EVENT_TOKENS_FULL) / float(weekly_event().tiers[-1]) * (2.0 if event_pass_active() else 1.0)
+
+func event_token_count() -> int:
+	return int(event_tokens)
+
+func trophy_level(mod: String) -> int:
+	return int(trophies.get(mod, 0))
+
+## Бонус трофея: 1 + шаг × уровень.
+func trophy_bonus(mod: String) -> float:
+	return 1.0 + float(Defs.TROPHIES[mod].step) * trophy_level(mod)
+
+func event_shop_item(id: String) -> Dictionary:
+	for it in Defs.EVENT_SHOP:
+		if it.id == id:
+			return it
+	return {}
+
+func event_bought_count(id: String) -> int:
+	return int(event_bought.get(id, 0))
+
+func can_buy_event(id: String) -> bool:
+	var it := event_shop_item(id)
+	if it.is_empty() or event_bought_count(id) >= int(it.limit) or event_token_count() < int(it.cost):
+		return false
+	if id == "trophy" and trophy_level(weekly_mod()) >= Defs.TROPHY_MAX:
+		return false
+	return true
+
+func buy_event(id: String) -> bool:
+	if not can_buy_event(id):
+		return false
+	var it := event_shop_item(id)
+	event_tokens -= int(it.cost)
+	event_bought[id] = event_bought_count(id) + 1
+	track("event_buy")
+	if id == "trophy":
+		var mod := weekly_mod()
+		trophies[mod] = trophy_level(mod) + 1
+		var td: Dictionary = Defs.TROPHIES[mod]
+		grant({}, tr("Trophy: %s · level %d") % [tr(td.name), trophy_level(mod)])
+		return true
+	var r: Dictionary = it.reward.duplicate(true)
+	if r.has("blueprint"):
+		r.blueprint = random_blueprint(str(r.blueprint))
+	grant(r, tr(weekly_event().name))
+	return true
+
+## Жетоны за жемчуг: цена удваивается с каждой покупкой за неделю.
+func event_cache_price() -> int:
+	return Defs.EVENT_CACHE_PEARLS * int(pow(2, event_caches))
+
+func buy_event_cache() -> bool:
+	var price := event_cache_price()
+	if pearls < price:
+		return false
+	pearls -= price
+	event_caches += 1
+	event_tokens += Defs.EVENT_CACHE_TOKENS
+	changed.emit()
+	return true
+
+## Есть что купить в магазине события — для значка.
+func event_shop_ready() -> bool:
+	for it in Defs.EVENT_SHOP:
+		if can_buy_event(it.id):
+			return true
+	return false
+
 # ---------------------------------------------------------------- пузыри с сокровищами и торговцы
 
 func pop_bubble(rich: bool) -> Dictionary:
@@ -3237,6 +3404,9 @@ func refresh_daily_systems() -> void:
 		weekly_week = week
 		weekly_progress = 0
 		weekly_claimed = []
+		event_tokens = 0.0
+		event_bought = {}
+		event_caches = 0
 	if season_start < 0 or today() - season_start >= Defs.SEASON_DAYS:
 		season_start = today()
 		season_xp = 0
@@ -3275,6 +3445,7 @@ func track(ev: String, amount := 1) -> void:
 		story_count += amount
 	if weekly_event().goal == ev:
 		weekly_progress += amount
+		event_tokens += amount * event_token_rate()
 	for cd in Defs.CHAINS:
 		var cs: Dictionary = chains.get(cd.id, {"step": 0, "count": 0})
 		if int(cs.step) < cd.steps.size() and cd.steps[int(cs.step)].goal[0] == ev:
@@ -3340,7 +3511,7 @@ func save_game() -> void:
 			"science": science, "research_done": research_done, "research_current": research_current,
 			"items": items, "stats": stats, "achievements_claimed": achievements_claimed,
 			"story_index": story_index, "story_count": story_count, "weekly_week": weekly_week,
-			"weekly_progress": weekly_progress, "weekly_claimed": weekly_claimed, "trader": trader,
+			"weekly_progress": weekly_progress, "weekly_claimed": weekly_claimed, "event_tokens": event_tokens, "event_bought": event_bought, "event_caches": event_caches, "event_pass_week": event_pass_week, "trophies": trophies, "trader": trader,
 			"tutorial_done": tutorial_done, "difficulty": difficulty, "mode_chosen": mode_chosen,
 			"fallen": fallen, "colony_level": colony_level, "colony_xp": colony_xp,
 			"ads_day": ads_day, "ads_count": ads_count, "pearl_buys": pearl_buys, "pearl_buys_day": pearl_buys_day,
@@ -3458,6 +3629,15 @@ func load_game() -> bool:
 	weekly_week = int(meta.get("weekly_week", -1))
 	weekly_progress = int(meta.get("weekly_progress", 0))
 	weekly_claimed = meta.get("weekly_claimed", []).map(func(v): return int(v))
+	event_tokens = float(meta.get("event_tokens", 0.0))
+	event_bought = {}
+	for k in meta.get("event_bought", {}):
+		event_bought[k] = int(meta.event_bought[k])
+	event_caches = int(meta.get("event_caches", 0))
+	event_pass_week = int(meta.get("event_pass_week", -1))
+	trophies = {}
+	for k in meta.get("trophies", {}):
+		trophies[k] = int(meta.trophies[k])
 	trader = meta.get("trader", {})
 	tutorial_done = bool(meta.get("tutorial_done", true))
 	difficulty = str(meta.get("difficulty", "normal"))

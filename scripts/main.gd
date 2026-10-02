@@ -544,6 +544,26 @@ func _dev_screenshot() -> void:
 			Game.piggy = 132.0
 			Game.offer_trigger("offer_hero")
 			hud._open_shop()
+		"event_ru", "event_en":
+			Audio.set_language("ru" if scene == "event_ru" else "en")
+			Game.refresh_daily_systems()
+			Game.event_tokens = 340.0
+			Game.trophies = {"harvest": 2, Game.weekly_mod(): 1}
+			Game.pearls = 30000
+			hud.more.open_event_shop()
+		"guide_ru", "guide_de":
+			Audio.set_language("ru" if scene == "guide_ru" else "de")
+			hud.more.open_guide()
+		"mastery_ru":
+			Audio.set_language("ru")
+			Game.colony_level = 16
+			Game.projects = {"garden_dome": 5, "survivor_beacon": 3, "deep_bathyscaphe": 1}
+			Game.pearls = 60000
+			for m in Defs.MATERIALS:
+				Game.add_material(m, 60)
+			Game.materials["kelp_fiber"] = 20
+			Game.add_material("scrap", 200)
+			hud.more.open_projects()
 		"projects_ru":
 			Audio.set_language("ru")
 			Game.colony_level = 10

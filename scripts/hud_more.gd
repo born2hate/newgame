@@ -327,6 +327,185 @@ func add_weekly_section() -> void:
 		b.disabled = claimed or Game.weekly_progress < ev.tiers[i]
 		tiers.add_child(b)
 	_body().add_child(tiers)
+	# жетоны и магазин события
+	var srow: HBoxContainer = hud._card(Color(0.18, 0.12, 0.04, 0.95), Color(1.0, 0.8, 0.35, 0.85))
+	srow.add_child(hud._icon("event_token", 40, EVENT_GOLD))
+	var tl: Label = hud._label(tr("%d event tokens") % Game.event_token_count(), 21, EVENT_GOLD)
+	tl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	srow.add_child(tl)
+	var sb: Button = hud._button(tr("Event shop"), open_event_shop, 56)
+	sb.custom_minimum_size.x = 170
+	hud._gold(sb)
+	if Game.event_shop_ready():
+		sb.add_child(hud._badge())
+	srow.add_child(sb)
+
+## Справка «Как играть».
+func open_guide() -> void:
+	hud._open_sheet("guide", 900)
+	hud._header(tr("How to play"))
+	for g in Defs.GUIDE:
+		var row: HBoxContainer = hud._card(Color(0.05, 0.11, 0.2, 0.95), Color(0.5, 0.75, 1.0, 0.5))
+		row.alignment = BoxContainer.ALIGNMENT_BEGIN
+		var key: String = g.icon
+		var t: Texture2D = Art.marker_icon(key)
+		if t == null:
+			t = Art.tex("res://art/ui/icons/%s.png" % key)
+		if t:
+			var ti := TextureRect.new()
+			ti.texture = t
+			ti.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			ti.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			ti.custom_minimum_size = Vector2(64, 64)
+			ti.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+			row.add_child(ti)
+		else:
+			var ic: Control = hud._icon(key, 64, EVENT_GOLD if key == "event_token" else Color.WHITE)
+			ic.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+			row.add_child(ic)
+		var info := VBoxContainer.new()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info.add_child(hud._label(tr(g.title), 23, Color(1.0, 0.88, 0.5)))
+		var tl: Label = hud._label(tr(g.text), 17, Color(0.88, 0.92, 1.0))
+		tl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		info.add_child(tl)
+		row.add_child(info)
+
+const EVENT_GOLD := Color(1.0, 0.82, 0.35)
+
+## Иконка трофея: картинка art/ui/trophies/<mod>.png, если есть, иначе нарисованный кубок.
+func _trophy_icon(mod: String, size: int, lit := true) -> Control:
+	var t := Art.tex("res://art/ui/trophies/%s.png" % mod)
+	if t == null:
+		return hud._icon("cup", size, Defs.TROPHIES[mod].color if lit else Color(0.3, 0.32, 0.4))
+	var tr_i := TextureRect.new()
+	tr_i.texture = t
+	tr_i.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	tr_i.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	tr_i.custom_minimum_size = Vector2(size, size)
+	tr_i.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if not lit:
+		tr_i.modulate = Color(0.25, 0.25, 0.3)
+	return tr_i
+
+## Магазин события: жетоны недели → трофей, чертёж, ящики. Жетоны сгорают в конце недели.
+func open_event_shop() -> void:
+	var ev := Game.weekly_event()
+	hud._open_sheet("event_shop", 900)
+	hud._header(tr(ev.name))
+	var art := Art.tex("res://art/events/weekly_%s.png" % ev.mod)
+	if art:
+		var pic := TextureRect.new()
+		pic.texture = art
+		pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		pic.custom_minimum_size = Vector2(0, 170)
+		_body().add_child(pic)
+	var bal := HBoxContainer.new()
+	bal.alignment = BoxContainer.ALIGNMENT_CENTER
+	bal.add_theme_constant_override("separation", 10)
+	bal.add_child(hud._icon("event_token", 52, EVENT_GOLD))
+	bal.add_child(hud._label(str(Game.event_token_count()), 40, EVENT_GOLD))
+	_body().add_child(bal)
+	var note: Label = hud._label(tr("Earn tokens from this week's goal. Tokens burn when the event ends in %d days!") % Game.weekly_days_left(), 17, Color(1.0, 0.75, 0.6))
+	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_body().add_child(note)
+	# пропуск события
+	if Game.event_pass_active():
+		var on: Label = hud._label(tr("Event Pass active: double tokens!"), 20, Color(0.6, 1.0, 0.6))
+		on.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_body().add_child(on)
+	elif Store.can_buy("event_pass"):
+		var p: Dictionary = Store.product("event_pass")
+		var offer: HBoxContainer = hud._card(Color(0.3, 0.1, 0.25, 0.95), Color(1.0, 0.8, 0.4, 0.95))
+		offer.add_child(hud._icon("event_token", 56, EVENT_GOLD))
+		var oi := VBoxContainer.new()
+		oi.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		oi.add_child(hud._label(tr(p.title), 24, Color(1.0, 0.9, 0.6)))
+		var od: Label = hud._label(tr(p.desc), 16)
+		od.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		oi.add_child(od)
+		offer.add_child(oi)
+		var pb: Button = hud._button(Store.price_of("event_pass"), func():
+			Store.purchase("event_pass")
+			open_event_shop(), 64)
+		pb.custom_minimum_size.x = 130
+		hud._gold(pb)
+		offer.add_child(pb)
+	# товары
+	hud._section(tr("Event shop"))
+	for it in Defs.EVENT_SHOP:
+		var id: String = it.id
+		var left: int = int(it.limit) - Game.event_bought_count(id)
+		var row: HBoxContainer = hud._card(Color(0.08, 0.1, 0.2, 0.95), Color(EVENT_GOLD, 0.6) if Game.can_buy_event(id) else Color(0.4, 0.5, 0.7, 0.4))
+		var info := VBoxContainer.new()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if id == "trophy":
+			var td: Dictionary = Defs.TROPHIES[ev.mod]
+			var lv := Game.trophy_level(ev.mod)
+			row.add_child(_trophy_icon(ev.mod, 64))
+			info.add_child(hud._label(tr(td.name) + "  " + tr("Lv %d/%d") % [lv, Defs.TROPHY_MAX], 22, td.color))
+			var tdl: Label = hud._label(tr("Event trophy, forever: %s. Levels up each time this event returns.") % tr(td.desc), 15, Color(0.85, 0.85, 0.95))
+			tdl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			info.add_child(tdl)
+		else:
+			info.add_child(hud._reward_chips(it.reward, 34, 20))
+			if id == "legendary_bp":
+				info.add_child(hud._label(tr("Legendary blueprint"), 17, Color(1.0, 0.75, 0.25)))
+		info.add_child(hud._label(tr("%d left this week") % maxi(0, left), 14, Color(0.7, 0.75, 0.85)))
+		row.add_child(info)
+		var b: Button = hud._button(str(it.cost), func():
+			if Game.buy_event(id):
+				open_event_shop(), 56)
+		b.custom_minimum_size.x = 120
+		b.disabled = not Game.can_buy_event(id)
+		var bi: Control = hud._icon("event_token", 26, EVENT_GOLD)
+		bi.position = Vector2(8, 15)
+		b.add_child(bi)
+		row.add_child(b)
+	# жетоны за жемчуг
+	var crow: HBoxContainer = hud._card(Color(0.15, 0.06, 0.15, 0.95), Color(1.0, 0.6, 0.85, 0.6))
+	crow.add_child(hud._icon("event_token", 40, EVENT_GOLD))
+	var cl: Label = hud._label(tr("+%d tokens") % Defs.EVENT_CACHE_TOKENS, 20, EVENT_GOLD)
+	cl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	crow.add_child(cl)
+	var price := Game.event_cache_price()
+	var cb: Button = hud._button(str(price), func():
+		if Game.buy_event_cache():
+			open_event_shop(), 56)
+	cb.custom_minimum_size.x = 150
+	cb.disabled = Game.pearls < price
+	var ci: Control = hud._icon("pearls", 24)
+	ci.position = Vector2(8, 16)
+	cb.add_child(ci)
+	crow.add_child(cb)
+	var cn: Label = hud._label(tr("Price doubles with each purchase this week."), 14, Color(0.7, 0.7, 0.8))
+	_body().add_child(cn)
+	# коллекция трофеев
+	hud._section(tr("Trophy collection"))
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	_body().add_child(grid)
+	for mod in Defs.TROPHIES:
+		var td: Dictionary = Defs.TROPHIES[mod]
+		var lv := Game.trophy_level(mod)
+		var cell := PanelContainer.new()
+		cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		cell.add_theme_stylebox_override("panel", hud._box(Color(0.06, 0.08, 0.16, 0.95), Color(td.color, 0.7 if lv > 0 else 0.2), 14))
+		var hb := HBoxContainer.new()
+		cell.add_child(hb)
+		hb.add_child(_trophy_icon(mod, 52, lv > 0))
+		var vb := VBoxContainer.new()
+		vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var nl: Label = hud._label(tr(td.name), 17, td.color if lv > 0 else Color(0.5, 0.55, 0.65))
+		nl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		vb.add_child(nl)
+		vb.add_child(hud._label(tr("Lv %d/%d") % [lv, Defs.TROPHY_MAX], 15, Color(0.75, 0.8, 0.9)))
+		hb.add_child(vb)
+		grid.add_child(cell)
 
 func open_achievements() -> void:
 	hud._open_sheet("achievements", 900)
@@ -679,14 +858,18 @@ func open_projects() -> void:
 		var pips := ""
 		for i in Defs.PROJECT_STAGES:
 			pips += "●" if i < st else "○"
+		var mastery := Game.project_mastery(p.id)
+		if mastery > 0:
+			pips += "  ★%d" % mastery
 		head.add_child(hud._label(pips, 24, p.color))
 		vb.add_child(head)
 		var dl: Label = hud._label(tr(p.desc), 17, Color(0.8, 0.88, 0.95))
 		dl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		vb.add_child(dl)
 		if st >= Defs.PROJECT_STAGES:
-			vb.add_child(hud._label(tr("Complete!"), 20, Color(0.6, 1.0, 0.6)))
-			continue
+			var ml: Label = hud._label(tr("Complete! Mastery: each level adds a quarter of a stage bonus."), 17, Color(0.6, 1.0, 0.6))
+			ml.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			vb.add_child(ml)
 		if not Game.project_unlocked(p.id):
 			vb.add_child(hud._label(tr("Needs colony level %d") % p.level, 19, Color(1.0, 0.7, 0.5)))
 			continue
@@ -698,7 +881,20 @@ func open_projects() -> void:
 		row.add_child(materials_row(cost.materials, true, 24))
 		vb.add_child(row)
 		var pid: String = p.id
-		var b: Button = hud._button(tr("Build stage %d") % (st + 1), func():
+		if not Game.has_materials(cost.materials):
+			var pl := Game.fill_plan(cost.materials)
+			if not pl.is_empty():
+				var mats_need: Dictionary = cost.materials
+				var fb: Button = hud._button(tr("Trade spare materials: %d") % int(pl.pearls), func():
+					if Game.fill_materials(mats_need):
+						open_projects(), 54)
+				fb.disabled = Game.pearls < int(pl.pearls)
+				var fi: Control = hud._icon("pearls", 24)
+				fi.position = Vector2(10, 15)
+				fb.add_child(fi)
+				vb.add_child(fb)
+		var btxt: String = tr("Build stage %d") % (st + 1) if st < Defs.PROJECT_STAGES else tr("Mastery %d") % (Game.project_mastery(p.id) + 1)
+		var b: Button = hud._button(btxt, func():
 			if Game.build_project_stage(pid):
 				open_projects(), 64)
 		b.disabled = not Game.can_build_project(p.id)
@@ -710,6 +906,20 @@ func open_projects() -> void:
 # ---------------------------------------------------------------- магазин: наборы, копилка, колесо
 
 func add_shop_extras() -> void:
+	# магазин события недели
+	var ev := Game.weekly_event()
+	hud._section(tr(ev.name) + " · " + tr("%d days left") % Game.weekly_days_left())
+	var er: HBoxContainer = hud._card(Color(0.18, 0.12, 0.04, 0.95), Color(1.0, 0.8, 0.35, 0.85))
+	er.add_child(hud._icon("event_token", 44, EVENT_GOLD))
+	var el: Label = hud._label(tr("%d event tokens") % Game.event_token_count(), 21, EVENT_GOLD)
+	el.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	er.add_child(el)
+	var eb: Button = hud._button(tr("Event shop"), open_event_shop, 60)
+	eb.custom_minimum_size.x = 170
+	hud._gold(eb)
+	if Game.event_shop_ready():
+		eb.add_child(hud._badge())
+	er.add_child(eb)
 	# наборы по поводу (живут 24 часа)
 	for oid in Game.active_offers():
 		var p: Dictionary = Store.product(oid)

@@ -819,3 +819,54 @@
 818|Pacote inicial: o melhor custo-benefício!
 819|150 cristais, 1000 pérolas, o peixe-palhaço Nemo, 2 baús de prata e um colono raro — na loja.
 820|×2 pérolas por um vídeo
+821|%s: maestria %d!
+822|Troféu: %s · nível %d
+823|Passe do evento: fichas em dobro nesta semana!
+824|Passe do evento
+825|Fichas do evento em dobro nesta semana (inclusive as que você já tem) e um Baú de Ouro agora.
+826|Concha dourada
+827|Quebra-marés
+828|Coroa de algas
+829|Bússola de latão
+830|+3% pérolas por nível
+831|+5% pérolas por incidentes resolvidos por nível
+832|+3% comida por nível
+833|+3% saque de expedições por nível
+834|%d fichas do evento
+835|Loja do evento
+836|Ganhe fichas com a meta da semana. Elas somem quando o evento acabar em %d dias!
+837|Passe do evento ativo: fichas em dobro!
+838|Nv. %d/%d
+839|Troféu para sempre: %s. Sobe de nível sempre que o evento voltar.
+840|Projeto lendário
+841|Restam %d nesta semana
+842|+%d fichas
+843|O preço dobra a cada compra nesta semana.
+844|Coleção de troféus
+845|faltam %d dias
+846|Completo! Maestria: cada nível adiciona um quarto do bônus de uma etapa.
+847|Maestria %d
+848|Trocar materiais extras: %d
+849|Como jogar
+850|Mantenha a colônia viva
+851|Reatores geram energia, estações de oxigênio geram ar e fazendas geram comida. Coloque colonos para trabalhar e toque na sala quando ela brilhar para coletar. Se um dos três acabar, as pessoas sofrem e as salas param.
+852|Colonos e habilidades
+853|Arraste um colono para uma sala para dar um trabalho. Cada sala usa uma habilidade: Força para reatores, Técnica para oxigênio e laboratório, Biologia para fazendas e fazendas de pérolas. A pessoa certa trabalha mais rápido e fica mais feliz. Traços como Sortudo ou Preguiçoso mudam o trabalho.
+854|Pérolas e cristais
+855|Pérolas pagam construções e melhorias. Cristais são raros: use para acelerar, abrir baús ou girar a roleta. Guarde para o que importa para você.
+856|História e tarefas
+857|Siga a barra de história no topo: cada capítulo diz o que fazer e libera novas salas. Tarefas diárias, conquistas e cadeias de tarefas dão recompensas extras.
+858|Mais gente
+859|A sala de rádio chama sobreviventes para a colônia. Dois adultos nos alojamentos podem ter um bebê. Construa mais moradias para aumentar o limite de população.
+860|Expedições
+861|Construa uma doca e envie uma equipe. Uma missão volta no tempo marcado. A exploração não tem tempo: quanto mais a equipe fica, mais encontra, mas se machuca, então chame de volta a tempo. Dê armadura e armas e preste atenção ao aviso de vida.
+862|Perigos
+863|Incêndios, inundações, criaturas marinhas, saqueadores e chefes atacam a base. Arraste colonos para a sala para revidar. A enfermaria cura os feridos. Tempestades marinhas deixam o lado de fora mais perigoso, mas muito mais rico.
+864|O laboratório gera ciência. Gaste em pesquisas para melhorias permanentes: salas melhores, novas profundezas, expedições mais rápidas.
+865|Criação
+866|Expedições, baús e saqueadores trazem materiais e projetos. A oficina transforma tudo em equipamento. Equipamento raro e lendário deixa os colonos muito mais fortes.
+867|A partir do nível 6 da colônia você pode construir grandes projetos com bônus permanentes. Depois da etapa 3 eles continuam crescendo com níveis de maestria. Materiais extras podem ser trocados pelos que faltam.
+868|Evento semanal
+869|Toda semana tem seu evento. A meta dá fichas: gaste na loja do evento em um troféu com bônus permanente e outras recompensas. As fichas somem quando a semana acaba!
+870|Dicas
+871|A colônia continua trabalhando com o jogo fechado. Toque fora de um menu para fechá-lo. Mascotes dão bônus e crescem com você. Às vezes um forasteiro misterioso aparece numa sala: toque rápido!

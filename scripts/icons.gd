@@ -41,6 +41,27 @@ static func draw(ci: CanvasItem, res: String, c: Vector2, s: float, col: Color) 
 			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-0.65, 0.95) * s,
 				c + Vector2(-0.5, 0.1) * s, c + Vector2(0.5, 0.1) * s, c + Vector2(0.65, 0.95) * s]), col)
 
+		"event_token":
+			# монета события: золотой диск с морской звездой
+			ci.draw_circle(c, 0.9 * s, col.darkened(0.35))
+			ci.draw_circle(c, 0.78 * s, col)
+			var star := PackedVector2Array()
+			for i in 10:
+				var a := -PI / 2.0 + i * PI / 5.0
+				star.append(c + Vector2(cos(a), sin(a)) * s * (0.55 if i % 2 == 0 else 0.24))
+			ci.draw_colored_polygon(star, col.lightened(0.55))
+			ci.draw_circle(c + Vector2(-0.35, -0.4) * s, 0.12 * s, Color(1, 1, 1, 0.8))
+		"cup":
+			# кубок-трофей
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-0.7, -0.9) * s, c + Vector2(0.7, -0.9) * s,
+				c + Vector2(0.45, -0.05) * s, c + Vector2(-0.45, -0.05) * s]), col)
+			ci.draw_arc(c + Vector2(-0.68, -0.55) * s, 0.28 * s, PI * 0.5, PI * 1.5, 10, col, maxf(2.0, s * 0.14))
+			ci.draw_arc(c + Vector2(0.68, -0.55) * s, 0.28 * s, -PI * 0.5, PI * 0.5, 10, col, maxf(2.0, s * 0.14))
+			ci.draw_rect(Rect2(c + Vector2(-0.12, -0.08) * s, Vector2(0.24, 0.6) * s), col.darkened(0.2))
+			ci.draw_rect(Rect2(c + Vector2(-0.55, 0.5) * s, Vector2(1.1, 0.35) * s), col.darkened(0.35))
+			ci.draw_colored_polygon(PackedVector2Array([c + Vector2(-0.45, -0.85) * s, c + Vector2(-0.2, -0.85) * s,
+				c + Vector2(-0.25, -0.2) * s]), Color(1, 1, 1, 0.5))
+
 static func _leaf(base: Vector2, tip: Vector2) -> PackedVector2Array:
 	var pts := PackedVector2Array()
 	var n := Vector2(-tip.y, tip.x) * 0.35

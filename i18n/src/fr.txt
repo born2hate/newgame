@@ -819,3 +819,54 @@
 818|Pack de départ : la meilleure affaire !
 819|150 cristaux, 1000 perles, Nemo le poisson-clown, 2 caisses en argent et un colon rare — à la boutique.
 820|×2 perles contre une vidéo
+821|%s : maîtrise %d !
+822|Trophée : %s · niveau %d
+823|Pass d'événement : jetons doublés cette semaine !
+824|Pass d'événement
+825|Jetons d'événement doublés cette semaine (y compris ceux que vous avez déjà) et un Coffre d'or tout de suite.
+826|Palourde dorée
+827|Brise-marée
+828|Couronne de varech
+829|Boussole en laiton
+830|+3% de perles par niveau
+831|+5% de perles par incident réglé par niveau
+832|+3% de nourriture par niveau
+833|+3% de butin d'expédition par niveau
+834|%d jetons d'événement
+835|Boutique d'événement
+836|Gagnez des jetons avec l'objectif de la semaine. Ils disparaissent à la fin de l'événement, dans %d jours !
+837|Pass d'événement actif : jetons doublés !
+838|Niv. %d/%d
+839|Trophée pour toujours : %s. Monte de niveau à chaque retour de l'événement.
+840|Plan légendaire
+841|Encore %d cette semaine
+842|+%d jetons
+843|Le prix double à chaque achat cette semaine.
+844|Collection de trophées
+845|encore %d jours
+846|Terminé ! Maîtrise : chaque niveau ajoute un quart du bonus d'une étape.
+847|Maîtrise %d
+848|Échanger les matériaux en trop : %d
+849|Comment jouer
+850|Gardez la colonie en vie
+851|Les réacteurs produisent l'énergie, les stations d'oxygène l'air, les fermes la nourriture. Affectez-y des colons et touchez une salle qui brille pour récolter. Si l'un des trois s'épuise, les gens souffrent et les salles s'arrêtent.
+852|Colons et compétences
+853|Glissez un colon dans une salle pour lui donner un travail. Chaque salle utilise une compétence : Force pour les réacteurs, Technique pour l'oxygène et le labo, Biologie pour les fermes et les perliculteurs. La bonne personne travaille plus vite et est plus heureuse. Des traits comme Chanceux ou Paresseux changent sa façon de travailler.
+854|Perles et cristaux
+855|Les perles paient la construction et les améliorations. Les cristaux sont rares : utilisez-les pour accélérer, ouvrir des coffres ou tourner la roue. Gardez-les pour ce qui compte.
+856|Histoire et tâches
+857|Suivez la barre d'histoire en haut : chaque chapitre indique la suite et débloque de nouvelles salles. Tâches du jour, succès et chaînes de tâches donnent des bonus.
+858|Plus de monde
+859|La salle radio appelle des survivants. Deux adultes dans les quartiers d'habitation peuvent avoir un bébé. Construisez plus de logements pour monter la limite de population.
+860|Expéditions
+861|Construisez un quai et envoyez une équipe. Une mission revient au bout d'un minuteur. L'exploration n'en a pas : plus l'équipe reste, plus elle trouve, mais elle se blesse, alors rappelez-la à temps. Donnez-leur armure et armes et surveillez l'alerte de PV.
+862|Dangers
+863|Incendies, inondations, créatures marines, pillards et boss attaquent la base. Glissez des colons dans la salle pour riposter. L'infirmerie soigne les blessés. Les tempêtes rendent l'extérieur plus dangereux mais bien plus riche.
+864|Le labo produit de la science. Dépensez-la en recherche pour des améliorations permanentes : meilleures salles, nouvelles profondeurs, expéditions plus rapides.
+865|Artisanat
+866|Expéditions, coffres et pillards rapportent matériaux et plans. L'atelier les transforme en équipement. L'équipement rare et légendaire rend les colons bien plus forts.
+867|Dès le niveau 6 de la colonie, vous pouvez bâtir de grands projets aux bonus permanents. Après l'étape 3, ils continuent avec des niveaux de maîtrise. Les matériaux en trop s'échangent contre ceux qui manquent.
+868|Événement de la semaine
+869|Chaque semaine a son événement. Son objectif rapporte des jetons : dépensez-les dans la boutique d'événement pour un trophée au bonus permanent et d'autres récompenses. Les jetons disparaissent à la fin de la semaine !
+870|Astuces
+871|La colonie continue de tourner jeu fermé. Touchez hors d'un menu pour le fermer. Les animaux donnent des bonus et grandissent avec vous. Un mystérieux inconnu apparaît parfois dans une salle : touchez-le vite !

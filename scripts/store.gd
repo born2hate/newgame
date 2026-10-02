@@ -19,7 +19,7 @@ var DEV_MODE := true
 var billing: Object = null
 var store_prices := {}
 ## Расходуемые покупки (можно купить снова): после выдачи их «потребляем».
-const CONSUMABLE := ["crystals_60", "crystals_330", "crystals_700", "crystals_1500", "crystals_4000", "crystals_9000", "piggy_bank", "season_pass"]
+const CONSUMABLE := ["crystals_60", "crystals_330", "crystals_700", "crystals_1500", "crystals_4000", "crystals_9000", "piggy_bank", "season_pass", "event_pass"]
 
 ## Товары за реальные деньги. price — строка для показа; в релизе цену берём из стора.
 const IAP := [
@@ -35,6 +35,10 @@ const IAP := [
 	{"id": "season_pass", "title": "Season Pass", "price": "$4.99", "banner": "season",
 		"desc": "Unlock premium rewards on every season tier: crystals, gold crates and a Legendary colonist",
 		"reward": {"season_pass": true}},
+	# пропуск события: на текущую неделю, жетонов вдвое больше + золотой ящик сразу
+	{"id": "event_pass", "title": "Event Pass", "price": "$2.99",
+		"desc": "Double event tokens for this week (including the ones you already have) and a Gold Crate right now.",
+		"reward": {"event_pass": true, "crates": {"gold": 1}}},
 	# копилка: кристаллы копятся во время игры, разбить — за деньги (награда считается при покупке)
 	{"id": "piggy_bank", "title": "Treasure Piggy Bank", "price": "$2.99", "banner": "piggy",
 		"desc": "All the crystals saved up while you play.", "reward": {}},
@@ -178,6 +182,8 @@ func can_buy(id: String) -> bool:
 		return false
 	if id == "season_pass":
 		return not Game.season_pass
+	if id == "event_pass":
+		return not Game.event_pass_active()
 	if id == "no_ads" and Game.ads_removed():
 		return false
 	var p := product(id)

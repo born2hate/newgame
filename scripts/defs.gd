@@ -562,6 +562,49 @@ const WEEKLY := [
 	{"name": "Explorer's Season", "desc": "Expeditions bring +50% loot. Send expeditions!", "mod": "explorers", "goal": "expedition", "tiers": [3, 8, 15]},
 ]
 const WEEKLY_REWARDS := [{"crystals": 8}, {"crates": {"silver": 1}}, {"crystals": 20, "crates": {"gold": 1}}]
+## Справка «Как играть»: иконка, заголовок, текст (переводятся через tr).
+const GUIDE := [
+	{"icon": "energy", "title": "Keep the colony alive", "text": "Reactors make energy, oxygen stations make air, farms make food. Put colonists to work there and tap a room when it glows to collect. If any of the three runs out, people suffer and rooms stop."},
+	{"icon": "colonist", "title": "Colonists and skills", "text": "Drag a colonist into a room to give them a job. Each room uses one skill: Strength for reactors, Tech for oxygen and the lab, Biology for farms and pearl farms. The right person works faster and is happier. Traits like Lucky or Lazy change how they work."},
+	{"icon": "pearls", "title": "Pearls and crystals", "text": "Pearls pay for building and upgrades. Crystals are rare: use them to rush things, open crates or spin the wheel. Save them for what matters to you."},
+	{"icon": "tasks", "title": "Story and tasks", "text": "Follow the story bar at the top: each chapter tells you what to do next and unlocks new rooms. Daily tasks, achievements and task chains give extra rewards."},
+	{"icon": "crew", "title": "More people", "text": "The Radio Room calls survivors to the colony. Two adults in Living Quarters can have a baby. Build more living space to raise the population limit."},
+	{"icon": "expedition", "title": "Expeditions", "text": "Build a Dock and send a crew out. A mission comes back on a timer. Exploration has no timer: the longer the crew stays, the more they find, but they get hurt, so call them back in time. Give them armor and weapons and heed the HP warning."},
+	{"icon": "raid", "title": "Danger", "text": "Fires, floods, sea creatures, raiders and bosses attack the base. Drag colonists into the room to fight back. The Medbay heals the wounded. Sea storms make the outside more dangerous but much richer."},
+	{"icon": "science", "title": "Research", "text": "The Lab makes science. Spend it on research for permanent upgrades: better rooms, new depths, faster expeditions."},
+	{"icon": "blueprint", "title": "Crafting", "text": "Expeditions, crates and raiders bring materials and blueprints. The Workshop turns them into gear. Rare and legendary gear makes colonists much stronger."},
+	{"icon": "build", "title": "Colony projects", "text": "From colony level 6 you can build big projects with permanent bonuses. After stage 3 they keep growing with Mastery levels. Spare materials can be traded for missing ones."},
+	{"icon": "event_token", "title": "Weekly event", "text": "Every week has its own event. Its goal pays event tokens: spend them in the Event shop on a trophy with a permanent bonus and other rewards. Tokens burn when the week ends!"},
+	{"icon": "gift", "title": "Tips", "text": "The colony keeps working while the game is closed. Tap anywhere outside a menu to close it. Pets give bonuses and grow with you. A mysterious stranger sometimes appears in a room: tap them quickly!"},
+]
+
+## Жетоны события: за задание недели их набегает ~300 (вдвое больше с пропуском события).
+## Жетоны сгорают в конце недели — потратить их можно в магазине события.
+const EVENT_TOKENS_FULL := 300
+## Трофей события: постоянный бонус, растёт на уровень каждый раз, когда событие возвращается.
+const TROPHIES := {
+	"pearl_week": {"name": "Golden Clam", "desc": "+3% pearls per level", "step": 0.03, "color": Color(1.0, 0.8, 0.95)},
+	"tide": {"name": "Tide Breaker", "desc": "+5% pearls for handled incidents per level", "step": 0.05, "color": Color(0.6, 0.6, 1.0)},
+	"harvest": {"name": "Kelp Crown", "desc": "+3% food per level", "step": 0.03, "color": Color(0.5, 1.0, 0.55)},
+	"explorers": {"name": "Brass Compass", "desc": "+3% expedition loot per level", "step": 0.03, "color": Color(1.0, 0.75, 0.35)},
+}
+const TROPHY_MAX := 5
+## Магазин события: цена в жетонах и сколько раз за неделю можно купить.
+const EVENT_SHOP := [
+	{"id": "trophy", "cost": 250, "limit": 1},
+	{"id": "legendary_bp", "cost": 200, "limit": 1, "reward": {"blueprint": "legendary"}},
+	{"id": "gold_crate", "cost": 150, "limit": 1, "reward": {"crates": {"gold": 1}}},
+	{"id": "crystals", "cost": 100, "limit": 1, "reward": {"crystals": 15}},
+	{"id": "rare_mats", "cost": 80, "limit": 2, "reward": {"materials": {"abyss_pearl": 1, "kraken_ink": 3}}},
+	{"id": "silver_crate", "cost": 40, "limit": 3, "reward": {"crates": {"silver": 1}}},
+]
+## Жетоны за жемчуг: каждая покупка за неделю вдвое дороже — для тех, у кого жемчуга с избытком.
+const EVENT_CACHE_TOKENS := 25
+const EVENT_CACHE_PEARLS := 2500
+## Мастерство проектов: после 3-го этапа проект можно улучшать бесконечно.
+## Каждый уровень даёт четверть бонуса этапа и стоит на 30% дороже предыдущего.
+const MASTERY_STEP := 0.25
+const MASTERY_GROWTH := 1.3
 
 const FIRST_NAMES := [
 	"Ava", "Ben", "Cora", "Dan", "Ella", "Finn", "Gina", "Hugo", "Iris", "Jack",

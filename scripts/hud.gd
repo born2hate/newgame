@@ -49,6 +49,8 @@ func _ready() -> void:
 	Game.banner.connect(show_banner)
 	Game.lost.connect(_on_colony_lost)
 	view.room_selected.connect(_on_room_selected)
+	view.tap_blocker = _tap_outside_sheet
+	view.menu_open = func(): return sheet.visible and sheet_kind != "mode"
 	view.build_finished.connect(_on_build_finished)
 	view.colonist_selected.connect(_open_colonist)
 	Game.rewards_granted.connect(_show_rewards)
@@ -694,7 +696,7 @@ func _refresh_top() -> void:
 		boost_label.text = (boost_label.text + "  " if boost_label.text != "" else "") + "⛈ " + _clock(Game.storm_left())
 	_refresh_expedition_button()
 	if tasks_badge:
-		tasks_badge.visible = Game.quests_ready() > 0 or Game.season_claimable() > 0 or Game.story_ready() or Game.achievements_ready() > 0 or Game.chains_ready() > 0
+		tasks_badge.visible = Game.quests_ready() > 0 or Game.season_claimable() > 0 or Game.story_ready() or Game.achievements_ready() > 0 or Game.chains_ready() > 0 or Game.event_shop_ready()
 		tasks_badge.queue_redraw()
 	if shop_badge:
 		shop_badge.visible = Game.daily_available() or Game.free_crate_ready() or Game.wheel_free_ready() or not Game.active_offers().is_empty()
@@ -878,6 +880,16 @@ func _open_sheet(kind: String, height := 560) -> void:
 func _restore_scroll(v: int) -> void:
 	await get_tree().process_frame
 	(sheet.get_child(0) as ScrollContainer).scroll_vertical = v
+
+## Нажали на игру мимо открытого меню — закрываем меню (касание дальше не идёт).
+## Из меню отсека нажатие на другой отсек сразу открывает его. Выбор сложности не закрывается.
+func _tap_outside_sheet(room: Dictionary) -> bool:
+	if not sheet.visible or sheet_kind == "mode":
+		return false
+	if sheet_kind in ["room", "dock"] and not room.is_empty() and (int(room.id) != sheet_room or room.ready):
+		return false
+	_close_sheet()
+	return true
 
 func _close_sheet() -> void:
 	if sheet.visible:
@@ -1591,6 +1603,7 @@ func _open_settings() -> void:
 	var gap := Control.new()
 	gap.custom_minimum_size.y = 20
 	sheet_body.add_child(gap)
+	sheet_body.add_child(_button(tr("How to play"), more.open_guide, 60))
 	sheet_body.add_child(_button(tr("Replay tutorial"), func():
 		_close_sheet()
 		start_tutorial(), 60))
@@ -2626,7 +2639,15 @@ func _open_tasks() -> void:
 		ab.add_child(_badge())
 	nav.add_child(ab)
 	sheet_body.add_child(nav)
-	sheet_body.add_child(_with_icon(_button(tr("Colony stats"), open_stats, 60), "crew", 34))
+	var stats_row := HBoxContainer.new()
+	stats_row.add_theme_constant_override("separation", 8)
+	var stb := _with_icon(_button(tr("Colony stats"), open_stats, 60), "crew", 34)
+	stb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stats_row.add_child(stb)
+	var gdb := _button(tr("How to play"), more.open_guide, 60)
+	gdb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stats_row.add_child(gdb)
+	sheet_body.add_child(stats_row)
 	var pjb := _with_icon(_button(tr("Colony projects"), more.open_projects, 60), "build", 34)
 	if Defs.PROJECTS.any(func(p): return Game.can_build_project(p.id)):
 		pjb.add_child(_badge())

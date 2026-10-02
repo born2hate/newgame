@@ -580,6 +580,9 @@ func _initialize() -> void:
 	sv_a.chains = {"lost_diver": {"step": 1, "count": 0}}
 	sv_a.pet_xp = {"clownfish": 120}
 	sv_a.piggy = 77.5
+	sv_a.trophies = {"harvest": 2}
+	sv_a.event_tokens = 42.0
+	sv_a.event_bought = {"gold_crate": 1}
 	sv_a.colonists[0].traits = ["genius"]
 	var sv_dock: Dictionary = sv_a._add_room("dock", 3, 1)
 	sv_a.launch_exploration(sv_dock.id, 0, [sv_a.colonists[1].id], true)
@@ -594,6 +597,7 @@ func _initialize() -> void:
 	check(sv_b.project_stage("garden_dome") == 2 and int(sv_b.chain_state("lost_diver").step) == 1, "проекты и цепочки сохранились")
 	check(sv_b.pet_level("clownfish") == 2 and absf(sv_b.piggy - 77.5) < 0.01, "питомец и копилка сохранились")
 	check("genius" in sv_b.colonists[0].traits, "черты сохранились")
+	check(sv_b.trophy_level("harvest") == 2 and sv_b.event_token_count() == 42 and sv_b.event_bought_count("gold_crate") == 1, "трофеи и жетоны сохранились")
 	check(not sv_b.expeditions.is_empty() and sv_b.is_exploring(sv_b.expeditions[0]), "исследование продолжается после загрузки")
 	check(not sv_b.craft_job(sv_b.get_room(sv_ws.id)).is_empty(), "заказ мастерской сохранился")
 	# старое сохранение: убираем новые поля
@@ -679,7 +683,55 @@ func _initialize() -> void:
 	check(pj.build_project_stage("garden_dome") and pj.project_stage("garden_dome") == 1, "этап проекта построен")
 	check(pj.production_amount(pj.find_room_of_type("farm")) > pj_food0, "сад даёт больше еды")
 	check(int(pj.project_cost("garden_dome").pearls) > int(pjc.pearls), "следующий этап дороже")
+	# мастерство после всех этапов
+	pj.projects["garden_dome"] = Defs.PROJECT_STAGES
+	var pj_m1: Dictionary = pj.project_cost("garden_dome")
+	check(not pj_m1.is_empty(), "после 3 этапов доступно мастерство")
+	for m in pj_m1.materials:
+		pj.add_material(m, int(pj_m1.materials[m]))
+	var pj_food3: float = pj.production_amount(pj.find_room_of_type("farm"))
+	pj.pearls = 10000000
+	check(pj.build_project_stage("garden_dome") and pj.project_mastery("garden_dome") == 1, "уровень мастерства построен")
+	check(pj.production_amount(pj.find_room_of_type("farm")) > pj_food3, "мастерство усиливает бонус")
+	check(int(pj.project_cost("garden_dome").pearls) > int(pj_m1.pearls), "мастерство дорожает")
+	# обмен лишних материалов
+	pj.materials = {"scrap": 30, "coral": 1}
+	pj.pearls = 5000
+	var pj_need := {"coral": 4, "shell": 1}
+	var pj_pl: Dictionary = pj.fill_plan(pj_need)
+	check(not pj_pl.is_empty() and int(pj_pl.made) == 4 and int(pj_pl.take.scrap) == 12, "обмен: 4 недостающих из 12 лома")
+	check(pj.fill_materials(pj_need) and pj.has_materials(pj_need) and int(pj.materials.scrap) == 18 and pj.pearls == 5000 - 4 * pj.EXCHANGE_PEARLS, "обмен выполнен, жемчуг списан")
+	check(pj.fill_plan({"abyss_pearl": 3, "scrap": 18}).is_empty(), "без лишнего обменять нельзя")
+	pj.projects["deep_bathyscaphe"] = 30
+	check(pj.project_return_mult() >= 0.4 - 0.001, "путь домой не короче 40%")
 	pj.free()
+
+	# магазин события
+	var evg = load("res://scripts/game_state.gd").new()
+	evg.new_game()
+	evg.refresh_daily_systems()
+	check(evg.event_token_count() == 0 and not evg.can_buy_event("silver_crate"), "без жетонов купить нельзя")
+	var ev_goal: String = evg.weekly_event().goal
+	evg.track(ev_goal, int(evg.weekly_event().tiers[-1]))
+	check(abs(evg.event_token_count() - Defs.EVENT_TOKENS_FULL) <= 1, "за всё задание недели — ~300 жетонов")
+	var ev_mod: String = evg.weekly_mod()
+	check(evg.buy_event("trophy") and evg.trophy_level(ev_mod) == 1, "трофей куплен")
+	check(not evg.can_buy_event("trophy"), "трофей — один раз за неделю")
+	check(evg.trophy_bonus(ev_mod) > 1.0, "трофей даёт бонус")
+	var ev_cr: int = evg.crates.silver
+	check(evg.buy_event("silver_crate") and evg.crates.silver == ev_cr + 1, "серебряный ящик за жетоны")
+	evg.pearls = 100000
+	var ev_p1: int = evg.event_cache_price()
+	var ev_t0: int = evg.event_token_count()
+	check(evg.buy_event_cache() and evg.event_token_count() == ev_t0 + Defs.EVENT_CACHE_TOKENS, "жетоны за жемчуг")
+	check(evg.event_cache_price() == ev_p1 * 2, "жетоны за жемчуг дорожают вдвое")
+	var ev_t1: int = evg.event_token_count()
+	evg.grant({"event_pass": true}, "t")
+	check(evg.event_pass_active() and evg.event_token_count() == ev_t1 * 2, "пропуск события удваивает жетоны")
+	evg.weekly_week = -5
+	evg.refresh_daily_systems()
+	check(evg.event_token_count() == 0 and evg.trophy_level(ev_mod) == 1, "жетоны сгорают, трофей остаётся")
+	evg.free()
 
 	# черты характера
 	var tr_tg = load("res://scripts/game_state.gd").new()

@@ -819,3 +819,54 @@
 818|Pakiet startowy: najlepsza oferta!
 819|150 kryształów, 1000 pereł, błazenek Nemo, 2 srebrne skrzynie i rzadki kolonista — w sklepie.
 820|×2 pereł za wideo
+821|%s: mistrzostwo %d!
+822|Trofeum: %s · poziom %d
+823|Przepustka wydarzenia: podwójne żetony w tym tygodniu!
+824|Przepustka wydarzenia
+825|Podwójne żetony wydarzenia w tym tygodniu (także te, które już masz) i od razu Złota skrzynia.
+826|Złota małża
+827|Łamacz przypływu
+828|Korona z wodorostów
+829|Mosiężny kompas
+830|+3% pereł za poziom
+831|+5% pereł za opanowane incydenty na poziom
+832|+3% jedzenia za poziom
+833|+3% łupów z wypraw za poziom
+834|Żetony wydarzenia: %d
+835|Sklep wydarzenia
+836|Żetony za cel tygodnia. Przepadną, gdy wydarzenie skończy się za %d dni!
+837|Przepustka aktywna: podwójne żetony!
+838|Poz. %d/%d
+839|Trofeum na zawsze: %s. Rośnie za każdym powrotem wydarzenia.
+840|Legendarny schemat
+841|Zostało w tym tygodniu: %d
+842|+%d żetonów
+843|Cena podwaja się z każdym zakupem w tym tygodniu.
+844|Kolekcja trofeów
+845|zostało %d dni
+846|Gotowe! Mistrzostwo: każdy poziom dodaje ćwierć premii etapu.
+847|Mistrzostwo %d
+848|Wymień nadmiar materiałów: %d
+849|Jak grać
+850|Utrzymaj kolonię przy życiu
+851|Reaktory dają energię, stacje tlenu powietrze, farmy jedzenie. Przydziel tam kolonistów i dotknij świecącej sali, by zebrać. Gdy czegoś z tej trójki zabraknie, ludzie cierpią, a sale stają.
+852|Koloniści i umiejętności
+853|Przeciągnij kolonistę do sali, by dać mu pracę. Każda sala używa jednej umiejętności: Siła w reaktorach, Technika w tlenie i laboratorium, Biologia na farmach i farmach pereł. Właściwa osoba pracuje szybciej i jest szczęśliwsza. Cechy jak Szczęściarz czy Leń zmieniają jej pracę.
+854|Perły i kryształy
+855|Perły opłacają budowę i ulepszenia. Kryształy są rzadkie: przyspieszają, otwierają skrzynie lub kręcą kołem. Zachowaj je na to, co ważne.
+856|Fabuła i zadania
+857|Śledź pasek fabuły u góry: każdy rozdział mówi, co dalej, i odblokowuje nowe sale. Zadania dzienne, osiągnięcia i łańcuchy zadań dają dodatkowe nagrody.
+858|Więcej ludzi
+859|Radiostacja wzywa ocalałych do kolonii. Dwoje dorosłych w kwaterach może mieć dziecko. Buduj więcej kwater, by podnieść limit ludności.
+860|Wyprawy
+861|Zbuduj dok i wyślij ekipę. Misja wraca po czasie. Eksploracja nie ma limitu: im dłużej ekipa zostaje, tym więcej znajduje, ale odnosi rany, więc odwołaj ją na czas. Daj im pancerz i broń i pilnuj ostrzeżenia o zdrowiu.
+862|Zagrożenia
+863|Pożary, zalania, morskie stwory, piraci i bossowie atakują bazę. Przeciągnij kolonistów do sali, by się bronić. Ambulatorium leczy rannych. Sztormy czynią świat zewnętrzny groźniejszym, ale dużo bogatszym.
+864|Laboratorium wytwarza naukę. Wydawaj ją na badania dające stałe ulepszenia: lepsze sale, nowe głębiny, szybsze wyprawy.
+865|Wytwarzanie
+866|Wyprawy, skrzynie i piraci przynoszą materiały i schematy. Warsztat robi z nich sprzęt. Rzadki i legendarny sprzęt czyni kolonistów dużo silniejszymi.
+867|Od 6. poziomu kolonii możesz budować wielkie projekty ze stałymi premiami. Po 3. etapie rosną dalej poziomami mistrzostwa. Nadmiar materiałów można wymienić na brakujące.
+868|Wydarzenie tygodnia
+869|Każdy tydzień ma swoje wydarzenie. Jego cel daje żetony: wydaj je w sklepie wydarzenia na trofeum ze stałą premią i inne nagrody. Żetony przepadają z końcem tygodnia!
+870|Wskazówki
+871|Kolonia działa także przy zamkniętej grze. Dotknij poza menu, by je zamknąć. Zwierzaki dają premie i rosną razem z tobą. Czasem w sali pojawia się tajemniczy nieznajomy — szybko go dotknij!

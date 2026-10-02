@@ -229,3 +229,24 @@ Order: efficient_reactors, hydroponics, electrolysis, reinforced_hull, training_
 ## Морская буря → `art/ui/storm.png`
 
 `cartoon underwater storm event icon: swirling dark current vortex with lightning flashes from the surface above and a frightened little fish, glossy mobile game icon, transparent background`
+
+## Жетон события → `art/icons/event_token.png`
+
+`shiny golden event coin with an embossed starfish and tiny pearls around the rim, glossy cartoon mobile game currency icon, transparent background`
+
+## Трофеи событий → `art/ui/trophies/<id>.png`
+
+Можно одним листом 4×1. Порядок: pearl_week, tide, harvest, explorers.
+
+`set of 4 cartoon trophy icons for weekly events in an underwater colony game, glossy mobile game style, each on a small brass pedestal, transparent background: 1) Golden Clam — a golden clam shell opened with a glowing pink pearl, 2) Tide Breaker — a silver-blue trident crossing a breaking wave, 3) Kelp Crown — a crown woven from green kelp with small glowing buds, 4) Brass Compass — an ornate brass diving compass with a glowing needle`
+
+## Баннеры событий недели → `art/events/weekly_<id>.png`
+
+Широкие 16:9, как картинки проектов. Сверху в магазине события.
+
+| Файл | Промт |
+|---|---|
+| `weekly_pearl_week.png` | `festive underwater colony celebrating Pearl Week: giant oysters opening with glowing pearls, colonists in diving suits collecting pearls into baskets, pink and gold lights, cartoon underwater colony game art, wide 16:9` |
+| `weekly_tide.png` | `Abyssal Tide event: dark stormy deep water, swarms of glowing jellyfish and anglerfish approaching an underwater colony, colonists with harpoons defending the airlock, dramatic blue-purple light, cartoon underwater colony game art, wide 16:9` |
+| `weekly_harvest.png` | `Harvest Festival in an underwater colony: farms overflowing with glowing kelp and sea fruit, lanterns and garlands, colonists carrying crates of food, warm green and gold light, cartoon underwater colony game art, wide 16:9` |
+| `weekly_explorers.png` | `Explorer's Season: a fleet of small submarines leaving the colony dock toward a mysterious glowing trench, treasure map overlay, warm brass and cyan light, cartoon underwater colony game art, wide 16:9` |

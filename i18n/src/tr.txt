@@ -819,3 +819,54 @@
 818|Başlangıç paketi: en avantajlısı!
 819|150 kristal, 1000 inci, palyaço balığı Nemo, 2 gümüş sandık ve nadir bir kolonist — mağazada.
 820|Video karşılığı ×2 inci
+821|%s: ustalık %d!
+822|Kupa: %s · seviye %d
+823|Etkinlik Bileti: bu hafta çift jeton!
+824|Etkinlik Bileti
+825|Bu hafta çift etkinlik jetonu (zaten sahip oldukların dahil) ve hemen bir Altın Sandık.
+826|Altın İstiridye
+827|Gelgit Kıran
+828|Yosun Taç
+829|Pirinç Pusula
+830|seviye başına +%3 inci
+831|seviye başına çözülen olaylardan +%5 inci
+832|seviye başına +%3 yiyecek
+833|seviye başına +%3 sefer ganimeti
+834|%d etkinlik jetonu
+835|Etkinlik mağazası
+836|Jetonları haftalık hedeften kazan. Etkinlik %d gün sonra bitince jetonlar yanar!
+837|Etkinlik Bileti aktif: çift jeton!
+838|Sv. %d/%d
+839|Kalıcı kupa: %s. Etkinlik her döndüğünde seviye atlar.
+840|Efsanevi şema
+841|Bu hafta %d kaldı
+842|+%d jeton
+843|Bu hafta her alımda fiyat ikiye katlanır.
+844|Kupa koleksiyonu
+845|%d gün kaldı
+846|Tamamlandı! Ustalık: her seviye bir aşama bonusunun dörtte birini ekler.
+847|Ustalık %d
+848|Fazla malzemeleri takas et: %d
+849|Nasıl oynanır
+850|Koloniyi hayatta tut
+851|Reaktörler enerji, oksijen istasyonları hava, çiftlikler yiyecek üretir. Kolonistleri oraya yerleştir ve parlayan odaya dokunarak topla. Üçünden biri biterse insanlar zorlanır ve odalar durur.
+852|Kolonistler ve yetenekler
+853|Bir kolonisti odaya sürükleyerek iş ver. Her oda bir yetenek kullanır: reaktörler için Güç, oksijen ve laboratuvar için Teknik, çiftlikler ve inci çiftlikleri için Biyoloji. Doğru kişi daha hızlı çalışır ve daha mutlu olur. Şanslı ya da Tembel gibi özellikler çalışma biçimini değiştirir.
+854|İnciler ve kristaller
+855|İnciler inşaat ve yükseltmelerin bedelidir. Kristaller nadirdir: hızlandırmak, sandık açmak ya da çarkı çevirmek için kullan. Önemli olana sakla.
+856|Hikâye ve görevler
+857|Üstteki hikâye çubuğunu takip et: her bölüm sıradakini söyler ve yeni odalar açar. Günlük görevler, başarımlar ve görev zincirleri ek ödül verir.
+858|Daha fazla insan
+859|Telsiz Odası hayatta kalanları koloniye çağırır. Yaşam Alanındaki iki yetişkin bebek sahibi olabilir. Nüfus sınırını artırmak için daha çok yaşam alanı kur.
+860|Seferler
+861|Bir Rıhtım kur ve ekibi gönder. Görev süreyle döner. Keşfin süresi yoktur: ekip ne kadar uzun kalırsa o kadar çok bulur ama yaralanır, zamanında geri çağır. Zırh ve silah ver, can uyarısına dikkat et.
+862|Tehlikeler
+863|Yangınlar, su baskınları, deniz yaratıkları, yağmacılar ve patronlar üsse saldırır. Karşılık vermek için kolonistleri odaya sürükle. Revir yaralıları iyileştirir. Deniz fırtınaları dışarıyı daha tehlikeli ama çok daha zengin yapar.
+864|Laboratuvar bilim üretir. Kalıcı geliştirmeler için araştırmaya harca: daha iyi odalar, yeni derinlikler, daha hızlı seferler.
+865|Üretim
+866|Seferler, sandıklar ve yağmacılar malzeme ve şema getirir. Atölye bunları teçhizata dönüştürür. Nadir ve efsanevi teçhizat kolonistleri çok güçlendirir.
+867|Koloni seviyesi 6'dan itibaren kalıcı bonuslu büyük projeler kurabilirsin. 3. aşamadan sonra ustalık seviyeleriyle büyümeye devam ederler. Fazla malzemeler eksik olanlarla takas edilebilir.
+868|Haftalık etkinlik
+869|Her haftanın kendi etkinliği vardır. Hedefi etkinlik jetonu verir: bunları etkinlik mağazasında kalıcı bonuslu bir kupaya ve diğer ödüllere harca. Hafta bitince jetonlar yanar!
+870|İpuçları
+871|Oyun kapalıyken de koloni çalışır. Bir menüyü kapatmak için dışına dokun. Evcil hayvanlar bonus verir ve seninle büyür. Bazen bir odada gizemli bir yabancı belirir: hemen dokun!

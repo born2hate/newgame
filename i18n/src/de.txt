@@ -819,3 +819,54 @@
 818|Starterpaket: das beste Angebot!
 819|150 Kristalle, 1000 Perlen, Clownfisch Nemo, 2 Silberkisten und ein seltener Kolonist — im Shop.
 820|×2 Perlen für ein Video
+821|%s: Meisterschaft %d!
+822|Trophäe: %s · Stufe %d
+823|Event-Pass: doppelte Marken diese Woche!
+824|Event-Pass
+825|Doppelte Event-Marken diese Woche (auch die, die du schon hast) und sofort eine Goldkiste.
+826|Goldene Muschel
+827|Gezeitenbrecher
+828|Tangkrone
+829|Messingkompass
+830|+3% Perlen pro Stufe
+831|+5% Perlen für gelöste Zwischenfälle pro Stufe
+832|+3% Nahrung pro Stufe
+833|+3% Expeditionsbeute pro Stufe
+834|%d Event-Marken
+835|Event-Shop
+836|Marken gibt es für das Wochenziel. Sie verfallen, wenn das Event in %d Tagen endet!
+837|Event-Pass aktiv: doppelte Marken!
+838|St. %d/%d
+839|Trophäe für immer: %s. Steigt jedes Mal auf, wenn das Event zurückkehrt.
+840|Legendäre Blaupause
+841|Noch %d diese Woche
+842|+%d Marken
+843|Der Preis verdoppelt sich mit jedem Kauf diese Woche.
+844|Trophäensammlung
+845|noch %d Tage
+846|Fertig! Meisterschaft: jede Stufe bringt ein Viertel eines Stufenbonus.
+847|Meisterschaft %d
+848|Überschüssige Materialien tauschen: %d
+849|So wird gespielt
+850|Halte die Kolonie am Leben
+851|Reaktoren liefern Energie, Sauerstoffstationen Luft, Farmen Nahrung. Setz Kolonisten dort ein und tippe auf einen leuchtenden Raum, um zu ernten. Geht eins der drei aus, leiden die Leute und Räume stehen still.
+852|Kolonisten und Fähigkeiten
+853|Zieh einen Kolonisten in einen Raum, um ihm Arbeit zu geben. Jeder Raum nutzt eine Fähigkeit: Stärke für Reaktoren, Technik für Sauerstoff und Labor, Biologie für Farmen und Perlenfarmen. Die richtige Person arbeitet schneller und ist glücklicher. Eigenschaften wie Glückspilz oder Faul ändern, wie sie arbeitet.
+854|Perlen und Kristalle
+855|Perlen bezahlen Bau und Verbesserungen. Kristalle sind selten: damit beschleunigst du, öffnest Kisten oder drehst das Rad. Heb sie für das Wichtigste auf.
+856|Geschichte und Aufgaben
+857|Folge der Geschichtsleiste oben: jedes Kapitel sagt dir, was als Nächstes kommt, und schaltet neue Räume frei. Tagesaufgaben, Erfolge und Aufgabenketten bringen Extra-Belohnungen.
+858|Mehr Leute
+859|Der Funkraum ruft Überlebende in die Kolonie. Zwei Erwachsene im Wohnquartier können ein Baby bekommen. Bau mehr Wohnraum, um das Bevölkerungslimit zu erhöhen.
+860|Expeditionen
+861|Bau ein Dock und schick ein Team los. Eine Mission kommt nach Zeit zurück. Erkundung hat keinen Timer: je länger das Team draußen bleibt, desto mehr findet es, aber es wird verletzt, also ruf es rechtzeitig zurück. Gib ihnen Rüstung und Waffen und achte auf die HP-Warnung.
+862|Gefahren
+863|Brände, Fluten, Seeungeheuer, Plünderer und Bosse greifen die Basis an. Zieh Kolonisten in den Raum, um dich zu wehren. Die Krankenstation heilt Verletzte. Seestürme machen draußen alles gefährlicher, aber viel reicher.
+864|Das Labor erzeugt Wissenschaft. Investiere sie in Forschung für dauerhafte Verbesserungen: bessere Räume, neue Tiefen, schnellere Expeditionen.
+865|Herstellung
+866|Expeditionen, Kisten und Plünderer bringen Materialien und Blaupausen. Die Werkstatt macht daraus Ausrüstung. Seltene und legendäre Ausrüstung macht Kolonisten viel stärker.
+867|Ab Koloniestufe 6 kannst du große Projekte mit dauerhaften Boni bauen. Nach Stufe 3 wachsen sie mit Meisterschaftsstufen weiter. Überschüssige Materialien lassen sich gegen fehlende tauschen.
+868|Wochenevent
+869|Jede Woche hat ihr eigenes Event. Sein Ziel bringt Event-Marken: gib sie im Event-Shop für eine Trophäe mit Dauerbonus und andere Belohnungen aus. Am Wochenende verfallen die Marken!
+870|Tipps
+871|Die Kolonie arbeitet weiter, während das Spiel geschlossen ist. Tippe außerhalb eines Menüs, um es zu schließen. Haustiere geben Boni und wachsen mit dir. Manchmal taucht ein geheimnisvoller Fremder in einem Raum auf: tippe schnell darauf!

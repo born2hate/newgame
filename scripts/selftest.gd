@@ -182,10 +182,14 @@ func run() -> void:
 		["tasks", func(): hud._open_tasks()],
 		["shop", func(): hud._open_shop()],
 		["settings", func(): hud._open_settings()],
+		["guide", func(): hud.more.open_guide()],
 		["daily", func(): hud._open_daily()],
 		["research", func(): hud.more.open_research()],
 		["achievements", func(): hud.more.open_achievements()],
 		["trader", func(): hud.more.open_trader()],
+		["projects", func(): hud.more.open_projects()],
+		["event shop", func(): hud.more.open_event_shop()],
+		["wheel", func(): hud.more.open_wheel()],
 		["room reactor", func(): hud._open_room(Game.find_room_of_type("reactor").id)],
 		["room airlock", func(): hud._open_room(Game.find_room_of_type("airlock").id)],
 		["room dock", func(): hud._open_room(dock.id)],
@@ -208,6 +212,26 @@ func run() -> void:
 		scroll.scroll_vertical = 0
 		await wait(0.1)
 		await close_sheet(sc[0])
+	# 2б. нажатие на игру мимо меню закрывает его
+	hud._open_shop()
+	await wait(0.4)
+	var sr: Rect2 = hud.sheet.get_global_rect()
+	var tr_r: Rect2 = hud.top_panel.get_global_rect()
+	var vp := get_viewport().get_visible_rect().size
+	var spot := Vector2(-1, -1)
+	for cand in [Vector2(vp.x / 2.0, (tr_r.end.y + sr.position.y) / 2.0), Vector2(sr.position.x / 2.0, vp.y / 2.0), Vector2((sr.end.x + vp.x) / 2.0, vp.y / 2.0)]:
+		if not sr.has_point(cand) and not tr_r.has_point(cand) and cand.x > 0 and cand.x < vp.x and cand.y > 0:
+			spot = cand
+			break
+	if spot.x < 0:
+		issue("no free spot outside the sheet")
+	else:
+		await tap(spot)
+		if hud.sheet.visible:
+			var hov: Control = get_viewport().gui_get_hovered_control()
+			issue("tap outside the sheet did not close it at %s (over %s)" % [spot, hov.get_path() if hov else "world"])
+	hud._close_sheet()
+	await wait(0.2)
 	# 3. нижние кнопки открывают свои меню
 	for i in 4:
 		await tap(hud.bottom_bar.get_child(i).get_global_rect().get_center())

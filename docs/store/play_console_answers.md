@@ -46,6 +46,7 @@ ID должны совпадать с кодом (`scripts/store.gd`). Цены 
 | `no_ads` | No Ads | $2.99 |
 | `season_pass` | Season Pass | $4.99 |
 | `piggy_bank` | Treasure Piggy Bank | $2.99 |
+| `event_pass` | Event Pass | $2.99 |
 | `offer_hero` | Hero Bundle | $4.99 |
 | `offer_builder` | Builder Bundle | $3.99 |
 | `offer_medic` | Medic Bundle | $1.99 |
