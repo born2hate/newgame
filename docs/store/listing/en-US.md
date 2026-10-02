@@ -28,13 +28,14 @@ Deep Colony is a cozy-but-tense colony builder in the spirit of classic shelter 
 🗺️ EXPLORE
 • Explore with no timer, Fallout-style: stay out longer for richer loot — and recall your crew before it's too late
 • Craft weapons and armor from blueprints and rare materials
-• Build huge colony projects: a Garden Dome, a Survivor Beacon and more
+• Build huge colony projects: a Garden Dome, a Survivor Beacon and more — then keep growing them with endless Mastery levels
 • Send crews on expeditions to kelp forests, coral reefs and sunken ships
 • Make risky choices on the way: open the sealed chest or leave it?
 • Bring back pearls, crystals, rare gear and collectible pets
 
 ⭐ AND MORE
-• 20-chapter story, daily quests, achievements and colony levels
+• 23-chapter story, daily quests, task chains, achievements and colony levels
+• Weekly events with an event shop and collectible trophies
 • 17 research projects
 • 6 pets with unique bonuses
 • Calm, Normal and Survival difficulty
