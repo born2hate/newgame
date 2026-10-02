@@ -873,3 +873,4 @@
 872|Bahan langka
 873|Tukar bahan berlebih:
 874|Bahan bangunan
+875|Pengaturan privasi

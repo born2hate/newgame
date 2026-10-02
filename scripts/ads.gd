@@ -29,10 +29,48 @@ func _cls(name: String):
 	return c
 
 func available() -> bool:
-	return _cls("MobileAds") != null and _cls("RewardedAdLoader") != null
+	# классы плагина есть и в редакторе, а нативная часть — только в Android-сборке
+	return Engine.has_singleton("PoingGodotAdMob") and _cls("MobileAds") != null and _cls("RewardedAdLoader") != null
 
+## Согласие на рекламу (GDPR, EEA/UK) через Google UMP: окно из AdMob → Privacy & messaging.
+## Рекламу инициализируем после того, как игрок ответил (или окно не требуется).
 func init() -> void:
 	if not available():
+		return
+	var ump = _cls("UserMessagingPlatform")
+	if ump == null or not Engine.has_singleton("PoingGodotAdMobConsentInformation"):
+		_start_ads()
+		return
+	var params = _cls("ConsentRequestParameters").new()
+	params.tag_for_under_age_of_consent = false
+	ump.consent_information.update(params, func(): _show_consent_if_required(), func(_err): _start_ads())
+
+func _show_consent_if_required() -> void:
+	var ump = _cls("UserMessagingPlatform")
+	var info = ump.consent_information
+	# ConsentStatus: 2 — REQUIRED
+	if info.get_consent_status() == 2 and info.get_is_consent_form_available():
+		ump.load_consent_form(func(form): form.show(func(_err): _start_ads()), func(_err): _start_ads())
+	else:
+		_start_ads()
+
+## Кнопка в настройках: изменить выбор по рекламе (нужна там, где окно согласия обязательно).
+func privacy_options_available() -> bool:
+	if not available():
+		return false
+	var ump = _cls("UserMessagingPlatform")
+	# ConsentStatus: 1 — NOT_REQUIRED (вне EEA/UK кнопка не нужна)
+	return ump != null and ump.consent_information.get_consent_status() > 1 \
+		and ump.consent_information.get_is_consent_form_available()
+
+func show_privacy_options() -> void:
+	var ump = _cls("UserMessagingPlatform")
+	if ump == null:
+		return
+	ump.load_consent_form(func(form): form.show(func(_err): pass), func(_err): pass)
+
+func _start_ads() -> void:
+	if _ok:
 		return
 	_cls("MobileAds").initialize()
 	_ok = true

@@ -19,6 +19,13 @@
 - Сборка: `tools/build_aab.sh` (ставит шаблон, поднимает compileSdk до 36, подписывает ключом upload).
 - **0.14 (12) загружена во внутреннее тестирование** (`play_publish.py bundle`), статус completed.
 
+## 0.15 (13)
+- Окно согласия GDPR (Google UMP) перед инициализацией AdMob, кнопка «Privacy settings» в настройках
+  (видна только там, где согласие требуется). В AdMob → Privacy & messaging должно быть создано
+  и опубликовано сообщение GDPR, иначе окно не появится.
+- AAB 13 загружен в библиотеку Play (без трека): 12 на первой проверке Google в Alpha/Internal.
+  После одобрения: Internal/Production → Create release → Add from library → 13.
+
 ## Осталось
 1. ~~Товары~~: платёжный профиль создан, 15 товаров созданы и активны (`play_publish.py products`).
 2. Internal testing → Testers: добавить свой email, установить по ссылке, проверить покупку и рекламу.

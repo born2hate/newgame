@@ -873,3 +873,4 @@
 872|Nadir malzemeler
 873|Fazla malzemeleri takas et:
 874|Yapı malzemeleri
+875|Gizlilik ayarları

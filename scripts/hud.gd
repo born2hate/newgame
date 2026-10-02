@@ -1604,6 +1604,8 @@ func _open_settings() -> void:
 	gap.custom_minimum_size.y = 20
 	sheet_body.add_child(gap)
 	sheet_body.add_child(_button(tr("How to play"), more.open_guide, 60))
+	if Store.ads.privacy_options_available():
+		sheet_body.add_child(_button(tr("Privacy settings"), Store.ads.show_privacy_options, 60))
 	sheet_body.add_child(_button(tr("Replay tutorial"), func():
 		_close_sheet()
 		start_tutorial(), 60))

@@ -3,6 +3,11 @@
 All notable changes to **Deep Colony** are listed here, newest first.
 APK builds live in [`releases/`](releases/).
 
+## 0.15 — 2026-10-02
+### Added
+- **Google Play release build**: real in-app purchases (Google Play Billing) with local prices from the store, and real rewarded video ads (AdMob).
+- **Ad consent** for players in the EEA and UK (Google consent message on first launch) and **Privacy settings** in Settings to change the choice later.
+
 ## 0.14 — 2026-10-02
 ### Added
 - **Event shop**: the weekly goal now pays **event tokens** (~300 for the full goal). Spend them on a permanent **event trophy**, a legendary blueprint, crates, crystals and rare materials. Tokens burn when the week ends. Extra tokens for pearls (price doubles with each purchase that week).

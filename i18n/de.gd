@@ -879,6 +879,7 @@ const T := {
 	"Rare materials": "Seltene Materialien",
 	"Trade spare materials:": "Überschüssiges tauschen:",
 	"Building materials": "Baumaterialien",
+	"Privacy settings": "Datenschutzeinstellungen",
 }
 
 static func make() -> Translation:
